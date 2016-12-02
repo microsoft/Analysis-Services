@@ -1,13 +1,13 @@
-# Analysis Services
+## Analysis Services
 Git repo for Analysis Services samples and community projects
 
-# AsPartitionProcessing
+## AsPartitionProcessing
 Automated partition management of Azure Analysis Services tabular models [AsPartitionProcessing](https://github.com/Microsoft/Analysis-Services/AsPartitionProcessing).
 
-# AsPartitionProcessing
+## AsPartitionProcessing
 Real-time monitoring of Analysis Services memory usage broken out by database [AsPerfMon](https://github.com/Microsoft/Analysis-Services/AsPerfMon).
 
-# Code Of Conduct
+## Code Of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct
