@@ -4,7 +4,7 @@ Git repo for Analysis Services samples and community projects
 ## [AsPartitionProcessing](https://github.com/Microsoft/Analysis-Services/AsPartitionProcessing)
 Automated partition management of Azure Analysis Services tabular models
 
-## [AsPerfMon](https://github.com/Microsoft/Analysis-Services/AsPerfMon)
+## [AsPerfMon](https://github.com/Microsoft/Analysis-Services/tree/master/AsPerfMon)
 Real-time monitoring of Analysis Services memory usage broken out by database
 
 ## Code of Conduct
