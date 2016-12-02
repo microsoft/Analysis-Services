@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Development</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7274efcc-e7df-40ad-83df-1dfd5b954e67}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyRootNamespace</RootNamespace>
+    <AssemblyName>MyAssemblyName</AssemblyName>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <OutputPath>bin\</OutputPath>
+    <Name>AsPartitionProcessing.AdventureWorks</Name>
+    <DeploymentServerName>localhost</DeploymentServerName>
+    <DeploymentServerEdition>Developer</DeploymentServerEdition>
+    <DeploymentServerVersion>Version_11_0</DeploymentServerVersion>
+    <DeploymentServerDatabase>AW Tabular Model SQL 2014</DeploymentServerDatabase>
+    <DeploymentServerCubeName>Model</DeploymentServerCubeName>
+    <DeploymentOptionProcessing>Default</DeploymentOptionProcessing>
+    <DeploymentOptionTransactionalDeployment>False</DeploymentOptionTransactionalDeployment>
+    <DeploymentOptionDirectQueryMode>InMemory</DeploymentOptionDirectQueryMode>
+    <DeploymentOptionQueryImpersonation>Default</DeploymentOptionQueryImpersonation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Development' ">
+    <OutputPath>bin\</OutputPath>
+    <DeploymentServerName>localhost</DeploymentServerName>
+    <DeploymentServerEdition>Developer</DeploymentServerEdition>
+    <DeploymentServerVersion>Version_11_0</DeploymentServerVersion>
+    <DeploymentServerDatabase>AdventureWorks</DeploymentServerDatabase>
+    <DeploymentServerCubeName>Model</DeploymentServerCubeName>
+    <DeploymentOptionProcessing>Default</DeploymentOptionProcessing>
+    <DeploymentOptionTransactionalDeployment>False</DeploymentOptionTransactionalDeployment>
+    <DeploymentOptionDirectQueryMode>InMemory</DeploymentOptionDirectQueryMode>
+    <DeploymentOptionQueryImpersonation>Default</DeploymentOptionQueryImpersonation>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Model.bim">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Business Intelligence Semantic Model\1.0\Microsoft.AnalysisServices.VSHostBuilder.targets" />
+</Project>
