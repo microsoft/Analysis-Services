@@ -7,7 +7,7 @@ Automated partition management of Azure Analysis Services tabular models
 ## [AsPerfMon](https://github.com/Microsoft/Analysis-Services/AsPerfMon)
 Real-time monitoring of Analysis Services memory usage broken out by database
 
-## Code Of Conduct
+## Code of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct
