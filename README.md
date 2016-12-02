@@ -1,7 +1,7 @@
 # Analysis Services
 Git repo for Analysis Services samples and community projects
 
-## [AsPartitionProcessing](https://github.com/Microsoft/Analysis-Services/AsPartitionProcessing)
+## [AsPartitionProcessing](/tree/master/AsPartitionProcessing)
 Automated partition management of Azure Analysis Services tabular models
 
 ## [AsPerfMon](https://github.com/Microsoft/Analysis-Services/tree/master/AsPerfMon)
