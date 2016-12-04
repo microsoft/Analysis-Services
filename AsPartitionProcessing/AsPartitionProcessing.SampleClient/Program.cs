@@ -23,6 +23,8 @@ namespace AsPartitionProcessing.SampleClient
                     modelsConfig = InitializeFromDatabase();
                 }
 
+                //PartitionProcessor.MergeMonthsToYear(modelsConfig[0], LogMessage, "Internet Sales", "2012");
+
                 foreach (ModelConfiguration modelConfig in modelsConfig)
                 {
                     if (!modelConfig.IntegratedAuth) //For Azure AS

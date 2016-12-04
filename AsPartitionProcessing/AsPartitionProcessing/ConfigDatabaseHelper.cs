@@ -123,7 +123,7 @@ namespace AsPartitionProcessing
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "DELETE FROM [dbo].[PartitionedModelLog];";
+                    command.CommandText = "DELETE FROM [dbo].[ProcessingLog];";
                     command.ExecuteNonQuery();
                 }
             }
@@ -144,7 +144,7 @@ namespace AsPartitionProcessing
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"
-                        INSERT INTO [dbo].[PartitionedModelLog]
+                        INSERT INTO [dbo].[ProcessingLog]
                                ([ModelConfigurationID]
                                ,[ExecutionID]
                                ,[LogDateTime]
