@@ -7,7 +7,7 @@ namespace AsPartitionProcessing.SampleClient
 {
     class Program
     {
-        const bool UseDatabase = true;
+        const bool UseDatabase = false;
 
         static void Main(string[] args)
         {

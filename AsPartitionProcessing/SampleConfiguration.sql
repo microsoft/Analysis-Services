@@ -14,11 +14,13 @@ VALUES(
      1                          --[TableConfigurationID]
     ,1                          --[ModelConfigurationID]
     ,'Internet Sales'           --[AnalysisServicesTable]
+    ,0                          --[DoNotProcess]
 ),
 (
      2                          --[TableConfigurationID]
     ,1                          --[ModelConfigurationID]
     ,'Reseller Sales'           --[AnalysisServicesTable]
+    ,0                          --[DoNotProcess]
 );
 
 INSERT INTO [dbo].[PartitioningConfiguration]

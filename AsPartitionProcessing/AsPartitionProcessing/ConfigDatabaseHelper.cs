@@ -43,6 +43,7 @@ namespace AsPartitionProcessing
                               ,[SourceTableName]
                               ,[SourcePartitionColumn]
                           FROM [dbo].[vPartitioningConfiguration]
+                          WHERE [DoNotProcess] = 0
                           ORDER BY
                                [ModelConfigurationID],
                                [TableConfigurationID],

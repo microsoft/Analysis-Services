@@ -25,7 +25,6 @@ CREATE TABLE [dbo].[PartitioningConfiguration](
     [NumberOfPartitionsFull] [int] NOT NULL,
     [NumberOfPartitionsForIncrementalProcess] [int] NOT NULL,
     [MaxDate] [date] NOT NULL,
-    [MinDate]  AS (case when [Granularity]=(0) then dateadd(day,( -[NumberOfPartitionsFull])+(1),[MaxDate]) when [Granularity]=(1) then CONVERT([date],format(dateadd(month,( -[NumberOfPartitionsFull])+(1),[MaxDate]),'yyyy-MMM-01')) when [Granularity]=(2) then CONVERT([date],format(dateadd(year,( -[NumberOfPartitionsFull])+(1),[MaxDate]),'yyyy-01-01')) else [MaxDate] end),
     [SourceTableName] [varchar](255) NOT NULL,
     [SourcePartitionColumn] [varchar](255) NOT NULL,
  CONSTRAINT [PK_PartitioningConfiguration] PRIMARY KEY CLUSTERED 
@@ -52,6 +51,7 @@ CREATE TABLE [dbo].[TableConfiguration](
     [TableConfigurationID] [int] NOT NULL,
     [ModelConfigurationID] [int] NOT NULL,
     [AnalysisServicesTable] [varchar](255) NOT NULL,
+    [DoNotProcess] [bit] NOT NULL,
  CONSTRAINT [PK_TableConfiguration] PRIMARY KEY CLUSTERED 
 (
     [TableConfigurationID] ASC
@@ -71,6 +71,9 @@ REFERENCES [dbo].[ModelConfiguration] ([ModelConfigurationID])
 GO
 
 ALTER TABLE [dbo].[ProcessingLog] CHECK CONSTRAINT [FK_ProcessingLog_ModelConfiguration]
+GO
+
+ALTER TABLE [dbo].[TableConfiguration] ADD  CONSTRAINT [DF_TableConfiguration_DoNotProcess]  DEFAULT ((0)) FOR [DoNotProcess]
 GO
 
 ALTER TABLE [dbo].[TableConfiguration]  WITH CHECK ADD  CONSTRAINT [FK_TableConfiguration_ModelConfiguration] FOREIGN KEY([ModelConfigurationID])
@@ -94,7 +97,6 @@ GO
 
 
 
-
 CREATE VIEW [dbo].[vPartitioningConfiguration]
 AS
 SELECT m.[ModelConfigurationID]
@@ -106,6 +108,7 @@ SELECT m.[ModelConfigurationID]
       ,m.[IntegratedAuth]
       ,t.[TableConfigurationID]
       ,t.[AnalysisServicesTable]
+      ,t.[DoNotProcess]
       ,CASE
         WHEN p.[TableConfigurationID] IS NULL THEN 0
         ELSE 1
@@ -115,7 +118,6 @@ SELECT m.[ModelConfigurationID]
       ,p.[NumberOfPartitionsFull]
       ,p.[NumberOfPartitionsForIncrementalProcess]
       ,p.[MaxDate]
-      ,p.[MinDate]
       ,p.[SourceTableName]
       ,p.[SourcePartitionColumn]
   FROM [dbo].[ModelConfiguration] m

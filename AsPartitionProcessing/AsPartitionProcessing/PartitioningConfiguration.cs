@@ -28,9 +28,19 @@ namespace AsPartitionProcessing
         public int NumberOfPartitionsForIncrementalProcess { get; set; }
 
         /// <summary>
-        /// The maximum date that needs to be accounted for in the partitioned table. Represents the upper boundary of the rolling window.
+        /// The maximum date that needs to be accounted for in the partitioned table.
         /// </summary>
         public DateTime MaxDate { get; set; }
+
+        /// <summary>
+        /// Lower boundary for date range covered by partitioning configuration.
+        /// </summary>
+        public DateTime LowerBoundary { get; }
+
+        /// <summary>
+        /// Upper boundary for date range covered by partitioning configuration.
+        /// </summary>
+        public DateTime UpperBoundary { get; }
 
         /// <summary>
         /// Name of the source table in the relational database.
@@ -70,6 +80,28 @@ namespace AsPartitionProcessing
             MaxDate = maxDate;
             SourceTableName = sourceTableName;
             SourcePartitionColumn = sourcePartitionColumn;
+
+            switch (granularity)
+            {
+                case Granularity.Daily:
+                    LowerBoundary = maxDate.AddDays(-numberOfPartitionsFull + 1);
+                    UpperBoundary = maxDate;
+                    break;
+
+                case Granularity.Monthly:
+                    LowerBoundary = Convert.ToDateTime(maxDate.AddMonths(-numberOfPartitionsFull + 1).ToString("yyyy-MMM-01"));
+                    UpperBoundary = Convert.ToDateTime(maxDate.AddMonths(1).ToString("yyyy-MMM-01")).AddDays(-1);
+                    break;
+
+                case Granularity.Yearly:
+                    LowerBoundary = Convert.ToDateTime(maxDate.AddYears(-numberOfPartitionsFull + 1).ToString("yyyy-01-01"));
+                    UpperBoundary = Convert.ToDateTime(maxDate.AddYears(1).ToString("yyyy-01-01")).AddDays(-1);
+                    break;
+
+                default:
+                    break;
+            }
+
         }
     }
 
