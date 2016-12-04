@@ -1,1 +1,0 @@
-C:\Users\ChWade\Source\Repos\Analysis-Services\AsPerfMon\ASPerfMon\bin\Debug\ASPerfMon.exe.config
