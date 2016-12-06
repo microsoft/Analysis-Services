@@ -249,6 +249,12 @@ namespace AsPartitionProcessing
             Server server = new Server();
             try
             {
+                LogMessage("", false);
+                LogMessage($"Merge partitions into {partitionKey} for table {analysisServicesTable}", false);
+                LogMessage(new String('-', partitionKey.Length + analysisServicesTable.Length + 33), false);
+                LogMessage("", false);
+                LogMessage("=>Actions & progress:", false);
+
                 //Check target granularity
                 if (targetGranularity == Granularity.Daily)
                 {
@@ -355,18 +361,6 @@ namespace AsPartitionProcessing
                 }
                 catch { }
             }
-        }
-
-        /// <summary>
-        /// Merge day partitions into a month partition.
-        /// </summary>
-        /// <param name="modelConfiguration">Configuration info for the model</param>
-        /// <param name="messageLogger">Pointer to logging method</param>
-        /// <param name="monthPartitionKey">Month partition key following yyyymm</param>
-        public static void MergeDaysToMonth(ModelConfiguration modelConfiguration, LogMessageDelegate messageLogger, string monthPartitionKey)
-        {
-
-
         }
 
         #endregion
@@ -512,7 +506,6 @@ namespace AsPartitionProcessing
                     partitionsExisting.Add(partition);
                 }
             }
-            partitionsExisting.Sort();
 
             return partitionsExisting;
         }
