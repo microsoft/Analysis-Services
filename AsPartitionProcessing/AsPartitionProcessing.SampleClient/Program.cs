@@ -5,25 +5,31 @@ using Microsoft.AnalysisServices.Tabular;
 
 namespace AsPartitionProcessing.SampleClient
 {
+    enum SampleExecutionMode
+    {
+        InitializeInline,
+        InitializeFromDatabase,
+        MergePartitions
+    }
+
     class Program
     {
-        const bool UseDatabase = false;
+        //Set sample execution mode here:
+        const SampleExecutionMode execMode = SampleExecutionMode.InitializeInline; 
 
         static void Main(string[] args)
         {
             try
             {
                 List<ModelConfiguration> modelsConfig;
-                if (!UseDatabase)
+                if (execMode == SampleExecutionMode.InitializeInline)
                 {
-                    modelsConfig = InitializeAdventureWorksInline();
+                    modelsConfig = InitializeInline();
                 }
                 else
                 {
                     modelsConfig = InitializeFromDatabase();
                 }
-
-                //PartitionProcessor.MergeMonthsToYear(modelsConfig[0], LogMessage, "Internet Sales", "2012");
 
                 foreach (ModelConfiguration modelConfig in modelsConfig)
                 {
@@ -36,8 +42,14 @@ namespace AsPartitionProcessing.SampleClient
                         modelConfig.Password = ReadPassword();
                     }
 
-                    //Most important method:
-                    PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
+                    if (execMode == SampleExecutionMode.MergePartitions)
+                    {
+                        PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
+                    }
+                    else
+                    {
+                        PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
+                    }
                 }
             }
             catch (Exception exc)
@@ -51,7 +63,7 @@ namespace AsPartitionProcessing.SampleClient
             Console.ReadKey();
         }
 
-        private static List<ModelConfiguration> InitializeAdventureWorksInline()
+        private static List<ModelConfiguration> InitializeInline()
         {
             ModelConfiguration partitionedModel = new ModelConfiguration(
                 modelConfigurationID: 1,
@@ -140,10 +152,13 @@ namespace AsPartitionProcessing.SampleClient
         private static void LogMessage(string message, ModelConfiguration partitionedModel)
         {
             //Can provide custom logger here
+
             try
             {
-                if (UseDatabase)
+                if (!(execMode == SampleExecutionMode.InitializeInline))
+                {
                     ConfigDatabaseHelper.LogMessage(message, partitionedModel);
+                }
 
                 Console.WriteLine(message);
             }
