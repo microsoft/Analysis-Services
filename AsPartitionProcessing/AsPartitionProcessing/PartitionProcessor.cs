@@ -220,19 +220,6 @@ namespace AsPartitionProcessing
             }
         }
 
-        private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey)
-        {
-            Partition partitionToProcess;
-            //Doesn't exist so create it
-            string selectQueryTemplate = DeriveSelectQueryTemplate(partitioningConfiguration.Granularity);
-            partitionToProcess = new Partition();
-            templatePartition.CopyTo(partitionToProcess);
-            partitionToProcess.Name = partitionKey;
-            ((QueryPartitionSource)partitionToProcess.Source).Query = String.Format(selectQueryTemplate, partitioningConfiguration.SourceTableName, partitioningConfiguration.SourcePartitionColumn, partitionKey);
-            table.Partitions.Add(partitionToProcess);
-            return partitionToProcess;
-        }
-
         /// <summary>
         /// Merge months into a year, or days into a month.
         /// </summary>
@@ -510,20 +497,10 @@ namespace AsPartitionProcessing
             return partitionsExisting;
         }
 
-        private static bool IncludePartition(Granularity granularity, string filter, Partition partition, ref int partitionKey)
-        {
-            //Ignore partitions that don't follow the convention yyyy, yyyymm or yyyymmdd, or are not included in the filter expression
-            return ( (partition.Name.Length == 4 && granularity == Granularity.Yearly) ||
-                     (partition.Name.Length == 6 && granularity == Granularity.Monthly) ||
-                     (partition.Name.Length == 8 && granularity == Granularity.Daily)
-                   ) && int.TryParse(partition.Name, out partitionKey) &&
-                   partition.Name.StartsWith(filter);
-        }
-
-        private static string DeriveSelectQueryTemplate(Granularity granularity)
+        private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey)
         {
             string selectQueryTemplate;
-            switch (granularity)
+            switch (partitioningConfiguration.Granularity)
             {
                 case Granularity.Daily:
                     selectQueryTemplate = "SELECT * FROM {0} WHERE {1} = {2} ORDER BY {1}";
@@ -535,8 +512,23 @@ namespace AsPartitionProcessing
                     selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR({1} / 10000) = {2} ORDER BY {1}";
                     break;
             }
+            Partition newPartition;
+            newPartition = new Partition();
+            templatePartition.CopyTo(newPartition);
+            newPartition.Name = partitionKey;
+            ((QueryPartitionSource)newPartition.Source).Query = String.Format(selectQueryTemplate, partitioningConfiguration.SourceTableName, partitioningConfiguration.SourcePartitionColumn, partitionKey);
+            table.Partitions.Add(newPartition);
+            return newPartition;
+        }
 
-            return selectQueryTemplate;
+        private static bool IncludePartition(Granularity granularity, string filter, Partition partition, ref int partitionKey)
+        {
+            //Ignore partitions that don't follow the convention yyyy, yyyymm or yyyymmdd, or are not included in the filter expression
+            return ( (partition.Name.Length == 4 && granularity == Granularity.Yearly) ||
+                     (partition.Name.Length == 6 && granularity == Granularity.Monthly) ||
+                     (partition.Name.Length == 8 && granularity == Granularity.Daily)
+                   ) && int.TryParse(partition.Name, out partitionKey) &&
+                   partition.Name.StartsWith(filter);
         }
 
         #endregion
