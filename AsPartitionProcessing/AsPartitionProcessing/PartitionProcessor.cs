@@ -117,7 +117,7 @@ namespace AsPartitionProcessing
                                     table.Partitions.Remove(partitionKey);
                                 }
                             }
-
+                            
                             //Process partitions
                             foreach (string partitionKey in partitionKeysForProcessing)
                             {
