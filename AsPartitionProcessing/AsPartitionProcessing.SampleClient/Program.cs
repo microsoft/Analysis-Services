@@ -15,14 +15,14 @@ namespace AsPartitionProcessing.SampleClient
     class Program
     {
         //Set sample execution mode here:
-        const SampleExecutionMode execMode = SampleExecutionMode.InitializeInline; 
+        const SampleExecutionMode ExecutionMode = SampleExecutionMode.InitializeInline; 
 
         static void Main(string[] args)
         {
             try
             {
                 List<ModelConfiguration> modelsConfig;
-                if (execMode == SampleExecutionMode.InitializeInline)
+                if (ExecutionMode == SampleExecutionMode.InitializeInline)
                 {
                     modelsConfig = InitializeInline();
                 }
@@ -42,7 +42,7 @@ namespace AsPartitionProcessing.SampleClient
                         modelConfig.Password = ReadPassword();
                     }
 
-                    if (execMode == SampleExecutionMode.MergePartitions)
+                    if (ExecutionMode == SampleExecutionMode.MergePartitions)
                     {
                         PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
                     }
@@ -155,7 +155,7 @@ namespace AsPartitionProcessing.SampleClient
 
             try
             {
-                if (!(execMode == SampleExecutionMode.InitializeInline))
+                if (!(ExecutionMode == SampleExecutionMode.InitializeInline))
                 {
                     ConfigDatabaseHelper.LogMessage(message, partitionedModel);
                 }
