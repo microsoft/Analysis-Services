@@ -9,13 +9,14 @@ namespace AsPartitionProcessing.SampleClient
     {
         InitializeInline,
         InitializeFromDatabase,
-        MergePartitions
+        MergePartitions,
+        DefragPartitionedTables
     }
 
     class Program
     {
         //Set sample execution mode here:
-        const SampleExecutionMode ExecutionMode = SampleExecutionMode.InitializeInline; 
+        const SampleExecutionMode ExecutionMode = SampleExecutionMode.InitializeInline;
 
         static void Main(string[] args)
         {
@@ -46,6 +47,10 @@ namespace AsPartitionProcessing.SampleClient
                     {
                         PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
                     }
+                    else if (ExecutionMode == SampleExecutionMode.DefragPartitionedTables)
+                    {
+                        PartitionProcessor.DefragPartitionedTables(modelConfig, LogMessage);
+                    }
                     else
                     {
                         PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
@@ -57,8 +62,10 @@ namespace AsPartitionProcessing.SampleClient
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
                 Console.WriteLine(exc.Message, null);
+                Console.WriteLine();
             }
 
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }
@@ -164,7 +171,10 @@ namespace AsPartitionProcessing.SampleClient
             }
             catch (Exception exc)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(exc.Message);
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Press any key to exit.");
                 Console.ReadKey();
                 Environment.Exit(0); //Avoid recursion if errored connecting to db

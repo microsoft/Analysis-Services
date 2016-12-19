@@ -5,7 +5,7 @@ namespace AsPartitionProcessing
     /// <summary>
     /// Configuration information for partitioning of a table within an AS tabular model.
     /// </summary>
-    public class PartitioningConfiguration
+    public class PartitioningConfiguration : IComparable<PartitioningConfiguration>
     {
         /// <summary>
         /// ID of the PartitioningConfiguration table.
@@ -101,8 +101,8 @@ namespace AsPartitionProcessing
                 default:
                     break;
             }
-
         }
+        public int CompareTo(PartitioningConfiguration other) => string.Compare(this.LowerBoundary.ToString("yyyy-MM-dd"), other.LowerBoundary.ToString("yyyy-MM-dd"));
     }
 
     /// <summary>

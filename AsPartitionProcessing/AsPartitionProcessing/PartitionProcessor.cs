@@ -86,13 +86,17 @@ namespace AsPartitionProcessing
                     }
                     else
                     {
-                        //Partitioned table. Process based on partitioning configuration(s).
+                        //Validate multiple granularity ranges.
+                        tableConfiguration.ValidatePartitioningConfigurations();
+
+                        //Find template partition.
                         Partition templatePartition = table.Partitions.Find(tableConfiguration.AnalysisServicesTable);
                         if (templatePartition == null)
                         {
                             throw new InvalidOperationException($"Table {tableConfiguration.AnalysisServicesTable} does not contain a partition with the same name to act as the template partition.");
                         }
 
+                        //Process based on partitioning configuration(s).
                         foreach (PartitioningConfiguration partitioningConfiguration in tableConfiguration.PartitioningConfigurations)
                         {
                             LogMessage("", false);
@@ -207,6 +211,7 @@ namespace AsPartitionProcessing
                 {
                     LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
                 }
+                LogMessage("", false);
             }
             finally
             {
@@ -337,6 +342,79 @@ namespace AsPartitionProcessing
                 {
                     LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
                 }
+            }
+            finally
+            {
+                try
+                {
+                    _modelConfiguration = null;
+                    _messageLogger = null;
+                    if (server != null) server.Disconnect();
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// Defragment all partitions tables in a tabular model based on configuration
+        /// </summary>
+        /// <param name="modelConfiguration">Configuration info for the model</param>
+        /// <param name="messageLogger">Pointer to logging method</param>
+        public static void DefragPartitionedTables(ModelConfiguration modelConfiguration, LogMessageDelegate messageLogger)
+        {
+            _modelConfiguration = modelConfiguration;
+            _messageLogger = messageLogger;
+
+            Server server = new Server();
+            try
+            {
+                Database database;
+                Connect(server, out database);
+
+                Console.ForegroundColor = ConsoleColor.White;
+                LogMessage($"Start: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
+                LogMessage($"Server: {_modelConfiguration.AnalysisServicesServer}", false);
+                LogMessage($"Database: {_modelConfiguration.AnalysisServicesDatabase}", false);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
+                LogMessage("", false);
+                LogMessage($"Defrag partitioned tables in database {_modelConfiguration.AnalysisServicesDatabase}", false);
+                LogMessage(new String('-', _modelConfiguration.AnalysisServicesDatabase.Length + 38), false);
+                LogMessage("", false);
+                LogMessage("=>Actions & progress:", false);
+
+                foreach (TableConfiguration tableConfiguration in _modelConfiguration.TableConfigurations)
+                {
+                    //Only interested in partitoned tables
+                    if (tableConfiguration.PartitioningConfigurations.Count > 0)
+                    {
+                        Table table = database.Model.Tables.Find(tableConfiguration.AnalysisServicesTable);
+                        if (table == null)
+                        {
+                            throw new Microsoft.AnalysisServices.ConnectionException($"Could not connect to table {tableConfiguration.AnalysisServicesTable}.");
+                        }
+
+                        LogMessage($"Defrag table {tableConfiguration.AnalysisServicesTable} ...", true);
+                        table.RequestRefresh(RefreshType.Defragment);
+                        database.Model.SaveChanges();
+                    }
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
+                LogMessage("", false);
+                LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), false);
+            }
+            catch (Exception exc)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                LogMessage("", false);
+                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
+                LogMessage($"Exception message: {exc.Message}", false);
+                if (exc.InnerException != null)
+                {
+                    LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
+                }
+                LogMessage("", false);
             }
             finally
             {

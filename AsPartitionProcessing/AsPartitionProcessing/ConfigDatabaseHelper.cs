@@ -52,13 +52,12 @@ namespace AsPartitionProcessing
                     List<ModelConfiguration> modelConfigs = new List<ModelConfiguration>();
                     ModelConfiguration modelConfig = null;
                     int currentModelConfigurationID = -1;
+                    TableConfiguration tableConfig = null;
+                    int currentTableConfigurationID = -1;
 
                     SqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        TableConfiguration tableConfig = null;
-                        int currentTableConfigurationID = -1;
-
                         if (modelConfig == null || currentModelConfigurationID != Convert.ToInt32(reader["ModelConfigurationID"]))
                         {
                             modelConfig = new ModelConfiguration();
