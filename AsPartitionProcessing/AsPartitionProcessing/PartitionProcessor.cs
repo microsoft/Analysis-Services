@@ -495,12 +495,10 @@ namespace AsPartitionProcessing
         private static void Connect(Server server, out Database database)
         {
             //Connect and get main objects
-            string serverConnectionString;
-            if (_modelConfiguration.IntegratedAuth)
-                serverConnectionString = $"Provider=MSOLAP;Data Source={_modelConfiguration.AnalysisServicesServer};";
-            else
+            string serverConnectionString = $"Provider=MSOLAP;{(_modelConfiguration.CommitTimeout == -1 ? "" : $"CommitTimeout={Convert.ToString(_modelConfiguration.CommitTimeout)};")}Data Source={_modelConfiguration.AnalysisServicesServer};";
+            if (!_modelConfiguration.IntegratedAuth)
             {
-                serverConnectionString = $"Provider=MSOLAP;Data Source={_modelConfiguration.AnalysisServicesServer};User ID={_modelConfiguration.UserName};Password={_modelConfiguration.Password};Persist Security Info=True;Impersonation Level=Impersonate;";
+                serverConnectionString += $"User ID={_modelConfiguration.UserName};Password={_modelConfiguration.Password};Persist Security Info=True;Impersonation Level=Impersonate;";
             }
             server.Connect(serverConnectionString);
 

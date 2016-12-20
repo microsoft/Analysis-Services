@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[ModelConfiguration](
     [IncrementalOnline] [bit] NOT NULL,
     [IncrementalParallelTables] [bit] NOT NULL,
     [IntegratedAuth] [bit] NOT NULL,
+    [CommitTimeout] [int] NOT NULL,
  CONSTRAINT [PK_ModelConfiguration] PRIMARY KEY CLUSTERED 
 (
     [ModelConfigurationID] ASC
@@ -106,6 +107,7 @@ SELECT m.[ModelConfigurationID]
       ,m.[IncrementalOnline]
       ,m.[IncrementalParallelTables]
       ,m.[IntegratedAuth]
+      ,m.[CommitTimeout]
       ,t.[TableConfigurationID]
       ,t.[AnalysisServicesTable]
       ,t.[DoNotProcess]

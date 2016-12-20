@@ -7,6 +7,7 @@ VALUES(
     ,1                          --[IncrementalOnline]
     ,1                          --[IncrementalParallelTables]
     ,1                          --[IntegratedAuth]
+    ,-1                         --[CommitTimeout]
 );
 
 INSERT INTO [dbo].[TableConfiguration]

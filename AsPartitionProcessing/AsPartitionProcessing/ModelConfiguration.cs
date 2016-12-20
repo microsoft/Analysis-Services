@@ -54,6 +54,11 @@ namespace AsPartitionProcessing
         public string Password { get; set; }
 
         /// <summary>
+        /// Set to override of CommitTimeout server property value for the connection. -1 will not override; the server value will be used.
+        /// </summary>
+        public int CommitTimeout { get; set; }
+
+        /// <summary>
         /// Collection of partitioned tables containing configuration information.
         /// </summary>
         public List<TableConfiguration> TableConfigurations { get; set; }
@@ -91,6 +96,7 @@ namespace AsPartitionProcessing
             bool integratedAuth,
             string userName,
             string password,
+            int commitTimeout,
             List<TableConfiguration> tableConfigurations
         )
         {
@@ -103,6 +109,7 @@ namespace AsPartitionProcessing
             IntegratedAuth = integratedAuth;
             UserName = userName;
             Password = password;
+            CommitTimeout = commitTimeout;
             TableConfigurations = tableConfigurations;
             ExecutionID = Guid.NewGuid().ToString();
         }

@@ -82,6 +82,7 @@ namespace AsPartitionProcessing.SampleClient
                 integratedAuth: true,
                 userName: "",
                 password: "",
+                commitTimeout: -1,
                 tableConfigurations:
                 new List<TableConfiguration>
                 {
