@@ -78,10 +78,10 @@ namespace AsPartitionProcessing.SampleClient
                 analysisServicesDatabase: "AdventureWorks",
                 initialSetUp: true,
                 incrementalOnline: true,
-                incrementalParallelTables: true,
                 integratedAuth: true,
                 userName: "",
                 password: "",
+                maxParallelism: -1,
                 commitTimeout: -1,
                 tableConfigurations:
                 new List<TableConfiguration>

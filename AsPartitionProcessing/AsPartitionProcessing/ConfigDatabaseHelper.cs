@@ -30,8 +30,8 @@ namespace AsPartitionProcessing
                               ,[AnalysisServicesDatabase]
                               ,[InitialSetUp]
                               ,[IncrementalOnline]
-                              ,[IncrementalParallelTables]
                               ,[IntegratedAuth]
+                              ,[MaxParallelism]
                               ,[CommitTimeout]
                               ,[TableConfigurationID]
                               ,[AnalysisServicesTable]
@@ -70,8 +70,8 @@ namespace AsPartitionProcessing
                             modelConfig.AnalysisServicesDatabase = Convert.ToString(reader["AnalysisServicesDatabase"]);
                             modelConfig.InitialSetUp = Convert.ToBoolean(reader["InitialSetUp"]);
                             modelConfig.IncrementalOnline = Convert.ToBoolean(reader["IncrementalOnline"]);
-                            modelConfig.IncrementalParallelTables = Convert.ToBoolean(reader["IncrementalParallelTables"]);
                             modelConfig.IntegratedAuth = Convert.ToBoolean(reader["IntegratedAuth"]);
+                            modelConfig.MaxParallelism = Convert.ToInt32(reader["MaxParallelism"]);
                             modelConfig.CommitTimeout = Convert.ToInt32(reader["CommitTimeout"]);
                             modelConfig.ConfigDatabaseConnectionInfo = connectionInfo;
 

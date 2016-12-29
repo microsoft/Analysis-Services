@@ -5,8 +5,8 @@ VALUES(
     ,'AdventureWorks'           --[AnalysisServicesDatabase]
     ,1                          --[InitialSetUp]
     ,1                          --[IncrementalOnline]
-    ,1                          --[IncrementalParallelTables]
     ,1                          --[IntegratedAuth]
+    ,-1                         --[MaxParallelism]
     ,-1                         --[CommitTimeout]
 );
 

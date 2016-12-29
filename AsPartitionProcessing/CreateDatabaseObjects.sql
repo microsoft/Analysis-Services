@@ -9,8 +9,8 @@ CREATE TABLE [dbo].[ModelConfiguration](
     [AnalysisServicesDatabase] [varchar](255) NOT NULL,
     [InitialSetUp] [bit] NOT NULL,
     [IncrementalOnline] [bit] NOT NULL,
-    [IncrementalParallelTables] [bit] NOT NULL,
     [IntegratedAuth] [bit] NOT NULL,
+    [MaxParallelism] [int] NOT NULL,
     [CommitTimeout] [int] NOT NULL,
  CONSTRAINT [PK_ModelConfiguration] PRIMARY KEY CLUSTERED 
 (
@@ -105,8 +105,8 @@ SELECT m.[ModelConfigurationID]
       ,m.[AnalysisServicesDatabase]
       ,m.[InitialSetUp]
       ,m.[IncrementalOnline]
-      ,m.[IncrementalParallelTables]
       ,m.[IntegratedAuth]
+      ,m.[MaxParallelism]
       ,m.[CommitTimeout]
       ,t.[TableConfigurationID]
       ,t.[AnalysisServicesTable]

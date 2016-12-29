@@ -34,11 +34,6 @@ namespace AsPartitionProcessing
         public bool IncrementalOnline { get; set; }
 
         /// <summary>
-        /// When initialSetUp=false, determines if separate tables are processed in parallel. Partitions within a table are always processed in parallel.
-        /// </summary>
-        public bool IncrementalParallelTables { get; set; }
-
-        /// <summary>
         /// Should always set to true for SSAS implementations that will run under the current process account. For Azure AS, normally set to false.
         /// </summary>
         public bool IntegratedAuth { get; set; }
@@ -52,6 +47,11 @@ namespace AsPartitionProcessing
         /// Only applies when integratedAuth=false. Used for Azure AD UPNs to connect to Azure AS.
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// When initialSetUp=false, sets the maximum number of threads on which to run processing commands in parallel. -1 will not set the value.
+        /// </summary>
+        public int MaxParallelism { get; set; }
 
         /// <summary>
         /// Set to override of CommitTimeout server property value for the connection. -1 will not override; the server value will be used.
@@ -81,10 +81,11 @@ namespace AsPartitionProcessing
         /// <param name="analysisServicesDatabase">Name of the Analysis Services database.</param>
         /// <param name="initialSetUp">True for initial set up to create partitions and process them sequentially. False for incremental processing.</param>
         /// <param name="incrementalOnline">When initialSetUp=false, determines if processing is performed as an online operation, which may require more memory, but users can still query the model.</param>
-        /// <param name="incrementalParallelTables">When initialSetUp=false, determines if separate tables are processed in parallel. Partitions within a table are always processed in parallel.</param>
         /// <param name="integratedAuth">Should always set to true for SSAS implementations that will run under the current process account. For Azure AS, normally set to false.</param>
         /// <param name="userName">Only applies when integratedAuth=false. Used for Azure AD UPNs to connect to Azure AS.</param>
         /// <param name="password">Only applies when integratedAuth=false. Used for Azure AD UPNs to connect to Azure AS.</param>
+        /// <param name="maxParallelism">When initialSetUp=false, sets the maximum number of threads on which to run processing commands in parallel. -1 will not set the value.</param>
+        /// <param name="commitTimeout">Set to override of CommitTimeout server property value for the connection. -1 will not override; the server value will be used.</param>
         /// <param name="tableConfigurations">Collection of partitioned tables containing configuration information.</param>
         public ModelConfiguration(
             int modelConfigurationID,
@@ -92,10 +93,10 @@ namespace AsPartitionProcessing
             string analysisServicesDatabase,
             bool initialSetUp,
             bool incrementalOnline,
-            bool incrementalParallelTables,
             bool integratedAuth,
             string userName,
             string password,
+            int maxParallelism,
             int commitTimeout,
             List<TableConfiguration> tableConfigurations
         )
@@ -105,10 +106,10 @@ namespace AsPartitionProcessing
             AnalysisServicesDatabase = analysisServicesDatabase;
             InitialSetUp = initialSetUp;
             IncrementalOnline = incrementalOnline;
-            IncrementalParallelTables = incrementalParallelTables;
             IntegratedAuth = integratedAuth;
             UserName = userName;
             Password = password;
+            MaxParallelism = maxParallelism;
             CommitTimeout = commitTimeout;
             TableConfigurations = tableConfigurations;
             ExecutionID = Guid.NewGuid().ToString();

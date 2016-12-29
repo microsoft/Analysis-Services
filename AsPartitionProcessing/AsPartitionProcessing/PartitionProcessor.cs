@@ -169,8 +169,8 @@ namespace AsPartitionProcessing
                         }
                     }
 
-                    //If processing tables sequentially (but all partitions being done in parallel), then save changes now
-                    if (!_modelConfiguration.IncrementalParallelTables)
+                    //If initital setup, process tables sequentially
+                    if (_modelConfiguration.InitialSetUp)
                     {
                         LogMessage($"Save changes for table {tableConfiguration.AnalysisServicesTable} ...", true);
                         database.Model.SaveChanges();
@@ -183,12 +183,22 @@ namespace AsPartitionProcessing
                 LogMessage("Final operations", false);
                 LogMessage(new String('-', 16), false);
 
-                if (_modelConfiguration.IncrementalParallelTables)
+                //Save changes setting MaxParallelism if necessary
+                if (!_modelConfiguration.InitialSetUp)
                 {
-                    LogMessage("Save changes ...", true);
-                    database.Model.SaveChanges();
+                    if (_modelConfiguration.MaxParallelism == -1)
+                    {
+                        LogMessage("Save changes ...", true);
+                        database.Model.SaveChanges();
+                    }
+                    else
+                    {
+                        LogMessage($"Save changes with MaxParallelism={Convert.ToString(_modelConfiguration.MaxParallelism)}...", true);
+                        database.Model.SaveChanges(new SaveOptions() { MaxParallelism = _modelConfiguration.MaxParallelism });
+                    }
                 }
 
+                //Perform recalc if necessary
                 if (_modelConfiguration.InitialSetUp || (!_modelConfiguration.InitialSetUp && !_modelConfiguration.IncrementalOnline))
                 {
                     LogMessage("Recalc model to bring back online ...", true);
