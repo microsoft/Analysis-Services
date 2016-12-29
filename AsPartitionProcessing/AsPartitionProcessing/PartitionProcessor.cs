@@ -168,13 +168,6 @@ namespace AsPartitionProcessing
                             templatePartition.RequestRefresh(RefreshType.DataOnly);
                         }
                     }
-
-                    //If initital setup, process tables sequentially
-                    if (_modelConfiguration.InitialSetUp)
-                    {
-                        LogMessage($"Save changes for table {tableConfiguration.AnalysisServicesTable} ...", true);
-                        database.Model.SaveChanges();
-                    }
                 }
 
                 //Commit the data changes, and bring model back online if necessary
@@ -184,18 +177,15 @@ namespace AsPartitionProcessing
                 LogMessage(new String('-', 16), false);
 
                 //Save changes setting MaxParallelism if necessary
-                if (!_modelConfiguration.InitialSetUp)
+                if (_modelConfiguration.MaxParallelism == -1)
                 {
-                    if (_modelConfiguration.MaxParallelism == -1)
-                    {
-                        LogMessage("Save changes ...", true);
-                        database.Model.SaveChanges();
-                    }
-                    else
-                    {
-                        LogMessage($"Save changes with MaxParallelism={Convert.ToString(_modelConfiguration.MaxParallelism)}...", true);
-                        database.Model.SaveChanges(new SaveOptions() { MaxParallelism = _modelConfiguration.MaxParallelism });
-                    }
+                    LogMessage("Save changes ...", true);
+                    database.Model.SaveChanges();
+                }
+                else
+                {
+                    LogMessage($"Save changes with MaxParallelism={Convert.ToString(_modelConfiguration.MaxParallelism)}...", true);
+                    database.Model.SaveChanges(new SaveOptions() { MaxParallelism = _modelConfiguration.MaxParallelism });
                 }
 
                 //Perform recalc if necessary
