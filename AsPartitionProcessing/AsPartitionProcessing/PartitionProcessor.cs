@@ -579,13 +579,13 @@ namespace AsPartitionProcessing
             switch (partitioningConfiguration.Granularity)
             {
                 case Granularity.Daily:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE {1} = {2} ORDER BY {1}";
+                    selectQueryTemplate = "SELECT * FROM {0} WHERE CAST(CONVERT(varchar, {1}, 112) AS int) = {2} ORDER BY {1}";
                     break;
                 case Granularity.Monthly:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR({1} / 100) = {2} ORDER BY {1}";
+                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR(CAST(CONVERT(varchar, {1}, 112) AS int) / 100) = {2} ORDER BY {1}";
                     break;
                 default: //Granularity.Yearly:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR({1} / 10000) = {2} ORDER BY {1}";
+                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR(CAST(CONVERT(varchar, {1}, 112) AS int) / 10000) = {2} ORDER BY {1}";
                     break;
             }
             Partition newPartition;

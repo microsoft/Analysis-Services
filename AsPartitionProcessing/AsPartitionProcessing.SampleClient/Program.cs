@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AnalysisServices.Tabular;
-
+using System.Diagnostics;
 
 namespace AsPartitionProcessing.SampleClient
 {
@@ -16,44 +16,75 @@ namespace AsPartitionProcessing.SampleClient
     class Program
     {
         //Set sample execution mode here:
-        const SampleExecutionMode ExecutionMode = SampleExecutionMode.InitializeInline;
+        private static SampleExecutionMode _executionMode = SampleExecutionMode.InitializeInline;
 
         static void Main(string[] args)
         {
             try
             {
-                List<ModelConfiguration> modelsConfig;
-                if (ExecutionMode == SampleExecutionMode.InitializeInline)
+                #region Set execution mode from command-line argument if specified.
+
+                if (args.Length == 1)
                 {
-                    modelsConfig = InitializeInline();
+                    switch (args[0])
+                    {
+                        case "InitializeInline":
+                            _executionMode = SampleExecutionMode.InitializeInline;
+                            break;
+
+                        case "InitializeFromDatabase":
+                            _executionMode = SampleExecutionMode.InitializeFromDatabase;
+                            break;
+
+                        case "MergePartitions":
+                            _executionMode = SampleExecutionMode.MergePartitions;
+                            break;
+
+                        case "DefragPartitionedTables":
+                            _executionMode = SampleExecutionMode.DefragPartitionedTables;
+                            break;
+
+                        default:
+                            throw new InvalidOperationException($"Command-line argument {args[0]} not recognized.");
+                            //break;
+                    }
+                }
+
+                #endregion
+
+                if (_executionMode == SampleExecutionMode.InitializeInline)
+                {
+                    //Perform Processing
+                    PartitionProcessor.PerformProcessing(InitializeInline(), LogMessage);
                 }
                 else
                 {
-                    modelsConfig = InitializeFromDatabase();
-                }
+                    List<ModelConfiguration> modelsConfig = InitializeFromDatabase();
 
-                foreach (ModelConfiguration modelConfig in modelsConfig)
-                {
-                    if (!modelConfig.IntegratedAuth) //For Azure AS
+                    foreach (ModelConfiguration modelConfig in modelsConfig)
                     {
-                        Console.WriteLine();
-                        Console.Write("User name for AS server: ");
-                        modelConfig.UserName = Console.ReadLine();
-                        Console.Write("Password for AS server: ");
-                        modelConfig.Password = ReadPassword();
-                    }
+                        SetCredentials(modelConfig); //For Azure AS
 
-                    if (ExecutionMode == SampleExecutionMode.MergePartitions)
-                    {
-                        PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
-                    }
-                    else if (ExecutionMode == SampleExecutionMode.DefragPartitionedTables)
-                    {
-                        PartitionProcessor.DefragPartitionedTables(modelConfig, LogMessage);
-                    }
-                    else
-                    {
-                        PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
+                        switch (_executionMode)
+                        {
+                            case SampleExecutionMode.InitializeFromDatabase:
+                                //Perform Processing
+                                PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
+                                break;
+
+                            case SampleExecutionMode.MergePartitions:
+                                //Perform Merging
+                                PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
+                                break;
+
+                            case SampleExecutionMode.DefragPartitionedTables:
+                                //Perform Defrag
+                                PartitionProcessor.DefragPartitionedTables(modelConfig, LogMessage);
+                                break;
+
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -65,12 +96,15 @@ namespace AsPartitionProcessing.SampleClient
                 Console.WriteLine();
             }
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+            if (Debugger.IsAttached)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Press any key to exit.");
+                Console.ReadKey();
+            }
         }
 
-        private static List<ModelConfiguration> InitializeInline()
+        private static ModelConfiguration InitializeInline()
         {
             ModelConfiguration partitionedModel = new ModelConfiguration(
                 modelConfigurationID: 1,
@@ -135,7 +169,7 @@ namespace AsPartitionProcessing.SampleClient
 
             #endregion
 
-            return new List<ModelConfiguration> { partitionedModel };
+            return partitionedModel;
         }
 
         private static List<ModelConfiguration> InitializeFromDatabase()
@@ -163,7 +197,7 @@ namespace AsPartitionProcessing.SampleClient
 
             try
             {
-                if (!(ExecutionMode == SampleExecutionMode.InitializeInline))
+                if (!(_executionMode == SampleExecutionMode.InitializeInline))
                 {
                     ConfigDatabaseHelper.LogMessage(message, partitionedModel);
                 }
@@ -182,7 +216,19 @@ namespace AsPartitionProcessing.SampleClient
             }
         }
 
-        public static string ReadPassword()
+        private static void SetCredentials(ModelConfiguration modelConfig)
+        {
+            if (!modelConfig.IntegratedAuth) //For Azure AS
+            {
+                Console.WriteLine();
+                Console.Write("User name for AS server: ");
+                modelConfig.UserName = Console.ReadLine();
+                Console.Write("Password for AS server: ");
+                modelConfig.Password = ReadPassword();
+            }
+        }
+
+        private static string ReadPassword()
         {
             string password = "";
             ConsoleKeyInfo info = Console.ReadKey(true);
