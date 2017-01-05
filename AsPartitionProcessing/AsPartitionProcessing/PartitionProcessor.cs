@@ -467,7 +467,7 @@ namespace AsPartitionProcessing
                     returnVal += "-" + partitionKey.Substring(6, 2);
                 }
             }
-            catch (ArgumentOutOfRangeException exc)
+            catch (ArgumentOutOfRangeException)
             {
                 throw new InvalidOperationException($"Failed to derive date from partition key. Check the key {partitionKey} matches {Convert.ToString(granularity)} granularity.");
             }
