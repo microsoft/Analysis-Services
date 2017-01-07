@@ -18,13 +18,17 @@ namespace AsPartitionProcessing.SampleClient
         //Set sample execution mode here:
         private static SampleExecutionMode _executionMode = SampleExecutionMode.InitializeInline;
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             try
             {
-                #region Set execution mode from command-line argument if specified.
+                #region Set defaults for merging & read command-line arguments if provided
 
-                if (args.Length == 1)
+                string mergeTable = "Internet Sales";
+                Granularity mergeTargetGranuarity = Granularity.Yearly;
+                string mergePartitionKey = "2012";
+
+                if (args.Length > 0)
                 {
                     switch (args[0])
                     {
@@ -38,6 +42,13 @@ namespace AsPartitionProcessing.SampleClient
 
                         case "MergePartitions":
                             _executionMode = SampleExecutionMode.MergePartitions;
+                            if (!(args.Length == 4 && (args[2] == "Yearly" || args[2] == "Monthly")))
+                            {
+                                throw new ArgumentException($"MergePartitions additional arguments not provided or not recognized.");
+                            }
+                            mergeTable = args[1];
+                            mergeTargetGranuarity = args[2] == "Yearly" ? Granularity.Yearly : Granularity.Monthly;
+                            mergePartitionKey = args[3];
                             break;
 
                         case "DefragPartitionedTables":
@@ -45,12 +56,13 @@ namespace AsPartitionProcessing.SampleClient
                             break;
 
                         default:
-                            throw new InvalidOperationException($"Command-line argument {args[0]} not recognized.");
+                            throw new ArgumentException($"Command-line argument {args[0]} not recognized.");
                             //break;
                     }
                 }
 
                 #endregion
+
 
                 if (_executionMode == SampleExecutionMode.InitializeInline)
                 {
@@ -74,7 +86,7 @@ namespace AsPartitionProcessing.SampleClient
 
                             case SampleExecutionMode.MergePartitions:
                                 //Perform Merging
-                                PartitionProcessor.MergePartitions(modelConfig, LogMessage, "Internet Sales", Granularity.Yearly, "2012");
+                                PartitionProcessor.MergePartitions(modelConfig, LogMessage, mergeTable, mergeTargetGranuarity, mergePartitionKey);
                                 break;
 
                             case SampleExecutionMode.DefragPartitionedTables:
@@ -94,6 +106,16 @@ namespace AsPartitionProcessing.SampleClient
                 Console.WriteLine();
                 Console.WriteLine(exc.Message, null);
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.White;
+
+                if (exc is ArgumentException)
+                {
+                    return 160; //ERROR_BAD_ARGUMENTS
+                }
+                else
+                {
+                    return 1360; //ERROR_GENERIC_NOT_MAPPED
+                }
             }
 
             if (Debugger.IsAttached)
@@ -102,6 +124,8 @@ namespace AsPartitionProcessing.SampleClient
                 Console.WriteLine("Press any key to exit.");
                 Console.ReadKey();
             }
+
+            return 0; //ERROR_SUCCESS
         }
 
         private static ModelConfiguration InitializeInline()
@@ -212,6 +236,7 @@ namespace AsPartitionProcessing.SampleClient
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Press any key to exit.");
                 Console.ReadKey();
+                Console.ForegroundColor = ConsoleColor.White;
                 Environment.Exit(0); //Avoid recursion if errored connecting to db
             }
         }

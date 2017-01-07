@@ -212,6 +212,7 @@ namespace AsPartitionProcessing
                     LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
                 }
                 LogMessage("", false);
+                Console.ForegroundColor = ConsoleColor.White;
             }
             finally
             {
@@ -342,6 +343,8 @@ namespace AsPartitionProcessing
                 {
                     LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
                 }
+                LogMessage("", false);
+                Console.ForegroundColor = ConsoleColor.White;
             }
             finally
             {
@@ -415,6 +418,7 @@ namespace AsPartitionProcessing
                     LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
                 }
                 LogMessage("", false);
+                Console.ForegroundColor = ConsoleColor.White;
             }
             finally
             {
@@ -578,6 +582,10 @@ namespace AsPartitionProcessing
             string selectQueryTemplate;
             switch (partitioningConfiguration.Granularity)
             {
+                //Format that might work on more data sources, but requires flag to indicate whether partitioning column is date or integer YYYYMMDD or not:
+                //               SELECT	YEAR(CURRENT_TIMESTAMP) * 10000 + MONTH(CURRENT_TIMESTAMP) * 100 + DAY(CURRENT_TIMESTAMP)
+                //ANSI standard to get month from date is EXTRACT(MONTH FROM @DateTimeVarUnclean), which doesn't work with SQL Server
+
                 case Granularity.Daily:
                     selectQueryTemplate = "SELECT * FROM {0} WHERE CAST(CONVERT(varchar, {1}, 112) AS int) = {2} ORDER BY {1}";
                     break;
