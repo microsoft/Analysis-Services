@@ -124,63 +124,6 @@ namespace AsPartitionProcessing.SampleClient
             return 0; //ERROR_SUCCESS
         }
 
-        private static void ParseArgs(string[] args, ref string mergeTable, ref Granularity mergeTargetGranuarity, ref string mergePartitionKey, out bool help)
-        {
-            help = false;
-            if (args.Length > 0)
-            {
-                ArgumentOptions options = new ArgumentOptions();
-                if (CommandLine.Parser.Default.ParseArguments(args, options))
-                {
-                    Console.WriteLine($"Argument ExecutionMode: {options.ExecutionMode}");
-                    switch (options.ExecutionMode)
-                    {
-                        case "InitializeInline":
-                            _executionMode = ExecutionMode.InitializeInline;
-                            break;
-
-                        case "InitializeFromDatabase":
-                            _executionMode = ExecutionMode.InitializeFromDatabase;
-                            break;
-
-                        case "MergePartitions":
-                            _executionMode = ExecutionMode.MergePartitions;
-
-                            if (options.MergeTable == null || options.TargetGranularity == null || options.MergePartitionKey == null)
-                            {
-                                throw new ArgumentException($"ExecutionMode MergePartitions additional arguments not provided or not recognized. Requires --MergeTable, --TargetGranularity, --MergePartitionKey.");
-                            }
-
-                            Console.WriteLine($"Argument MergeTable: {options.MergeTable}");
-                            Console.WriteLine($"Argument TargetGranularity: {options.TargetGranularity}");
-                            Console.WriteLine($"Argument MergePartitionKey: {options.MergePartitionKey}");
-
-                            mergeTable = options.MergeTable;
-                            mergeTargetGranuarity = options.TargetGranularity == "Yearly" ? Granularity.Yearly : Granularity.Monthly;
-                            mergePartitionKey = options.MergePartitionKey;
-                            break;
-
-                        case "DefragPartitionedTables":
-                            _executionMode = ExecutionMode.DefragPartitionedTables;
-                            break;
-
-                        default:
-                            throw new ArgumentException($"Argument --ExecutionMode {options.ExecutionMode} not recognized.");
-                            //break;
-                    }
-                }
-                else
-                {
-                    if (args[0].ToLower() != "--help")
-                    {
-                        throw new ArgumentException($"Arguments provided not recognized.");
-                    }
-
-                    help = true;
-                }
-            }
-        }
-
         private static ModelConfiguration InitializeInline()
         {
             ModelConfiguration partitionedModel = new ModelConfiguration(
@@ -266,6 +209,63 @@ namespace AsPartitionProcessing.SampleClient
             }
 
             return ConfigDatabaseHelper.ReadConfig(connectionInfo);
+        }
+
+        private static void ParseArgs(string[] args, ref string mergeTable, ref Granularity mergeTargetGranuarity, ref string mergePartitionKey, out bool help)
+        {
+            help = false;
+            if (args.Length > 0)
+            {
+                ArgumentOptions options = new ArgumentOptions();
+                if (CommandLine.Parser.Default.ParseArguments(args, options))
+                {
+                    Console.WriteLine($"Argument ExecutionMode: {options.ExecutionMode}");
+                    switch (options.ExecutionMode)
+                    {
+                        case "InitializeInline":
+                            _executionMode = ExecutionMode.InitializeInline;
+                            break;
+
+                        case "InitializeFromDatabase":
+                            _executionMode = ExecutionMode.InitializeFromDatabase;
+                            break;
+
+                        case "MergePartitions":
+                            _executionMode = ExecutionMode.MergePartitions;
+
+                            if (options.MergeTable == null || options.TargetGranularity == null || options.MergePartitionKey == null)
+                            {
+                                throw new ArgumentException($"ExecutionMode MergePartitions additional arguments not provided or not recognized. Requires --MergeTable, --TargetGranularity, --MergePartitionKey.");
+                            }
+
+                            Console.WriteLine($"Argument MergeTable: {options.MergeTable}");
+                            Console.WriteLine($"Argument TargetGranularity: {options.TargetGranularity}");
+                            Console.WriteLine($"Argument MergePartitionKey: {options.MergePartitionKey}");
+
+                            mergeTable = options.MergeTable;
+                            mergeTargetGranuarity = options.TargetGranularity == "Yearly" ? Granularity.Yearly : Granularity.Monthly;
+                            mergePartitionKey = options.MergePartitionKey;
+                            break;
+
+                        case "DefragPartitionedTables":
+                            _executionMode = ExecutionMode.DefragPartitionedTables;
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Argument --ExecutionMode {options.ExecutionMode} not recognized.");
+                            //break;
+                    }
+                }
+                else
+                {
+                    if (args[0].ToLower() != "--help")
+                    {
+                        throw new ArgumentException($"Arguments provided not recognized.");
+                    }
+
+                    help = true;
+                }
+            }
         }
 
         private static void LogMessage(string message, ModelConfiguration partitionedModel)
