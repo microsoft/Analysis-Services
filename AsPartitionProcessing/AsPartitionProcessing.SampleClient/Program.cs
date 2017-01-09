@@ -5,18 +5,40 @@ using System.Diagnostics;
 
 namespace AsPartitionProcessing.SampleClient
 {
-    enum SampleExecutionMode
+    #region enum ExecutionMode
+
+    /// <summary>
+    /// Execution mode of the SampleClient application.
+    /// </summary>
+    enum ExecutionMode
     {
+        /// <summary>
+        /// Initialize configuration inline using sample values.
+        /// </summary>
         InitializeInline,
+        
+        /// <summary>
+        /// Initialize from configuration and logging database.
+        /// </summary>
         InitializeFromDatabase,
+
+        /// <summary>
+        /// Merge partitions in a table based on other parameters.
+        /// </summary>
         MergePartitions,
+
+        /// <summary>
+        /// Defragment partitioned tables in the model. List of partitioned tables defined in the configuration and logging database.
+        /// </summary>
         DefragPartitionedTables
     }
+
+    #endregion
 
     class Program
     {
         //Set sample execution mode here:
-        private static SampleExecutionMode _executionMode = SampleExecutionMode.InitializeInline;
+        private static ExecutionMode _executionMode = ExecutionMode.InitializeInline;
 
         static int Main(string[] args)
         {
@@ -27,44 +49,16 @@ namespace AsPartitionProcessing.SampleClient
                 string mergeTable = "Internet Sales";
                 Granularity mergeTargetGranuarity = Granularity.Yearly;
                 string mergePartitionKey = "2012";
+                bool help;
 
-                if (args.Length > 0)
-                {
-                    switch (args[0])
-                    {
-                        case "InitializeInline":
-                            _executionMode = SampleExecutionMode.InitializeInline;
-                            break;
-
-                        case "InitializeFromDatabase":
-                            _executionMode = SampleExecutionMode.InitializeFromDatabase;
-                            break;
-
-                        case "MergePartitions":
-                            _executionMode = SampleExecutionMode.MergePartitions;
-                            if (!(args.Length == 4 && (args[2] == "Yearly" || args[2] == "Monthly")))
-                            {
-                                throw new ArgumentException($"MergePartitions additional arguments not provided or not recognized.");
-                            }
-                            mergeTable = args[1];
-                            mergeTargetGranuarity = args[2] == "Yearly" ? Granularity.Yearly : Granularity.Monthly;
-                            mergePartitionKey = args[3];
-                            break;
-
-                        case "DefragPartitionedTables":
-                            _executionMode = SampleExecutionMode.DefragPartitionedTables;
-                            break;
-
-                        default:
-                            throw new ArgumentException($"Command-line argument {args[0]} not recognized.");
-                            //break;
-                    }
-                }
+                ParseArgs(args, ref mergeTable, ref mergeTargetGranuarity, ref mergePartitionKey, out help);
+                if (help)
+                    return 0; //ERROR_SUCCESS
 
                 #endregion
 
 
-                if (_executionMode == SampleExecutionMode.InitializeInline)
+                if (_executionMode == ExecutionMode.InitializeInline)
                 {
                     //Perform Processing
                     PartitionProcessor.PerformProcessing(InitializeInline(), LogMessage);
@@ -79,17 +73,17 @@ namespace AsPartitionProcessing.SampleClient
 
                         switch (_executionMode)
                         {
-                            case SampleExecutionMode.InitializeFromDatabase:
+                            case ExecutionMode.InitializeFromDatabase:
                                 //Perform Processing
                                 PartitionProcessor.PerformProcessing(modelConfig, LogMessage);
                                 break;
 
-                            case SampleExecutionMode.MergePartitions:
+                            case ExecutionMode.MergePartitions:
                                 //Perform Merging
                                 PartitionProcessor.MergePartitions(modelConfig, LogMessage, mergeTable, mergeTargetGranuarity, mergePartitionKey);
                                 break;
 
-                            case SampleExecutionMode.DefragPartitionedTables:
+                            case ExecutionMode.DefragPartitionedTables:
                                 //Perform Defrag
                                 PartitionProcessor.DefragPartitionedTables(modelConfig, LogMessage);
                                 break;
@@ -104,7 +98,7 @@ namespace AsPartitionProcessing.SampleClient
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine();
-                Console.WriteLine(exc.Message, null);
+                Console.WriteLine(exc.Message);
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.White;
 
@@ -117,15 +111,74 @@ namespace AsPartitionProcessing.SampleClient
                     return 1360; //ERROR_GENERIC_NOT_MAPPED
                 }
             }
-
-            if (Debugger.IsAttached)
+            finally
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Press any key to exit.");
-                Console.ReadKey();
+                if (Debugger.IsAttached)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("Press any key to exit.");
+                    Console.ReadKey();
+                }
             }
 
             return 0; //ERROR_SUCCESS
+        }
+
+        private static void ParseArgs(string[] args, ref string mergeTable, ref Granularity mergeTargetGranuarity, ref string mergePartitionKey, out bool help)
+        {
+            help = false;
+            if (args.Length > 0)
+            {
+                ArgumentOptions options = new ArgumentOptions();
+                if (CommandLine.Parser.Default.ParseArguments(args, options))
+                {
+                    Console.WriteLine($"Argument ExecutionMode: {options.ExecutionMode}");
+                    switch (options.ExecutionMode)
+                    {
+                        case "InitializeInline":
+                            _executionMode = ExecutionMode.InitializeInline;
+                            break;
+
+                        case "InitializeFromDatabase":
+                            _executionMode = ExecutionMode.InitializeFromDatabase;
+                            break;
+
+                        case "MergePartitions":
+                            _executionMode = ExecutionMode.MergePartitions;
+
+                            if (options.MergeTable == null || options.TargetGranularity == null || options.MergePartitionKey == null)
+                            {
+                                throw new ArgumentException($"ExecutionMode MergePartitions additional arguments not provided or not recognized. Requires --MergeTable, --TargetGranularity, --MergePartitionKey.");
+                            }
+
+                            Console.WriteLine($"Argument MergeTable: {options.MergeTable}");
+                            Console.WriteLine($"Argument TargetGranularity: {options.TargetGranularity}");
+                            Console.WriteLine($"Argument MergePartitionKey: {options.MergePartitionKey}");
+
+                            mergeTable = options.MergeTable;
+                            mergeTargetGranuarity = options.TargetGranularity == "Yearly" ? Granularity.Yearly : Granularity.Monthly;
+                            mergePartitionKey = options.MergePartitionKey;
+                            break;
+
+                        case "DefragPartitionedTables":
+                            _executionMode = ExecutionMode.DefragPartitionedTables;
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Argument --ExecutionMode {options.ExecutionMode} not recognized.");
+                            //break;
+                    }
+                }
+                else
+                {
+                    if (args[0].ToLower() != "--help")
+                    {
+                        throw new ArgumentException($"Arguments provided not recognized.");
+                    }
+
+                    help = true;
+                }
+            }
         }
 
         private static ModelConfiguration InitializeInline()
@@ -221,7 +274,7 @@ namespace AsPartitionProcessing.SampleClient
 
             try
             {
-                if (!(_executionMode == SampleExecutionMode.InitializeInline))
+                if (!(_executionMode == ExecutionMode.InitializeInline))
                 {
                     ConfigDatabaseHelper.LogMessage(message, partitionedModel);
                 }
