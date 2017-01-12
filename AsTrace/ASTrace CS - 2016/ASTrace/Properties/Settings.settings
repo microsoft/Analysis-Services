@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ASTrace.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AnalysisServerName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SQLServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="SQLServerDatabase" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">TraceDB</Value>
+    </Setting>
+    <Setting Name="TraceTableName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ASTraceTable</Value>
+    </Setting>
+    <Setting Name="TraceDefinition" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Standard.tdf</Value>
+    </Setting>
+    <Setting Name="PreserveHistory" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AnalysisServerNames" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AppendDateToSQLTable" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="RestartRetries" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="RestartDelayMinutes" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

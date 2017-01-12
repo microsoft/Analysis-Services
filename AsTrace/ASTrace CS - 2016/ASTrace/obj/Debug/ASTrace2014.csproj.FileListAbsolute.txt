@@ -1,0 +1,16 @@
+C:\ASTrace\CS\ASTrace\bin\Debug\ASTrace.exe.config
+C:\ASTrace\CS\ASTrace\bin\Debug\ASTrace.exe
+C:\ASTrace\CS\ASTrace\bin\Debug\ASTrace.pdb
+C:\ASTrace\CS\ASTrace\obj\Debug\ASTrace2014.csprojResolveAssemblyReference.cache
+C:\ASTrace\CS\ASTrace\obj\Debug\ASTrace.ProjectInstaller.resources
+C:\ASTrace\CS\ASTrace\obj\Debug\ASTrace2014.csproj.GenerateResource.Cache
+C:\ASTrace\CS\ASTrace\obj\Debug\ASTrace.exe
+C:\ASTrace\CS\ASTrace\obj\Debug\ASTrace.pdb
+C:\ASTrace\CS -  2016\ASTrace\bin\Debug\ASTrace.exe.config
+C:\ASTrace\CS -  2016\ASTrace\obj\Debug\ASTrace.exe
+C:\ASTrace\CS -  2016\ASTrace\obj\Debug\ASTrace.pdb
+C:\ASTrace\CS -  2016\ASTrace\bin\Debug\ASTrace.exe
+C:\ASTrace\CS -  2016\ASTrace\bin\Debug\ASTrace.pdb
+C:\ASTrace\CS -  2016\ASTrace\obj\Debug\ASTrace2014.csprojResolveAssemblyReference.cache
+C:\ASTrace\CS -  2016\ASTrace\obj\Debug\ASTrace.ProjectInstaller.resources
+C:\ASTrace\CS -  2016\ASTrace\obj\Debug\ASTrace2014.csproj.GenerateResource.Cache
