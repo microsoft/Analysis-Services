@@ -40,9 +40,10 @@ namespace AsPartitionProcessing
                               ,[Granularity]
                               ,[NumberOfPartitionsFull]
                               ,[NumberOfPartitionsForIncrementalProcess]
+                              ,[MaxDateIsNow]
                               ,[MaxDate]
-                              ,[SourceTableName]
-                              ,[SourcePartitionColumn]
+                              ,[IntegerDateKey]
+                              ,[TemplateSourceQuery]
                           FROM [dbo].[vPartitioningConfiguration]
                           WHERE [DoNotProcess] = 0
                           ORDER BY
@@ -98,9 +99,10 @@ namespace AsPartitionProcessing
                                     (Granularity)Convert.ToInt32(reader["Granularity"]),
                                     Convert.ToInt32(reader["NumberOfPartitionsFull"]),
                                     Convert.ToInt32(reader["NumberOfPartitionsForIncrementalProcess"]),
-                                    Convert.ToDateTime(reader["MaxDate"]),
-                                    Convert.ToString(reader["SourceTableName"]),
-                                    Convert.ToString(reader["SourcePartitionColumn"])
+                                    Convert.ToBoolean(reader["MaxDateIsNow"]),
+                                    (reader["MaxDate"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["MaxDate"])),
+                                    Convert.ToBoolean(reader["IntegerDateKey"]),
+                                    Convert.ToString(reader["TemplateSourceQuery"])
                                 )
                             );
                         }

@@ -31,9 +31,10 @@ VALUES(
     ,1                          --[Granularity]   1=Monthly
     ,12                         --[NumberOfPartitionsFull]
     ,3                          --[NumberOfPartitionsForIncrementalProcess]
+    ,0                          --[MaxDateIsNow]
     ,'2012-12-01'               --[MaxDate]
-    ,'[dbo].[FactInternetSales]'--[SourceTableName]
-    ,'OrderDateKey'             --[SourcePartitionColumn]
+    ,1                          --[IntegerDateKey]
+    ,'SELECT * FROM [dbo].[FactInternetSales] WHERE OrderDateKey >= {0} AND OrderDateKey < {1} ORDER BY OrderDateKey' --[TemplateSourceQuery]
 ),
 (
      2                          --[PartitioningConfigurationID]
@@ -41,7 +42,8 @@ VALUES(
     ,2                          --[Granularity]   2=Yearly
     ,3                          --[NumberOfPartitionsFull]
     ,1                          --[NumberOfPartitionsForIncrementalProcess]
+    ,0                          --[MaxDateIsNow]
     ,'2012-12-01'               --[MaxDate]
-    ,'[dbo].[FactResellerSales]'--[SourceTableName]
-    ,'OrderDateKey'             --[SourcePartitionColumn]
+    ,1                          --[IntegerDateKey]
+    ,'SELECT * FROM [dbo].[FactResellerSales] WHERE OrderDateKey >= {0} AND OrderDateKey < {1} ORDER BY OrderDateKey' --[TemplateSourceQuery]
 );

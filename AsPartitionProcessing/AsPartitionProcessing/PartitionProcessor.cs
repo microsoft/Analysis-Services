@@ -164,7 +164,7 @@ namespace AsPartitionProcessing
                         //Ensure template partition doesn't contain any data
                         if (_modelConfiguration.InitialSetUp)
                         {
-                            ((QueryPartitionSource)templatePartition.Source).Query = String.Format("SELECT * FROM {0} WHERE 0=1", tableConfiguration.PartitioningConfigurations[0].SourceTableName); //assuming the same for all partitioning configurations
+                            ((QueryPartitionSource)templatePartition.Source).Query = String.Format(tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery, GetDateKey("19010102", tableConfiguration.PartitioningConfigurations[0], false), GetDateKey("19010101", tableConfiguration.PartitioningConfigurations[0], false)); //Query generated will always return nothing
                             templatePartition.RequestRefresh(RefreshType.DataOnly);
                         }
                     }
@@ -436,6 +436,47 @@ namespace AsPartitionProcessing
 
         #region Private Methods
 
+        private static string GetDateKey(string partitionKey, PartitioningConfiguration partitioningConfiguration, bool addPeriod)
+        {
+            DateTime dateVal = new DateTime();
+
+            switch (partitioningConfiguration.Granularity)
+            {
+                case Granularity.Daily:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), Convert.ToInt32(partitionKey.Substring(6, 2)));
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddDays(1);
+                    }
+                    break;
+                case Granularity.Monthly:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), 1);
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddMonths(1);
+                    }
+                    break;
+                case Granularity.Yearly:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), 1, 1);
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddYears(1);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (partitioningConfiguration.IntegerDateKey)
+            {
+                return dateVal.ToString("yyyyMMdd");
+            }
+            else
+            {
+                return $"'{dateVal.ToString("yyyy-MM-dd")}'";
+            }
+        }
+
         private static void IncrementalProcessPartition(string partitionKey, Partition partitionToProcess, Granularity granularity)
         {
             if (_modelConfiguration.IncrementalOnline)
@@ -579,28 +620,14 @@ namespace AsPartitionProcessing
 
         private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey)
         {
-            string selectQueryTemplate;
-            switch (partitioningConfiguration.Granularity)
-            {
-                //Format that might work on more data sources, but requires flag to indicate whether partitioning column is date or integer YYYYMMDD or not:
-                //               SELECT	YEAR(CURRENT_TIMESTAMP) * 10000 + MONTH(CURRENT_TIMESTAMP) * 100 + DAY(CURRENT_TIMESTAMP)
-                //ANSI standard to get month from date is EXTRACT(MONTH FROM @DateTimeVarUnclean), which doesn't work with SQL Server
+            string beginParam = GetDateKey(partitionKey, partitioningConfiguration, false);
+            string endParam = GetDateKey(partitionKey, partitioningConfiguration, true);
 
-                case Granularity.Daily:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE CAST(CONVERT(varchar, {1}, 112) AS int) = {2} ORDER BY {1}";
-                    break;
-                case Granularity.Monthly:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR(CAST(CONVERT(varchar, {1}, 112) AS int) / 100) = {2} ORDER BY {1}";
-                    break;
-                default: //Granularity.Yearly:
-                    selectQueryTemplate = "SELECT * FROM {0} WHERE FLOOR(CAST(CONVERT(varchar, {1}, 112) AS int) / 10000) = {2} ORDER BY {1}";
-                    break;
-            }
             Partition newPartition;
             newPartition = new Partition();
             templatePartition.CopyTo(newPartition);
             newPartition.Name = partitionKey;
-            ((QueryPartitionSource)newPartition.Source).Query = String.Format(selectQueryTemplate, partitioningConfiguration.SourceTableName, partitioningConfiguration.SourcePartitionColumn, partitionKey);
+            ((QueryPartitionSource)newPartition.Source).Query = String.Format(partitioningConfiguration.TemplateSourceQuery, beginParam, endParam);
             table.Partitions.Add(newPartition);
             return newPartition;
         }

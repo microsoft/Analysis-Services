@@ -25,9 +25,10 @@ CREATE TABLE [dbo].[PartitioningConfiguration](
     [Granularity] [tinyint] NOT NULL,
     [NumberOfPartitionsFull] [int] NOT NULL,
     [NumberOfPartitionsForIncrementalProcess] [int] NOT NULL,
-    [MaxDate] [date] NOT NULL,
-    [SourceTableName] [varchar](255) NOT NULL,
-    [SourcePartitionColumn] [varchar](255) NOT NULL,
+    [MaxDateIsNow] [bit] NOT NULL,
+    [MaxDate] [date] NULL,
+    [IntegerDateKey] [bit] NOT NULL,
+    [TemplateSourceQuery] [varchar](max) NOT NULL,
  CONSTRAINT [PK_PartitioningConfiguration] PRIMARY KEY CLUSTERED 
 (
     [PartitioningConfigurationID] ASC
@@ -119,9 +120,10 @@ SELECT m.[ModelConfigurationID]
       ,p.[Granularity]
       ,p.[NumberOfPartitionsFull]
       ,p.[NumberOfPartitionsForIncrementalProcess]
+	  ,p.[MaxDateIsNow]
       ,p.[MaxDate]
-      ,p.[SourceTableName]
-      ,p.[SourcePartitionColumn]
+      ,p.[IntegerDateKey]
+      ,p.[TemplateSourceQuery]
   FROM [dbo].[ModelConfiguration] m
 INNER JOIN [dbo].[TableConfiguration] t ON m.[ModelConfigurationID] = t.[ModelConfigurationID]
 LEFT JOIN [dbo].[PartitioningConfiguration] p ON t.[TableConfigurationID] = p.[TableConfigurationID]

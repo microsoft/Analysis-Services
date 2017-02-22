@@ -28,7 +28,7 @@ namespace AsPartitionProcessing
         public int NumberOfPartitionsForIncrementalProcess { get; set; }
 
         /// <summary>
-        /// The maximum date that needs to be accounted for in the partitioned table.
+        /// If MaxDateIsNow = false, the maximum date that needs to be accounted for in the partitioned table.
         /// </summary>
         public DateTime MaxDate { get; set; }
 
@@ -43,14 +43,14 @@ namespace AsPartitionProcessing
         public DateTime UpperBoundary { get; }
 
         /// <summary>
-        /// Name of the source table in the relational database.
+        /// Assumes date keys are integers. If false assumes date type.
         /// </summary>
-        public string SourceTableName { get; set; }
+        public bool IntegerDateKey { get; set; }
 
         /// <summary>
-        /// Name of the source column from the table in the relational database.
+        /// Template query used for partition source queries.
         /// </summary>
-        public string SourcePartitionColumn { get; set; }
+        public string TemplateSourceQuery { get; set; }
 
         /// <summary>
         /// Initialize partitioning configuration for partitioned table. Normally populated from a configuration database.
@@ -60,48 +60,58 @@ namespace AsPartitionProcessing
         /// <param name="granularity">Partition granularity, which can be Yearly, Monthly or Daily.</param>
         /// <param name="numberOfPartitionsFull">Count of all partitions in the rolling window. For example, a rolling window of 10 years partitioned by month would result in 120 partitions.</param>
         /// <param name="numberOfPartitionsForIncrementalProcess">Count of “hot partitions” where the data can change. For example, it may be necessary to refresh the most recent 3 months of data every day. This only applies to the most recent partitions.</param>
+        /// <param name="maxDateIsNow">Assumes maximum date to be accounted for is today.</param>
         /// <param name="maxDate">The maximum date that needs to be accounted for in the partitioned table. Represents the upper boundary of the rolling window.</param>
-        /// <param name="sourceTableName">Name of the source table in the relational database.</param>
-        /// <param name="sourcePartitionColumn">Name of the source column from the table in the relational database.</param>
+        /// <param name="integerDateKey">Assumes date keys are integers. If false assumes date type.</param>
+        /// <param name="templateSourceQuery">Template query used for partition source queries.</param>
         public PartitioningConfiguration(
             int partitioningConfigurationID,
             Granularity granularity,
             int numberOfPartitionsFull,
             int numberOfPartitionsForIncrementalProcess,
+            bool maxDateIsNow,
             DateTime maxDate,
-            string sourceTableName,
-            string sourcePartitionColumn
+            bool integerDateKey,
+            string templateSourceQuery
             )
         {
             PartitioningConfigurationID = partitioningConfigurationID;
             Granularity = granularity;
             NumberOfPartitionsFull = numberOfPartitionsFull;
             NumberOfPartitionsForIncrementalProcess = numberOfPartitionsForIncrementalProcess;
-            MaxDate = maxDate;
-            SourceTableName = sourceTableName;
-            SourcePartitionColumn = sourcePartitionColumn;
+            if (maxDateIsNow)
+            {
+                MaxDate = DateTime.Today;
+            }
+            else
+            {
+                MaxDate = maxDate;
+            }
+            IntegerDateKey = integerDateKey;
+            TemplateSourceQuery = templateSourceQuery;
 
             switch (granularity)
             {
                 case Granularity.Daily:
-                    LowerBoundary = maxDate.AddDays(-numberOfPartitionsFull + 1);
-                    UpperBoundary = maxDate;
+                    LowerBoundary = MaxDate.AddDays(-numberOfPartitionsFull + 1);
+                    UpperBoundary = MaxDate;
                     break;
 
                 case Granularity.Monthly:
-                    LowerBoundary = Convert.ToDateTime(maxDate.AddMonths(-numberOfPartitionsFull + 1).ToString("yyyy-MMM-01"));
-                    UpperBoundary = Convert.ToDateTime(maxDate.AddMonths(1).ToString("yyyy-MMM-01")).AddDays(-1);
+                    LowerBoundary = Convert.ToDateTime(MaxDate.AddMonths(-numberOfPartitionsFull + 1).ToString("yyyy-MMM-01"));
+                    UpperBoundary = Convert.ToDateTime(MaxDate.AddMonths(1).ToString("yyyy-MMM-01")).AddDays(-1);
                     break;
 
                 case Granularity.Yearly:
-                    LowerBoundary = Convert.ToDateTime(maxDate.AddYears(-numberOfPartitionsFull + 1).ToString("yyyy-01-01"));
-                    UpperBoundary = Convert.ToDateTime(maxDate.AddYears(1).ToString("yyyy-01-01")).AddDays(-1);
+                    LowerBoundary = Convert.ToDateTime(MaxDate.AddYears(-numberOfPartitionsFull + 1).ToString("yyyy-01-01"));
+                    UpperBoundary = Convert.ToDateTime(MaxDate.AddYears(1).ToString("yyyy-01-01")).AddDays(-1);
                     break;
 
                 default:
                     break;
             }
         }
+
         public int CompareTo(PartitioningConfiguration other) => string.Compare(this.LowerBoundary.ToString("yyyy-MM-dd"), other.LowerBoundary.ToString("yyyy-MM-dd"));
     }
 

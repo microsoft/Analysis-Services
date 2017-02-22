@@ -1,6 +1,5 @@
 {
   "name": "SemanticModel",
-  "id": "SemanticModel",
   "compatibilityLevel": 1200,
   "model": {
     "culture": "en-US",
@@ -3643,11 +3642,11 @@
               "targetExpression": "1.1",
               "statusGraphic": "Three Symbols UnCircled Colored",
               "statusExpression": [
-                "if(ISBLANK('Internet Sales'[Internet Current Quarter Sales Performance]),BLANK(),\r",
-                "                    If('Internet Sales'[Internet Current Quarter Sales Performance]<1,-1,\r",
-                "\t                If('Internet Sales'[Internet Current Quarter Sales Performance]<1.07,0,1)\r",
-                "                )\r",
-                "            )\r",
+                "if(ISBLANK('Internet Sales'[Internet Current Quarter Sales Performance]),BLANK(),",
+                "                    If('Internet Sales'[Internet Current Quarter Sales Performance]<1,-1,",
+                "\t                If('Internet Sales'[Internet Current Quarter Sales Performance]<1.07,0,1)",
+                "                )",
+                "            )",
                 "            "
               ],
               "annotations": [
@@ -3744,11 +3743,11 @@
               "targetExpression": "1.25",
               "statusGraphic": "Three Symbols UnCircled Colored",
               "statusExpression": [
-                "if(ISBLANK('Internet Sales'[Internet Current Quarter Gross Profit Performance]),BLANK(),\r",
-                "                    If('Internet Sales'[Internet Current Quarter Gross Profit Performance]<0.8,-1,\r",
-                "\t                If('Internet Sales'[Internet Current Quarter Gross Profit Performance]<1.03,0,1)\r",
-                "                )\r",
-                "            )\r",
+                "if(ISBLANK('Internet Sales'[Internet Current Quarter Gross Profit Performance]),BLANK(),",
+                "                    If('Internet Sales'[Internet Current Quarter Gross Profit Performance]<0.8,-1,",
+                "\t                If('Internet Sales'[Internet Current Quarter Gross Profit Performance]<1.03,0,1)",
+                "                )",
+                "            )",
                 "            "
               ],
               "annotations": [
@@ -4217,11 +4216,11 @@
               "targetExpression": "1.1",
               "statusGraphic": "Three Symbols UnCircled Colored",
               "statusExpression": [
-                "if(ISBLANK('Reseller Sales'[Reseller Current Quarter Sales Performance]),BLANK(),\r",
-                "                    If('Reseller Sales'[Reseller Current Quarter Sales Performance]<0.8,-1,\r",
-                "\t                If('Reseller Sales'[Reseller Current Quarter Sales Performance]<1.07,0,1)\r",
-                "                )\r",
-                "            )\r",
+                "if(ISBLANK('Reseller Sales'[Reseller Current Quarter Sales Performance]),BLANK(),",
+                "                    If('Reseller Sales'[Reseller Current Quarter Sales Performance]<0.8,-1,",
+                "\t                If('Reseller Sales'[Reseller Current Quarter Sales Performance]<1.07,0,1)",
+                "                )",
+                "            )",
                 "            "
               ],
               "annotations": [
@@ -4263,11 +4262,11 @@
               "targetExpression": "1.25",
               "statusGraphic": "Three Symbols UnCircled Colored",
               "statusExpression": [
-                "if(ISBLANK('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]),BLANK(),\r",
-                "                    If('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]<0.8,-1,\r",
-                "\t                If('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]<1.03,0,1)\r",
-                "                )\r",
-                "            )\r",
+                "if(ISBLANK('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]),BLANK(),",
+                "                    If('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]<0.8,-1,",
+                "\t                If('Reseller Sales'[Reseller Current Quarter Gross Profit Performance]<1.03,0,1)",
+                "                )",
+                "            )",
                 "            "
               ],
               "annotations": [
@@ -6005,5 +6004,6 @@
         "modelPermission": "refresh"
       }
     ]
-  }
+  },
+  "id": "SemanticModel"
 }

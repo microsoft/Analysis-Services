@@ -151,9 +151,12 @@ namespace AsPartitionProcessing.SampleClient
                                 granularity: Granularity.Monthly,
                                 numberOfPartitionsFull: 12,
                                 numberOfPartitionsForIncrementalProcess: 3,
+                                maxDateIsNow: false,
                                 maxDate: Convert.ToDateTime("2012-12-01"),
-                                sourceTableName: "[dbo].[FactInternetSales]",
-                                sourcePartitionColumn: "OrderDateKey"
+                                integerDateKey: true,
+                                templateSourceQuery: "SELECT * FROM [dbo].[FactInternetSales] " +
+                                    "WHERE OrderDateKey >= {0} AND OrderDateKey < {1} " +
+                                    "ORDER BY OrderDateKey"
                             )
                         }
                     ),
@@ -168,9 +171,12 @@ namespace AsPartitionProcessing.SampleClient
                                 granularity: Granularity.Yearly,
                                 numberOfPartitionsFull: 3,
                                 numberOfPartitionsForIncrementalProcess: 1,
+                                maxDateIsNow: false,
                                 maxDate: Convert.ToDateTime("2012-12-01"),
-                                sourceTableName: "[dbo].[FactResellerSales]",
-                                sourcePartitionColumn: "OrderDateKey"
+                                integerDateKey: true,
+                                templateSourceQuery: "SELECT * FROM [dbo].[FactResellerSales] " +
+                                    "WHERE OrderDateKey >= {0} AND OrderDateKey < {1} " +
+                                    "ORDER BY OrderDateKey"
                             )
                         }
                     )
