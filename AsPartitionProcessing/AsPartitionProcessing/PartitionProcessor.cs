@@ -129,7 +129,7 @@ namespace AsPartitionProcessing
 
                                 if (partitionToProcess == null)
                                 {
-                                    partitionToProcess = CreateNewPartition(table, templatePartition, partitioningConfiguration, partitionKey);
+                                    partitionToProcess = CreateNewPartition(table, templatePartition, partitioningConfiguration, partitionKey, partitioningConfiguration.Granularity);
                                     LogMessage($"Create new partition       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)}", true);
 
                                     if (!_modelConfiguration.InitialSetUp)
@@ -164,7 +164,7 @@ namespace AsPartitionProcessing
                         //Ensure template partition doesn't contain any data
                         if (_modelConfiguration.InitialSetUp)
                         {
-                            ((QueryPartitionSource)templatePartition.Source).Query = String.Format(tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery, GetDateKey("19010102", tableConfiguration.PartitioningConfigurations[0], false), GetDateKey("19010101", tableConfiguration.PartitioningConfigurations[0], false)); //Query generated will always return nothing
+                            ((QueryPartitionSource)templatePartition.Source).Query = String.Format(tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery, GetDateKey("19010102", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false), GetDateKey("19010101", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false)); //Query generated will always return nothing
                             templatePartition.RequestRefresh(RefreshType.DataOnly);
                         }
                     }
@@ -317,7 +317,7 @@ namespace AsPartitionProcessing
                     //Done with validation, so go ahead ...
                     LogMessage("", false);
                     LogMessage($"Create new merged partition {DateFormatPartitionKey(partitionKey, targetGranularity)} for table {analysisServicesTable}", true);
-                    Partition newPartition = CreateNewPartition(table, templatePartition, partitionConfig, partitionKey);
+                    Partition newPartition = CreateNewPartition(table, templatePartition, partitionConfig, partitionKey, targetGranularity);
 
                     foreach (Partition partition in partitionsToBeMerged)
                     {
@@ -435,47 +435,6 @@ namespace AsPartitionProcessing
         #endregion
 
         #region Private Methods
-
-        private static string GetDateKey(string partitionKey, PartitioningConfiguration partitioningConfiguration, bool addPeriod)
-        {
-            DateTime dateVal = new DateTime();
-
-            switch (partitioningConfiguration.Granularity)
-            {
-                case Granularity.Daily:
-                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), Convert.ToInt32(partitionKey.Substring(6, 2)));
-                    if (addPeriod)
-                    {
-                        dateVal = dateVal.AddDays(1);
-                    }
-                    break;
-                case Granularity.Monthly:
-                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), 1);
-                    if (addPeriod)
-                    {
-                        dateVal = dateVal.AddMonths(1);
-                    }
-                    break;
-                case Granularity.Yearly:
-                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), 1, 1);
-                    if (addPeriod)
-                    {
-                        dateVal = dateVal.AddYears(1);
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            if (partitioningConfiguration.IntegerDateKey)
-            {
-                return dateVal.ToString("yyyyMMdd");
-            }
-            else
-            {
-                return $"'{dateVal.ToString("yyyy-MM-dd")}'";
-            }
-        }
 
         private static void IncrementalProcessPartition(string partitionKey, Partition partitionToProcess, Granularity granularity)
         {
@@ -618,10 +577,10 @@ namespace AsPartitionProcessing
             return partitionsExisting;
         }
 
-        private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey)
+        private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey, Granularity granularity)
         {
-            string beginParam = GetDateKey(partitionKey, partitioningConfiguration, false);
-            string endParam = GetDateKey(partitionKey, partitioningConfiguration, true);
+            string beginParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, false);
+            string endParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, true);
 
             Partition newPartition;
             newPartition = new Partition();
@@ -630,6 +589,47 @@ namespace AsPartitionProcessing
             ((QueryPartitionSource)newPartition.Source).Query = String.Format(partitioningConfiguration.TemplateSourceQuery, beginParam, endParam);
             table.Partitions.Add(newPartition);
             return newPartition;
+        }
+
+        private static string GetDateKey(string partitionKey, Granularity granularity, bool integerDateKey, bool addPeriod)
+        {
+            DateTime dateVal = new DateTime();
+
+            switch (granularity)
+            {
+                case Granularity.Daily:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), Convert.ToInt32(partitionKey.Substring(6, 2)));
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddDays(1);
+                    }
+                    break;
+                case Granularity.Monthly:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), 1);
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddMonths(1);
+                    }
+                    break;
+                case Granularity.Yearly:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), 1, 1);
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddYears(1);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (integerDateKey)
+            {
+                return dateVal.ToString("yyyyMMdd");
+            }
+            else
+            {
+                return $"'{dateVal.ToString("yyyy-MM-dd")}'";
+            }
         }
 
         private static bool IncludePartition(Granularity granularity, string filter, Partition partition, ref int partitionKey)
