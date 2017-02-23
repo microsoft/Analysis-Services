@@ -18,7 +18,7 @@ namespace AsPartitionProcessing.SampleClient
         [Option('k', "MergePartitionKey", HelpText = "When ExecutionMode=MergePartitions, target partition key. If year, follow yyyy; if month follow yyyymm.")]
         public string MergePartitionKey { get; set; }
 
-        [Option('i', "ModelConfigurationIDs", HelpText = "When connect to config database, only process models with ModelConfigurationID in a comma-delimited list.")]
+        [Option('i', "ModelConfigurationIDs", HelpText = "Comma delimited list of ModelConfigurationIDs to filter on when getting worklist from workspace database.")]
         public string ModelConfigurationIDs { get; set; }
 
         [ParserState]
