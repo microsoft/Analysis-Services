@@ -18,6 +18,9 @@ namespace AsPartitionProcessing.SampleClient
         [Option('k', "MergePartitionKey", HelpText = "When ExecutionMode=MergePartitions, target partition key. If year, follow yyyy; if month follow yyyymm.")]
         public string MergePartitionKey { get; set; }
 
+        [Option('i', "ModelConfigurationIDs", HelpText = "When connect to config database, only process models with ModelConfigurationID in a comma-delimited list.")]
+        public string ModelConfigurationIDs { get; set; }
+
         [ParserState]
         public IParserState LastParserState { get; set; }
 

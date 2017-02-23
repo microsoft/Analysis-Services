@@ -14,17 +14,11 @@ namespace AsPartitionProcessing
         /// Read configuration information from the database.
         /// </summary>
         /// <param name="connectionInfo">Information required to connect to the configuration and logging database.</param>
+        /// <param name="modelConfigurationIDs">Comma delimited list of ModelConfigurationIDs to filter on when getting worklist from workspace database.</param>
         /// <returns>Collection of partitioned models with configuration information.</returns>
-        public static List<ModelConfiguration> ReadConfig(ConfigDatabaseConnectionInfo connectionInfo)
+        public static List<ModelConfiguration> ReadConfig(ConfigDatabaseConnectionInfo connectionInfo, string modelConfigurationIDs)
         {
-            using (SqlConnection connection = new SqlConnection(GetConnectionString(connectionInfo)))
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"  
+            string commandText = String.Format(@"  
                         SELECT [ModelConfigurationID]
                               ,[AnalysisServicesServer]
                               ,[AnalysisServicesDatabase]
@@ -43,13 +37,24 @@ namespace AsPartitionProcessing
                               ,[MaxDateIsNow]
                               ,[MaxDate]
                               ,[IntegerDateKey]
+
                               ,[TemplateSourceQuery]
                           FROM [dbo].[vPartitioningConfiguration]
-                          WHERE [DoNotProcess] = 0
+                          WHERE [DoNotProcess] = 0 {0}
                           ORDER BY
                                [ModelConfigurationID],
                                [TableConfigurationID],
-                               [PartitioningConfigurationID];";
+                               [PartitioningConfigurationID];",
+                               (String.IsNullOrEmpty(modelConfigurationIDs) ? "" : $" AND [ModelConfigurationID] IN ({modelConfigurationIDs}) "));
+
+            using (SqlConnection connection = new SqlConnection(GetConnectionString(connectionInfo)))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = commandText;
 
                     List<ModelConfiguration> modelConfigs = new List<ModelConfiguration>();
                     ModelConfiguration modelConfig = null;

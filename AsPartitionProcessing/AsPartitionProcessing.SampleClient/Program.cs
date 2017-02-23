@@ -38,7 +38,8 @@ namespace AsPartitionProcessing.SampleClient
     class Program
     {
         //Set sample execution mode here:
-        private static ExecutionMode _executionMode = ExecutionMode.InitializeInline;
+        private static ExecutionMode _executionMode = ExecutionMode.InitializeFromDatabase;
+        private static string _modelConfigurationIDs;
 
         static int Main(string[] args)
         {
@@ -214,7 +215,7 @@ namespace AsPartitionProcessing.SampleClient
                 connectionInfo.Password = ReadPassword();
             }
 
-            return ConfigDatabaseHelper.ReadConfig(connectionInfo);
+            return ConfigDatabaseHelper.ReadConfig(connectionInfo, _modelConfigurationIDs);
         }
 
         private static void ParseArgs(string[] args, ref string mergeTable, ref Granularity mergeTargetGranuarity, ref string mergePartitionKey, out bool help)
@@ -225,6 +226,12 @@ namespace AsPartitionProcessing.SampleClient
                 ArgumentOptions options = new ArgumentOptions();
                 if (CommandLine.Parser.Default.ParseArguments(args, options))
                 {
+                    if (!String.IsNullOrEmpty(options.ModelConfigurationIDs))
+                    {
+                        Console.WriteLine($"ModelConfigurationIDs: {options.ModelConfigurationIDs}");
+                        _modelConfigurationIDs = options.ModelConfigurationIDs;
+                    }
+
                     Console.WriteLine($"Argument ExecutionMode: {options.ExecutionMode}");
                     switch (options.ExecutionMode)
                     {
