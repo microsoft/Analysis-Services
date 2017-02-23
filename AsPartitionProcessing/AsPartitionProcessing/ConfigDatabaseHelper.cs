@@ -14,7 +14,7 @@ namespace AsPartitionProcessing
         /// Read configuration information from the database.
         /// </summary>
         /// <param name="connectionInfo">Information required to connect to the configuration and logging database.</param>
-        /// <param name="modelConfigurationIDs">Comma delimited list of ModelConfigurationIDs to filter on when getting worklist from workspace database.</param>
+        /// <param name="modelConfigurationIDs">Comma-delimited list of ModelConfigurationIDs to filter on when getting worklist from the configuration and logging database.</param>
         /// <returns>Collection of partitioned models with configuration information.</returns>
         public static List<ModelConfiguration> ReadConfig(ConfigDatabaseConnectionInfo connectionInfo, string modelConfigurationIDs)
         {
