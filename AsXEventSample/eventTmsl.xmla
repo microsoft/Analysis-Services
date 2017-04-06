@@ -1,0 +1,20 @@
+<Create xmlns="http://schemas.microsoft.com/analysisservices/2003/engine">
+  <ObjectDefinition>
+    <Trace>
+      <ID>SampleXEvents</ID>
+      <Name>SampleXEvents</Name>
+      <XEvent xmlns="http://schemas.microsoft.com/analysisservices/2011/engine/300/300">
+        <event_session name="SampleXEvents" dispatchLatency="0" maxEventSize="0" maxMemory="4" memoryPartition="none" eventRetentionMode="AllowSingleEventLoss" trackCausality="true" xmlns="http://schemas.microsoft.com/analysisservices/2003/engine">
+          <event package="AS" name="CommandBegin">
+            <action package="AS" name="attach_current_activity_id" />
+            <action package="AS" name="attach_current_activity_type" />
+          </event>
+          <event package="AS" name="CommandEnd" />
+          <event package="AS" name="CommandEndWithError" />
+          <event package="AS" name="ExecutionStatistics" />
+          <target package="package0" name="event_stream" />
+        </event_session>
+      </XEvent>
+    </Trace>
+  </ObjectDefinition>
+</Create>
