@@ -10,6 +10,9 @@ Real-time monitoring of Analysis Services memory usage broken out by database
 ## [AsTrace](https://github.com/Microsoft/Analysis-Services/tree/master/AsTrace)
 The ASTrace tool captures a Profiler trace and writes it to a SQL Server table without requiring a GUI
 
+## [AsTrace](https://github.com/Microsoft/Analysis-Services/tree/master/AsXEventSample)
+The AsXEventSample sample shows how to collect streaming xEvents
+
 ## Code of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
