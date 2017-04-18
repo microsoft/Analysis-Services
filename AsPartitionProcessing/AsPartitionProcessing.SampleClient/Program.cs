@@ -159,10 +159,8 @@ namespace AsPartitionProcessing.SampleClient
                                 "let\n" +
                                 "    Source = #\"AdventureWorks\",\n" +
                                 "    dbo_FactInternetSales = Source{[Schema=\"dbo\",Item=\"FactInternetSales\"]}[Data],\n" +
-                                "    #\"Filtered Rows\" = Table.SelectRows(" +
-                                     "dbo_FactInternetSales, each [OrderDateKey] >= {0} and [OrderDateKey] < {1}),\n" +
-                                "    #\"Sorted Rows\" = Table.Sort(" + 
-                                     "#\"Filtered Rows\",{{\"OrderDateKey\", Order.Ascending}})\n" +
+                                "    #\"Filtered Rows\" = Table.SelectRows(dbo_FactInternetSales, each [OrderDateKey] >= {0} and [OrderDateKey] < {1}),\n" +
+                                "    #\"Sorted Rows\" = Table.Sort(#\"Filtered Rows\",{{\"OrderDateKey\", Order.Ascending}})\n" +
                                 "in\n" +
                                 "    #\"Sorted Rows\"\n"
                             )
@@ -186,10 +184,8 @@ namespace AsPartitionProcessing.SampleClient
                                 "let\n" +
                                 "    Source = #\"AdventureWorks\",\n" +
                                 "    dbo_FactResellerSales = Source{[Schema=\"dbo\",Item=\"FactResellerSales\"]}[Data],\n" +
-                                "    #\"Filtered Rows\" = Table.SelectRows(" + 
-                                     "dbo_FactResellerSales, each [OrderDate] >= {0} and [OrderDate] < {1}),\n" +
-                                "    #\"Sorted Rows\" = Table.Sort(" + 
-                                     "#\"Filtered Rows\",{{\"OrderDate\", Order.Ascending}})\n" +
+                                "    #\"Filtered Rows\" = Table.SelectRows(dbo_FactResellerSales, each [OrderDate] >= {0} and [OrderDate] < {1}),\n" +
+                                "    #\"Sorted Rows\" = Table.Sort(#\"Filtered Rows\",{{\"OrderDate\", Order.Ascending}})\n" +
                                 "in\n" +
                                 "    #\"Sorted Rows\"\n"
                             )

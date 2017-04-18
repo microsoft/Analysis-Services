@@ -62,6 +62,7 @@
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Views\" />
+    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ModelConfiguration.sql" />
@@ -69,6 +70,7 @@
     <Build Include="dbo\Tables\ProcessingLog.sql" />
     <Build Include="dbo\Tables\TableConfiguration.sql" />
     <Build Include="dbo\Views\vPartitioningConfiguration.sql" />
+    <Build Include="dbo\Stored Procedures\usp_LastProcessingLogs.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />
