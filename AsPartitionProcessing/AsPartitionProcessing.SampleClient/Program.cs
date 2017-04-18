@@ -38,7 +38,7 @@ namespace AsPartitionProcessing.SampleClient
     class Program
     {
         //Set sample execution mode here:
-        private static ExecutionMode _executionMode = ExecutionMode.InitializeFromDatabase;
+        private static ExecutionMode _executionMode = ExecutionMode.InitializeInline;
         private static string _modelConfigurationIDs;
 
         static int Main(string[] args)
@@ -155,9 +155,16 @@ namespace AsPartitionProcessing.SampleClient
                                 maxDateIsNow: false,
                                 maxDate: Convert.ToDateTime("2012-12-01"),
                                 integerDateKey: true,
-                                templateSourceQuery: "SELECT * FROM [dbo].[FactInternetSales] " +
-                                    "WHERE OrderDateKey >= {0} AND OrderDateKey < {1} " +
-                                    "ORDER BY OrderDateKey"
+                                templateSourceQuery:
+                                "let\n" +
+                                "    Source = #\"AdventureWorks\",\n" +
+                                "    dbo_FactInternetSales = Source{[Schema=\"dbo\",Item=\"FactInternetSales\"]}[Data],\n" +
+                                "    #\"Filtered Rows\" = Table.SelectRows(" +
+                                     "dbo_FactInternetSales, each [OrderDateKey] >= {0} and [OrderDateKey] < {1}),\n" +
+                                "    #\"Sorted Rows\" = Table.Sort(" + 
+                                     "#\"Filtered Rows\",{{\"OrderDateKey\", Order.Ascending}})\n" +
+                                "in\n" +
+                                "    #\"Sorted Rows\"\n"
                             )
                         }
                     ),
@@ -174,27 +181,22 @@ namespace AsPartitionProcessing.SampleClient
                                 numberOfPartitionsForIncrementalProcess: 1,
                                 maxDateIsNow: false,
                                 maxDate: Convert.ToDateTime("2012-12-01"),
-                                integerDateKey: true,
-                                templateSourceQuery: "SELECT * FROM [dbo].[FactResellerSales] " +
-                                    "WHERE OrderDateKey >= {0} AND OrderDateKey < {1} " +
-                                    "ORDER BY OrderDateKey"
+                                integerDateKey: false,
+                                templateSourceQuery:
+                                "let\n" +
+                                "    Source = #\"AdventureWorks\",\n" +
+                                "    dbo_FactResellerSales = Source{[Schema=\"dbo\",Item=\"FactResellerSales\"]}[Data],\n" +
+                                "    #\"Filtered Rows\" = Table.SelectRows(" + 
+                                     "dbo_FactResellerSales, each [OrderDate] >= {0} and [OrderDate] < {1}),\n" +
+                                "    #\"Sorted Rows\" = Table.Sort(" + 
+                                     "#\"Filtered Rows\",{{\"OrderDate\", Order.Ascending}})\n" +
+                                "in\n" +
+                                "    #\"Sorted Rows\"\n"
                             )
                         }
                     )
                 }
             );
-
-            #region Not needed as sample includes pre-prepared version of AdventureWorks
-
-            ////This section not to be used normally - just to get started with AdventureWorks. It removes existing partitions that come in AdventureWorks and creates a template one to align with assumptions listed at top of PartitionProcessor.cs file.
-            //if (partitionedModel.InitialSetUp)
-            //{
-            //    Console.WriteLine("Initialize AdventureWorks template partitions? [y/n]");
-            //    if (Console.ReadLine().ToLower() == "y")
-            //        InitializeAdventureWorksDatabase(partitionedModel);
-            //}
-
-            #endregion
 
             return partitionedModel;
         }
@@ -353,61 +355,6 @@ namespace AsPartitionProcessing.SampleClient
             return password;
         }
 
-        #region Not needed as sample includes pre-prepared version of AdventureWorks
-
-        private static void InitializeAdventureWorksDatabase(ModelConfiguration parameters)
-        {
-            //In order to align with assumptions listed in PartitionProcessor.cs, need to:
-            //1. Delete existing partitions in InternetSales and ResellerSales
-            //2. Create template partition (again, see comments at top of PartitionProcessor.cs)
-
-            Console.WriteLine("Initializing AdventureWorks ...");
-
-            using (Server server = new Server())
-            {
-                //Connect and get main objects
-                string serverConnectionString;
-                if (parameters.IntegratedAuth)
-                    serverConnectionString = $"Provider=MSOLAP;Data Source={parameters.AnalysisServicesServer};";
-                else
-                {
-                    serverConnectionString = $"Provider=MSOLAP;Data Source={parameters.AnalysisServicesServer};User ID={parameters.UserName};Password={parameters.Password};Persist Security Info=True;Impersonation Level=Impersonate;";
-                }
-                server.Connect(serverConnectionString);
-
-                Database database = server.Databases.FindByName(parameters.AnalysisServicesDatabase);
-                if (database == null)
-                {
-                    throw new Microsoft.AnalysisServices.ConnectionException($"Could not connect to database {parameters.AnalysisServicesDatabase}.");
-                }
-
-                InitializeAdventureWorksTable(database, "Internet Sales", "[dbo].[FactInternetSales]");
-                InitializeAdventureWorksTable(database, "Reseller Sales", "[dbo].[FactResellerSales]");
-
-                database.Update(Microsoft.AnalysisServices.UpdateOptions.ExpandFull);
-                server.Disconnect();
-            }
-        }
-
-        private static void InitializeAdventureWorksTable(Database database, string analysisServicesTableName, string sourceFactTableName)
-        {
-            Table table = database.Model.Tables.Find(analysisServicesTableName);
-            if (table == null)
-            {
-                throw new Microsoft.AnalysisServices.ConnectionException($"Could not connect to table {analysisServicesTableName}.");
-            }
-            table.Partitions.Clear();
-            Partition templatePartition = new Partition();
-            templatePartition.Name = analysisServicesTableName;
-            table.Partitions.Add(templatePartition);
-            templatePartition.Source = new QueryPartitionSource()
-            {
-                DataSource = database.Model.DataSources[0],  //Assuming this is only data source (SqlServer localhost)
-                Query = $"SELECT * FROM {sourceFactTableName}"
-            };
-        }
-
-        #endregion
     }
 }
 

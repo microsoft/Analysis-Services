@@ -164,7 +164,20 @@ namespace AsPartitionProcessing
                         //Ensure template partition doesn't contain any data
                         if (_modelConfiguration.InitialSetUp)
                         {
-                            ((QueryPartitionSource)templatePartition.Source).Query = String.Format(tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery, GetDateKey("19010102", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false), GetDateKey("19010101", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false)); //Query generated will always return nothing
+                            string beginParam = GetDateKey("19010102", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false, templatePartition.Source is MPartitionSource);
+                            string endParam =   GetDateKey("19010101", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false, templatePartition.Source is MPartitionSource);
+                            //Query generated will always return nothing
+                            string query = tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery.Replace("{0}", beginParam).Replace("{1}", endParam);
+
+                            switch (templatePartition.Source)
+                            {
+                                case MPartitionSource mSource:
+                                    mSource.Expression = query;
+                                    break;
+                                case QueryPartitionSource querySource:
+                                    querySource.Query = query;
+                                    break;
+                            }
                             templatePartition.RequestRefresh(RefreshType.DataOnly);
                         }
                     }
@@ -579,19 +592,29 @@ namespace AsPartitionProcessing
 
         private static Partition CreateNewPartition(Table table, Partition templatePartition, PartitioningConfiguration partitioningConfiguration, string partitionKey, Granularity granularity)
         {
-            string beginParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, false);
-            string endParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, true);
+            string beginParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, false, templatePartition.Source is MPartitionSource);
+            string endParam = GetDateKey(partitionKey, granularity, partitioningConfiguration.IntegerDateKey, true, templatePartition.Source is MPartitionSource);
 
             Partition newPartition;
             newPartition = new Partition();
             templatePartition.CopyTo(newPartition);
             newPartition.Name = partitionKey;
-            ((QueryPartitionSource)newPartition.Source).Query = String.Format(partitioningConfiguration.TemplateSourceQuery, beginParam, endParam);
+            //string query = String.Format(partitioningConfiguration.TemplateSourceQuery, beginParam, endParam);
+            string query = partitioningConfiguration.TemplateSourceQuery.Replace("{0}", beginParam).Replace("{1}", endParam);
+            switch (newPartition.Source)
+            {
+                case MPartitionSource mSource:
+                    mSource.Expression = query;
+                    break;
+                case QueryPartitionSource querySource:
+                    querySource.Query = query;
+                    break;
+            }
             table.Partitions.Add(newPartition);
             return newPartition;
         }
 
-        private static string GetDateKey(string partitionKey, Granularity granularity, bool integerDateKey, bool addPeriod)
+        private static string GetDateKey(string partitionKey, Granularity granularity, bool integerDateKey, bool addPeriod, bool mExpression)
         {
             DateTime dateVal = new DateTime();
 
@@ -628,7 +651,14 @@ namespace AsPartitionProcessing
             }
             else
             {
-                return $"'{dateVal.ToString("yyyy-MM-dd")}'";
+                if (mExpression)
+                {
+                    return $"#datetime({dateVal.ToString("yyyy, MM, dd")}, 0, 0, 0)";
+                }
+                else
+                {
+                    return $"'{dateVal.ToString("yyyy-MM-dd")}'";
+                }
             }
         }
 

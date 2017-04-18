@@ -22,7 +22,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Development' ">
     <OutputPath>bin\</OutputPath>
-    <DeploymentServerName>localhost</DeploymentServerName>
+    <DeploymentServerName>localhost:63192</DeploymentServerName>
     <DeploymentServerEdition>Developer</DeploymentServerEdition>
     <DeploymentServerVersion>Version_11_0</DeploymentServerVersion>
     <DeploymentServerDatabase>AdventureWorks</DeploymentServerDatabase>

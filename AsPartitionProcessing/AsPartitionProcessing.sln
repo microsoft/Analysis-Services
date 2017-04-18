@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsPartitionProcessing", "AsPartitionProcessing\AsPartitionProcessing.csproj", "{FB937281-B06D-47FB-9846-E97B0287AFCE}"
 EndProject
@@ -10,11 +10,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B23151E-8A6B-44AA-B670-797D1EB8B3C0}"
 	ProjectSection(SolutionItems) = preProject
 		AdventureWorksDW.bak = AdventureWorksDW.bak
-		CreateDatabaseObjects.sql = CreateDatabaseObjects.sql
-		SampleConfiguration.sql = SampleConfiguration.sql
 	EndProjectSection
 EndProject
 Project("{6870E480-7721-4708-BFB8-9AE898AA21B3}") = "AsPartitionProcessing.AdventureWorks", "AsPartitionProcessing.AdventureWorks\AsPartitionProcessing.AdventureWorks.smproj", "{7274EFCC-E7DF-40AD-83DF-1DFD5B954E67}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AsPartitionProcessing.ConfigurationLogging", "AsPartitionProcessing.ConfigurationLogging\AsPartitionProcessing.ConfigurationLogging.sqlproj", "{D99FDE4B-3174-440B-B867-A09C294086D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +66,24 @@ Global
 		{7274EFCC-E7DF-40AD-83DF-1DFD5B954E67}.Release|x86.ActiveCfg = Development|x86
 		{7274EFCC-E7DF-40AD-83DF-1DFD5B954E67}.Release|x86.Build.0 = Development|x86
 		{7274EFCC-E7DF-40AD-83DF-1DFD5B954E67}.Release|x86.Deploy.0 = Development|x86
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|Any CPU.Deploy.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|x86.ActiveCfg = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|x86.Build.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Development|x86.Deploy.0 = Debug|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|x86.Build.0 = Release|Any CPU
+		{D99FDE4B-3174-440B-B867-A09C294086D0}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
