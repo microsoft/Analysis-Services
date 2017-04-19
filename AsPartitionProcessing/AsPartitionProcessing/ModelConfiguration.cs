@@ -59,6 +59,16 @@ namespace AsPartitionProcessing
         public int CommitTimeout { get; set; }
 
         /// <summary>
+        /// Number of times a retry of the processing operation will be performed if an error occurs. Use for near-real time scenarios and environments with network reliability issues.
+        /// </summary>
+        public int RetryAttempts { get; set; }
+
+        /// <summary>
+        /// Number of seconds to wait before a retry attempt.
+        /// </summary>
+        public int RetryWaitTimeSeconds { get; set; }
+
+        /// <summary>
         /// Collection of partitioned tables containing configuration information.
         /// </summary>
         public List<TableConfiguration> TableConfigurations { get; set; }
@@ -86,6 +96,8 @@ namespace AsPartitionProcessing
         /// <param name="password">Only applies when integratedAuth=false. Used for Azure AD UPNs to connect to Azure AS.</param>
         /// <param name="maxParallelism">Sets the maximum number of threads on which to run processing commands in parallel. -1 will not set the value.</param>
         /// <param name="commitTimeout">Set to override of CommitTimeout server property value for the connection. -1 will not override; the server value will be used.</param>
+        /// <param name="retryAttempts">Number of times a retry of the processing operation will be performed if an error occurs. Use for near-real time scenarios and environments with network reliability issues.</param>
+        /// <param name="retryWaitTimeSeconds">Number of seconds to wait before a retry attempt.</param>
         /// <param name="tableConfigurations">Collection of partitioned tables containing configuration information.</param>
         public ModelConfiguration(
             int modelConfigurationID,
@@ -98,6 +110,8 @@ namespace AsPartitionProcessing
             string password,
             int maxParallelism,
             int commitTimeout,
+            int retryAttempts,
+            int retryWaitTimeSeconds,
             List<TableConfiguration> tableConfigurations
         )
         {
@@ -111,6 +125,8 @@ namespace AsPartitionProcessing
             Password = password;
             MaxParallelism = maxParallelism;
             CommitTimeout = commitTimeout;
+            RetryAttempts = retryAttempts;
+            RetryWaitTimeSeconds = retryWaitTimeSeconds;
             TableConfigurations = tableConfigurations;
             ExecutionID = Guid.NewGuid().ToString();
         }

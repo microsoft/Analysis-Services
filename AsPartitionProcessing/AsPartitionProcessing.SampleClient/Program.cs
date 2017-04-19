@@ -138,6 +138,8 @@ namespace AsPartitionProcessing.SampleClient
                 password: "",
                 maxParallelism: -1,
                 commitTimeout: -1,
+                retryAttempts: 0,
+                retryWaitTimeSeconds: 0,
                 tableConfigurations:
                 new List<TableConfiguration>
                 {
@@ -279,7 +281,7 @@ namespace AsPartitionProcessing.SampleClient
             }
         }
 
-        private static void LogMessage(string message, ModelConfiguration partitionedModel)
+        private static void LogMessage(string message, MessageType messageType, ModelConfiguration partitionedModel)
         {
             //Can provide custom logger here
 
@@ -287,7 +289,7 @@ namespace AsPartitionProcessing.SampleClient
             {
                 if (!(_executionMode == ExecutionMode.InitializeInline))
                 {
-                    ConfigDatabaseHelper.LogMessage(message, partitionedModel);
+                    ConfigDatabaseHelper.LogMessage(message, messageType, partitionedModel);
                 }
 
                 Console.WriteLine(message);

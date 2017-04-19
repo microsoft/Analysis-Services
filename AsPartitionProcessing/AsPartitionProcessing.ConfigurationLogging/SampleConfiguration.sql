@@ -8,6 +8,8 @@ VALUES(
     ,1                          --[IntegratedAuth]
     ,-1                         --[MaxParallelism]
     ,-1                         --[CommitTimeout]
+	,0							--[RetryAttempts]
+	,0							--[RetryWaitTimeSeconds]
 );
 
 INSERT INTO [dbo].[TableConfiguration]

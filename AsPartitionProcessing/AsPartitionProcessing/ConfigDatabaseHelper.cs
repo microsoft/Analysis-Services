@@ -27,6 +27,8 @@ namespace AsPartitionProcessing
                               ,[IntegratedAuth]
                               ,[MaxParallelism]
                               ,[CommitTimeout]
+                              ,[RetryAttempts]
+                              ,[RetryWaitTimeSeconds]
                               ,[TableConfigurationID]
                               ,[AnalysisServicesTable]
                               ,[Partitioned]
@@ -37,7 +39,6 @@ namespace AsPartitionProcessing
                               ,[MaxDateIsNow]
                               ,[MaxDate]
                               ,[IntegerDateKey]
-
                               ,[TemplateSourceQuery]
                           FROM [dbo].[vPartitioningConfiguration]
                           WHERE [DoNotProcess] = 0 {0}
@@ -79,6 +80,8 @@ namespace AsPartitionProcessing
                             modelConfig.IntegratedAuth = Convert.ToBoolean(reader["IntegratedAuth"]);
                             modelConfig.MaxParallelism = Convert.ToInt32(reader["MaxParallelism"]);
                             modelConfig.CommitTimeout = Convert.ToInt32(reader["CommitTimeout"]);
+                            modelConfig.RetryAttempts = Convert.ToInt32(reader["RetryAttempts"]);
+                            modelConfig.RetryWaitTimeSeconds = Convert.ToInt32(reader["RetryWaitTimeSeconds"]);
                             modelConfig.ConfigDatabaseConnectionInfo = connectionInfo;
 
                             currentModelConfigurationID = modelConfig.ModelConfigurationID;
@@ -142,7 +145,7 @@ namespace AsPartitionProcessing
         /// </summary>
         /// <param name="message">Message to be logged.</param>
         /// <param name="partitionedModel">Partitioned model with configuration information.</param>
-        public static void LogMessage(string message, ModelConfiguration partitionedModel)
+        public static void LogMessage(string message, MessageType messageType, ModelConfiguration partitionedModel)
         {
             using (var connection = new SqlConnection(GetConnectionString(partitionedModel.ConfigDatabaseConnectionInfo)))
             {
@@ -156,13 +159,15 @@ namespace AsPartitionProcessing
                                ([ModelConfigurationID]
                                ,[ExecutionID]
                                ,[LogDateTime]
-                               ,[Message])
+                               ,[Message]
+                               ,[MessageType])
                          VALUES
                                (@ModelConfigurationID
                                ,@ExecutionID
                                ,@LogDateTime
-                               ,@Message);";
-
+                               ,@Message
+                               ,@MessageType);";
+                
                     SqlParameter parameter;
 
                     parameter = new SqlParameter("@ModelConfigurationID", SqlDbType.Int);
@@ -179,6 +184,10 @@ namespace AsPartitionProcessing
 
                     parameter = new SqlParameter("@Message", SqlDbType.VarChar, 4000);
                     parameter.Value = message;
+                    command.Parameters.Add(parameter);
+
+                    parameter = new SqlParameter("@MessageType", SqlDbType.VarChar, 50);
+                    parameter.Value = messageType.ToString();
                     command.Parameters.Add(parameter);
 
                     command.ExecuteNonQuery();
@@ -200,5 +209,14 @@ namespace AsPartitionProcessing
 
             return connectionString;
         }
+    }
+
+    /// <summary>
+    /// Enumeration of log message types.
+    /// </summary>
+    public enum MessageType
+    {
+        Informational,
+        Error
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AnalysisServices.Tabular;
+using System.Threading;
 
 
 //-----------
@@ -20,7 +21,7 @@ namespace AsPartitionProcessing
     /// </summary>
     /// <param name="message">The message to be logged</param>
     /// <param name="modelConfiguration">Configuration info for the model</param>
-    public delegate void LogMessageDelegate(string message, ModelConfiguration modelConfiguration);
+    public delegate void LogMessageDelegate(string message, MessageType messageType, ModelConfiguration modelConfiguration);
 
     /// <summary>
     /// Processor of partitions in AS tabular models
@@ -31,6 +32,7 @@ namespace AsPartitionProcessing
 
         private static ModelConfiguration _modelConfiguration;
         private static LogMessageDelegate _messageLogger;
+        private static int _retryAttempts;
 
         #endregion
 
@@ -45,7 +47,13 @@ namespace AsPartitionProcessing
         {
             _modelConfiguration = modelConfiguration;
             _messageLogger = messageLogger;
+            _retryAttempts = modelConfiguration.RetryAttempts;
 
+            PerformProcessing();
+        }
+
+        private static void PerformProcessing()
+        {
             Server server = new Server();
             try
             {
@@ -53,9 +61,9 @@ namespace AsPartitionProcessing
                 Connect(server, out database);
 
                 Console.ForegroundColor = ConsoleColor.White;
-                LogMessage($"Start: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
-                LogMessage($"Server: {_modelConfiguration.AnalysisServicesServer}", false);
-                LogMessage($"Database: {_modelConfiguration.AnalysisServicesDatabase}", false);
+                LogMessage($"Start: {DateTime.Now.ToString("hh:mm:ss tt")}", MessageType.Informational, false);
+                LogMessage($"Server: {_modelConfiguration.AnalysisServicesServer}", MessageType.Informational, false);
+                LogMessage($"Database: {_modelConfiguration.AnalysisServicesDatabase}", MessageType.Informational, false);
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
                 foreach (TableConfiguration tableConfiguration in _modelConfiguration.TableConfigurations)
@@ -69,18 +77,18 @@ namespace AsPartitionProcessing
                     if (tableConfiguration.PartitioningConfigurations.Count == 0)
                     {
                         //Non-partitioned table. Process at table level.
-                        LogMessage("", false);
-                        LogMessage($"Non-partitioned processing for table {tableConfiguration.AnalysisServicesTable}", false);
-                        LogMessage(new String('-', tableConfiguration.AnalysisServicesTable.Length + 37), false);
+                        LogMessage("", MessageType.Informational, false);
+                        LogMessage($"Non-partitioned processing for table {tableConfiguration.AnalysisServicesTable}", MessageType.Informational, false);
+                        LogMessage(new String('-', tableConfiguration.AnalysisServicesTable.Length + 37), MessageType.Informational, false);
 
                         if (_modelConfiguration.IncrementalOnline)
                         {
-                            LogMessage($"Process table {tableConfiguration.AnalysisServicesTable} /Full", true);
+                            LogMessage($"Process table {tableConfiguration.AnalysisServicesTable} /Full", MessageType.Informational, true);
                             table.RequestRefresh(RefreshType.Full);
                         }
                         else
                         {
-                            LogMessage($"Process table {tableConfiguration.AnalysisServicesTable} /DataOnly", true);
+                            LogMessage($"Process table {tableConfiguration.AnalysisServicesTable} /DataOnly", MessageType.Informational, true);
                             table.RequestRefresh(RefreshType.DataOnly);
                         }
                     }
@@ -99,9 +107,9 @@ namespace AsPartitionProcessing
                         //Process based on partitioning configuration(s).
                         foreach (PartitioningConfiguration partitioningConfiguration in tableConfiguration.PartitioningConfigurations)
                         {
-                            LogMessage("", false);
-                            LogMessage($"Rolling-window partitioning for table {tableConfiguration.AnalysisServicesTable}", false);
-                            LogMessage(new String('-', tableConfiguration.AnalysisServicesTable.Length + 38), false);
+                            LogMessage("", MessageType.Informational, false);
+                            LogMessage($"Rolling-window partitioning for table {tableConfiguration.AnalysisServicesTable}", MessageType.Informational, false);
+                            LogMessage(new String('-', tableConfiguration.AnalysisServicesTable.Length + 38), MessageType.Informational, false);
 
                             //Figure out what processing needs to be done
                             List<string> partitionKeysCurrent = GetPartitionKeysCurrent(table, partitioningConfiguration.Granularity);
@@ -109,19 +117,19 @@ namespace AsPartitionProcessing
                             List<string> partitionKeysForProcessing = GetPartitionKeysTarget(true, partitioningConfiguration, partitioningConfiguration.Granularity);
                             DisplayPartitionRange(partitionKeysCurrent, true, partitioningConfiguration.Granularity);
                             DisplayPartitionRange(partitionKeysNew, false, partitioningConfiguration.Granularity);
-                            LogMessage("", false);
-                            LogMessage("=>Actions & progress:", false);
+                            LogMessage("", MessageType.Informational, false);
+                            LogMessage("=>Actions & progress:", MessageType.Informational, false);
 
                             //Check for old partitions that need to be removed
                             foreach (string partitionKey in partitionKeysCurrent)
                             {
                                 if (Convert.ToInt32(partitionKey) < Convert.ToInt32(partitionKeysNew[0]))
                                 {
-                                    LogMessage($"Remove old partition       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)}", true);
+                                    LogMessage($"Remove old partition       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)}", MessageType.Informational, true);
                                     table.Partitions.Remove(partitionKey);
                                 }
                             }
-                            
+
                             //Process partitions
                             foreach (string partitionKey in partitionKeysForProcessing)
                             {
@@ -130,7 +138,7 @@ namespace AsPartitionProcessing
                                 if (partitionToProcess == null)
                                 {
                                     partitionToProcess = CreateNewPartition(table, templatePartition, partitioningConfiguration, partitionKey, partitioningConfiguration.Granularity);
-                                    LogMessage($"Create new partition       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)}", true);
+                                    LogMessage($"Create new partition       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)}", MessageType.Informational, true);
 
                                     if (!_modelConfiguration.InitialSetUp)
                                     {
@@ -148,14 +156,14 @@ namespace AsPartitionProcessing
                                     if (partitionToProcess.State != ObjectState.Ready)
                                     {
                                         //Process new partitions sequentially during initial setup so don't run out of memory
-                                        LogMessage($"Sequentially process       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)} /DataOnly", true);
+                                        LogMessage($"Sequentially process       {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)} /DataOnly", MessageType.Informational, true);
                                         partitionToProcess.RequestRefresh(RefreshType.DataOnly);
                                         database.Model.SaveChanges();
                                     }
                                     else
                                     {
                                         //Partition already exists during initial setup (and is fully processed), so ignore it
-                                        LogMessage($"Partition {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)} already exists and is processed", true);
+                                        LogMessage($"Partition {DateFormatPartitionKey(partitionKey, partitioningConfiguration.Granularity)} already exists and is processed", MessageType.Informational, true);
                                     }
                                 }
                             }
@@ -165,7 +173,7 @@ namespace AsPartitionProcessing
                         if (_modelConfiguration.InitialSetUp)
                         {
                             string beginParam = GetDateKey("19010102", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false, templatePartition.Source is MPartitionSource);
-                            string endParam =   GetDateKey("19010101", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false, templatePartition.Source is MPartitionSource);
+                            string endParam = GetDateKey("19010101", Granularity.Daily, tableConfiguration.PartitioningConfigurations[0].IntegerDateKey, false, templatePartition.Source is MPartitionSource);
                             //Query generated will always return nothing
                             string query = tableConfiguration.PartitioningConfigurations[0].TemplateSourceQuery.Replace("{0}", beginParam).Replace("{1}", endParam);
 
@@ -185,47 +193,56 @@ namespace AsPartitionProcessing
 
                 //Commit the data changes, and bring model back online if necessary
 
-                LogMessage("", false);
-                LogMessage("Final operations", false);
-                LogMessage(new String('-', 16), false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage("Final operations", MessageType.Informational, false);
+                LogMessage(new String('-', 16), MessageType.Informational, false);
 
                 //Save changes setting MaxParallelism if necessary
                 if (_modelConfiguration.MaxParallelism == -1)
                 {
-                    LogMessage("Save changes ...", true);
+                    LogMessage("Save changes ...", MessageType.Informational, true);
                     database.Model.SaveChanges();
                 }
                 else
                 {
-                    LogMessage($"Save changes with MaxParallelism={Convert.ToString(_modelConfiguration.MaxParallelism)}...", true);
+                    LogMessage($"Save changes with MaxParallelism={Convert.ToString(_modelConfiguration.MaxParallelism)}...", MessageType.Informational, true);
                     database.Model.SaveChanges(new SaveOptions() { MaxParallelism = _modelConfiguration.MaxParallelism });
                 }
 
                 //Perform recalc if necessary
                 if (_modelConfiguration.InitialSetUp || (!_modelConfiguration.InitialSetUp && !_modelConfiguration.IncrementalOnline))
                 {
-                    LogMessage("Recalc model to bring back online ...", true);
+                    LogMessage("Recalc model to bring back online ...", MessageType.Informational, true);
 
                     database.Model.RequestRefresh(RefreshType.Calculate);
                     database.Model.SaveChanges();
                 }
 
                 Console.ForegroundColor = ConsoleColor.White;
-                LogMessage("", false);
-                LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), MessageType.Informational, false);
             }
             catch (Exception exc)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                LogMessage("", false);
-                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
-                LogMessage($"Exception message: {exc.Message}", false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", MessageType.Error, false);
+                LogMessage($"Exception message: {exc.Message}", MessageType.Error, false);
                 if (exc.InnerException != null)
                 {
-                    LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
+                    LogMessage($"Inner exception message: {exc.InnerException.Message}", MessageType.Error, false);
                 }
-                LogMessage("", false);
+                LogMessage("", MessageType.Informational, false);
                 Console.ForegroundColor = ConsoleColor.White;
+
+                //Auto retry
+                if (_retryAttempts > 0)
+                {
+                    LogMessage($"Retry attempts remaining: {Convert.ToString(_retryAttempts)}. Will wait {Convert.ToString(_modelConfiguration.RetryWaitTimeSeconds)} seconds and then attempt retry.", MessageType.Informational, false);
+                    _retryAttempts -= 1;
+                    Thread.Sleep(_modelConfiguration.RetryWaitTimeSeconds * 1000);
+                    PerformProcessing();
+                }
             }
             finally
             {
@@ -255,11 +272,11 @@ namespace AsPartitionProcessing
             Server server = new Server();
             try
             {
-                LogMessage("", false);
-                LogMessage($"Merge partitions into {partitionKey} for table {analysisServicesTable}", false);
-                LogMessage(new String('-', partitionKey.Length + analysisServicesTable.Length + 33), false);
-                LogMessage("", false);
-                LogMessage("=>Actions & progress:", false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage($"Merge partitions into {partitionKey} for table {analysisServicesTable}", MessageType.Informational, false);
+                LogMessage(new String('-', partitionKey.Length + analysisServicesTable.Length + 33), MessageType.Informational, false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage("=>Actions & progress:", MessageType.Informational, false);
 
                 //Check target granularity
                 if (targetGranularity == Granularity.Daily)
@@ -323,40 +340,40 @@ namespace AsPartitionProcessing
                 List<Partition> partitionsToBeMerged = GetPartitionsCurrent(table, childGranularity, partitionKey);
                 if (partitionsToBeMerged.Count == 0)
                 {
-                    LogMessage($"No partitinos found in {analysisServicesTable} to be merged into {partitionKey}.", false);
+                    LogMessage($"No partitinos found in {analysisServicesTable} to be merged into {partitionKey}.", MessageType.Informational, false);
                 }
                 else
                 {
                     //Done with validation, so go ahead ...
-                    LogMessage("", false);
-                    LogMessage($"Create new merged partition {DateFormatPartitionKey(partitionKey, targetGranularity)} for table {analysisServicesTable}", true);
+                    LogMessage("", MessageType.Informational, false);
+                    LogMessage($"Create new merged partition {DateFormatPartitionKey(partitionKey, targetGranularity)} for table {analysisServicesTable}", MessageType.Informational, true);
                     Partition newPartition = CreateNewPartition(table, templatePartition, partitionConfig, partitionKey, targetGranularity);
 
                     foreach (Partition partition in partitionsToBeMerged)
                     {
-                        LogMessage($"Partition {partition.Name} to be merged into {DateFormatPartitionKey(partitionKey, targetGranularity)}", true);
+                        LogMessage($"Partition {partition.Name} to be merged into {DateFormatPartitionKey(partitionKey, targetGranularity)}", MessageType.Informational, true);
                     }
 
                     newPartition.RequestMerge(partitionsToBeMerged);
-                    LogMessage($"Save changes for table {analysisServicesTable} ...", true);
+                    LogMessage($"Save changes for table {analysisServicesTable} ...", MessageType.Informational, true);
                     database.Model.SaveChanges();
 
                     Console.ForegroundColor = ConsoleColor.White;
-                    LogMessage("", false);
-                    LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), false);
+                    LogMessage("", MessageType.Informational, false);
+                    LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), MessageType.Informational, false);
                 }
             }
             catch (Exception exc)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                LogMessage("", false);
-                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
-                LogMessage($"Exception message: {exc.Message}", false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", MessageType.Error, false);
+                LogMessage($"Exception message: {exc.Message}", MessageType.Error, false);
                 if (exc.InnerException != null)
                 {
-                    LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
+                    LogMessage($"Inner exception message: {exc.InnerException.Message}", MessageType.Error, false);
                 }
-                LogMessage("", false);
+                LogMessage("", MessageType.Informational, false);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             finally
@@ -388,16 +405,16 @@ namespace AsPartitionProcessing
                 Connect(server, out database);
 
                 Console.ForegroundColor = ConsoleColor.White;
-                LogMessage($"Start: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
-                LogMessage($"Server: {_modelConfiguration.AnalysisServicesServer}", false);
-                LogMessage($"Database: {_modelConfiguration.AnalysisServicesDatabase}", false);
+                LogMessage($"Start: {DateTime.Now.ToString("hh:mm:ss tt")}", MessageType.Informational, false);
+                LogMessage($"Server: {_modelConfiguration.AnalysisServicesServer}", MessageType.Informational, false);
+                LogMessage($"Database: {_modelConfiguration.AnalysisServicesDatabase}", MessageType.Informational, false);
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
-                LogMessage("", false);
-                LogMessage($"Defrag partitioned tables in database {_modelConfiguration.AnalysisServicesDatabase}", false);
-                LogMessage(new String('-', _modelConfiguration.AnalysisServicesDatabase.Length + 38), false);
-                LogMessage("", false);
-                LogMessage("=>Actions & progress:", false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage($"Defrag partitioned tables in database {_modelConfiguration.AnalysisServicesDatabase}", MessageType.Informational, false);
+                LogMessage(new String('-', _modelConfiguration.AnalysisServicesDatabase.Length + 38), MessageType.Informational, false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage("=>Actions & progress:", MessageType.Informational, false);
 
                 foreach (TableConfiguration tableConfiguration in _modelConfiguration.TableConfigurations)
                 {
@@ -410,27 +427,27 @@ namespace AsPartitionProcessing
                             throw new Microsoft.AnalysisServices.ConnectionException($"Could not connect to table {tableConfiguration.AnalysisServicesTable}.");
                         }
 
-                        LogMessage($"Defrag table {tableConfiguration.AnalysisServicesTable} ...", true);
+                        LogMessage($"Defrag table {tableConfiguration.AnalysisServicesTable} ...", MessageType.Informational, true);
                         table.RequestRefresh(RefreshType.Defragment);
                         database.Model.SaveChanges();
                     }
                 }
 
                 Console.ForegroundColor = ConsoleColor.White;
-                LogMessage("", false);
-                LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage("Finish: " + DateTime.Now.ToString("hh:mm:ss tt"), MessageType.Informational, false);
             }
             catch (Exception exc)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                LogMessage("", false);
-                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", false);
-                LogMessage($"Exception message: {exc.Message}", false);
+                LogMessage("", MessageType.Informational, false);
+                LogMessage($"Exception occurred: {DateTime.Now.ToString("hh:mm:ss tt")}", MessageType.Error, false);
+                LogMessage($"Exception message: {exc.Message}", MessageType.Error, false);
                 if (exc.InnerException != null)
                 {
-                    LogMessage($"Inner exception message: {exc.InnerException.Message}", false);
+                    LogMessage($"Inner exception message: {exc.InnerException.Message}", MessageType.Error, false);
                 }
-                LogMessage("", false);
+                LogMessage("", MessageType.Informational, false);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             finally
@@ -453,19 +470,19 @@ namespace AsPartitionProcessing
         {
             if (_modelConfiguration.IncrementalOnline)
             {
-                LogMessage($"Parallel process partition {DateFormatPartitionKey(partitionKey, granularity)} /Full", true);
+                LogMessage($"Parallel process partition {DateFormatPartitionKey(partitionKey, granularity)} /Full", MessageType.Informational, true);
                 partitionToProcess.RequestRefresh(RefreshType.Full);
             }
             else
             {
-                LogMessage($"Parallel process partition {DateFormatPartitionKey(partitionKey, granularity)} /DataOnly", true);
+                LogMessage($"Parallel process partition {DateFormatPartitionKey(partitionKey, granularity)} /DataOnly", MessageType.Informational, true);
                 partitionToProcess.RequestRefresh(RefreshType.DataOnly);
             }
         }
 
-        private static void LogMessage(string message, bool indented)
+        private static void LogMessage(string message, MessageType messageType, bool indented)
         {
-            _messageLogger($"{(indented ? new String(' ', 3) : "")}{message}", _modelConfiguration);
+            _messageLogger($"{(indented ? new String(' ', 3) : "")}{message}", messageType, _modelConfiguration);
         }
 
         private static string DateFormatPartitionKey(string partitionKey, Granularity granularity)
@@ -494,18 +511,18 @@ namespace AsPartitionProcessing
 
         private static void DisplayPartitionRange(List<string> partitionKeys, bool current, Granularity granularity)
         {
-            LogMessage("", false);
+            LogMessage("", MessageType.Informational, false);
 
             if (partitionKeys.Count > 0)
             {
-                LogMessage($"=>{(current ? "Current" : "New")} partition range ({Convert.ToString(granularity)}):", false);
-                LogMessage($"MIN partition:   {DateFormatPartitionKey(partitionKeys[0], granularity)}", true);
-                LogMessage($"MAX partition:   {DateFormatPartitionKey(partitionKeys[partitionKeys.Count - 1], granularity)}", true);
-                LogMessage($"Partition count: {partitionKeys.Count}", true);
+                LogMessage($"=>{(current ? "Current" : "New")} partition range ({Convert.ToString(granularity)}):", MessageType.Informational, false);
+                LogMessage($"MIN partition:   {DateFormatPartitionKey(partitionKeys[0], granularity)}", MessageType.Informational, true);
+                LogMessage($"MAX partition:   {DateFormatPartitionKey(partitionKeys[partitionKeys.Count - 1], granularity)}", MessageType.Informational, true);
+                LogMessage($"Partition count: {partitionKeys.Count}", MessageType.Informational, true);
             }
             else
             {
-                LogMessage("=>Table not yet partitioned", false);
+                LogMessage("=>Table not yet partitioned", MessageType.Informational, false);
             }
         }
 
@@ -513,7 +530,11 @@ namespace AsPartitionProcessing
         {
             //Connect and get main objects
             string serverConnectionString = $"Provider=MSOLAP;{(_modelConfiguration.CommitTimeout == -1 ? "" : $"CommitTimeout={Convert.ToString(_modelConfiguration.CommitTimeout)};")}Data Source={_modelConfiguration.AnalysisServicesServer};";
-            if (!_modelConfiguration.IntegratedAuth)
+            if (_modelConfiguration.IntegratedAuth)
+            {
+                serverConnectionString += $"Integrated Security=SSPI;";
+            }
+            else
             {
                 serverConnectionString += $"User ID={_modelConfiguration.UserName};Password={_modelConfiguration.Password};Persist Security Info=True;Impersonation Level=Impersonate;";
             }

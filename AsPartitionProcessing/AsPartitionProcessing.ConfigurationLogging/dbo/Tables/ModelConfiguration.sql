@@ -7,6 +7,8 @@
     [IntegratedAuth]           BIT           NOT NULL,
     [MaxParallelism]           INT           NOT NULL,
     [CommitTimeout]            INT           NOT NULL,
+    [RetryAttempts]			   TINYINT NOT NULL, 
+    [RetryWaitTimeSeconds]     INT NOT NULL, 
     CONSTRAINT [PK_ModelConfiguration] PRIMARY KEY CLUSTERED ([ModelConfigurationID] ASC)
 );
 
