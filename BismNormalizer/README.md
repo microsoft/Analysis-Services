@@ -1,6 +1,6 @@
 ### General Usage
 
-Download from the BISM Normalizer [Visual Studio Gallery page](https://visualstudiogallery.msdn.microsoft.com/f7ebe632-878c-4640-b035-a143d1dd1cf3). New releases will be uploaded to this page.
+Download from the BISM Normalizer [Visual Studio Marketplace page](https://marketplace.visualstudio.com/items?itemName=ChristianWade.BISMNormalizer3). New releases will be uploaded to this page.
 
 This video covers BISM Normalizer 3 use cases and demo.
 
