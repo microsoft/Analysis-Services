@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ComparisonInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ConnectionInfoSource>
+    <UseProject>false</UseProject>
+    <ServerName>localhost</ServerName>
+    <DatabaseName>Test1103_Source</DatabaseName>
+  </ConnectionInfoSource>
+  <ConnectionInfoTarget>
+    <UseProject>false</UseProject>
+    <ServerName>localhost</ServerName>
+    <DatabaseName>Test1103_Target</DatabaseName>
+  </ConnectionInfoTarget>
+  <OptionsInfo>
+    <OptionPerspectives>true</OptionPerspectives>
+    <OptionMergePerspectives>true</OptionMergePerspectives>
+    <OptionCultures>true</OptionCultures>
+    <OptionMergeCultures>true</OptionMergeCultures>
+    <OptionRoles>true</OptionRoles>
+    <OptionPartitions>false</OptionPartitions>
+    <OptionMeasureDependencies>true</OptionMeasureDependencies>
+    <OptionProcessingOption>Default</OptionProcessingOption>
+    <OptionAffectedTables>false</OptionAffectedTables>
+  </OptionsInfo>
+  <SkipSelections />
+</ComparisonInfo>

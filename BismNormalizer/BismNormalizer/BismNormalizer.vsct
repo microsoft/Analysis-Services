@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  <Extern href="virtkeys.h"/>
+
+  <Commands package="guidBismNormalizerPkg">
+
+    <Groups>
+      <Group guid="guidBismNormalizerCmdSet" id="ToolMenuGroup" priority="0x0000">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      </Group>
+      <Group guid="guidBismNormalizerCmdSet" id="ProjectMenuGroup" priority="0x0000">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+      </Group>
+      <Group guid="guidBismNormalizerCmdSet" id="FileMenuGroupCodeBehind" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+      </Group>
+      <Group guid="guidBismNormalizerCmdSet" id="FileMenuGroupInstallIcon" priority="0x0200">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+      </Group>
+    </Groups>
+    
+    <Buttons>
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidToolMenuNewComparison" priority="0x0100" type="Button">
+        <Parent guid="guidBismNormalizerCmdSet" id="ToolMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>New Tabular Model Comparison...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidProjectMenuNewComparison" priority="0x0100" type="Button">
+        <Parent guid="guidBismNormalizerCmdSet" id="ProjectMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidProjectMenuNewComparison</CommandName>
+          <ButtonText>Add New Tabular Model Comparison...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewCode" priority="0x0100" type="Button">
+        <Parent guid="guidBismNormalizerCmdSet" id="FileMenuGroupCodeBehind" />
+        <Icon guid="guidImages" id="ViewCodePic" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidFileMenuViewCode</CommandName>
+          <ButtonText>View Code</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewDesigner" priority="0x0100" type="Button">
+        <Parent guid="guidBismNormalizerCmdSet" id="FileMenuGroupCodeBehind" />
+        <Icon guid="guidImages" id="ViewDesignerPic" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidFileMenuViewDesigner</CommandName>
+          <ButtonText>View Designer</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidFileMenuInstallIcon" priority="0x0100" type="Button">
+        <Parent guid="guidBismNormalizerCmdSet" id="FileMenuGroupInstallIcon" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidFileMenuInstallIcon</CommandName>
+          <ButtonText>Install Solution Explorer Icon</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidBismNormalizerCmdSet" id="cmdidValidationOutput" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>BISM Normalizer Warning List</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+   
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpPic1, bmpPic2, ViewCodePic, ViewDesignerPic"/>
+    </Bitmaps>
+  </Commands>
+
+  <!--<KeyBindings>
+    --><!--For context menu in Solution Explorer--><!--
+    <KeyBinding guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewCode" editor="guidVSStd97" key1="VK_F7" />
+    <KeyBinding guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewDesigner" editor="guidVSStd97" key1="VK_F7" mod1="Shift" />
+    --><!--For when custom editor is open either as designer or as code behind--><!--
+    <KeyBinding guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewCode" editor="guidBismNormalizerEditorFactory" key1="VK_F7" />
+    <KeyBinding guid="guidBismNormalizerCmdSet" id="cmdidFileMenuViewDesigner" editor="guidBismNormalizerEditorFactory" key1="VK_F7" mod1="Shift" />
+  </KeyBindings>-->
+
+  <Symbols>
+    <GuidSymbol name="guidBismNormalizerPkg" value="{d094957e-b4bc-493f-b473-a0da301b21a1}" />
+    
+    <GuidSymbol name="guidBismNormalizerCmdSet" value="{1bbd436a-e530-49da-aea2-0a69108a1c57}">
+      <IDSymbol name="ToolMenuGroup" value="0x1020" />
+      <IDSymbol name="ProjectMenuGroup" value="0x1021" />
+      <IDSymbol name="FileMenuGroupCodeBehind" value="0x1022" />
+      <IDSymbol name="FileMenuGroupInstallIcon" value="0x1023" />
+      <IDSymbol name="cmdidToolMenuNewComparison" value="0x0100" />
+      <IDSymbol name="cmdidValidationOutput" value="0x0101" />
+      <IDSymbol name="cmdidProjectMenuNewComparison" value="0x0103" />
+      <IDSymbol name="cmdidFileMenuViewCode" value="0x0104" />
+      <IDSymbol name="cmdidFileMenuViewDesigner" value="0x0105" />
+      <IDSymbol name="cmdidFileMenuInstallIcon" value="0x0106" />
+    </GuidSymbol>
+    
+    <GuidSymbol name="guidBismNormalizerEditorFactory" value="{53f713ab-4e20-4874-831b-168ad70597b0}" />
+    
+    <GuidSymbol name="guidImages" value="{e5995535-1e9e-47c4-8678-fe75daad6755}" >
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="ViewCodePic" value="3" />
+      <IDSymbol name="ViewDesignerPic" value="4" />
+    </GuidSymbol>
+  </Symbols>
+
+</CommandTable>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TemplateReport>
+  <ItemTemplates>
+    <ItemTemplate Path="ItemTemplates\BISM Normalizer\Tabular Compare\Definitions\CSharp.vstemplate" Name="TabularCompare" Description="BISM Normalizer tabular model comparison" ProjectType="Business Intelligence" ProjectSubType="" />
+  </ItemTemplates>
+  <ProjectTemplates />
+  <Snippets />
+</TemplateReport>

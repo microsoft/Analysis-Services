@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Comparison contains source and target instances of TabularModel, and a collection of ComparisonObjects. Comparison is the primary entry point for clients.">
+    <Position X="5.812" Y="7.011" Height="0.92" Width="2.573" />
+  </Comment>
+  <Comment CommentText="ComparisonObject contains source and target instances of BismObject.">
+    <Position X="11" Y="7" Height="0.557" Width="2.573" />
+  </Comment>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Connection" Collapsed="true">
+    <Position X="2.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAEACAAAAJAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\Connection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.ConnectionCollection" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\ConnectionCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.TabularModel">
+    <Position X="2.25" Y="7" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="BismNormalizer.TabularCompare.TabularMetadata.TabularModel.ProcessAsyncDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Tom\Database.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAUQFQEAEGQMAEMGViBAVZUQBgCHEIwCZAILACBRBAA=</HashCode>
+      <FileName>TabularMetadata\TabularModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Comparison">
+    <Position X="5.75" Y="8.25" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IASEAIAAECAEAADDBAAYBoQCAgAAGAAAUJAAAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\Comparison.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.ComparisonObject" BaseTypeListCollapsed="true">
+    <Position X="11" Y="8" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAABEAAAAACQQAAAAAEAIAAAACAQAAAAAgAEAABA=</HashCode>
+      <FileName>TabularMetadata\ComparisonObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Measure" Collapsed="true">
+    <Position X="4.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAEAAQAIAAAAAAAAIAAAEAADQAAAAA=</HashCode>
+      <FileName>TabularMetadata\Measure.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.MeasureCollection" Collapsed="true">
+    <Position X="4.75" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAABgAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\MeasureCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Perspective" Collapsed="true">
+    <Position X="9.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAEAAAAAAJAEAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\Perspective.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.PerspectiveCollection" Collapsed="true">
+    <Position X="9" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAABBAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\PerspectiveCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Relationship" Collapsed="true">
+    <Position X="13.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAECAAAggAEAgEAQgUAAAAAIAgAAAACAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\Relationship.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.RelationshipCollection" Collapsed="true">
+    <Position X="13.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAABAAAAEAAAAAAAABAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\RelationshipCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Role" Collapsed="true">
+    <Position X="7" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEggAAAAJAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\Role.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.RoleCollection" Collapsed="true">
+    <Position X="7" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAABBAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\RoleCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Table" Collapsed="true">
+    <Position X="11.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAACIAAEAAAAEAAAAgCZAADACAAAAADAAAQIAABQ=</HashCode>
+      <FileName>TabularMetadata\Table.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.TableCollection" Collapsed="true">
+    <Position X="11.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAABABAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\TableCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.Culture" Collapsed="true">
+    <Position X="16" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAEAAAJAAAAACAAAAAAAAAAAAAE=</HashCode>
+      <FileName>TabularMetadata\Culture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.CultureCollection" Collapsed="true">
+    <Position X="16" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAABBAAAAAAAAAAACAAA=</HashCode>
+      <FileName>TabularMetadata\CultureCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BismNormalizer.TabularCompare.TabularMetadata.TabularObject" Collapsed="true">
+    <Position X="8.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAkgAAAAQEAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TabularMetadata\TabularObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BismNormalizer.TabularCompare.Core.Comparison" Collapsed="true">
+    <Position X="8.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAECAEQBBCAAIABIAAAAAAAAAAQAAAAAIGAIg=</HashCode>
+      <FileName>Core\Comparison.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BismNormalizer.TabularCompare.Core.ComparisonObject" Collapsed="true">
+    <Position X="13.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAEAAAAACAAAEAAAAAIAAAACAQAQAAAgAEAABA=</HashCode>
+      <FileName>Core\ComparisonObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="BismNormalizer.TabularCompare.Core.ValidationMessageStatus">
+    <Position X="13.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\Comparison.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BismNormalizer.TabularCompare.Core.UpdateAction">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAEAAEAAAAAAAAAAEAA=</HashCode>
+      <FileName>Core\Comparison.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BismNormalizer.TabularCompare.Core.ComparisonObjectStatus">
+    <Position X="10" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgIAAAAAAAAAAAAgAAAAAQAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Core\Comparison.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

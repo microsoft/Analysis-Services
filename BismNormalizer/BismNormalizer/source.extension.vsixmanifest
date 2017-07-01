@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="BismNormalizer.ea2aeb43-64a6-4dee-8816-099fb44513fa" Version="4.0.0.11" Language="en-US" Publisher="BISM Normalizer" />
+    <DisplayName>BISM Normalizer</DisplayName>
+    <Description xml:space="preserve">BISM Normalizer manages Analysis Services tabular models</Description>
+    <MoreInfo>http://bism-normalizer.com/</MoreInfo>
+    <License>Resources\LicenseTerms.txt</License>
+    <Icon>Resources\BismNormalizerLogo.png</Icon>
+    <PreviewImage>Resources\BismNormalizerLogoText.png</PreviewImage>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,15.0]" />
+    <InstallationTarget Version="[14.0,15.0]" Id="Microsoft.VisualStudio.IntegratedShell" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[14.0,16.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+</PackageManifest>

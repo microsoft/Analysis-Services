@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  
+  <!-- 
+    10/13/16: commented out obfuscation
+    
+    We intercept the build (just before GeneratePkgDef). There are subsequent build operations for extensions that require a compiled assembly,
+    so we must temporarily disable strong name-verificataion (the assembly is already delay-signed for Release configuration). These operations
+    modify the assembly file, so don't perform obfuscation before the VSIX file has been generated; we do it after the build.
+    
+    In addition to disabling strong-name verification, this is also a good point to compile other assemblies, and copy exes for inclusion in
+    the VSIX file.
+    
+    Later (AfterBuild), we can 1) run tests to execute the newly built BismNormalizer command-line exe and check results, and 2) extract the
+    assembly from the VSIX file, obfuscate it, sign it, re-register for strong-name verification, and replace the assembly in the VSIX file
+    with the obfuscated one.
+    
+    ================
+    
+     When do new release,
+    - Increment version number in manifest file (if major increment, also InstalledProductRegistration [package object attribute])
+    - Run following command:
+        msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
+    - Take VSIX from \ReleaseObfusc folder
+
+  -->
+
+  <Target Name="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+
+    <!--Initialize dynamic ItemGroups-->
+    <ItemGroup>
+      <AssemblyInfoFiles Include="Properties\AssemblyInfo.cs" />
+      <AssemblyInfoFiles Include="..\BismNormalizer.CommandLine\Properties\AssemblyInfo.cs" />
+      <AssemblyInfoFiles Include="..\BismNormalizer.IconSetup\Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+
+    <!--Take package version from manifest file and set assembly/file versions for all projects to match-->
+    <XmlPeek
+        Namespaces="&lt;Namespace Prefix='n' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011'/&gt;"
+        XmlInputPath="source.extension.vsixmanifest"
+        Query="//n:PackageManifest/n:Metadata/n:Identity/@Version"
+        >
+      <Output PropertyName="ManifestVersion" TaskParameter="Result" />
+    </XmlPeek>
+    
+    <Message Text="- About to set all assembly versions to $(ManifestVersion) on AssemblyInfoFiles: @(AssemblyInfoFiles)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <AssemblyInfo
+        AssemblyInfoFiles="@(AssemblyInfoFiles)"
+        AssemblyVersion="$(ManifestVersion)"
+        AssemblyFileVersion="$(ManifestVersion)" 
+        />
+
+  </Target>
+
+  <!--List exe content for VSIX here rather than in main csproj file so doesn't include in source control, and get checked out every build-->
+  <ItemGroup>
+    <Content Include="BismNormalizer.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BismNormalizer.IconSetup.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="CustomBeforePkgDef" BeforeTargets="GeneratePkgDef" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+
+    <!--Disable strong-name verification-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to disable strong-name verification on $(TargetPath)" Importance="high" />
+    <Exec Command="&quot;$(TargetFrameworkSDKToolsDirectory)sn.exe&quot; -Vr &quot;$(TargetPath)&quot;" />
+
+    <!--Initialize dynamic Item/PropertyGroups-->
+    <ItemGroup>
+      <AssociatedProjects Include="..\BismNormalizer.CommandLine\BismNormalizer.CommandLine.csproj" />
+      <AssociatedProjects Include="..\BismNormalizer.IconSetup\BismNormalizer.IconSetup.csproj" />
+      <AssociatedProjects Include="..\BismNormalizer.Tests\BismNormalizer.Tests.csproj" />
+      <SolutionDir Include="..\" />
+      <TrxFiles Include="TestResults\*.trx" />
+    </ItemGroup>
+    <PropertyGroup>
+      <SolutionDir>@(SolutionDir->'%(Fullpath)')</SolutionDir>
+    </PropertyGroup>
+
+    <!--Build 3 associated projects in parallel, which will pick up newly built BismNormalizer.dll as reference-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to build associated projects: @(AssociatedProjects)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <MSBuild
+        Projects="@(AssociatedProjects)"
+        Targets="Rebuild;"
+        Properties="Configuration=Release"
+        BuildInParallel="true"
+        >
+      <Output ItemName="OutputAssemblies" TaskParameter="TargetOutputs" />
+    </MSBuild>
+    
+    <ItemGroup>
+      <OutputExes Include="@(OutputAssemblies)" Exclude="$(SolutionDir)**\*.dll" />
+      <OutputDlls Include="@(OutputAssemblies)" Exclude="$(SolutionDir)**\*.exe" />
+    </ItemGroup>
+
+    <!--Copy newly built output exes (BismNormalizer.exe, BismNormalizer.IconSetup.exe) to main project directory to be included in VSIX file-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to copy exes to proj directory for inclusion in VSIX: @(OutputExes)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <Copy
+        SourceFiles="@(OutputExes)"
+        DestinationFolder="$(MSBuildProjectDirectory)" 
+        />
+
+  </Target>
+  
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+
+    <!--Run tests (BismNormalizer.Tests.dll)-->
+    <ItemGroup>
+      <TrxFiles Include="TestResults\*.trx" />
+    </ItemGroup>
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to delete any existing trx files: @(TrxFiles)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <Delete Files="@(TrxFiles)" />
+    <Message Text="- About to run vstest on: @(OutputDlls)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <Exec Command="vstest.console.exe @(OutputDlls) /Logger:trx" />
+
+    <PropertyGroup>
+      <ObfuscDir>$(MSBuildProjectDirectory)\bin\ReleaseObfusc</ObfuscDir>
+      <ObfuscExtractDir>$(ObfuscDir)\Extract</ObfuscExtractDir>
+      <ObfuscDll>$(ObfuscDir)\BismNormalizer.dll</ObfuscDll>
+      <ObfuscVsix>$(ObfuscDir)\BismNormalizer.vsix</ObfuscVsix>
+    </PropertyGroup>
+
+    <!--Copy BismNormalizer.vsix to ReleaseObfusc-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to copy $(MSBuildProjectDirectory)\bin\Release\BismNormalizer.vsix to $(ObfuscDir)" Importance="high" />
+    <Copy
+        SourceFiles="$(MSBuildProjectDirectory)\bin\Release\BismNormalizer.vsix"
+        DestinationFolder="$(ObfuscDir)" 
+        />
+
+    <!--Extract files from vsix-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to extract vsix file to $(ObfuscExtractDir)" Importance="high" />
+    <Zip
+        TaskAction="Extract"
+        ExtractPath="$(ObfuscExtractDir)"
+        ZipFileName="$(ObfuscVsix)" 
+        />
+
+    <!--10/13/2016: instead of obfuscation, just copy dll to ReleaseObfusc folder for signing
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to perform obfuscation with crypto project $(MSBuildProjectDirectory)\BismNormalizer.obproj" Importance="high" />
+    <Exec Command="&quot;C:\Program Files (x86)\LogicNP Software\Crypto Obfuscator For .Net 2015\co.exe&quot; &quot;projectfile=$(MSBuildProjectDirectory)\BismNormalizer.obproj&quot;" />
+    -->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to copy $(ObfuscExtractDir)\BismNormalizer.dll to $(ObfuscDir)" Importance="high" />
+    <Copy
+        SourceFiles="$(ObfuscExtractDir)\BismNormalizer.dll"
+        DestinationFolder="$(ObfuscDir)"
+        />
+    
+    <!--Enable strong-name verification-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to re-enable strong-name verification on $(ObfuscDll)" Importance="high" />
+    <Exec Command="&quot;$(TargetFrameworkSDKToolsDirectory)sn.exe&quot; -Vu &quot;$(ObfuscDll)&quot;" />
+
+    <!--Sign the assembly-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to sign $(ObfuscDll)" Importance="high" />
+    <Exec Command="&quot;$(TargetFrameworkSDKToolsDirectory)sn.exe&quot; -R &quot;$(ObfuscDll)&quot; &quot;$(MSBuildProjectDirectory)\Key.snk&quot;" />
+
+    <!--Replace dll in vsix with obfuscated version-->
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to re-pack vsix file: $(ObfuscVsix)" Importance="high" />
+    <Zip
+        TaskAction="AddFiles"
+        CompressFiles="$(ObfuscDll)"
+        ZipFileName="$(ObfuscVsix)"
+        RemoveRoot="$(ObfuscDir)" 
+        />
+
+  </Target>
+  
+</Project>
