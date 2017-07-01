@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="BismNormalizer.ea2aeb43-64a6-4dee-8816-099fb44513fa" Version="4.0.0.10" Language="en-US" Publisher="BISM Normalizer" />
+    <Identity Id="BismNormalizer.ea2aeb43-64a6-4dee-8816-099fb44513fa" Version="4.0.0.11" Language="en-US" Publisher="BISM Normalizer" />
     <DisplayName>BISM Normalizer</DisplayName>
     <Description xml:space="preserve">BISM Normalizer manages Analysis Services tabular models</Description>
     <MoreInfo>http://bism-normalizer.com/</MoreInfo>
