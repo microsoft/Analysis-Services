@@ -13,6 +13,9 @@ The ASTrace tool captures a Profiler trace and writes it to a SQL Server table w
 ## [AsXEventSample](https://github.com/Microsoft/Analysis-Services/tree/master/AsXEventSample)
 The AsXEventSample sample shows how to collect streaming xEvents
 
+## [BismNormalizer](https://github.com/Microsoft/Analysis-Services/tree/master/BismNormalizer)
+BISM Normalizer is a schema diff tool for tabular models
+
 ## Code of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
