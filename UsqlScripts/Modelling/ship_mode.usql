@@ -1,0 +1,25 @@
+@raw_parsed = EXTRACT child_id int,
+                sm_ship_mode_sk string,
+	sm_ship_mode_id string,
+	sm_type string,
+	sm_code string,
+	sm_carrier string,
+	sm_contract string,
+	empty string
+FROM "wasb://ship-mode@aasuseast2/{*}_{child_id:*}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT sm_ship_mode_sk,
+	sm_ship_mode_id,
+	sm_type,
+	sm_code,
+	sm_carrier,
+	sm_contract
+FROM @raw_parsed
+ORDER BY child_id ASC
+FETCH 100 ROWS;
+
+OUTPUT @filtered_results
+TO "/modelling/ship_mode.csv"
+USING Outputters.Csv(outputHeader: true);
+                

@@ -1,0 +1,65 @@
+@raw_parsed = EXTRACT child_id int,
+                web_site_sk string,
+	web_site_id string,
+	web_rec_start_date string,
+	web_rec_end_date string,
+	web_name string,
+	web_open_date_sk string,
+	web_close_date_sk string,
+	web_class string,
+	web_manager string,
+	web_mkt_id string,
+	web_mkt_class string,
+	web_mkt_desc string,
+	web_market_manager string,
+	web_company_id string,
+	web_company_name string,
+	web_street_number string,
+	web_street_name string,
+	web_street_type string,
+	web_suite_number string,
+	web_city string,
+	web_county string,
+	web_state string,
+	web_zip string,
+	web_country string,
+	web_gmt_offset string,
+	web_tax_percentage string,
+	empty string
+FROM "wasb://web-site@aasuseast2/{*}_{child_id:*}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT web_site_sk,
+	web_site_id,
+	web_rec_start_date,
+	web_rec_end_date,
+	web_name,
+	web_open_date_sk,
+	web_close_date_sk,
+	web_class,
+	web_manager,
+	web_mkt_id,
+	web_mkt_class,
+	web_mkt_desc,
+	web_market_manager,
+	web_company_id,
+	web_company_name,
+	web_street_number,
+	web_street_name,
+	web_street_type,
+	web_suite_number,
+	web_city,
+	web_county,
+	web_state,
+	web_zip,
+	web_country,
+	web_gmt_offset,
+	web_tax_percentage
+FROM @raw_parsed
+ORDER BY child_id ASC
+FETCH 100 ROWS;
+
+OUTPUT @filtered_results
+TO "/modelling/web_site.csv"
+USING Outputters.Csv(outputHeader: true);
+                

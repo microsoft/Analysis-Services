@@ -1,0 +1,41 @@
+@raw_parsed = EXTRACT child_id int,
+                w_warehouse_sk string,
+	w_warehouse_id string,
+	w_warehouse_name string,
+	w_warehouse_sq_ft string,
+	w_street_number string,
+	w_street_name string,
+	w_street_type string,
+	w_suite_number string,
+	w_city string,
+	w_county string,
+	w_state string,
+	w_zip string,
+	w_country string,
+	w_gmt_offset string,
+	empty string
+FROM "wasb://warehouse@aasuseast2/{*}_{child_id:*}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT w_warehouse_sk,
+	w_warehouse_id,
+	w_warehouse_name,
+	w_warehouse_sq_ft,
+	w_street_number,
+	w_street_name,
+	w_street_type,
+	w_suite_number,
+	w_city,
+	w_county,
+	w_state,
+	w_zip,
+	w_country,
+	w_gmt_offset
+FROM @raw_parsed
+ORDER BY child_id ASC
+FETCH 100 ROWS;
+
+OUTPUT @filtered_results
+TO "/modelling/warehouse.csv"
+USING Outputters.Csv(outputHeader: true);
+                

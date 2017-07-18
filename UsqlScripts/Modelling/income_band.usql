@@ -1,0 +1,19 @@
+@raw_parsed = EXTRACT child_id int,
+                b_income_band_sk string,
+	b_lower_bound string,
+	b_upper_bound string,
+	empty string
+FROM "wasb://income-band@aasuseast2/{*}_{child_id:*}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT b_income_band_sk,
+	b_lower_bound,
+	b_upper_bound
+FROM @raw_parsed
+ORDER BY child_id ASC
+FETCH 100 ROWS;
+
+OUTPUT @filtered_results
+TO "/modelling/income_band.csv"
+USING Outputters.Csv(outputHeader: true);
+                
