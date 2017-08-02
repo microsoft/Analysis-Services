@@ -16,6 +16,9 @@ The AsXEventSample sample shows how to collect streaming xEvents
 ## [BismNormalizer](https://github.com/Microsoft/Analysis-Services/tree/master/BismNormalizer)
 BISM Normalizer is a schema diff tool for tabular models
 
+## [UsqlScripts](https://github.com/Microsoft/Analysis-Services/tree/master/UsqlScripts)
+Sample U-SQL scripts that demonstrate how to process a TPC-DS data set in Azure Data Lake.
+
 ## Code of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
