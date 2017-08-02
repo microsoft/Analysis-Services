@@ -1,0 +1,55 @@
+@raw_parsed = EXTRACT child_id int,
+                _item_sk string,
+	_item_id string,
+	_rec_start_date string,
+	_rec_end_date string,
+	_item_desc string,
+	_current_price string,
+	_wholesale_cost string,
+	_brand_id string,
+	_brand string,
+	_class_id string,
+	_class string,
+	_category_id string,
+	_category string,
+	_manufact_id string,
+	_manufact string,
+	_size string,
+	_formulation string,
+	_color string,
+	_units string,
+	_container string,
+	_manager_id string,
+	_product_name string,
+	empty string
+FROM "wasb://item@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT _item_sk,
+	_item_id,
+	_rec_start_date,
+	_rec_end_date,
+	_item_desc,
+	_current_price,
+	_wholesale_cost,
+	_brand_id,
+	_brand,
+	_class_id,
+	_class,
+	_category_id,
+	_category,
+	_manufact_id,
+	_manufact,
+	_size,
+	_formulation,
+	_color,
+	_units,
+	_container,
+	_manager_id,
+	_product_name
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/item.csv"
+USING Outputters.Csv(outputHeader: true);
+                

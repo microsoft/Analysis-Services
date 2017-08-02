@@ -1,0 +1,50 @@
+@raw_parsed = EXTRACT child_id int,
+                wr_returned_date_sk string,
+	wr_returned_time_sk string,
+	wr_item_sk string,
+	wr_refunded_customer_sk string,
+	wr_refunded_cdemo_sk string,
+	wr_refunded_hdemo_sk string,
+	wr_refunded_addr_sk string,
+	wr_returning_customer_sk string,
+	wr_returning_cdemo_sk string,
+	wr_returning_hdemo_sk string,
+	wr_returning_addr_sk string,
+	wr_web_page_sk string,
+	wr_reason_sk string,
+	wr_order_number string,
+	wr_return_quantity string,
+	wr_return_amt string,
+	wr_return_tax string,
+	wr_return_amt_inc_tax string,
+	wr_fee string,
+	wr_return_ship_cost string,
+	wr_refunded_cash string,
+	wr_reversed_charge string,
+	wr_account_credit string,
+	wr_net_loss string,
+	empty string
+FROM "wasb://web-returns@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT wr_returned_date_sk,
+	wr_item_sk,
+	wr_refunded_cdemo_sk,
+	wr_refunded_addr_sk,
+	wr_returning_customer_sk,
+	wr_returning_cdemo_sk,
+	wr_returning_addr_sk,
+	wr_web_page_sk,
+	wr_reason_sk,
+	wr_order_number,
+	wr_return_quantity,
+	wr_return_amt,
+	wr_fee,
+	wr_refunded_cash,
+	wr_net_loss
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/all_single/web_returns.csv"
+USING Outputters.Csv(outputHeader: true);
+                

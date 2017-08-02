@@ -24,7 +24,7 @@
 	wr_account_credit string,
 	wr_net_loss string,
 	empty string
-FROM "wasb://web-returns@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://web-returns@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT wr_returned_date_sk,

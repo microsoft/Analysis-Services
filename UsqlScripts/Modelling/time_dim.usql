@@ -10,7 +10,7 @@
 	t_sub_shift string,
 	t_meal_time string,
 	empty string
-FROM "wasb://time-dim@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://time-dim@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT t_time_sk,

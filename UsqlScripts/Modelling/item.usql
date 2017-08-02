@@ -22,7 +22,7 @@
 	_manager_id string,
 	_product_name string,
 	empty string
-FROM "wasb://item@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://item@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT _item_sk,

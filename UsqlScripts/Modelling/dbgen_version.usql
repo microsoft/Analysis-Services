@@ -4,7 +4,7 @@
 	dv_create_time string,
 	dv_cmdline_args string,
 	empty string
-FROM "wasb://dbgen-version@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://dbgen-version@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT dv_version,

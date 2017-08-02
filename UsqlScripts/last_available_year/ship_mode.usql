@@ -1,0 +1,23 @@
+@raw_parsed = EXTRACT child_id int,
+                sm_ship_mode_sk string,
+	sm_ship_mode_id string,
+	sm_type string,
+	sm_code string,
+	sm_carrier string,
+	sm_contract string,
+	empty string
+FROM "wasb://ship-mode@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT sm_ship_mode_sk,
+	sm_ship_mode_id,
+	sm_type,
+	sm_code,
+	sm_carrier,
+	sm_contract
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/ship_mode.csv"
+USING Outputters.Csv(outputHeader: true);
+                

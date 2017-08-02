@@ -1,0 +1,19 @@
+@raw_parsed = EXTRACT child_id int,
+                dv_version string,
+	dv_create_date string,
+	dv_create_time string,
+	dv_cmdline_args string,
+	empty string
+FROM "wasb://dbgen-version@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT dv_version,
+	dv_create_date,
+	dv_create_time,
+	dv_cmdline_args
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/all_single/dbgen_version.csv"
+USING Outputters.Csv(outputHeader: true);
+                

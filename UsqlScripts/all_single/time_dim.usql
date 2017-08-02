@@ -1,0 +1,31 @@
+@raw_parsed = EXTRACT child_id int,
+                t_time_sk string,
+	t_time_id string,
+	t_time string,
+	t_hour string,
+	t_minute string,
+	t_second string,
+	t_am_pm string,
+	t_shift string,
+	t_sub_shift string,
+	t_meal_time string,
+	empty string
+FROM "wasb://time-dim@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT t_time_sk,
+	t_time_id,
+	t_time,
+	t_hour,
+	t_minute,
+	t_second,
+	t_am_pm,
+	t_shift,
+	t_sub_shift,
+	t_meal_time
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/all_single/time_dim.csv"
+USING Outputters.Csv(outputHeader: true);
+                

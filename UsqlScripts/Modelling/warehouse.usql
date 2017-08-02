@@ -14,7 +14,7 @@
 	w_country string,
 	w_gmt_offset string,
 	empty string
-FROM "wasb://warehouse@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://warehouse@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT w_warehouse_sk,

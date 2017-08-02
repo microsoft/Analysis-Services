@@ -1,0 +1,77 @@
+@raw_parsed = EXTRACT child_id int,
+                sr_returned_date_sk string,
+	sr_return_time_sk string,
+	sr_item_sk string,
+	sr_customer_sk string,
+	sr_cdemo_sk string,
+	sr_hdemo_sk string,
+	sr_addr_sk string,
+	sr_store_sk string,
+	sr_reason_sk string,
+	sr_ticket_number string,
+	sr_return_quantity string,
+	sr_return_amt string,
+	sr_return_tax string,
+	sr_return_amt_inc_tax string,
+	sr_fee string,
+	sr_return_ship_cost string,
+	sr_refunded_cash string,
+	sr_reversed_charge string,
+	sr_store_credit string,
+	sr_net_loss string,
+	empty string
+FROM "wasb://store-returns@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@date_dim = EXTRACT d_date_sk string,
+	d_date_id string,
+	d_date string,
+	d_month_seq string,
+	d_week_seq string,
+	d_quarter_seq string,
+	d_year int,
+	d_dow string,
+	d_moy string,
+	d_dom string,
+	d_qoy string,
+	d_fy_year string,
+	d_fy_quarter_seq string,
+	d_fy_week_seq string,
+	d_day_name string,
+	d_quarter_name string,
+	d_holiday string,
+	d_weekend string,
+	d_following_holiday string,
+	d_first_dom string,
+	d_last_dom string,
+	d_same_day_ly string,
+	d_same_day_lq string,
+	d_current_day string,
+	d_current_week string,
+	d_current_month string,
+	d_current_quarter string,
+	d_current_year string,
+	empty string
+FROM "wasb://date-dim@<blob storage account name>/date_dim_1_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT sr_returned_date_sk,
+	sr_item_sk,
+	sr_customer_sk,
+	sr_cdemo_sk,
+	sr_store_sk,
+	sr_reason_sk,
+	sr_ticket_number,
+	sr_return_quantity,
+	sr_return_amt,
+	sr_return_amt_inc_tax,
+	sr_net_loss
+FROM @raw_parsed
+INNER JOIN (SELECT d_date_sk, d_year FROM @date_dim) AS dd  
+         ON sr_returned_date_sk == dd.d_date_sk
+WHERE dd.d_year == 2003;
+
+OUTPUT @filtered_results
+TO "/last_available_year/store_returns.csv"
+USING Outputters.Csv(outputHeader: true);
+                

@@ -1,0 +1,20 @@
+@raw_parsed = EXTRACT child_id int,
+                nv_date_sk string,
+	nv_item_sk string,
+	nv_warehouse_sk string,
+	nv_quantity_on_hand string,
+	empty string
+FROM "wasb://inventory@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT nv_date_sk,
+	nv_item_sk,
+	nv_warehouse_sk,
+	nv_quantity_on_hand
+FROM @raw_parsed
+WHERE child_id BETWEEN 26 AND 50;
+
+OUTPUT @filtered_results
+TO "/large_multiple/inventory_2.csv"
+USING Outputters.Csv(outputHeader: true);
+                

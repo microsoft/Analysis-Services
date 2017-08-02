@@ -9,7 +9,7 @@
 	cd_dep_employed_count string,
 	cd_dep_college_count string,
 	empty string
-FROM "wasb://customer-demographics@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://customer-demographics@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT cd_demo_sk,

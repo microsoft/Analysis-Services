@@ -27,7 +27,7 @@
 	cr_store_credit string,
 	cr_net_loss string,
 	empty string
-FROM "wasb://catalog-returns@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://catalog-returns@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT cr_returned_date_sk,

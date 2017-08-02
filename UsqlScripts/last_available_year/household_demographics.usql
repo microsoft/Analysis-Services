@@ -1,0 +1,21 @@
+@raw_parsed = EXTRACT child_id int,
+                hd_demo_sk string,
+	hd_income_band_sk string,
+	hd_buy_potential string,
+	hd_dep_count string,
+	hd_vehicle_count string,
+	empty string
+FROM "wasb://household-demographics@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT hd_demo_sk,
+	hd_income_band_sk,
+	hd_buy_potential,
+	hd_dep_count,
+	hd_vehicle_count
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/household_demographics.csv"
+USING Outputters.Csv(outputHeader: true);
+                
