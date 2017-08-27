@@ -52,12 +52,22 @@ namespace BismNormalizer.TabularCompare.UI
                 float dpiScaleFactorFudged = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
 
                 this.Scale(new SizeF(dpiScaleFactorFudged * 0.44f, dpiScaleFactorFudged * 0.38f));
-                this.Width = Convert.ToInt32(this.Width * dpiScaleFactorFudged * 0.6f);
+                this.Width = Convert.ToInt32(this.Width * dpiScaleFactorFudged * 0.8f);
                 foreach (Control control in HighDPIUtils.GetChildInControl(this))
                 {
-                    control.Font = new Font(control.Font.FontFamily,
-                                      control.Font.Size * dpiScaleFactorFudged * HighDPIUtils.PrimaryFudgeFactor,
-                                      control.Font.Style);
+                    if (control is Button)
+                    {
+                        control.Font = new Font(control.Font.FontFamily,
+                                          control.Font.Size * dpiScaleFactorFudged * 1.1f * HighDPIUtils.PrimaryFudgeFactor,
+                                          control.Font.Style);
+                    }
+                    else
+                    {
+                        control.Font = new Font(control.Font.FontFamily,
+                                        //cbw todo check * 1.4f works on remote desktop setting
+                                        control.Font.Size * dpiScaleFactorFudged * 1.4f * HighDPIUtils.PrimaryFudgeFactor,
+                                        control.Font.Style);
+                    }
                 }
             }
 
