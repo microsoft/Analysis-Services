@@ -62,6 +62,11 @@ namespace BismNormalizer.TabularCompare.UI
                             control.Font = new Font(control.Font.FontFamily,
                                               control.Font.Size * dpiScaleFactorFudged * 1.1f * HighDPIUtils.PrimaryFudgeFactor,
                                               control.Font.Style);
+                            control.Left = control.Left - 90;
+                            if (control.Name == "btnCancel")
+                            {
+                                control.Left = control.Left - 60;
+                            }
                         }
                         else
                         {
@@ -69,6 +74,11 @@ namespace BismNormalizer.TabularCompare.UI
                                             //cbw todo check * 1.4f works on remote desktop setting
                                             control.Font.Size * dpiScaleFactorFudged * 1.4f * HighDPIUtils.PrimaryFudgeFactor,
                                             control.Font.Style);
+                        }
+
+                        if (control is Button || control is TextBox || control is ComboBox)
+                        {
+                            control.Width = Convert.ToInt32(control.Width * 0.78);
                         }
                     }
                 }
