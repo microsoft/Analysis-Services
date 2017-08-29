@@ -1,0 +1,17 @@
+@raw_parsed = EXTRACT child_id int,
+                _reason_sk string,
+	_reason_id string,
+	_reason_desc string,
+	empty string
+FROM "wasb://reason@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT _reason_sk,
+	_reason_id,
+	_reason_desc
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/all_single/reason.csv"
+USING Outputters.Csv(outputHeader: true);
+                

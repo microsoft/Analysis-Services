@@ -1,0 +1,53 @@
+@raw_parsed = EXTRACT child_id int,
+                cr_returned_date_sk string,
+	cr_returned_time_sk string,
+	cr_item_sk string,
+	cr_refunded_customer_sk string,
+	cr_refunded_cdemo_sk string,
+	cr_refunded_hdemo_sk string,
+	cr_refunded_addr_sk string,
+	cr_returning_customer_sk string,
+	cr_returning_cdemo_sk string,
+	cr_returning_hdemo_sk string,
+	cr_returning_addr_sk string,
+	cr_call_center_sk string,
+	cr_catalog_page_sk string,
+	cr_ship_mode_sk string,
+	cr_warehouse_sk string,
+	cr_reason_sk string,
+	cr_order_number string,
+	cr_return_quantity string,
+	cr_return_amount string,
+	cr_return_tax string,
+	cr_return_amt_inc_tax string,
+	cr_fee string,
+	cr_return_ship_cost string,
+	cr_refunded_cash string,
+	cr_reversed_charge string,
+	cr_store_credit string,
+	cr_net_loss string,
+	empty string
+FROM "wasb://catalog-returns@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT cr_returned_date_sk,
+	cr_item_sk,
+	cr_returning_customer_sk,
+	cr_returning_addr_sk,
+	cr_call_center_sk,
+	cr_catalog_page_sk,
+	cr_order_number,
+	cr_return_quantity,
+	cr_return_amount,
+	cr_return_amt_inc_tax,
+	cr_refunded_cash,
+	cr_reversed_charge,
+	cr_store_credit,
+	cr_net_loss
+FROM @raw_parsed
+WHERE child_id BETWEEN 1 AND 25;
+
+OUTPUT @filtered_results
+TO "/large_multiple/catalog_returns.csv"
+USING Outputters.Csv(outputHeader: true);
+                

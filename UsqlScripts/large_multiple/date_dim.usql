@@ -1,0 +1,68 @@
+@raw_parsed = EXTRACT child_id int,
+                d_date_sk string,
+	d_date_id string,
+	d_date string,
+	d_month_seq string,
+	d_week_seq string,
+	d_quarter_seq string,
+	d_year string,
+	d_dow string,
+	d_moy string,
+	d_dom string,
+	d_qoy string,
+	d_fy_year string,
+	d_fy_quarter_seq string,
+	d_fy_week_seq string,
+	d_day_name string,
+	d_quarter_name string,
+	d_holiday string,
+	d_weekend string,
+	d_following_holiday string,
+	d_first_dom string,
+	d_last_dom string,
+	d_same_day_ly string,
+	d_same_day_lq string,
+	d_current_day string,
+	d_current_week string,
+	d_current_month string,
+	d_current_quarter string,
+	d_current_year string,
+	empty string
+FROM "wasb://date-dim@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT d_date_sk,
+	d_date_id,
+	d_date,
+	d_month_seq,
+	d_week_seq,
+	d_quarter_seq,
+	d_year,
+	d_dow,
+	d_moy,
+	d_dom,
+	d_qoy,
+	d_fy_year,
+	d_fy_quarter_seq,
+	d_fy_week_seq,
+	d_day_name,
+	d_quarter_name,
+	d_holiday,
+	d_weekend,
+	d_following_holiday,
+	d_first_dom,
+	d_last_dom,
+	d_same_day_ly,
+	d_same_day_lq,
+	d_current_day,
+	d_current_week,
+	d_current_month,
+	d_current_quarter,
+	d_current_year
+FROM @raw_parsed
+WHERE child_id BETWEEN 1 AND 100;
+
+OUTPUT @filtered_results
+TO "/large_multiple/date_dim.csv"
+USING Outputters.Csv(outputHeader: true);
+                

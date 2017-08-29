@@ -1,0 +1,37 @@
+@raw_parsed = EXTRACT child_id int,
+                ca_address_sk string,
+	ca_address_id string,
+	ca_street_number string,
+	ca_street_name string,
+	ca_street_type string,
+	ca_suite_number string,
+	ca_city string,
+	ca_county string,
+	ca_state string,
+	ca_zip string,
+	ca_country string,
+	ca_gmt_offset string,
+	ca_location_type string,
+	empty string
+FROM "wasb://customer-address@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT ca_address_sk,
+	ca_address_id,
+	ca_street_number,
+	ca_street_name,
+	ca_street_type,
+	ca_suite_number,
+	ca_city,
+	ca_county,
+	ca_state,
+	ca_zip,
+	ca_country,
+	ca_gmt_offset,
+	ca_location_type
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/customer_address.csv"
+USING Outputters.Csv(outputHeader: true);
+                

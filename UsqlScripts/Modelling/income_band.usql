@@ -3,7 +3,7 @@
 	b_lower_bound string,
 	b_upper_bound string,
 	empty string
-FROM "wasb://income-band@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://income-band@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT b_income_band_sk,

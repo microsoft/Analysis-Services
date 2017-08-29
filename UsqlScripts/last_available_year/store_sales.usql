@@ -1,0 +1,91 @@
+@raw_parsed = EXTRACT child_id int,
+                ss_sold_date_sk string,
+	ss_sold_time_sk string,
+	ss_item_sk string,
+	ss_customer_sk string,
+	ss_cdemo_sk string,
+	ss_hdemo_sk string,
+	ss_addr_sk string,
+	ss_store_sk string,
+	ss_promo_sk string,
+	ss_ticket_number string,
+	ss_quantity string,
+	ss_wholesale_cost string,
+	ss_list_price string,
+	ss_sales_price string,
+	ss_ext_discount_amt string,
+	ss_ext_sales_price string,
+	ss_ext_wholesale_cost string,
+	ss_ext_list_price string,
+	ss_ext_tax string,
+	ss_coupon_amt string,
+	ss_net_paid string,
+	ss_net_paid_inc_tax string,
+	ss_net_profit string,
+	empty string
+FROM "wasb://store-sales@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@date_dim = EXTRACT d_date_sk string,
+	d_date_id string,
+	d_date string,
+	d_month_seq string,
+	d_week_seq string,
+	d_quarter_seq string,
+	d_year int,
+	d_dow string,
+	d_moy string,
+	d_dom string,
+	d_qoy string,
+	d_fy_year string,
+	d_fy_quarter_seq string,
+	d_fy_week_seq string,
+	d_day_name string,
+	d_quarter_name string,
+	d_holiday string,
+	d_weekend string,
+	d_following_holiday string,
+	d_first_dom string,
+	d_last_dom string,
+	d_same_day_ly string,
+	d_same_day_lq string,
+	d_current_day string,
+	d_current_week string,
+	d_current_month string,
+	d_current_quarter string,
+	d_current_year string,
+	empty string
+FROM "wasb://date-dim@<blob storage account name>/date_dim_1_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT ss_sold_date_sk,
+	ss_sold_time_sk,
+	ss_item_sk,
+	ss_customer_sk,
+	ss_cdemo_sk,
+	ss_hdemo_sk,
+	ss_addr_sk,
+	ss_store_sk,
+	ss_promo_sk,
+	ss_ticket_number,
+	ss_quantity,
+	ss_wholesale_cost,
+	ss_list_price,
+	ss_sales_price,
+	ss_ext_discount_amt,
+	ss_ext_sales_price,
+	ss_ext_wholesale_cost,
+	ss_ext_list_price,
+	ss_ext_tax,
+	ss_coupon_amt,
+	ss_net_paid,
+	ss_net_profit
+FROM @raw_parsed
+INNER JOIN (SELECT d_date_sk, d_year FROM @date_dim) AS dd  
+         ON ss_sold_date_sk == dd.d_date_sk
+WHERE dd.d_year == 2003;
+
+OUTPUT @filtered_results
+TO "/last_available_year/store_sales.csv"
+USING Outputters.Csv(outputHeader: true);
+                

@@ -1,0 +1,29 @@
+@raw_parsed = EXTRACT child_id int,
+                cp_catalog_page_sk string,
+	cp_catalog_page_id string,
+	cp_start_date_sk string,
+	cp_end_date_sk string,
+	cp_department string,
+	cp_catalog_number string,
+	cp_catalog_page_number string,
+	cp_description string,
+	cp_type string,
+	empty string
+FROM "wasb://catalog-page@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT cp_catalog_page_sk,
+	cp_catalog_page_id,
+	cp_start_date_sk,
+	cp_end_date_sk,
+	cp_department,
+	cp_catalog_number,
+	cp_catalog_page_number,
+	cp_description,
+	cp_type
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/catalog_page.csv"
+USING Outputters.Csv(outputHeader: true);
+                

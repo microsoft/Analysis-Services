@@ -1,0 +1,43 @@
+@raw_parsed = EXTRACT child_id int,
+                sr_returned_date_sk string,
+	sr_return_time_sk string,
+	sr_item_sk string,
+	sr_customer_sk string,
+	sr_cdemo_sk string,
+	sr_hdemo_sk string,
+	sr_addr_sk string,
+	sr_store_sk string,
+	sr_reason_sk string,
+	sr_ticket_number string,
+	sr_return_quantity string,
+	sr_return_amt string,
+	sr_return_tax string,
+	sr_return_amt_inc_tax string,
+	sr_fee string,
+	sr_return_ship_cost string,
+	sr_refunded_cash string,
+	sr_reversed_charge string,
+	sr_store_credit string,
+	sr_net_loss string,
+	empty string
+FROM "wasb://store-returns@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT sr_returned_date_sk,
+	sr_item_sk,
+	sr_customer_sk,
+	sr_cdemo_sk,
+	sr_store_sk,
+	sr_reason_sk,
+	sr_ticket_number,
+	sr_return_quantity,
+	sr_return_amt,
+	sr_return_amt_inc_tax,
+	sr_net_loss
+FROM @raw_parsed
+WHERE child_id BETWEEN 1 AND 25;
+
+OUTPUT @filtered_results
+TO "/large_multiple/store_returns.csv"
+USING Outputters.Csv(outputHeader: true);
+                

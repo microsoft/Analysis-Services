@@ -34,7 +34,7 @@
 	ws_net_paid_inc_ship_tax string,
 	ws_net_profit string,
 	empty string
-FROM "wasb://web-sales@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://web-sales@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT ws_sold_date_sk,

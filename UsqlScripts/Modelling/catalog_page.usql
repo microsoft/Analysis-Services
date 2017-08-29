@@ -9,7 +9,7 @@
 	cp_description string,
 	cp_type string,
 	empty string
-FROM "wasb://catalog-page@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://catalog-page@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT cp_catalog_page_sk,

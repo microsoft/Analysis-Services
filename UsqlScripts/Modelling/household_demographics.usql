@@ -5,7 +5,7 @@
 	hd_dep_count string,
 	hd_vehicle_count string,
 	empty string
-FROM "wasb://household-demographics@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://household-demographics@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT hd_demo_sk,

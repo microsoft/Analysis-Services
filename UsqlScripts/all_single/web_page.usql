@@ -1,0 +1,39 @@
+@raw_parsed = EXTRACT child_id int,
+                wp_web_page_sk string,
+	wp_web_page_id string,
+	wp_rec_start_date string,
+	wp_rec_end_date string,
+	wp_creation_date_sk string,
+	wp_access_date_sk string,
+	wp_autogen_flag string,
+	wp_customer_sk string,
+	wp_url string,
+	wp_type string,
+	wp_char_count string,
+	wp_link_count string,
+	wp_image_count string,
+	wp_max_ad_count string,
+	empty string
+FROM "wasb://web-page@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT wp_web_page_sk,
+	wp_web_page_id,
+	wp_rec_start_date,
+	wp_rec_end_date,
+	wp_creation_date_sk,
+	wp_access_date_sk,
+	wp_autogen_flag,
+	wp_customer_sk,
+	wp_url,
+	wp_type,
+	wp_char_count,
+	wp_link_count,
+	wp_image_count,
+	wp_max_ad_count
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/all_single/web_page.csv"
+USING Outputters.Csv(outputHeader: true);
+                

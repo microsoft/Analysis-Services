@@ -13,7 +13,7 @@
 	ca_gmt_offset string,
 	ca_location_type string,
 	empty string
-FROM "wasb://customer-address@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://customer-address@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT ca_address_sk,

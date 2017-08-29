@@ -31,7 +31,7 @@
 	cc_gmt_offset string,
 	cc_tax_percentage string,
 	empty string
-FROM "wasb://call-center@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://call-center@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT cc_call_center_sk,

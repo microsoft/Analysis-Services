@@ -1,0 +1,50 @@
+@raw_parsed = EXTRACT child_id int,
+                _promo_sk string,
+	_promo_id string,
+	_start_date_sk string,
+	_end_date_sk string,
+	_item_sk string,
+	_cost string,
+	_response_target string,
+	_promo_name string,
+	_channel_dmail string,
+	_channel_email string,
+	_channel_catalog string,
+	_channel_tv string,
+	_channel_radio string,
+	_channel_press string,
+	_channel_event string,
+	_channel_demo string,
+	_channel_details string,
+	_purpose string,
+	_discount_active string,
+	empty string
+FROM "wasb://promotion@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT _promo_sk,
+	_promo_id,
+	_start_date_sk,
+	_end_date_sk,
+	_item_sk,
+	_cost,
+	_response_target,
+	_promo_name,
+	_channel_dmail,
+	_channel_email,
+	_channel_catalog,
+	_channel_tv,
+	_channel_radio,
+	_channel_press,
+	_channel_event,
+	_channel_demo,
+	_channel_details,
+	_purpose,
+	_discount_active
+FROM @raw_parsed
+WHERE child_id BETWEEN 1 AND 100;
+
+OUTPUT @filtered_results
+TO "/large_multiple/promotion.csv"
+USING Outputters.Csv(outputHeader: true);
+                

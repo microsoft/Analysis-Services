@@ -1,0 +1,29 @@
+@raw_parsed = EXTRACT child_id int,
+                cd_demo_sk string,
+	cd_gender string,
+	cd_marital_status string,
+	cd_education_status string,
+	cd_purchase_estimate string,
+	cd_credit_rating string,
+	cd_dep_count string,
+	cd_dep_employed_count string,
+	cd_dep_college_count string,
+	empty string
+FROM "wasb://customer-demographics@<blob storage account name>/{*}_{child_id}_100.dat"
+USING Extractors.Text(delimiter: '|');
+
+@filtered_results = SELECT cd_demo_sk,
+	cd_gender,
+	cd_marital_status,
+	cd_education_status,
+	cd_purchase_estimate,
+	cd_credit_rating,
+	cd_dep_count,
+	cd_dep_employed_count,
+	cd_dep_college_count
+FROM @raw_parsed;
+
+OUTPUT @filtered_results
+TO "/last_available_year/customer_demographics.csv"
+USING Outputters.Csv(outputHeader: true);
+                

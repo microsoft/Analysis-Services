@@ -14,7 +14,7 @@
 	wp_image_count string,
 	wp_max_ad_count string,
 	empty string
-FROM "wasb://web-page@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://web-page@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT wp_web_page_sk,

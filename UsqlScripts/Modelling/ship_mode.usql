@@ -6,7 +6,7 @@
 	sm_carrier string,
 	sm_contract string,
 	empty string
-FROM "wasb://ship-mode@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://ship-mode@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT sm_ship_mode_sk,

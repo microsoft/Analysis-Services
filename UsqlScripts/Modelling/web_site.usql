@@ -26,7 +26,7 @@
 	web_gmt_offset string,
 	web_tax_percentage string,
 	empty string
-FROM "wasb://web-site@aasuseast2/{*}_{child_id:*}_100.dat"
+FROM "wasb://web-site@<blob storage account name>/{*}_{child_id}_100.dat"
 USING Extractors.Text(delimiter: '|');
 
 @filtered_results = SELECT web_site_sk,
