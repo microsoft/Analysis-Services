@@ -258,11 +258,15 @@ namespace BismNormalizer.TabularCompare.Core
                 Ws.Columns[1].ColumnWidth = 20;
                 Ws.Cells[row, 2].Value = "Source Object Name";
                 Ws.Columns[2].ColumnWidth = 41;
-                Ws.Cells[row, 3].Value = "Status";
-                Ws.Columns[3].ColumnWidth = 18;
-                Ws.Cells[row, 4].Value = "Target Object Name";
-                Ws.Columns[4].ColumnWidth = 41;
-                Ws.Range["A1:D1"].Select();
+                Ws.Cells[row, 3].Value = "Source Object Definition";
+                Ws.Columns[3].ColumnWidth = 24;
+                Ws.Cells[row, 4].Value = "Status";
+                Ws.Columns[4].ColumnWidth = 18;
+                Ws.Cells[row, 5].Value = "Target Object Name";
+                Ws.Columns[5].ColumnWidth = 41;
+                Ws.Cells[row, 6].Value = "Target Object Definition";
+                Ws.Columns[6].ColumnWidth = 24;
+                Ws.Range["A1:F1"].Select();
                 Ws.Application.Selection.Font.Bold = true;
 
                 //set up grouping
@@ -287,6 +291,8 @@ namespace BismNormalizer.TabularCompare.Core
                     Ws.Application.Selection.Rows.Group();
                 }
 
+                Ws.Cells.Select();
+                Ws.Application.Selection.WrapText = false;
                 Ws.Cells[1, 1].Select();
                 App.Visible = true;
                 progBar.Value = 0;
@@ -369,18 +375,6 @@ namespace BismNormalizer.TabularCompare.Core
                     Ws.Application.Selection.Rows.Group();
                 }
                 lastTableRow = row;
-
-                //Todo: delete (no longer group tables by data source)
-                //if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource || comparisonObject.ComparisonObjectType == ComparisonObjectType.Table || comparisonObject.ComparisonObjectType == ComparisonObjectType.Perspective || comparisonObject.ComparisonObjectType == ComparisonObjectType.Culture || comparisonObject.ComparisonObjectType == ComparisonObjectType.Role || comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression || comparisonObject.ComparisonObjectType == ComparisonObjectType.Action) ///treat perspectives/cultures/roles/expressions like datasources for purpose of grouping
-                //{
-                //    // do we need to close a datasource group?
-                //    if (lastDataSourceRow + 1 < row && lastDataSourceRow != -1)
-                //    {
-                //        Ws.Application.Rows[Convert.ToString(lastDataSourceRow + 1) + ":" + Convert.ToString(row - 1)].Select();
-                //        Ws.Application.Selection.Rows.Group();
-                //    }
-                //    lastDataSourceRow = row;
-                //}
             }
 
             //Type column
@@ -396,19 +390,19 @@ namespace BismNormalizer.TabularCompare.Core
                     Ws.Cells[row, 1].Value = "Relationship";
                     Ws.Cells[row, 1].InsertIndent(3);
                     Ws.Cells[row, 2].InsertIndent(3);
-                    Ws.Cells[row, 4].InsertIndent(3);
+                    Ws.Cells[row, 5].InsertIndent(3);
                     break;
                 case ComparisonObjectType.Measure:
                     Ws.Cells[row, 1].Value = "Measure";
                     Ws.Cells[row, 1].InsertIndent(3);
                     Ws.Cells[row, 2].InsertIndent(3);
-                    Ws.Cells[row, 4].InsertIndent(3);
+                    Ws.Cells[row, 5].InsertIndent(3);
                     break;
                 case ComparisonObjectType.Kpi:
                     Ws.Cells[row, 1].Value = "KPI";
                     Ws.Cells[row, 1].InsertIndent(3);
                     Ws.Cells[row, 2].InsertIndent(3);
-                    Ws.Cells[row, 4].InsertIndent(3);
+                    Ws.Cells[row, 5].InsertIndent(3);
                     break;
                 case ComparisonObjectType.Perspective:
                     Ws.Cells[row, 1].Value = "Perspective";
@@ -434,15 +428,9 @@ namespace BismNormalizer.TabularCompare.Core
             if (comparisonObject.SourceObjectName != null && comparisonObject.SourceObjectName != "")
             {
                 Ws.Cells[row, 2].Value = comparisonObject.SourceObjectName;
-                //source obj def
-                Ws.Cells[row, 2].AddComment();
-                Ws.Cells[row, 2].Comment.Visible = false;
                 if (comparisonObject.SourceObjectDefinition != null && comparisonObject.SourceObjectDefinition != "")
                 {
-                    Ws.Cells[row, 2].Comment.Text("Object Definition:\n\n" + comparisonObject.SourceObjectDefinition);
-                    Ws.Cells[row, 2].Comment.Shape.TextFrame.Characters.Font.Bold = false;
-                    Ws.Cells[row, 2].Comment.Shape.Width = 200;
-                    Ws.Cells[row, 2].Comment.Shape.Height = 250;
+                    Ws.Cells[row, 3].Value = comparisonObject.SourceObjectDefinition;
                 }
             }
             else
@@ -452,51 +440,60 @@ namespace BismNormalizer.TabularCompare.Core
                 Ws.Cells[row, 2].Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorDark1;
                 Ws.Cells[row, 2].Interior.TintAndShade = -0.149998474074526;
                 Ws.Cells[row, 2].Interior.PatternTintAndShade = 0;
+
+                Ws.Cells[row, 3].Interior.Pattern = Excel.Constants.xlSolid;
+                Ws.Cells[row, 3].Interior.PatternColorIndex = Excel.Constants.xlAutomatic;
+                Ws.Cells[row, 3].Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorDark1;
+                Ws.Cells[row, 3].Interior.TintAndShade = -0.149998474074526;
+                Ws.Cells[row, 3].Interior.PatternTintAndShade = 0;
             }
 
             //status
             switch (comparisonObject.Status)
             {
                 case ComparisonObjectStatus.SameDefinition:
-                    Ws.Cells[row, 3].Value = "Same Definition";
+                    Ws.Cells[row, 4].Value = "Same Definition";
                     break;
                 case ComparisonObjectStatus.DifferentDefinitions:
-                    Ws.Cells[row, 3].Value = "Different Definitions";
+                    Ws.Cells[row, 4].Value = "Different Definitions";
                     break;
                 case ComparisonObjectStatus.MissingInTarget:
-                    Ws.Cells[row, 3].Value = "Missing in Target";
+                    Ws.Cells[row, 4].Value = "Missing in Target";
                     break;
                 case ComparisonObjectStatus.MissingInSource:
-                    Ws.Cells[row, 3].Value = "Missing in Source";
+                    Ws.Cells[row, 4].Value = "Missing in Source";
                     break;
                 default:
-                    Ws.Cells[row, 3].Value = comparisonObject.Status.ToString();
+                    Ws.Cells[row, 4].Value = comparisonObject.Status.ToString();
                     break;
             }
 
             //Target Obj Name column
             if (comparisonObject.TargetObjectName != null && comparisonObject.TargetObjectName != "")
             {
-                Ws.Cells[row, 4].Value = comparisonObject.TargetObjectName;
-                //Target obj def
-                Ws.Cells[row, 4].AddComment();
-                Ws.Cells[row, 4].Comment.Visible = false;
+                Ws.Cells[row, 5].Value = comparisonObject.TargetObjectName;
                 if (comparisonObject.TargetObjectDefinition != null && comparisonObject.TargetObjectDefinition != "")
                 {
-                    Ws.Cells[row, 4].Comment.Text("Object Definition:\n\n" + comparisonObject.TargetObjectDefinition);
-                    Ws.Cells[row, 4].Comment.Shape.TextFrame.Characters.Font.Bold = false;
-                    Ws.Cells[row, 4].Comment.Shape.Width = 200;
-                    Ws.Cells[row, 4].Comment.Shape.Height = 250;
+                    Ws.Cells[row, 6].Value = comparisonObject.TargetObjectDefinition;
                 }
             }
             else
             {
-                Ws.Cells[row, 4].Interior.Pattern = Excel.Constants.xlSolid;
-                Ws.Cells[row, 4].Interior.PatternColorIndex = Excel.Constants.xlAutomatic;
-                Ws.Cells[row, 4].Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorDark1;
-                Ws.Cells[row, 4].Interior.TintAndShade = -0.149998474074526;
-                Ws.Cells[row, 4].Interior.PatternTintAndShade = 0;
+                Ws.Cells[row, 5].Interior.Pattern = Excel.Constants.xlSolid;
+                Ws.Cells[row, 5].Interior.PatternColorIndex = Excel.Constants.xlAutomatic;
+                Ws.Cells[row, 5].Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorDark1;
+                Ws.Cells[row, 5].Interior.TintAndShade = -0.149998474074526;
+                Ws.Cells[row, 5].Interior.PatternTintAndShade = 0;
+
+                Ws.Cells[row, 6].Interior.Pattern = Excel.Constants.xlSolid;
+                Ws.Cells[row, 6].Interior.PatternColorIndex = Excel.Constants.xlAutomatic;
+                Ws.Cells[row, 6].Interior.ThemeColor = Excel.XlThemeColor.xlThemeColorDark1;
+                Ws.Cells[row, 6].Interior.TintAndShade = -0.149998474074526;
+                Ws.Cells[row, 6].Interior.PatternTintAndShade = 0;
             }
+
+            // Insert blank in last cell so defintion doesn't overlap
+            Ws.Cells[row, 7].Value = " ";
 
             foreach (ComparisonObject childComparisonObject in comparisonObject.ChildComparisonObjects)
             {
