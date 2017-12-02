@@ -586,13 +586,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 //beginTable might be the From or the To table in TOM Relationship object; it depends on CrossFilterDirection.
 
-                RelationshipChain referencedTableCollection = new RelationshipChain();
+                RelationshipChainsFromRoot referencedTableCollection = new RelationshipChainsFromRoot();
                 foreach (Relationship filteringRelationship in beginTable.FindFilteringRelationships())
                 {
                     // EndTable can be either the From or the To table of a Relationship object depending on CrossFilteringBehavior
-                    string endTableName = filteringRelationship.TomRelationship.FromTable.Name == beginTable.Name ? filteringRelationship.TomRelationship.ToTable.Name : filteringRelationship.TomRelationship.FromTable.Name;
-
-                    RelationshipLink rootLink = new RelationshipLink(beginTable, _tables.FindByName(endTableName), true, "", filteringRelationship);
+                    string endTableName = GetEndTableName(beginTable, filteringRelationship, out bool biDi);
+                    RelationshipLink rootLink = new RelationshipLink(beginTable, _tables.FindByName(endTableName), true, "", false, filteringRelationship, biDi);
                     ValidateLink(rootLink, referencedTableCollection);
                 }
             }
@@ -613,15 +612,19 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
         }
 
-        private void ValidateLink(RelationshipLink link, RelationshipChain chain)
+        private void ValidateLink(RelationshipLink link, RelationshipChainsFromRoot chainsFromRoot)
         {
-            if (chain.ContainsEndTableName(link.EndTable.Name))
+            if (
+                 chainsFromRoot.ContainsEndTableName(link.EndTable.Name)
+                 //&& !(link.PrecedingPathBiDiInvoked && !chainsFromRoot.ContainsBidiToEndTable(link.EndTable.Name))
+                 //Fix 12/1/2017: we allow 1 ambiguous relationship path as long as only one of the paths is bidi invoked (2 bidis to the same table counts as ambiguous)
+               )
             {
                 // If we are here, we have identified 2 active paths to get to the same table.
                 // So, the one that was already there in the target should win.
 
-                RelationshipLink otherLink = chain.FindByEndTableName(link.EndTable.Name);
-                string rootTableName = chain.FindRoot().BeginTable.Name;
+                RelationshipLink otherLink = chainsFromRoot.FindByEndTableName(link.EndTable.Name);
+                string rootTableName = chainsFromRoot.FindRoot().BeginTable.Name;
 
                 if (link.FilteringRelationship.CopiedFromSource)
                 {
@@ -643,29 +646,45 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         ValidationMessageStatus.Warning));
 
                     //remove OTHER ONE from collection as no longer in filtering chain
-                    chain.RemoveByEndTableName(otherLink.EndTable.Name);
+                    chainsFromRoot.RemoveByEndTableName(otherLink.EndTable.Name);
                 }
             }
 
             if (link.FilteringRelationship.TomRelationship.IsActive)  //If not, we must have just set it to false above
             {
                 //Add the link to the chain and re-iterate ...
-                chain.Add(link);
+                chainsFromRoot.Add(link);
 
                 Table beginTable = link.EndTable; //EndTable is now the begin table as iterating next level ...
                 foreach (Relationship filteringRelationship in beginTable.FindFilteringRelationships())
                 {
                     // EndTable can be either the From or the To table of a Relationship object depending on direction of CrossFilteringBehavior
-                    string endTableName = filteringRelationship.TomRelationship.FromTable.Name == beginTable.Name ? filteringRelationship.TomRelationship.ToTable.Name : filteringRelationship.TomRelationship.FromTable.Name;
+                    string endTableName = GetEndTableName(beginTable, filteringRelationship, out bool biDi);
 
                     //Need to check if endTableName has already been covered by TablePath to avoid CrossFilteringBehavior leading both ways and never ending loop
                     if (!link.TablePath.Contains("'" + endTableName + "'"))
                     {
-                        RelationshipLink newLink = new RelationshipLink(beginTable, _tables.FindByName(endTableName), false, link.TablePath, filteringRelationship);
-                        ValidateLink(newLink, chain);
+                        RelationshipLink newLink = new RelationshipLink(beginTable, _tables.FindByName(endTableName), false, link.TablePath, link.PrecedingPathBiDiInvoked, filteringRelationship, biDi);
+                        ValidateLink(newLink, chainsFromRoot);
                     }
                 }
             }
+        }
+
+        private string GetEndTableName(Table beginTable, Relationship filteringRelationship, out bool biDi)
+        {
+            string endTableName;
+            biDi = false;
+            if (filteringRelationship.TomRelationship.FromTable.Name == beginTable.Name)
+            {
+                endTableName = filteringRelationship.TomRelationship.ToTable.Name;
+            }
+            else
+            {
+                endTableName = filteringRelationship.TomRelationship.FromTable.Name;
+                biDi = true;
+            }
+            return endTableName;
         }
 
         #endregion
@@ -1251,20 +1270,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             break;
                     }
 
-                    //todo delete
-                    ////Not sure why switch statement not stopping on "case ObjectType.Perspective:" above. Fudge below. Todo2: test with later build.
-                    //if (namedObjectSource.ObjectType.ToString() == "Perspective")
-                    //{
-                    //    foreach (Tom.Perspective tomPerspectiveTarget in tomCultureTarget.Model.Perspectives)
-                    //    {
-                    //        if (namedObjectSource.Name == tomPerspectiveTarget.Name)
-                    //        {
-                    //            namedObjectTarget = tomPerspectiveTarget;
-                    //            break;
-                    //        }
-                    //    }
-                    //}
-
                     //If namedObjectTarget is null, the model object doesn't exist in target, so can ignore
                     if (namedObjectTarget != null)
                     {
@@ -1275,6 +1280,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             if (translation.Object is NamedMetadataObject &&
                                 ((NamedMetadataObject)translation.Object).Name == namedObjectSource.Name &&
                                 translation.Object.ObjectType == namedObjectSource.ObjectType &&
+                                (
+                                    //check columns are both in same table (could have columns with same name in different tables)
+                                    !(translation.Object.Parent.ObjectType == ObjectType.Table && namedObjectSource.Parent.ObjectType == ObjectType.Table) ||
+                                    (((NamedMetadataObject)translation.Parent).Name == ((NamedMetadataObject)namedObjectSource.Parent).Name)
+                                ) &&
                                 translation.Property == translationSource.Property
                                )
                             {
@@ -1285,8 +1295,18 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                         if (translationTarget != null)
                         {   //Translation already exists in cultureTarget for this object, so just ensure values match
-                            //Also decouple from object in model and reset coupling
-                            translationTarget.Object = namedObjectTarget;
+                            //Also decouple from object in model and reset coupling if removed
+                            if (translationTarget.Object.IsRemoved)
+                            {
+                                ObjectTranslation translationTargetReplacement = new ObjectTranslation();
+                                translationTargetReplacement.Object = namedObjectTarget;
+                                translationTargetReplacement.Property = translationSource.Property;
+                                translationTargetReplacement.Value = translationSource.Value;
+                                tomCultureTarget.ObjectTranslations.Remove(translationTarget);
+                                tomCultureTarget.ObjectTranslations.Add(translationTargetReplacement);
+                                translationTarget = translationTargetReplacement;
+                            }
+                            //translationTarget.Object = namedObjectTarget;
                             translationTarget.Value = translationSource.Value;
                         }
                         else

@@ -14,7 +14,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private Table _beginTable;
         private Table _endTable;
         private bool _root;
+        private bool _biDiInvoked;
         private string _tablePath;
+        private bool _precedingPathBiDiInvoked;
         private Relationship _filteringRelationship;
 
         /// <summary>
@@ -25,19 +27,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="root">Boolean indicating if the root link in a the relationship chain.</param>
         /// <param name="precedingTablePath">Recursive path to the preceding table in the relationship chain.</param>
         /// <param name="filteringRelationship">Relationship object for the relationship link.</param>
-        public RelationshipLink(Table beginTable, Table endTable, bool root, string precedingTablePath, Relationship filteringRelationship)
+        public RelationshipLink(Table beginTable, Table endTable, bool root, string precedingTablePath, bool precedingPathBiDiInvoked, Relationship filteringRelationship, bool biDiInvoked)
         {
             _beginTable = beginTable;
             _endTable = endTable;
             _root = root;
+            _biDiInvoked = biDiInvoked;
             if (root)
             {
+                //_tablePath = $"'{beginTable.Name}'->{(biDi ? "(BiDi)" : "")}'{endTable.Name}'";
                 _tablePath = $"'{beginTable.Name}'->'{endTable.Name}'";
             }
             else
             {
+                //_tablePath = $"{precedingTablePath}->{(biDi ? "(BiDi)" : "")}'{endTable.Name}'";
                 _tablePath = $"{precedingTablePath}->'{endTable.Name}'";
             }
+            _precedingPathBiDiInvoked = (precedingPathBiDiInvoked || biDiInvoked);
             _filteringRelationship = filteringRelationship;
         }
 
@@ -57,9 +63,19 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         public bool Root => _root;
 
         /// <summary>
+        /// Boolean indicating if the relationship is BiDi and traversing from the many to the one side.
+        /// </summary>
+        public bool BiDiInvoked => _biDiInvoked;
+
+        /// <summary>
         /// Recursive path to the preceding table in the relationship chain.
         /// </summary>
         public string TablePath => _tablePath;
+
+        /// <summary>
+        /// Boolean indicating if the relationship is BiDi and traversing from the many to the one side.
+        /// </summary>
+        public bool PrecedingPathBiDiInvoked => _precedingPathBiDiInvoked;
 
         /// <summary>
         /// Relationship object for the relationship link.

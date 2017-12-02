@@ -7,7 +7,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
     /// <summary>
     /// Represents a chain of RelationshipLink objects, used to detect ambiguity in relationship paths.
     /// </summary>
-    public class RelationshipChain : List<RelationshipLink>
+    public class RelationshipChainsFromRoot : List<RelationshipLink>
     {
         /// <summary>
         /// Find end table by name.
@@ -49,9 +49,26 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>Boolean indicating if the end table was found.</returns>
         public bool ContainsEndTableName(string endTableName)
         {
-            foreach (RelationshipLink ReferencedTable in this)
+            foreach (RelationshipLink link in this)
             {
-                if (ReferencedTable.EndTable.Name == endTableName)
+                if (link.EndTable.Name == endTableName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if chain of RelationshipLink objects contains an end table with specified name that is BiDi invoked.
+        /// </summary>
+        /// <param name="endTableName">Name of the end table.</param>
+        /// <returns>Boolean indicating if the BiDi invoked end table was found.</returns>
+        public bool ContainsBidiToEndTable(string endTableName)
+        {
+            foreach (RelationshipLink link in this)
+            {
+                if (link.EndTable.Name == endTableName && link.PrecedingPathBiDiInvoked)
                 {
                     return true;
                 }

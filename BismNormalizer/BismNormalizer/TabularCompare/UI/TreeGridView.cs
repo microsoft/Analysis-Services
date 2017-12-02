@@ -64,7 +64,7 @@ namespace BismNormalizer.TabularCompare.UI
 			// Cause edit mode to begin since edit mode is disabled to support 
 			// expanding/collapsing 
 			base.OnKeyDown(e);
-			if (!e.Handled)
+			if (!e.Handled && this.Rows.Count > 0)
 			{
 				if (e.KeyCode == Keys.F2 && this.CurrentCellAddress.X > -1 && this.CurrentCellAddress.Y >-1)
 				{
