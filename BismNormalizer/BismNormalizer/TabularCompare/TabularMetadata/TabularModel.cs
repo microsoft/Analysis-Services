@@ -144,7 +144,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private void InitializeCalcDependencies()
         {
             _calcDependencies.Clear();
-            string command = "SELECT * FROM $System.DISCOVER_CALC_DEPENDENCY WHERE OBJECT_TYPE = 'PARTITION' OR OBJECT_TYPE = 'M_EXPRESSION';";
+            string command =
+                "SELECT * FROM $System.DISCOVER_CALC_DEPENDENCY " +
+                "WHERE (OBJECT_TYPE = 'PARTITION' OR OBJECT_TYPE = 'M_EXPRESSION') AND " +
+                "NOT (OBJECT_TYPE = REFERENCED_OBJECT_TYPE AND " +
+                "     [TABLE] = REFERENCED_TABLE AND" +
+                "     OBJECT = REFERENCED_OBJECT);"; //Ignore recursive M expression dependencies
             XmlNodeList rows = Core.Comparison.ExecuteXmlaCommand(_server, _connectionInfo.DatabaseName, command);
 
             foreach (XmlNode row in rows)
