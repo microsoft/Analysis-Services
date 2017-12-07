@@ -43,6 +43,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
         /// <summary>
+        /// A Boolean specifying whether the collection contains object by name searching without case sensitivity.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True if the object is found, or False if it's not found.</returns>
+        public bool ContainsNameCaseInsensitive(string name)
+        {
+            foreach (Measure measure in this)
+            {
+                if (measure.Name.ToUpper() == name.ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns a collection of Measure objects filtered by the parent table's name.
         /// </summary>
         /// <param name="tableName"></param>

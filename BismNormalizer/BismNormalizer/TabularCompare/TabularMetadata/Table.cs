@@ -405,6 +405,27 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         #endregion
 
+        #region Other public methods
+
+        /// <summary>
+        /// A Boolean specifying whether the table contains a column with the same name searching without case sensitivity.
+        /// </summary>
+        /// <param name="columnName">The name of the column being searched for.</param>
+        /// <returns>True if the object is found, or False if it's not found.</returns>
+        public bool ColumnsContainsNameCaseInsensitive(string columnName)
+        {
+            foreach (Column column in _tomTable.Columns)
+            {
+                if (column.Name.ToUpper() == columnName.ToUpper())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        #endregion
+        
         public override string ToString() => this.GetType().FullName;
     }
 }

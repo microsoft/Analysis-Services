@@ -85,7 +85,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             if (openSquareBracketPosition < closeSquareBracketPosition - 1)
                             {
                                 string potentialDependency = whatsRemainingOfLine.Substring(openSquareBracketPosition + 1, closeSquareBracketPosition - openSquareBracketPosition - 1);
-                                if (!potentialDependency.Contains('"') && !dependencies.Contains(potentialDependency))
+                                if (!potentialDependency.Contains('"') &&
+                                    !_tomMeasure.Expression.Contains($"\"{potentialDependency}\"") && //it's possible the measure itself is deriving the column name from an ADDCOLUMNS for example
+                                    !dependencies.Contains(potentialDependency))
                                 {
                                     //unbelievable: some genius at m$ did a replace on ] with ]]
                                     dependencies.Add(potentialDependency);
@@ -106,7 +108,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 foreach (Table table in _parentTable.ParentTabularModel.Tables)
                 {
                     //Check if another measure or column has same name
-                    if (table.Measures.ContainsName(dependency) || table.TomTable.Columns.ContainsName(dependency))
+                    if (table.Measures.ContainsNameCaseInsensitive(dependency) || table.ColumnsContainsNameCaseInsensitive(dependency))
                     {
                         foundDependency = true;
                         break;
