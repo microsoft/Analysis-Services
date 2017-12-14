@@ -22,8 +22,7 @@ namespace RestApiSample
         private static async void CallRefreshAsync()
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://<rollout>.asazure.windows.net/servers/<serverName>/models/<resource>");
-            //todo delete client.BaseAddress = new Uri("https://southcentralus.asazure.windows.net/servers/chwade003/models/AdventureWorks2");
+            client.BaseAddress = new Uri("https://<rollout>.asazure.windows.net/servers/<serverName>/models/<resource>/");
 
             // Send refresh request
             client.DefaultRequestHeaders.Accept.Clear();
@@ -65,12 +64,10 @@ namespace RestApiSample
         private static async Task<string> UpdateToken()
         {
             string resourceURI = "https://*.asazure.windows.net";
-            string clientID = "<App ID>"; // Native app with permissions
-            //todo delete string clientID = "c81c4e35-f9fc-4ff8-8fdd-1c8722f3921c"; // Native app with permissions
+            string clientID = "<App ID>"; // Native app with necessary API permissions
 
             string authority = "https://login.windows.net/common/oauth2/authorize";
-            // Authority address can optionally use tenant ID in place of "common". If service principal or B2B enabled, this is a requirement.
-            //string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
+            //string authority = "https://login.windows.net/<TenantID>/oauth2/authorize"; // Authority address can optionally use tenant ID in place of "common". If service principal or B2B enabled, this is a requirement.
             AuthenticationContext ac = new AuthenticationContext(authority);
 
             //Interactive login if not cached:
@@ -81,6 +78,7 @@ namespace RestApiSample
             //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, cred);
 
             //Service principal:
+            //12/19/2017: Bug disallows use of service principals. At time of writing, the fix is being rolled out to production clusters. Please retry soon if not working by the time you try it.
             //ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
             //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
 
