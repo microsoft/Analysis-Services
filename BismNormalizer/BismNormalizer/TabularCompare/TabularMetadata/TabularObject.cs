@@ -47,6 +47,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 _objectDefinition = SortArray(_objectDefinition, "partitions");
             }
 
+            //Order role members
+            if (namedMetaDataObject is Tom.ModelRole)
+            {
+                _objectDefinition = SortArray(_objectDefinition, "members");
+            }
+
             //Hide privacy setting on structured data sources
             if (namedMetaDataObject is Tom.StructuredDataSource)
             {
@@ -66,7 +72,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     var vals = prop.Values()
                         .OfType<JObject>()
-                        .OrderBy(x => x.Property("name").Value.ToString())
+                        .OrderBy(x => x.Property((arrayName == "members" ? "memberName" : "name")).Value.ToString())
                         .ToList();
                     prop.Value = JContainer.FromObject(vals);
                 }
