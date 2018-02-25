@@ -356,7 +356,7 @@
     <Resource Include="Resources\7.png" />
     <Resource Include="Resources\8.png" />
     <Content Include="BismNormalizer.shfbproj" />
-    <Content Include="bin\Release\Newtonsoft.Json.dll">
+    <Content Include="Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
