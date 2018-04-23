@@ -26,7 +26,7 @@ May need to temporarily comment out following at bottom of BismNormalizer.csproj
 
 `Import Project="..\packages\MSBuild.Extension.Pack.1.8.0\build\net40\MSBuild.Extension.Pack.targets"`
 
-Needs latest AMO libraries installed (see links [here](https://docs.microsoft.com/en-us/azure/analysis-services/analysis-services-data-providers) if necessary). Project reference hint paths point to C:\Program Files (x86)\Microsoft SQL Server\140\SDK\Assemblies\...
+Update: 4/23/2018: AMO libraries are now accessed through NuGet references, so no longer necessary to install AMO client libraries from the [MSI](https://docs.microsoft.com/en-us/azure/analysis-services/analysis-services-data-providers).
 
 Do a Release build from the command-line to set up cross project references for the 1st time (see command above). The automated tests refer to a localhost SSAS tabular server.
 
