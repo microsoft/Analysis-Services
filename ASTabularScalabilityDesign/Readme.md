@@ -1,1 +1,5 @@
-Test
+To scale Tabular models to very big volumes of data, and with the objective of getting as much of the data as possible into memory so users can consume it in their analyses, we must consider data preparation and modeling best practices to help the engine do its best work.
+
+AS (Analysis Services) Tabular at its core has an in-memory columnar database engine optimized for BI exploratory analytics. It’s highly efficient in encoding and compressing data in memory, supporting custom business logic with calculated columns & measures, enabling high concurrency, and delivering blazing fast responses.
+
+In this article we cover a simplified overview of how the Tabular engine works, and several data modeling design best practices that take the most advantage of the engine’s inner workings. This article was written with an Azure Analysis Services example, but equally applies to SQL Server 2017 Analysis Services. (With a few exceptions, these guidelines also apply to Excel’s Power Pivot and Power BI Desktop & Service.)
