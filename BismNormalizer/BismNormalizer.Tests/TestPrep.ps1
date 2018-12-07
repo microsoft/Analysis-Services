@@ -17,7 +17,7 @@ Function script:deletedb($databasename)
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.AnalysisServices") >$NULL
 
 $server = New-Object Microsoft.AnalysisServices.Server
-$server.connect("localhost") 
+$server.connect("localhost\tb") 
 
 deletedb "Test1103_Source"
 deletedb "Test1103_Target"

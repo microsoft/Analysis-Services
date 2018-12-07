@@ -2,13 +2,13 @@
 <ComparisonInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ConnectionInfoSource>
     <UseProject>false</UseProject>
-    <ServerName>localhost</ServerName>
+    <ServerName>localhost\tb</ServerName>
     <DatabaseName>Test1200_Source</DatabaseName>
     <ProjectName>Tabular1200</ProjectName>
   </ConnectionInfoSource>
   <ConnectionInfoTarget>
     <UseProject>false</UseProject>
-    <ServerName>localhost</ServerName>
+    <ServerName>localhost\tb</ServerName>
     <DatabaseName>Test1200_Target</DatabaseName>
   </ConnectionInfoTarget>
   <OptionsInfo>

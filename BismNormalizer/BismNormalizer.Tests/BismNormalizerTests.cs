@@ -27,7 +27,7 @@ namespace BismNormalizer.Tests
         {
             using (Amo.Server server = new Amo.Server())
             {
-                server.Connect("localhost");
+                server.Connect("localhost\\tb");
 
                 Amo.Database db = server.Databases.FindByName("Test1103_Target");
                 Assert.IsNotNull(db);
@@ -42,7 +42,7 @@ namespace BismNormalizer.Tests
         {
             using (Tom.Server server = new Tom.Server())
             {
-                server.Connect("localhost");
+                server.Connect("localhost\\tb");
 
                 Tom.Database db = server.Databases.FindByName("Test1200_Target");
                 Assert.IsNotNull(db);

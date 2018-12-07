@@ -61,6 +61,8 @@ namespace BismNormalizer.TabularCompare
 
         private static Comparison CreateComparisonInitialized(ComparisonInfo comparisonInfo)
         {
+            Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", "BismNormalizer" } });
+
             if (comparisonInfo.SourceCompatibilityLevel != comparisonInfo.TargetCompatibilityLevel && !(comparisonInfo.SourceCompatibilityLevel == 1200 && comparisonInfo.TargetCompatibilityLevel == 1400))
             {
                 throw new ConnectionException($"This combination of mixed compatibility levels is not supported.\nSource is {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and target is {Convert.ToString(comparisonInfo.TargetCompatibilityLevel)}.");
