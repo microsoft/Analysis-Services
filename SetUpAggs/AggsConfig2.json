@@ -1,0 +1,74 @@
+{
+	"database": {
+	  "name": "AdventureWorksAggsProvider_PH",
+		"tables": [
+		{   
+		  "name": "DimGeography",
+		  "mode": "Dual"
+		},   
+		{   
+		  "name": "DimCustomer",
+		  "mode": "Dual"
+		},
+		{   
+		  "name": "DimDate",
+		  "mode": "Dual"
+		},
+		{   
+		  "name": "DimProductSubcategory",
+		  "mode": "Dual"
+		},
+		{   
+		  "name": "DimProductCategory",
+		  "mode": "Dual"
+		},
+		{   
+		  "name": "FactInternetSalesAgg",
+		  "mode": "Import",
+		  "aggregationRules": [
+		    {
+			  "aggTableColumn": "OrderDateKey",
+			  "summarization": "GroupBy",
+			  "detailTable": "FactInternetSales",
+			  "detailTableColumn": "OrderDateKey"
+            },
+		    {
+			  "aggTableColumn": "CustomerKey",
+			  "summarization": "GroupBy",
+			  "detailTable": "FactInternetSales",
+			  "detailTableColumn": "CustomerKey"
+            },
+		    {
+			  "aggTableColumn": "ProductSubcategoryKey",
+			  "summarization": "GroupBy",
+			  "detailTable": "DimProduct",
+			  "detailTableColumn": "ProductSubcategoryKey"
+            },
+		    {
+			  "aggTableColumn": "SalesAmount_Sum",
+			  "summarization": "Sum",
+			  "detailTable": "FactInternetSales",
+			  "detailTableColumn": "SalesAmount"
+            },
+		    {
+			  "aggTableColumn": "UnitPrice_Sum",
+			  "summarization": "Sum",
+			  "detailTable": "FactInternetSales",
+			  "detailTableColumn": "UnitPrice"
+            },
+		    {
+			  "aggTableColumn": "UnitPrice_Count",
+			  "summarization": "Count",
+			  "detailTable": "FactInternetSales",
+			  "detailTableColumn": "UnitPrice"
+            },
+		    {
+			  "aggTableColumn": "FactInternetSales_Count",
+			  "summarization": "CountTableRows",
+			  "detailTable": "FactInternetSales"
+            }
+		  ]
+  	    }
+      ]		
+	}
+}
