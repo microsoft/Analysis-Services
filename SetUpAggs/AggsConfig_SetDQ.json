@@ -15,8 +15,6 @@
 		  "mode": "DirectQuery"
 		},
 		{   
-Products
-Getting things ready ...
 		  "name": "DimProductSubcategory",
 		  "mode": "DirectQuery"
 		},

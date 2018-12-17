@@ -57,12 +57,6 @@
 			  "detailTableColumn": "UnitPrice"
             },
 		    {
-			  "aggTableColumn": "UnitPrice_Count",
-			  "summarization": "Count",
-			  "detailTable": "FactInternetSales",
-			  "detailTableColumn": "UnitPrice"
-            },
-		    {
 			  "aggTableColumn": "FactInternetSales_Count",
 			  "summarization": "CountTableRows",
 			  "detailTable": "FactInternetSales"
