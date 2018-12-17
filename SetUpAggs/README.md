@@ -22,6 +22,7 @@ SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.jso
 
 ## Configuration File Example
 
+```json
 {
 	"database": {
 	  "name": "AdventureWorksAggsProvider",
@@ -90,6 +91,7 @@ SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.jso
       ]		
 	}
 }
+```
 
 
 
