@@ -22,6 +22,12 @@ SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.jso
 
 ## Configuration File Example
 
+Accepted values for enumeration fields:  
+
+database.tables[].mode - Default, DirectQuery, Dual, Import
+database.tables[].refreshType - Add, Automatic, Calculate, ClearValues, DataOnly, Defragment, Full
+database.tables[].aggregationRules[].summarization - Count, GroupBy, Max, Min, Sum, CountTableRows
+
 ```json
 {
 	"database": {

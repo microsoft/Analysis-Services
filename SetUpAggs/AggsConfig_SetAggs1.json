@@ -1,7 +1,7 @@
 {
-	"database": {
-	  "name": "AdventureWorksAggsProvider_PH",
-		"tables": [
+  "database": {
+    "name": "AdventureWorksAggsProvider",
+    "tables": [
       {
         "name": "DimGeography",
         "mode": "Dual",
@@ -70,6 +70,6 @@
           }
         ]
       }
-    ]		
-	}
+    ]
+  }
 }
