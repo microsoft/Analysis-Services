@@ -66,6 +66,9 @@ namespace SetUpAggs
         [JsonProperty("mode")]
         public string Mode { get; set; }
 
+        [JsonProperty("refreshType")]
+        public string RefreshType { get; set; }
+
         [JsonProperty("aggregationRules", NullValueHandling = NullValueHandling.Ignore)]
         public AggregationRule[] AggregationRules { get; set; }
     }
@@ -411,7 +414,11 @@ namespace SetUpAggs
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write($"Refreshing table [{tableObj.Name}] ");
-                    tableObj.RequestRefresh(RefreshType.Full);
+
+                    Table tableConfig = aggsConfig.Database.Tables.First(x => x.Name == tableObj.Name);
+                    var refreshType = (RefreshType)Enum.Parse(typeof(RefreshType), tableConfig.RefreshType);
+                    tableObj.RequestRefresh(refreshType);
+
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("COMPLETE");
                 }

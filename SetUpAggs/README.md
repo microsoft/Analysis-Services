@@ -29,27 +29,33 @@ SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.jso
 		"tables": [
 			{   
 				"name": "DimGeography",
-				"mode": "Dual"
+				"mode": "Dual",
+				"refreshType":  "Full"
 			},   
 			{   
 				"name": "DimCustomer",
-				"mode": "Dual"
+				"mode": "Dual",
+				"refreshType":  "Full"
 			},
 			{   
 				"name": "DimDate",
-				"mode": "Dual"
+				"mode": "Dual",
+				"refreshType":  "Full"
 			},
 			{   
 				"name": "DimProductSubcategory",
-				"mode": "Dual"
+				"mode": "Dual",
+				"refreshType":  "Full"
 			},
 			{   
 				"name": "DimProductCategory",
-				"mode": "Dual"
+				"mode": "Dual",
+				"refreshType":  "Full"
 			},
 			{   
 				"name": "FactInternetSalesAgg",
 				"mode": "Import",
+				"refreshType":  "Full",
 				"aggregationRules": [
 					{
 						"aggTableColumn": "OrderDateKey",

@@ -1,33 +1,37 @@
 {
-	"database": {
-	  "name": "AdventureWorksAggsProvider_PH",
-		"tables": [
-		{   
-		  "name": "DimGeography",
-		  "mode": "DirectQuery"
-		},   
-		{   
-		  "name": "DimCustomer",
-		  "mode": "DirectQuery"
-		},
-		{   
-		  "name": "DimDate",
-		  "mode": "DirectQuery"
-		},
-		{   
-Products
-Getting things ready ...
-		  "name": "DimProductSubcategory",
-		  "mode": "DirectQuery"
-		},
-		{   
-		  "name": "DimProductCategory",
-		  "mode": "DirectQuery"
-		},
-		{   
-		  "name": "FactInternetSalesAgg",
-		  "mode": "DirectQuery"
-  	    }
-      ]		
-	}
+  "database": {
+    "name": "AdventureWorksAggsProvider",
+    "tables": [
+      {   
+        "name": "DimGeography",
+        "mode": "DirectQuery",
+        "refreshType":  "Full"
+      },
+      {
+        "name": "DimCustomer",
+        "mode": "DirectQuery",
+        "refreshType": "Full"
+      },
+      {
+        "name": "DimDate",
+        "mode": "DirectQuery",
+        "refreshType": "Full"
+      },
+      {
+        "name": "DimProductSubcategory",
+        "mode": "DirectQuery",
+        "refreshType": "Full"
+      },
+      {
+        "name": "DimProductCategory",
+        "mode": "DirectQuery",
+        "refreshType": "Full"
+      },
+      {
+        "name": "FactInternetSalesAgg",
+        "mode": "DirectQuery",
+        "refreshType": "Full"
+      }
+    ]		
+  }
 }
