@@ -1,8 +1,8 @@
 ﻿# SetUpAggs
 
-This utility is designed to assist in updating an Analysis Services and/or Power BI data model to utilize the Composite Model and Aggregations features.  The utility will connect to a specified Azure Analysis Services and/or Power BI instance and read in a configuration file, this configuration file will specify the database and associated tables to update the Composite Model and Aggregations properties.
+This utility is designed to assist in updating a Power BI dataset to utilize the Composite Model and Aggregations features.  The utility will connect to a Power BI workspace through the XMLA endpoint and read in a configuration file, this configuration file will specify the database and associated tables to update the Composite Model and Aggregations properties.
 
-When running this utility against an Azure Analysis Services model, it will upgrade the model to Compatibility Level 1465, this change is not reversible via this utility.  The utility will only update the metadata of tables listed in the configuration file, but it will both add and remove Aggregation column definitions, so that the model metadata will match the configuration file.  Partition mode changes will be applied to all the partitions defined on the table.
+It will upgrade the model to Compatibility Level 1465, this change is not reversible via this utility.  The utility will only update the metadata of tables listed in the configuration file, but it will both add and remove Aggregation column definitions, so that the model metadata will match the configuration file.  Partition mode changes will be applied to all the partitions defined on the table.
 
 ## Example Usage
 SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.json
