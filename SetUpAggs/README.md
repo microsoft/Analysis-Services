@@ -5,7 +5,7 @@ This utility is designed to assist in updating a Power BI dataset to utilize the
 It will upgrade the model to Compatibility Level 1465, this change is not reversible via this utility.  The utility will only update the metadata of tables listed in the configuration file, but it will both add and remove Aggregation column definitions, so that the model metadata will match the configuration file.  Partition mode changes will be applied to all the partitions defined on the table.
 
 ## Example Usage
-SetUpAggs.exe apply -Server asazure://server/instance -ConfigFile AggsConfig.json
+SetUpAggs.exe apply -Server [PowerBI workspace URL] -ConfigFile AggsConfig.json
 
 ## Steps
 * Parse command line arguments, show basic help  
