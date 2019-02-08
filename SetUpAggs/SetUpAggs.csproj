@@ -67,6 +67,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AggsConfig.json" />
+    <None Include="AggsConfig2.json" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

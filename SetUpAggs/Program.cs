@@ -287,8 +287,9 @@ namespace SetUpAggs
         /// <param name="serverName"></param>
         private void Connect(string serverName)
         {
+            // Changed this line to force login dialogs
             //string connectionString = $"Provider=MSOLAP;Data Source={args.Server};";
-            string connectionString = $"Provider=MSOLAP;Data Source={serverName};Integrated Security=SSPI;Persist Security Info=True;";
+            string connectionString = $"Provider=MSOLAP;Data Source={serverName};Persist Security Info=True;";
             server.Connect(connectionString);
 
             database = server.Databases.FindByName(aggsConfig.Database.Name);
@@ -416,7 +417,8 @@ namespace SetUpAggs
                     Console.WriteLine("COMPLETE");
                 }
 
-                database.Model.SaveChanges();
+                // Removed this line which was throwing errors on large models, and it seems to commit the changes without it 
+                // database.Model.SaveChanges();
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Refreshing tables - end: " + DateTime.Now.ToString("hh:mm:ss tt"));
