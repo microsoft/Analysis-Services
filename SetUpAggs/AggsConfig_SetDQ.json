@@ -2,10 +2,10 @@
   "database": {
     "name": "AdventureWorksAggsProvider",
     "tables": [
-      {   
+      {
         "name": "DimGeography",
         "mode": "DirectQuery",
-        "refreshType":  "Full"
+        "refreshType": "Full"
       },
       {
         "name": "DimCustomer",
@@ -32,6 +32,6 @@
         "mode": "DirectQuery",
         "refreshType": "Full"
       }
-    ]		
+    ]
   }
 }

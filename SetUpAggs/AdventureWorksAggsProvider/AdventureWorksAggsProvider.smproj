@@ -24,7 +24,7 @@
     <DeploymentOptionQueryImpersonation>Default</DeploymentOptionQueryImpersonation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == '' ">
-    <DeploymentServerName>asazure://aspaastest14.asazure-int.windows.net/sukanyasaltsrc1</DeploymentServerName>
+    <DeploymentServerName>localhost\SQL2016</DeploymentServerName>
     <DeploymentServerEdition>Developer</DeploymentServerEdition>
     <DeploymentServerVersion>Unknown</DeploymentServerVersion>
     <DeploymentServerDatabase>AdventureWorksAggsProvider</DeploymentServerDatabase>
