@@ -64,23 +64,26 @@ namespace RestApiSample
         private static async Task<string> UpdateToken()
         {
             string resourceURI = "https://*.asazure.windows.net";
-            string clientID = "<App ID>"; // Native app with necessary API permissions
 
-            string authority = "https://login.windows.net/common/oauth2/authorize";
-            //string authority = "https://login.windows.net/<TenantID>/oauth2/authorize"; // Authority address can optionally use tenant ID in place of "common". If service principal or B2B enabled, this is a requirement.
+            string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
             AuthenticationContext ac = new AuthenticationContext(authority);
 
+            #region Interactive or username/password
+
+            //string clientID = "<App ID>"; // Native app with necessary API permissions
+
             //Interactive login if not cached:
-            AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto));
+            //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto));
 
             //Username/password:
             //UserPasswordCredential cred = new UserPasswordCredential("<User ID (UPN e-mail format)>", "<Password>");
             //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, cred);
 
+            #endregion
+
             //Service principal:
-            //12/19/2017: Bug disallows use of service principals. At time of writing, the fix is being rolled out to production clusters. Please retry soon if not working by the time you try it.
-            //ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
-            //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
+            ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
+            AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
 
             return ar.AccessToken;
         }
