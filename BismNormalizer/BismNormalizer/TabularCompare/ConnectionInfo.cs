@@ -146,7 +146,7 @@ namespace BismNormalizer.TabularCompare
 
             foreach (FileInfo file in files)
             {
-                if (file.Name.Contains(currentUserName))
+                if (file.Name.ToUpper().Contains(currentUserName.ToUpper()))
                 {
                     settingsFile = file;
                     break;
