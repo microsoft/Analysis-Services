@@ -252,7 +252,7 @@ namespace BismNormalizer.TabularCompare.UI
                 {
                     projects.Add(derivedProjectName, project);
                 }
-                else if (project.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+                else if (project.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
                 {
                     foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
                     {

@@ -22,7 +22,8 @@ namespace RestApiSample
         private static async void CallRefreshAsync()
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://<rollout>.asazure.windows.net/servers/<serverName>/models/<resource>/");
+            //client.BaseAddress = new Uri("https://<rollout>.asazure.windows.net/servers/<serverName>/models/<resource>/");
+            client.BaseAddress = new Uri("https://southcentralus.asazure.windows.net/servers/chwade003/models/AdventureWorks0/");
 
             // Send refresh request
             client.DefaultRequestHeaders.Accept.Clear();
@@ -65,7 +66,8 @@ namespace RestApiSample
         {
             string resourceURI = "https://*.asazure.windows.net";
 
-            string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
+            //string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
+            string authority = "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/authorize"; // Authority address can optionally use tenant ID in place of "common". If service principal or B2B enabled, this is a requirement.
             AuthenticationContext ac = new AuthenticationContext(authority);
 
             #region Interactive or username/password
@@ -82,7 +84,8 @@ namespace RestApiSample
             #endregion
 
             //Service principal:
-            ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
+            //ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
+            ClientCredential cred = new ClientCredential("99ae7bd1-6b02-425f-928e-97baa957d3f1", "0T8BYov1JciG+q3B4bB4bY8EbBjWpY7aC3OBp0u9tj8=");
             AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
 
             return ar.AccessToken;

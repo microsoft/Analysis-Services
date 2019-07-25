@@ -59,6 +59,17 @@ namespace BismNormalizer.TabularCompare
             return CreateComparisonInitialized(comparisonInfo);
         }
 
+        /// <summary>
+        /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level.
+        /// </summary>
+        /// <param name="comparisonInfo">ComparisonInfo object for the comparison.</param>
+        /// <returns>Core.Comparison object</returns>
+        public static Comparison CreateComparison(ComparisonInfo comparisonInfo, string sourceUsername, string sourcePassword, string targetUsername, string targetPassword)
+        {
+            comparisonInfo.InitializeCompatibilityLevels(sourceUsername, sourcePassword, targetUsername, targetPassword);
+            return CreateComparisonInitialized(comparisonInfo);
+        }
+
         private static Comparison CreateComparisonInitialized(ComparisonInfo comparisonInfo)
         {
             Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", "BismNormalizer" } });

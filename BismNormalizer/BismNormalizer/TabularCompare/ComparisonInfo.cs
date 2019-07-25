@@ -127,11 +127,27 @@ namespace BismNormalizer.TabularCompare
         /// <summary>
         /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
         /// </summary>
-        /// <param name="compatibilityLevelSource"></param>
-        /// <param name="compatibilityLevelTarget"></param>
         public void InitializeCompatibilityLevels()
         {
             ConnectionInfoSource.InitializeCompatibilityLevel();
+            ConnectionInfoTarget.InitializeCompatibilityLevel();
+
+            PopulateDatabaseProperties();
+        }
+
+        /// <summary>
+        /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
+        /// </summary>
+        public void InitializeCompatibilityLevels(string sourceUsername, string sourcePassword, string targetUsername, string targetPassword)
+        {
+            ConnectionInfoSource.CredsProvided = true;
+            ConnectionInfoSource.Username = sourceUsername;
+            ConnectionInfoSource.Password = sourcePassword;
+            ConnectionInfoSource.InitializeCompatibilityLevel();
+
+            ConnectionInfoTarget.CredsProvided = true;
+            ConnectionInfoTarget.Username = targetUsername;
+            ConnectionInfoTarget.Password = targetPassword;
             ConnectionInfoTarget.InitializeCompatibilityLevel();
 
             PopulateDatabaseProperties();

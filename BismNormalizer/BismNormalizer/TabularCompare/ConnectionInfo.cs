@@ -31,8 +31,13 @@ namespace BismNormalizer.TabularCompare
         private string _deploymentServerDatabase;
         private string _deploymentServerCubeName;
         private DirectoryInfo _projectDirectoryInfo;
+        private bool _credsProvided = false;
+        private string _username;
+        private string _password;
 
         #endregion
+
+        #region Properties
 
         /// <summary>
         /// Initializes a new instance of the ConnectionInfo class.
@@ -131,6 +136,38 @@ namespace BismNormalizer.TabularCompare
         /// </summary>
         [XmlIgnore()]
         public string DeploymentServerCubeName => _deploymentServerCubeName;
+
+        /// <summary>
+        /// Use credentials are provided for command line execution.
+        /// </summary>
+        [XmlIgnore()]
+        public bool CredsProvided
+        {
+            get { return _credsProvided; }
+            set { _credsProvided = value; }
+        }
+
+        /// <summary>
+        /// Username for command line execution.
+        /// </summary>
+        [XmlIgnore()]
+        public string Username
+        {
+            get { return _username; }
+            set { _username = value; }
+        }
+
+        /// <summary>
+        /// Password for command line execution.
+        /// </summary>
+        [XmlIgnore()]
+        public string Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
+
+        #endregion
 
         private void ReadSettingsFile()
         {
@@ -326,7 +363,7 @@ namespace BismNormalizer.TabularCompare
             Server amoServer = new Server();
             try
             {
-                amoServer.Connect("Provider=MSOLAP;Data Source=" + this.ServerName);
+                amoServer.Connect(BuildConnectionString());
             }
             catch (ConnectionException) when (UseProject)
             {
@@ -349,7 +386,7 @@ namespace BismNormalizer.TabularCompare
                             {
                                 string port = File.ReadAllText(portFilePath[0]).Replace("\0", "");
                                 this.ServerName = $"localhost:{Convert.ToString(port)}";
-                                amoServer.Connect("Provider=MSOLAP;Data Source=" + this.ServerName);
+                                amoServer.Connect(BuildConnectionString());
                                 foundServer = true;
                                 break;
                             }
@@ -496,7 +533,7 @@ $@"{{
                 //need next lines in case just created the db using the Execute method
                 //amoServer.Refresh(); //todo workaround for bug 9719887 on 3/10/17 need to disconnect and reconnect
                 amoServer.Disconnect();
-                amoServer.Connect("Provider=MSOLAP;Data Source=" + this.ServerName);
+                amoServer.Connect(BuildConnectionString());
 
                 tabularDatabase = amoServer.Databases.FindByName(this.DatabaseName);
             }
@@ -508,6 +545,21 @@ $@"{{
             _compatibilityLevel = tabularDatabase.CompatibilityLevel;
             _directQuery = ((tabularDatabase.Model != null && tabularDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) || 
                              tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
+        }
+
+        /// <summary>
+        /// Build connection string.
+        /// </summary>
+        /// <returns></returns>
+        public string BuildConnectionString()
+        {
+            string connectionString = $"Provider=MSOLAP;Data Source={this.ServerName};";
+            if (this.CredsProvided)
+            {
+                connectionString += $"User ID={this.Username};Password={this.Password};";
+            }
+
+            return connectionString;
         }
     }
 }

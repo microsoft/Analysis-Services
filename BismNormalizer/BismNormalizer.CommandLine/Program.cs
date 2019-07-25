@@ -21,6 +21,12 @@ namespace BismNormalizer.CommandLine
             string logFile = null;
             string scriptFile = null;
             List<string> skipOptions = null;
+            bool credsProvided = false;
+            string sourceUsername = "";
+            string sourcePassword = "";
+            string targetUsername = "";
+            string targetPassword = "";
+
             StreamWriter writer = null;
             Comparison _comparison = null;
 
@@ -42,7 +48,7 @@ namespace BismNormalizer.CommandLine
                     Console.WriteLine("");
                     Console.WriteLine("   USAGE:");
                     Console.WriteLine("");
-                    Console.WriteLine("   BismNormalizer.exe BsmnFile [/Log:LogFile] [/Script:ScriptFile] [/Skip:{MissingInSource | MissingInTarget | DifferentDefinitions}]");
+                    Console.WriteLine("   BismNormalizer.exe BsmnFile [/Log:LogFile] [/Script:ScriptFile] [/Skip:{MissingInSource | MissingInTarget | DifferentDefinitions}] [/CredsProvided:True|False] [/SourceUsername:SourceUsername] [/SourcePassword:SourcePassword] [/TargetUsername:TargetUsername] [/TargetPassword:TargetPassword]");
                     Console.WriteLine("");
                     Console.WriteLine("   BsmnFile : Full path to the .bsmn file.");
                     Console.WriteLine("");
@@ -51,6 +57,16 @@ namespace BismNormalizer.CommandLine
                     Console.WriteLine("   /Script:ScriptFile : Does not perform actual update to target database; instead, a deployment script is generated and stored to the ScriptFile.");
                     Console.WriteLine("");
                     Console.WriteLine("   /Skip:{MissingInSource | MissingInTarget | DifferentDefinitions} : Skip all objects that are missing in source/missing in target/with different definitions. Can pass a comma separated list of multiple skip options; e.g. 'MissingInSource,MissingInTarget,DifferentDefinitions'.");
+                    Console.WriteLine("");
+                    Console.WriteLine("   /CredsProvided:True|False : User credentials from the command line to connect to Analysis Services.");
+                    Console.WriteLine("");
+                    Console.WriteLine("   /SourceUsername:SourceUsername : Source database username.");
+                    Console.WriteLine("");
+                    Console.WriteLine("   /SourcePassword:SourcePassword : Source database password.");
+                    Console.WriteLine("");
+                    Console.WriteLine("   /TargetUsername:TargetUsername : Target database username.");
+                    Console.WriteLine("");
+                    Console.WriteLine("   /TargetPassword:TargetPassword : Target database password.");
                     Console.WriteLine("");
 
                     return ERROR_SUCCESS;
@@ -61,6 +77,11 @@ namespace BismNormalizer.CommandLine
                 const string logPrefix = "/log:";
                 const string scriptPrefix = "/script:";
                 const string skipPrefix = "/skip:";
+                const string credsProvidedPrefix = "/credsprovided:";
+                const string sourceUsernamePrefix = "/sourceusername:";
+                const string sourcePasswordPrefix = "/sourcepassword:";
+                const string targetUsernamePrefix = "/targetusername:";
+                const string targetPasswordPrefix = "/targetpassword:";
 
                 for (int i = 1; i < args.Length; i++)
                 {
@@ -83,6 +104,39 @@ namespace BismNormalizer.CommandLine
                                 return ERROR_BAD_ARGUMENTS;
                             }
                         }
+                    }
+                    else if (args[i].Length >= credsProvidedPrefix.Length && args[i].Substring(0, credsProvidedPrefix.Length).ToLower() == credsProvidedPrefix)
+                    {
+                        string credsProvidedString = args[i].Substring(credsProvidedPrefix.Length, args[i].Length - credsProvidedPrefix.Length);
+                        if (credsProvidedString == "True")
+                        {
+                            credsProvided = true;
+                        }
+                        else if (credsProvidedString == "False")
+                        {
+                            credsProvided = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"'{args[i]}' is not a valid argument.");
+                            return ERROR_BAD_ARGUMENTS;
+                        }
+                    }
+                    else if (args[i].Length >= sourceUsernamePrefix.Length && args[i].Substring(0, sourceUsernamePrefix.Length).ToLower() == sourceUsernamePrefix)
+                    {
+                        sourceUsername = args[i].Substring(sourceUsernamePrefix.Length, args[i].Length - sourceUsernamePrefix.Length);
+                    }
+                    else if (args[i].Length >= sourcePasswordPrefix.Length && args[i].Substring(0, sourcePasswordPrefix.Length).ToLower() == sourcePasswordPrefix)
+                    {
+                        sourcePassword = args[i].Substring(sourcePasswordPrefix.Length, args[i].Length - sourcePasswordPrefix.Length);
+                    }
+                    else if (args[i].Length >= targetUsernamePrefix.Length && args[i].Substring(0, targetUsernamePrefix.Length).ToLower() == targetUsernamePrefix)
+                    {
+                        targetUsername = args[i].Substring(targetUsernamePrefix.Length, args[i].Length - targetUsernamePrefix.Length);
+                    }
+                    else if (args[i].Length >= targetPasswordPrefix.Length && args[i].Substring(0, targetPasswordPrefix.Length).ToLower() == targetPasswordPrefix)
+                    {
+                        targetPassword = args[i].Substring(targetPasswordPrefix.Length, args[i].Length - targetPasswordPrefix.Length);
                     }
                     else
                     {
@@ -129,7 +183,14 @@ namespace BismNormalizer.CommandLine
 
                 Console.WriteLine();
                 Console.WriteLine("--Comparing ...");
-                _comparison = ComparisonFactory.CreateComparison(comparisonInfo);
+                if (credsProvided)
+                {
+                    _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword);
+                }
+                else
+                {
+                    _comparison = ComparisonFactory.CreateComparison(comparisonInfo);
+                }
                 _comparison.ValidationMessage += HandleValidationMessage;
                 _comparison.Connect();
                 _comparison.CompareTabularModels();
@@ -168,7 +229,7 @@ namespace BismNormalizer.CommandLine
                     else
                     {
                         Console.WriteLine($"Deployed changes to database {comparisonInfo.ConnectionInfoTarget.DatabaseName}.");
-                        Console.WriteLine("Passwords have not been set for impersonation accounts (setting passwords is not supported in command-line mode). Ensure the passwords are set before processing.");
+                        Console.WriteLine("Passwords have not been set for impersonation accounts (setting passwords for data sources is not supported in command-line mode). Ensure the passwords are set before processing.");
                         if (comparisonInfo.OptionsInfo.OptionProcessingOption != ProcessingOption.DoNotProcess)
                         {
                             Console.WriteLine("No processing has been done (processing is not supported in command-line mode).");
