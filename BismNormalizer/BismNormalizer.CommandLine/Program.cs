@@ -26,6 +26,7 @@ namespace BismNormalizer.CommandLine
             string sourcePassword = "";
             string targetUsername = "";
             string targetPassword = "";
+            string workspaceServer = "";
 
             StreamWriter writer = null;
             Comparison _comparison = null;
@@ -68,6 +69,8 @@ namespace BismNormalizer.CommandLine
                     Console.WriteLine("");
                     Console.WriteLine("   /TargetPassword:TargetPassword : Target database password.");
                     Console.WriteLine("");
+                    Console.WriteLine("   /WorkspaceServer:WorkspaceServer : For SMPROJ sources/targets only, use this workspace server instead of integrated workspace for example.");
+                    Console.WriteLine("");
 
                     return ERROR_SUCCESS;
                 }
@@ -82,6 +85,7 @@ namespace BismNormalizer.CommandLine
                 const string sourcePasswordPrefix = "/sourcepassword:";
                 const string targetUsernamePrefix = "/targetusername:";
                 const string targetPasswordPrefix = "/targetpassword:";
+                const string workspaceServerPrefix = "/workspaceserver:";
 
                 for (int i = 1; i < args.Length; i++)
                 {
@@ -138,6 +142,10 @@ namespace BismNormalizer.CommandLine
                     {
                         targetPassword = args[i].Substring(targetPasswordPrefix.Length, args[i].Length - targetPasswordPrefix.Length);
                     }
+                    else if (args[i].Length >= workspaceServerPrefix.Length && args[i].Substring(0, workspaceServerPrefix.Length).ToLower() == workspaceServerPrefix)
+                    {
+                        workspaceServer = args[i].Substring(workspaceServerPrefix.Length, args[i].Length - workspaceServerPrefix.Length);
+                    }
                     else
                     {
                         Console.WriteLine($"'{args[i]}' is not a valid argument.");
@@ -181,11 +189,23 @@ namespace BismNormalizer.CommandLine
                     Console.WriteLine($"Target Database: {comparisonInfo.ConnectionInfoTarget.ServerName};{comparisonInfo.ConnectionInfoTarget.DatabaseName}");
                 }
 
+                if (!String.IsNullOrEmpty(workspaceServer))
+                {
+                    Console.WriteLine($"Workspace Server: {workspaceServer}");
+                }
+
                 Console.WriteLine();
                 Console.WriteLine("--Comparing ...");
                 if (credsProvided)
                 {
-                    _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword);
+                    if (!String.IsNullOrEmpty(workspaceServer))
+                    {
+                        _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword, workspaceServer);
+                    }
+                    else
+                    {
+                        _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword);
+                    }
                 }
                 else
                 {
@@ -250,7 +270,7 @@ namespace BismNormalizer.CommandLine
                 Console.WriteLine("The following exception occurred. Try re-saving the BSMN file from Visual Studio using latest version of BISM Normalizer to ensure all necessary properties are deserialized and stored in the file.");
                 Console.WriteLine();
                 Console.WriteLine(exc.ToString());
-                
+
                 return ERROR_NULL_REF_POINTER;
             }
             catch (Exception exc)
@@ -279,7 +299,7 @@ namespace BismNormalizer.CommandLine
         {
             foreach (ComparisonObject comparisonObj in comparisonObjects)
             {
-                if (   ((skipOption == ComparisonObjectStatus.MissingInSource.ToString() && comparisonObj.Status == ComparisonObjectStatus.MissingInSource) ||
+                if (((skipOption == ComparisonObjectStatus.MissingInSource.ToString() && comparisonObj.Status == ComparisonObjectStatus.MissingInSource) ||
                         (skipOption == ComparisonObjectStatus.MissingInTarget.ToString() && comparisonObj.Status == ComparisonObjectStatus.MissingInTarget) ||
                         (skipOption == ComparisonObjectStatus.DifferentDefinitions.ToString() && comparisonObj.Status == ComparisonObjectStatus.DifferentDefinitions)
                        ) && comparisonObj.MergeAction != MergeAction.Skip

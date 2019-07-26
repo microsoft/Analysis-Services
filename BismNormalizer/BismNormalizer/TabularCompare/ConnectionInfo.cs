@@ -336,7 +336,7 @@ namespace BismNormalizer.TabularCompare
         /// This method ensures the tabular model is online and populates the CompatibilityLevel property.
         /// </summary>
         /// <param name="closedBimFile">A Boolean specifying if the user cancelled the comparison. For the case where running in Visual Studio, the user has the option of cancelling if the project BIM file is open.</param>
-        public void InitializeCompatibilityLevel(bool closedBimFile = false)
+        public void InitializeCompatibilityLevel(bool closedBimFile = false, string workspaceServer = null)
         {
             if (UseProject)
             {
@@ -358,6 +358,12 @@ namespace BismNormalizer.TabularCompare
 
                 //Read project file to get deployment server/cube names, and bim file
                 ReadProjectFile();
+
+                //Overwrite the server if a workspace server provided
+                if (!String.IsNullOrEmpty(workspaceServer))
+                {
+                    this.ServerName = workspaceServer;
+                }
             }
 
             Server amoServer = new Server();

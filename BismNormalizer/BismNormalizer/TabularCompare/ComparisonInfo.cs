@@ -154,6 +154,26 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
+        /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
+        /// </summary>
+        public void InitializeCompatibilityLevels(string sourceUsername, string sourcePassword, string targetUsername, string targetPassword, string workspaceServer)
+        {
+
+
+            ConnectionInfoSource.CredsProvided = true;
+            ConnectionInfoSource.Username = sourceUsername;
+            ConnectionInfoSource.Password = sourcePassword;
+            ConnectionInfoSource.InitializeCompatibilityLevel(workspaceServer: workspaceServer);
+
+            ConnectionInfoTarget.CredsProvided = true;
+            ConnectionInfoTarget.Username = targetUsername;
+            ConnectionInfoTarget.Password = targetPassword;
+            ConnectionInfoTarget.InitializeCompatibilityLevel(workspaceServer: workspaceServer);
+
+            PopulateDatabaseProperties();
+        }
+
+        /// <summary>
         /// Finds model compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when running in Visual Studio. Allows user to cancel if doesn't want to close .bim file(s).
         /// </summary>
         /// <param name="compatibilityLevelSource"></param>
