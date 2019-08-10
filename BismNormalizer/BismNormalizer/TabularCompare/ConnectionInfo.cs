@@ -410,7 +410,7 @@ namespace BismNormalizer.TabularCompare
             //    throw new Microsoft.AnalysisServices.ConnectionException($"Current user {WindowsIdentity.GetCurrent().Name} is not an administrator on the Analysis Server " + this.ServerName);
             //}
 
-            if (amoServer.ServerMode != ServerMode.Tabular)
+            if (amoServer.ServerMode != ServerMode.Tabular && amoServer.ServerMode != ServerMode.SharePoint) //SharePoint is what Power BI Desktop runs as
             {
                 throw new ConnectionException($"Analysis Server {this.ServerName} is not running in Tabular mode");
             }
