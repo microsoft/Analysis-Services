@@ -143,7 +143,8 @@ namespace BismNormalizer.TabularCompare.UI
             _informationalMessageButton.Left = Convert.ToInt32(92 * _hpiScaleFactor) + pixelsPerDigit * warningCount.Length;
 
             //where "informational messages" button ends
-            _fillerPanel.Left = Convert.ToInt32(268 * _hpiScaleFactor) + (pixelsPerDigit * warningCount.Length) + (pixelsPerDigit * informationalMessageCount.Length);
+            //5/15/2018: was ToInt32(268 * _hpiScaleFactor)
+            _fillerPanel.Left = Convert.ToInt32(250 * _hpiScaleFactor) + (pixelsPerDigit * warningCount.Length) + (pixelsPerDigit * informationalMessageCount.Length);
         }
     }
 }

@@ -114,7 +114,7 @@
   <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 
     <!--Run tests (BismNormalizer.Tests.dll)-->
-    <ItemGroup>
+    <!--<ItemGroup>
       <TrxFiles Include="TestResults\*.trx" />
     </ItemGroup>
     <Message Text=" " Importance="high" />
@@ -123,7 +123,7 @@
     <Delete Files="@(TrxFiles)" />
     <Message Text="- About to run vstest on: @(OutputDlls)" Importance="high" />
     <Message Text=" " Importance="high" />
-    <Exec Command="vstest.console.exe @(OutputDlls) /Logger:trx" />
+    <Exec Command="vstest.console.exe @(OutputDlls) /Logger:trx" />-->
 
     <PropertyGroup>
       <ObfuscDir>$(MSBuildProjectDirectory)\bin\ReleaseObfusc</ObfuscDir>

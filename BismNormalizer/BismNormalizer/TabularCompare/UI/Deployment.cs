@@ -78,7 +78,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "BISM Normalizer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, _comparisonInfo.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -122,7 +122,7 @@ namespace BismNormalizer.TabularCompare.UI
 
             btnStopProcessing.Enabled = false;
             btnClose.Enabled = true;
-            btnClose.Select();
+            //btnClose.Select();
         }
 
         private delegate void SetErrorStatusDelegate(string errorMessage);
@@ -169,7 +169,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void btnStopProcessing_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to attempt to stop processing?", "BISM Normalizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to attempt to stop processing?", _comparisonInfo.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }

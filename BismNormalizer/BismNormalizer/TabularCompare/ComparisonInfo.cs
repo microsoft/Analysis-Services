@@ -18,9 +18,20 @@ namespace BismNormalizer.TabularCompare
         private SkipSelectionCollection _skipSelectionCollection;
         private int _sourceCompatibilityLevel;
         private int _targetCompatibilityLevel;
+        private string _sourceDataSourceVersion;
+        private string _targetDataSourceVersion;
         private bool _sourceDirectQuery;
         private bool _targetDirectQuery;
         private bool _promptForDatabaseProcessing;
+        private bool _interactive = true;
+        private string _appName = "<AppName>";
+        private bool _credsProvided = false;
+        private string _sourceUsername;
+        private string _sourcePassword;
+        private string _targetUsername;
+        private string _targetPassword;
+        private bool _workspaceServerProvided = false;
+        private string _workspaceServer;
 
         /// <summary>
         /// Initializes a new instance of the ComparisonInfo class.
@@ -73,16 +84,28 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
-        /// SSAS compatibility level for the source tabular model.
+        /// Compatibility level for the source tabular model.
         /// </summary>
         [XmlIgnore()]
         public int SourceCompatibilityLevel => _sourceCompatibilityLevel;
 
         /// <summary>
-        /// SSAS compatibility level for the target tabular model.
+        /// Compatibility level for the target tabular model.
         /// </summary>
         [XmlIgnore()]
         public int TargetCompatibilityLevel => _targetCompatibilityLevel;
+
+        /// <summary>
+        /// Default data source version for the source tabular model.
+        /// </summary>
+        [XmlIgnore()]
+        public string SourceDataSourceVersion => _sourceDataSourceVersion;
+
+        /// <summary>
+        /// Default data source version for the target tabular model.
+        /// </summary>
+        [XmlIgnore()]
+        public string TargetDataSourceVersion => _targetDataSourceVersion;
 
         /// <summary>
         /// Flag depending on whehter source tabular model is in DirectQuery mode.
@@ -106,6 +129,96 @@ namespace BismNormalizer.TabularCompare
             set { _promptForDatabaseProcessing = value; }
         }
 
+        /// <summary>
+        /// Flag depending on whether running in interactive mode. Command line execution is not.
+        /// </summary>
+        [XmlIgnore()]
+        public bool Interactive
+        {
+            get { return _interactive; }
+            set { _interactive = value; }
+        }
+
+        /// <summary>
+        /// Name of the app. For example, BISM Normalizer or ALM Toolkit.
+        /// </summary>
+        [XmlIgnore()]
+        public string AppName
+        {
+            get { return _appName; }
+            set { _appName = value; }
+        }
+
+        /// <summary>
+        /// Flag depending on whether credentials provided to connect to AS/PBI. Used for command line mode/automated build.
+        /// </summary>
+        [XmlIgnore()]
+        public bool CredsProvided
+        {
+            get { return _credsProvided; }
+            set { _credsProvided = value; }
+        }
+
+        /// <summary>
+        /// Username for source model for when CredsProvided = true.
+        /// </summary>
+        [XmlIgnore()]
+        public string SourceUsername
+        {
+            get { return _sourceUsername; }
+            set { _sourceUsername = value; }
+        }
+
+        /// <summary>
+        /// Password for source model for when CredsProvided = true.
+        /// </summary>
+        [XmlIgnore()]
+        public string SourcePassword
+        {
+            get { return _sourcePassword; }
+            set { _sourcePassword = value; }
+        }
+
+        /// <summary>
+        /// Username for target model for when CredsProvided = true.
+        /// </summary>
+        [XmlIgnore()]
+        public string TargetUsername
+        {
+            get { return _targetUsername; }
+            set { _targetUsername = value; }
+        }
+
+        /// <summary>
+        /// Password for target model for when CredsProvided = true.
+        /// </summary>
+        [XmlIgnore()]
+        public string TargetPassword
+        {
+            get { return _targetPassword; }
+            set { _targetPassword = value; }
+        }
+
+        /// <summary>
+        /// Flag depending on whether workspace server was provided. Used for command line mode/automated build.
+        /// </summary>
+        [XmlIgnore()]
+        public bool WorkspaceServerProvided
+        {
+            get { return _workspaceServerProvided; }
+            set { _workspaceServerProvided = value; }
+        }
+
+        /// <summary>
+        /// Workspace server name for when WorkspaceServerProvided = true. Used for command line mode/automated build.
+        /// </summary>
+        [XmlIgnore()]
+        public string WorkspaceServer
+        {
+            get { return _workspaceServer; }
+            set { _workspaceServer = value; }
+        }
+
         #endregion
 
         /// <summary>
@@ -113,7 +226,7 @@ namespace BismNormalizer.TabularCompare
         /// </summary>
         /// <param name="bsmnFile">BSMN file to be deserialized.</param>
         /// <returns>Deserialized instance of ComparisonInfo.</returns>
-        public static ComparisonInfo DeserializeBsmnFile(string bsmnFile)
+        public static ComparisonInfo DeserializeBsmnFile(string bsmnFile, string appName)
         {
             if (!File.Exists(bsmnFile))
             {
@@ -121,54 +234,40 @@ namespace BismNormalizer.TabularCompare
             }
             XmlSerializer reader = new XmlSerializer(typeof(ComparisonInfo));
             StreamReader file = new StreamReader(bsmnFile);
-            return (ComparisonInfo)reader.Deserialize(file);
+            ComparisonInfo returnComparisonInfo = (ComparisonInfo)reader.Deserialize(file);
+            returnComparisonInfo.AppName = appName;
+            return returnComparisonInfo;
         }
 
         /// <summary>
         /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
         /// </summary>
+        /// <param name="compatibilityLevelSource"></param>
+        /// <param name="compatibilityLevelTarget"></param>
         public void InitializeCompatibilityLevels()
         {
+            if (_credsProvided)
+            {
+                ConnectionInfoSource.CredsProvided = true;
+                ConnectionInfoSource.Username = _sourceUsername;
+                ConnectionInfoSource.Password = _sourcePassword;
+
+                ConnectionInfoTarget.CredsProvided = true;
+                ConnectionInfoTarget.Username = _targetUsername;
+                ConnectionInfoTarget.Password = _targetPassword;
+
+                if (_workspaceServerProvided)
+                {
+                    ConnectionInfoSource.WorkspaceServerProvided = true;
+                    ConnectionInfoSource.WorkspaceServer = _workspaceServer;
+
+                    ConnectionInfoTarget.WorkspaceServerProvided = true;
+                    ConnectionInfoTarget.WorkspaceServer = _workspaceServer;
+                }
+            }
+
             ConnectionInfoSource.InitializeCompatibilityLevel();
             ConnectionInfoTarget.InitializeCompatibilityLevel();
-
-            PopulateDatabaseProperties();
-        }
-
-        /// <summary>
-        /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
-        /// </summary>
-        public void InitializeCompatibilityLevels(string sourceUsername, string sourcePassword, string targetUsername, string targetPassword)
-        {
-            ConnectionInfoSource.CredsProvided = true;
-            ConnectionInfoSource.Username = sourceUsername;
-            ConnectionInfoSource.Password = sourcePassword;
-            ConnectionInfoSource.InitializeCompatibilityLevel();
-
-            ConnectionInfoTarget.CredsProvided = true;
-            ConnectionInfoTarget.Username = targetUsername;
-            ConnectionInfoTarget.Password = targetPassword;
-            ConnectionInfoTarget.InitializeCompatibilityLevel();
-
-            PopulateDatabaseProperties();
-        }
-
-        /// <summary>
-        /// Finds models' compatibility levels (and preps databases on workspace servers for comparison). This overload to be used when client is not Visual Studio - e.g. command line.
-        /// </summary>
-        public void InitializeCompatibilityLevels(string sourceUsername, string sourcePassword, string targetUsername, string targetPassword, string workspaceServer)
-        {
-
-
-            ConnectionInfoSource.CredsProvided = true;
-            ConnectionInfoSource.Username = sourceUsername;
-            ConnectionInfoSource.Password = sourcePassword;
-            ConnectionInfoSource.InitializeCompatibilityLevel(workspaceServer: workspaceServer);
-
-            ConnectionInfoTarget.CredsProvided = true;
-            ConnectionInfoTarget.Username = targetUsername;
-            ConnectionInfoTarget.Password = targetPassword;
-            ConnectionInfoTarget.InitializeCompatibilityLevel(workspaceServer: workspaceServer);
 
             PopulateDatabaseProperties();
         }
@@ -201,6 +300,9 @@ namespace BismNormalizer.TabularCompare
         {
             _sourceCompatibilityLevel = ConnectionInfoSource.CompatibilityLevel;
             _targetCompatibilityLevel = ConnectionInfoTarget.CompatibilityLevel;
+
+            _sourceDataSourceVersion = ConnectionInfoSource.DataSourceVersion;
+            _targetDataSourceVersion = ConnectionInfoTarget.DataSourceVersion;
 
             _sourceDirectQuery = ConnectionInfoSource.DirectQuery;
             _targetDirectQuery = ConnectionInfoTarget.DirectQuery;
@@ -250,7 +352,7 @@ namespace BismNormalizer.TabularCompare
                     filesToClose += $"\n- {projectItemToClose.ContainingProject.Name.Replace(".smproj", "")}\\{projectItemToClose.Name}";
                 }
 
-                if (MessageBox.Show($"BISM Normalizer needs to close the following file(s) that are\nopen in Visual Studio.  Do you want to continue?{filesToClose}", "BISM Normalizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (MessageBox.Show($"{_appName} needs to close the following file(s) that are\nopen in Visual Studio.  Do you want to continue?{filesToClose}", _appName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     userCancelled = true;
                 }

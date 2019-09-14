@@ -168,7 +168,7 @@ namespace BismNormalizer.CommandLine
                     throw new FileNotFoundException($"File not found {bsmnFile}");
                 }
                 Console.WriteLine($"About to deserialize {bsmnFile}");
-                ComparisonInfo comparisonInfo = ComparisonInfo.DeserializeBsmnFile(bsmnFile);
+                ComparisonInfo comparisonInfo = ComparisonInfo.DeserializeBsmnFile(bsmnFile, "BISM Normalizer Command Line");
 
                 Console.WriteLine();
                 if (comparisonInfo.ConnectionInfoSource.UseProject)
@@ -198,19 +198,20 @@ namespace BismNormalizer.CommandLine
                 Console.WriteLine("--Comparing ...");
                 if (credsProvided)
                 {
+                    comparisonInfo.CredsProvided = true;
+                    comparisonInfo.SourceUsername = sourceUsername;
+                    comparisonInfo.SourcePassword = sourcePassword;
+                    comparisonInfo.TargetUsername = targetUsername;
+                    comparisonInfo.TargetPassword = targetPassword;
+
                     if (!String.IsNullOrEmpty(workspaceServer))
                     {
-                        _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword, workspaceServer);
-                    }
-                    else
-                    {
-                        _comparison = ComparisonFactory.CreateComparison(comparisonInfo, sourceUsername, sourcePassword, targetUsername, targetPassword);
+                        comparisonInfo.WorkspaceServerProvided = true;
+                        comparisonInfo.WorkspaceServer = workspaceServer;
                     }
                 }
-                else
-                {
-                    _comparison = ComparisonFactory.CreateComparison(comparisonInfo);
-                }
+                
+                _comparison = ComparisonFactory.CreateComparison(comparisonInfo);
                 _comparison.ValidationMessage += HandleValidationMessage;
                 _comparison.Connect();
                 _comparison.CompareTabularModels();

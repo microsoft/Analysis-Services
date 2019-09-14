@@ -237,7 +237,7 @@ namespace BismNormalizer.TabularCompare.Core
         /// Generate Excel report of differences.
         /// </summary>
         /// <param name="progBar"></param>
-        public void ReportDifferences(ProgressBar progBar)
+        public void ReportDifferences(ToolStripProgressBar progBar)
         {
             try
             {
@@ -250,7 +250,7 @@ namespace BismNormalizer.TabularCompare.Core
                 //Wb.Sheets[1].Delete();
                 Excel.Worksheet Ws = default(Excel.Worksheet);
                 Ws = Wb.ActiveSheet;
-                Ws.Name = "Bism Normalizer Report";
+                Ws.Name = "Comparison Report";
                 int row = 1, lastDataSourceRow = -1, lastTableRow = -1;
 
                 // set up headers
@@ -360,7 +360,7 @@ namespace BismNormalizer.TabularCompare.Core
             }
         }
 
-        private void PopulateExcelRow(Excel.Worksheet Ws, ref int row, ref int lastDataSourceRow, ref int lastTableRow, ComparisonObject comparisonObject, ProgressBar progBar)
+        private void PopulateExcelRow(Excel.Worksheet Ws, ref int row, ref int lastDataSourceRow, ref int lastTableRow, ComparisonObject comparisonObject, ToolStripProgressBar progBar)
         {
             progBar.PerformStep();
             row += 1;
@@ -380,6 +380,9 @@ namespace BismNormalizer.TabularCompare.Core
             //Type column
             switch (comparisonObject.ComparisonObjectType)
             {
+                case ComparisonObjectType.Model:
+                    Ws.Cells[row, 1].Value = "Model";
+                    break;
                 case ComparisonObjectType.DataSource:
                     Ws.Cells[row, 1].Value = "Data Source";
                     break;
@@ -400,6 +403,12 @@ namespace BismNormalizer.TabularCompare.Core
                     break;
                 case ComparisonObjectType.Kpi:
                     Ws.Cells[row, 1].Value = "KPI";
+                    Ws.Cells[row, 1].InsertIndent(3);
+                    Ws.Cells[row, 2].InsertIndent(3);
+                    Ws.Cells[row, 5].InsertIndent(3);
+                    break;
+                case ComparisonObjectType.CalculationItem:
+                    Ws.Cells[row, 1].Value = "Calculation Item";
                     Ws.Cells[row, 1].InsertIndent(3);
                     Ws.Cells[row, 2].InsertIndent(3);
                     Ws.Cells[row, 5].InsertIndent(3);

@@ -14,7 +14,9 @@ namespace BismNormalizer.TabularCompare
     {
         // Factory pattern: https://msdn.microsoft.com/en-us/library/orm-9780596527730-01-05.aspx 
 
-        private static List<int> _supportedCompatibilityLevels = new List<int>() { 1100, 1103, 1200, 1400 };
+        private static int _minCompatibilityLevel = 1100;
+        private static int _maxCompatibilityLevel = 1500;
+        private static List<string> _supportedDataSourceVersions = new List<string> { "PowerBI_V3" };
 
         /// <summary>
         /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level. Use this overload when running in Visual Studio.
@@ -42,9 +44,9 @@ namespace BismNormalizer.TabularCompare
         /// </summary>
         /// <param name="bsmnFile">Full path to the BSMN file.</param>
         /// <returns>Core.Comparison object</returns>
-        public static Comparison CreateComparison(string bsmnFile)
+        public static Comparison CreateComparison(string bsmnFile, string appName)
         {
-            ComparisonInfo comparisonInfo = ComparisonInfo.DeserializeBsmnFile(bsmnFile);
+            ComparisonInfo comparisonInfo = ComparisonInfo.DeserializeBsmnFile(bsmnFile, appName);
             return CreateComparison(comparisonInfo);
         }
 
@@ -59,57 +61,136 @@ namespace BismNormalizer.TabularCompare
             return CreateComparisonInitialized(comparisonInfo);
         }
 
-        /// <summary>
-        /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level.
-        /// </summary>
-        /// <param name="comparisonInfo">ComparisonInfo object for the comparison.</param>
-        /// <returns>Core.Comparison object</returns>
-        public static Comparison CreateComparison(ComparisonInfo comparisonInfo, string sourceUsername, string sourcePassword, string targetUsername, string targetPassword)
-        {
-            comparisonInfo.InitializeCompatibilityLevels(sourceUsername, sourcePassword, targetUsername, targetPassword);
-            return CreateComparisonInitialized(comparisonInfo);
-        }
-
-        /// <summary>
-        /// Uses factory design pattern to return an object of type Core.Comparison, which is instantiated using MultidimensionalMetadata.Comparison or TabularMeatadata.Comparison depending on SSAS compatibility level.
-        /// </summary>
-        /// <param name="comparisonInfo">ComparisonInfo object for the comparison.</param>
-        /// <returns>Core.Comparison object</returns>
-        public static Comparison CreateComparison(ComparisonInfo comparisonInfo, string sourceUsername, string sourcePassword, string targetUsername, string targetPassword, string workspaceServer)
-        {
-            comparisonInfo.InitializeCompatibilityLevels(sourceUsername, sourcePassword, targetUsername, targetPassword, workspaceServer);
-            return CreateComparisonInitialized(comparisonInfo);
-        }
-
         private static Comparison CreateComparisonInitialized(ComparisonInfo comparisonInfo)
         {
-            Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", "BismNormalizer" } });
+            Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", comparisonInfo.AppName.Replace(" ", "") } });
 
-            if (comparisonInfo.SourceCompatibilityLevel != comparisonInfo.TargetCompatibilityLevel && !(comparisonInfo.SourceCompatibilityLevel == 1200 && comparisonInfo.TargetCompatibilityLevel == 1400))
+            ////Currently can't source from PBIP to AS because AS doesn't work with inline data sources:
+            //if (comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://"))
+            //{
+            //    throw new ConnectionException($"Source model is a Power BI dataset and the target is Analysis Services, which is not supported in the current version.");
+            //}
+
+            //If composite models not allowed on AS, check DQ/Import at model level matches:
+            if (!comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
+            {
+                throw new ConnectionException($"Mixed DirectQuery settings are not supported for AS skus.\nSource is {(comparisonInfo.SourceDirectQuery ? "On" : "Off")} and target is {(comparisonInfo.TargetDirectQuery ? "On" : "Off")}.");
+            }
+
+            #region Data-source versions check
+
+            //If Power BI, check the default datasource version
+            //Source
+            bool sourceDataSourceVersionRequiresUpgrade = false;
+            if (comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.SourceDataSourceVersion))
+            {
+                sourceDataSourceVersionRequiresUpgrade = true;
+            }
+            //Target
+            bool targetDataSourceVersionRequiresUpgrade = false;
+            if (comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.TargetDataSourceVersion))
+            {
+                targetDataSourceVersionRequiresUpgrade = true;
+            }
+            //Check if user willing to upgrade the data-source version(s)
+            if (sourceDataSourceVersionRequiresUpgrade && targetDataSourceVersionRequiresUpgrade)
+            {
+                string message = $"The source and target are Power BI datasets have default data-source versions of {comparisonInfo.SourceDataSourceVersion} and {comparisonInfo.TargetDataSourceVersion} respectively, which are not supported for comparison.";
+                if (comparisonInfo.Interactive && System.Windows.Forms.MessageBox.Show(
+                    message += $"\nDo you want to upgrade them both to {_supportedDataSourceVersions[0]} and allow the comparison?\n\nNOTE: this is a irreversible operation and you may not be able to download the PBIX file(s) to Power BI Desktop. You should only do this if you have the original PBIX as a backup.", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes)
+                {
+                    throw new ConnectionException(message);
+                }
+            }
+            else if (sourceDataSourceVersionRequiresUpgrade)
+            {
+                string message = $"The source is a Power BI dataset with default data-source version of {comparisonInfo.SourceDataSourceVersion}, which is not supported for comparison.";
+                if (comparisonInfo.Interactive && System.Windows.Forms.MessageBox.Show(
+                    message += $"\nDo you want to upgrade it to {_supportedDataSourceVersions[0]} and allow the comparison?\n\nNOTE: this is a irreversible operation and you may not be able to download the PBIX file(s) to Power BI Desktop. You should only do this if you have the original PBIX as a backup.", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes)
+                {
+                    throw new ConnectionException(message);
+                }
+            }
+            else if (targetDataSourceVersionRequiresUpgrade)
+            {
+                string message = $"The target is a Power BI datasets with default data-source version of {comparisonInfo.TargetDataSourceVersion}, which is not supported for comparison.";
+                if (comparisonInfo.Interactive && System.Windows.Forms.MessageBox.Show(
+                    message += $"\nDo you want to upgrade it to {_supportedDataSourceVersions[0]} and allow the comparison?\n\nNOTE: this is a irreversible operation and you may not be able to download the PBIX file(s) to Power BI Desktop. You should only do this if you have the original PBIX as a backup.", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes)
+                {
+                    throw new ConnectionException(message);
+                }
+            }
+
+            #endregion
+
+            //Check if one of the supported compat levels:
+            if (
+                   !(comparisonInfo.SourceCompatibilityLevel >= _minCompatibilityLevel && comparisonInfo.SourceCompatibilityLevel <= _maxCompatibilityLevel &&
+                     comparisonInfo.TargetCompatibilityLevel >= _minCompatibilityLevel && comparisonInfo.TargetCompatibilityLevel <= _maxCompatibilityLevel
+                    )
+               )
             {
                 throw new ConnectionException($"This combination of mixed compatibility levels is not supported.\nSource is {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and target is {Convert.ToString(comparisonInfo.TargetCompatibilityLevel)}.");
             }
 
-            if (comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
-            {
-                throw new ConnectionException($"Mixed DirectQuery settings are not supported.\nSource is {(comparisonInfo.SourceDirectQuery ? "On" : "Off")} and target is {(comparisonInfo.TargetDirectQuery ? "On" : "Off")}.");
-            }
+            //Return the comparison object & offer upgrade of target if appropriate
+            Comparison returnComparison = null;
 
-            //We know both models have same compatibility level, but is it supported?
-            if (!_supportedCompatibilityLevels.Contains(comparisonInfo.SourceCompatibilityLevel))
+            if (comparisonInfo.SourceCompatibilityLevel >= 1200 && comparisonInfo.TargetCompatibilityLevel >= 1200)
             {
-                throw new ConnectionException($"Models have compatibility level of {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)}, which is not supported by this version of BISM Normalizer.\nPlease check http://bism-normalizer.com/purchase for other versions.");
-            }
+                returnComparison = new TabularMetadata.Comparison(comparisonInfo);
+                TabularMetadata.Comparison returnTabularComparison = (TabularMetadata.Comparison)returnComparison;
 
-            if (comparisonInfo.SourceCompatibilityLevel >= 1200)
-            {
-                return new TabularMetadata.Comparison(comparisonInfo);
+                //Upgrade default DATA-SOURCE versions if required
+                if (sourceDataSourceVersionRequiresUpgrade)
+                {
+                    returnTabularComparison.SourceTabularModel.Connect();
+                    returnTabularComparison.SourceTabularModel.TomDatabase.Model.DefaultPowerBIDataSourceVersion = Microsoft.AnalysisServices.Tabular.PowerBIDataSourceVersion.PowerBI_V3;
+                    returnTabularComparison.SourceTabularModel.TomDatabase.Update();
+                    returnTabularComparison.Disconnect();
+                }
+                if (targetDataSourceVersionRequiresUpgrade)
+                {
+                    returnTabularComparison.TargetTabularModel.Connect();
+                    returnTabularComparison.TargetTabularModel.TomDatabase.Model.DefaultPowerBIDataSourceVersion = Microsoft.AnalysisServices.Tabular.PowerBIDataSourceVersion.PowerBI_V3;
+                    returnTabularComparison.TargetTabularModel.TomDatabase.Update();
+                    returnTabularComparison.Disconnect();
+                }
+
+                //Check if source has a higher compat level than the target and offer upgrade if appropriate.
+                if (comparisonInfo.SourceCompatibilityLevel > comparisonInfo.TargetCompatibilityLevel)
+                {
+                    string message = $"Source compatibility level is { Convert.ToString(comparisonInfo.SourceCompatibilityLevel) } and target is { Convert.ToString(comparisonInfo.TargetCompatibilityLevel) }, which is not supported for comparison.\n";
+
+                    if (comparisonInfo.Interactive && 
+                        !comparisonInfo.ConnectionInfoTarget.UseProject && //Upgrade in SSDT not supported
+                        System.Windows.Forms.MessageBox.Show(
+                    message += $"\nDo you want to upgrade the target to {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and allow the comparison?", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        returnTabularComparison.TargetTabularModel.Connect();
+                        returnTabularComparison.TargetTabularModel.TomDatabase.CompatibilityLevel = comparisonInfo.SourceCompatibilityLevel;
+                        returnTabularComparison.TargetTabularModel.TomDatabase.Update();
+                        returnTabularComparison.Disconnect();
+                    }
+                    else
+                    {
+                        throw new ConnectionException(message + "\nUpgrade the target compatibility level and retry.");
+                    }
+                }
             }
             else
             {
-                return new MultidimensionalMetadata.Comparison(comparisonInfo);
+                if (comparisonInfo.SourceCompatibilityLevel == comparisonInfo.TargetCompatibilityLevel)
+                {
+                    returnComparison = new MultidimensionalMetadata.Comparison(comparisonInfo);
+                }
+                else
+                {
+                    throw new ConnectionException($"This combination of mixed compatibility levels is not supported.\nSource is {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and target is {Convert.ToString(comparisonInfo.TargetCompatibilityLevel)}.");
+                }
             }
-        }
 
+            return returnComparison;
+        }
     }
 }

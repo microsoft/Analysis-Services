@@ -12,7 +12,7 @@ namespace BismNormalizer
     {
         public static void Main()
         {
-            using (Comparison c = ComparisonFactory.CreateComparison("C:\\TabularCompare1.bsmn"))
+            using (Comparison c = ComparisonFactory.CreateComparison("C:\\TabularCompare1.bsmn", ""))
             {
                 c.Connect();
                 c.CompareTabularModels();

@@ -2712,7 +2712,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                     // Show row count for each table
                     foreach (ProcessingTable table in _tablesToProcess)
                     {
-                        int rowCount = _connectionInfo.DirectQuery ? 0 : Core.Comparison.FindRowCount(_amoServer, table.Name, _amoDatabase.Name);
+                        int rowCount = Core.Comparison.FindRowCount(_amoServer, table.Name, _amoDatabase.Name);
                         _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, "Success. " + String.Format("{0:#,###0}", rowCount) + " rows transferred.", DeploymentStatus.Success));
                     }
                     _parentComparison.OnDeploymentComplete(new DeploymentCompleteEventArgs(DeploymentStatus.Success, null));
@@ -2779,7 +2779,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                         PartitionRowCounter partition = table.FindPartition(partitionIdNodeList[0].InnerText);
                         partition.RowCount = e.IntegerData;
 
-                        _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, "Retreived " + String.Format("{0:#,###0}", table.GetRowCount()) + " rows ...", DeploymentStatus.Deploying));
+                        _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, "Retrieved " + String.Format("{0:#,###0}", table.GetRowCount()) + " rows ...", DeploymentStatus.Deploying));
                     }
                 }
 

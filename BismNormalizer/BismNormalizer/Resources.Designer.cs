@@ -140,7 +140,7 @@ namespace BismNormalizer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BISM Normalizer Warning List.
+        ///   Looks up a localized string similar to Warning List.
         /// </summary>
         internal static string ToolWindowTitle {
             get {

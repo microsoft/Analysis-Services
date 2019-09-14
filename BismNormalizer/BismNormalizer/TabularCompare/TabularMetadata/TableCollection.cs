@@ -66,7 +66,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Returns a collection of Table objects that do not have a DataSource associated with them. These can be calculated tables or tables with M partitions that do not refer to a DataSource.
         /// </summary>
         /// <returns></returns>
-        public TableCollection WithoutDataSource(Model model)
+        public TableCollection WithoutDataSource(Microsoft.AnalysisServices.Tabular.Model model)
         {
             TableCollection tablesWithDataSource = new TableCollection();
             foreach (Microsoft.AnalysisServices.Tabular.DataSource dataSource in model.DataSources)

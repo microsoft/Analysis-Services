@@ -24,6 +24,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         public TabularObject(NamedMetadataObject namedMetaDataObject)
         {
             _name = namedMetaDataObject.Name;
+            if (namedMetaDataObject is Tom.Model) return; //Model has custom JSON string
             
             //Serialize json
             SerializeOptions options = new SerializeOptions();
@@ -40,9 +41,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 _objectDefinition = token.ToString(Formatting.Indented);
             }
 
+            //todo: remove with Giri's fix
+            //Remove return characters
+            if (namedMetaDataObject is Tom.NamedExpression || namedMetaDataObject is Tom.Table)
+            {
+                _objectDefinition = _objectDefinition.Replace("\\r", "");
+            }
+
             //Order table columns
             if (namedMetaDataObject is Tom.Table)
-            {
+            { 
+                if (((Tom.Table)namedMetaDataObject).CalculationGroup != null)
+                {
+                    JToken token = JToken.Parse(_objectDefinition);
+                    RemovePropertyFromObjectDefinition(token, "calculationItems");
+                    _objectDefinition = token.ToString(Formatting.Indented);
+                }
+
                 _objectDefinition = SortArray(_objectDefinition, "columns");
                 _objectDefinition = SortArray(_objectDefinition, "partitions");
             }
@@ -109,6 +124,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             JObject jObj = JObject.Parse(_objectDefinition);
             jObj.Remove(propertyName);
             _objectDefinition = jObj.ToString(Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Set a custom JSON string. An example is for the model class which contains properties that cannot be set.
+        /// </summary>
+        public void SetCustomObjectDefinition(string customObjectDefinition)
+        {
+            _objectDefinition = JToken.Parse(customObjectDefinition).ToString();
         }
 
         /// <summary>

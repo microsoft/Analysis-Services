@@ -22,6 +22,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private ComparisonInfo _comparisonInfo;
         private Server _server;
         private Database _database;
+        private Model _model;
         private DataSourceCollection _dataSources = new DataSourceCollection();
         private TableCollection _tables = new TableCollection();
         private ExpressionCollection _expressions = new ExpressionCollection();
@@ -68,6 +69,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             InitializeCalcDependencies();
 
             //Shell model
+            _model = new Model(this, _database.Model);
             foreach (Tom.DataSource dataSource in _database.Model.DataSources)
             {
                 if (dataSource.Type == DataSourceType.Provider || dataSource.Type == DataSourceType.Structured)
@@ -213,6 +215,15 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
         /// <summary>
+        /// Model object.
+        /// </summary>
+        public Model Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        /// <summary>
         /// Collection of DataSources for the TabularModel object.
         /// </summary>
         public DataSourceCollection DataSources => _dataSources;
@@ -291,6 +302,25 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         #endregion
 
+        #region Model
+
+        /// <summary>
+        /// Update Model associated with the TabularModel object.
+        /// </summary>
+        /// <param name="dataSourceSource">Model object from the source tabular model to be updated in the target.</param>
+        /// <param name="dataSourceTarget">Model object in the target tabular model to be updated.</param>
+        public void UpdateModel(Model modelSource, Model modelTarget)
+        {
+            modelTarget.TomModel.Description = modelSource.TomModel.Description;
+            if (!_comparisonInfo.OptionsInfo.OptionRetainStorageMode)
+            {
+                modelTarget.TomModel.DefaultMode = modelSource.TomModel.DefaultMode;
+            }
+            modelTarget.TomModel.DiscourageImplicitMeasures = modelSource.TomModel.DiscourageImplicitMeasures;
+        }
+
+        #endregion
+
         #region DataSources
 
         /// <summary>
@@ -323,7 +353,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 dataSourceSource.TomDataSource.CopyTo(providerTarget);
 
                 _database.Model.DataSources.Add(providerTarget);
-                
+
                 // shell model
                 _dataSources.Add(new DataSource(this, providerTarget));
             }
@@ -416,6 +446,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             tomTableTarget.Measures.Clear();  //Measures will be added separately later
+            tomTableTarget.CalculationGroup?.CalculationItems.Clear();  //Calculation items will be added separately later
 
             _database.Model.Tables.Add(tomTableTarget);
             _tables.Add(new Table(this, tomTableTarget));
@@ -430,6 +461,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             bool canRetainPartitions = CanRetainPartitions(tableSource, tableTarget, out retainPartitionsMessage);
             Tom.Table tomTableTargetOrig = tableTarget.TomTable.Clone();
+            ModeType tableTargetModeType = tableTarget.TableModeType;
             List<SingleColumnRelationship> tomRelationshipsToAddBack = DeleteTable(tableTarget.Name);
             CreateTable(tableSource);
 
@@ -462,50 +494,70 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 tableTarget.CreateMeasure(tomMeasureToAddBack);
             }
+
+            //add back calculationItems
+            if (tomTableTargetOrig.CalculationGroup != null)
+            {
+                foreach (Tom.CalculationItem tomCalculationItemToAddBack in tomTableTargetOrig.CalculationGroup.CalculationItems)
+                {
+                    tableTarget.CreateCalculationItem(tomCalculationItemToAddBack);
+                }
+            }
+            else
+            {
+                //add back storage mode if option selected
+                if (_comparisonInfo.OptionsInfo.OptionRetainStorageMode)
+                {
+                    tableTarget.ResetStorageMode(tableTargetModeType);
+                }
+            }
         }
 
         public bool CanRetainPartitions(Table tableSource, Table tableTarget, out string retainPartitionsMessage)
         {
+            //Initialize variables
             retainPartitionsMessage = "";
-
-            //only applies to db deployment, and need option checked
-            if (!_comparisonInfo.OptionsInfo.OptionRetainPartitions)
-                return false;
-
-            //both tables need to have M or query partitions. Also type needs to match (won't copy query partition to M table). If a table has no partitions, do nothing.
-            PartitionSourceType sourceTypeTarget = PartitionSourceType.None;
+            PartitionSourceType sourceTypeSource = PartitionSourceType.None;
             foreach (Partition partition in tableSource.TomTable.Partitions)
             {
-                sourceTypeTarget = partition.SourceType;
+                sourceTypeSource = partition.SourceType;
                 break;
             }
-            if (!(sourceTypeTarget == PartitionSourceType.M || sourceTypeTarget == PartitionSourceType.Query))
+            PartitionSourceType sourceTypeTarget = PartitionSourceType.None;
+            foreach (Partition partitionTarget in tableTarget.TomTable.Partitions)
+            {
+                sourceTypeTarget = partitionTarget.SourceType;
+                break;
+            }
+
+            //Verify necessary options are checked
+            if (!_comparisonInfo.OptionsInfo.OptionRetainPartitions)
+                return false;
+            if (_comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions && sourceTypeTarget != PartitionSourceType.PolicyRange)
+                return false;
+
+            //both tables need to have M or query partitions, or target can be policy partitions. Also type needs to match (won't copy query partition to M table). If a table has no partitions, do nothing.
+            if (!(sourceTypeSource == PartitionSourceType.M || sourceTypeSource == PartitionSourceType.Query || sourceTypeSource == PartitionSourceType.PolicyRange))
             {
                 retainPartitionsMessage = $"Retain partitions not applicable to partition types.";
                 return false;
             }
 
-            PartitionSourceType sourceTypeOrig = PartitionSourceType.None;
-            foreach (Partition partitionOrig in tableTarget.TomTable.Partitions)
-            {
-                sourceTypeOrig = partitionOrig.SourceType;
-                break;
-            }
-            if (!(sourceTypeOrig == PartitionSourceType.M || sourceTypeOrig == PartitionSourceType.Query))
+            if (!(sourceTypeTarget == PartitionSourceType.M || sourceTypeTarget == PartitionSourceType.Query || sourceTypeTarget == PartitionSourceType.PolicyRange))
             {
                 retainPartitionsMessage = $"Retain partitions not applicable to partition types.";
                 return false;
             }
 
-            if (sourceTypeOrig != sourceTypeTarget)
+            if ((sourceTypeTarget != sourceTypeSource) && sourceTypeTarget != PartitionSourceType.PolicyRange)
             {
-                retainPartitionsMessage = $"Retain partitions not applied because source partition type is {sourceTypeTarget.ToString()} and target partition type is {sourceTypeOrig.ToString()}.";
+                retainPartitionsMessage = $"Retain partitions not applied because source partition type is {sourceTypeSource.ToString()} and target partition type is {sourceTypeTarget.ToString()}.";
                 return false;
             }
 
             if (tableSource.PartitionsDefinition == tableTarget.PartitionsDefinition)
             {
-                retainPartitionsMessage = "Source & target partition definitions match, so retain partitions not necessary.";
+                retainPartitionsMessage = "Source & target partition definitions already match, so retain partitions not necessary.";
                 return false;
             }
 
@@ -592,7 +644,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 //beginTable might be the From or the To table in TOM Relationship object; it depends on CrossFilterDirection.
 
                 RelationshipChainsFromRoot referencedTableCollection = new RelationshipChainsFromRoot();
-                foreach (Relationship filteringRelationship in beginTable.FindFilteringRelationships())
+                foreach (Relationship filteringRelationship in beginTable.FindFilteredRelationships())
                 {
                     // EndTable can be either the From or the To table of a Relationship object depending on CrossFilteringBehavior
                     string endTableName = GetEndTableName(beginTable, filteringRelationship, out bool biDi);
@@ -661,7 +713,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 chainsFromRoot.Add(link);
 
                 Table beginTable = link.EndTable; //EndTable is now the begin table as iterating next level ...
-                foreach (Relationship filteringRelationship in beginTable.FindFilteringRelationships())
+                foreach (Relationship filteringRelationship in beginTable.FindFilteredRelationships())
                 {
                     // EndTable can be either the From or the To table of a Relationship object depending on direction of CrossFilteringBehavior
                     string endTableName = GetEndTableName(beginTable, filteringRelationship, out bool biDi);
@@ -694,7 +746,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         #endregion
 
-        #region Variation Cleanup
+        #region Variation / Aggregations Cleanup
 
         /// <summary>
         /// Remove variations referring to objects that don't exist.
@@ -769,12 +821,231 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 }
             }
 
-            //Check if any tables that have ShowAsVariationsOnly = true really have variatinos pointing at them
+            //Check if any tables that have ShowAsVariationsOnly = true really have variations pointing at them
             foreach (Table table in _tables)
             {
                 if (table.TomTable.ShowAsVariationsOnly == true && !targetVariationTablesRemaining.Contains(table.Name))
                 {
                     table.TomTable.ShowAsVariationsOnly = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove aggregations referring to objects that don't exist.
+        /// </summary>
+        public void CleanUpAggregations()
+        {
+            //modelTablesWithRls to be used for Rule 11 below:
+            List<string> modelTablesWithRls = new List<string>();
+            foreach (Role role in _roles)
+            {
+                foreach (TablePermission tablePermission in role.TomRole.TablePermissions)
+                {
+                    if (!String.IsNullOrEmpty(tablePermission.FilterExpression))
+                    {
+                        modelTablesWithRls.Add(tablePermission.Name);
+                    }
+                }
+            }
+
+            foreach (Table table in _tables)
+            {
+                bool foundViolation = false;
+                string warningMessage = "";
+
+                foreach (Column column in table.TomTable.Columns)
+                {
+                    if (!foundViolation)
+                    {
+                        /* Check aggs refer to valid base tables/columns
+                         */
+
+                        if (column.AlternateOf?.BaseTable != null)
+                        {
+                            if (!_database.Model.Tables.ContainsName(column.AlternateOf.BaseTable.Name))
+                            {
+                                //Base table doesn't exist
+                                foundViolation = true;
+                                warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) refers to detail table that does not exist [table:{column.AlternateOf.BaseTable.Name}].\n";
+                                break;
+                            }
+                        }
+                        else if (column.AlternateOf?.BaseColumn != null)
+                        {
+                            if (_database.Model.Tables.ContainsName(column.AlternateOf.BaseColumn.Table?.Name))
+                            {
+                                //the referenced table is there, how about the referenced column?
+                                if (!_database.Model.Tables.Find(column.AlternateOf.BaseColumn.Table.Name).Columns.ContainsName(column.AlternateOf.BaseColumn.Name))
+                                {
+                                    //Base column does not exist
+                                    foundViolation = true;
+                                    warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) refers to detail column that does not exist [table:{column.AlternateOf.BaseColumn.Table.Name}/column:{column.AlternateOf.BaseColumn.Name}].\n";
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                //Base table does not exist
+                                foundViolation = true;
+                                warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) refers to detail table that does not exist [table:{column.AlternateOf.BaseColumn.Table.Name}].\n";
+                                break;
+                            }
+                        }
+
+                        string detailTableName = null;
+                        if (!foundViolation && column.AlternateOf != null)
+                        {
+                            detailTableName = (column.AlternateOf.BaseTable != null ? column.AlternateOf.BaseTable.Name : column.AlternateOf.BaseColumn.Table.Name);
+                        }
+                        Table detailTable = _tables.FindByName(detailTableName);
+
+                        if (!foundViolation && column.AlternateOf != null && column.AlternateOf.Summarization != SummarizationType.GroupBy && modelTablesWithRls.Count > 0 && detailTable != null)
+                        {
+                            /* Rule 11: RLS expressions that can filter the agg table, must also be able to filter the detail table(s) using an active relationship
+                             */
+
+                            //Get list of filtering RLS tables that filter the agg table
+                            List<string> rlsTablesFilteringAgg = new List<string>(); //RLS tables that filter the agg table
+
+                            //beginTable might be the From or the To table in TOM Relationship object; it depends on CrossFilterDirection.
+                            RelationshipChainsFromRoot referencedTableCollection = new RelationshipChainsFromRoot();
+                            foreach (Relationship filteringRelationship in table.FindFilteredRelationships(checkSecurityBehavior: true))
+                            {
+                                // EndTable can be either the From or the To table of a Relationship object depending on CrossFilteringBehavior/SecurityBehavior
+                                string endTableName = GetEndTableName(table, filteringRelationship, out bool biDi);
+                                RelationshipLink rootLink = new RelationshipLink(table, _tables.FindByName(endTableName), true, "", false, filteringRelationship, biDi);
+                                ValidateLinkForAggsRls(rootLink, referencedTableCollection, modelTablesWithRls, rlsTablesFilteringAgg);
+                            }
+
+                            //If the agg table itself has RLS on it, then consider it a table that is filtering the agg too
+                            if (modelTablesWithRls.Contains(table.Name))
+                            {
+                                rlsTablesFilteringAgg.Add(table.Name);
+                            }
+
+                            if (rlsTablesFilteringAgg.Count > 0)
+                            {
+                                //Get list of filtering RLS tables on the detail table
+                                List<string> rlsTablesFilteringDetail = new List<string>(); //RLS tables that filter the detail table
+
+                                //beginTable might be the From or the To table in TOM Relationship object; it depends on CrossFilterDirection.
+                                referencedTableCollection = new RelationshipChainsFromRoot();
+                                foreach (Relationship filteringRelationship in detailTable.FindFilteredRelationships(checkSecurityBehavior: true))
+                                {
+                                    // EndTable can be either the From or the To table of a Relationship object depending on CrossFilteringBehavior/SecurityBehavior
+                                    string endTableName = GetEndTableName(detailTable, filteringRelationship, out bool biDi);
+                                    RelationshipLink rootLink = new RelationshipLink(detailTable, _tables.FindByName(endTableName), true, "", false, filteringRelationship, biDi);
+                                    ValidateLinkForAggsRls(rootLink, referencedTableCollection, modelTablesWithRls, rlsTablesFilteringDetail);
+                                }
+
+                                //For each agg table, check any RLS filter tables also covers the detail table
+                                foreach (string rlsTableFilteringAgg in rlsTablesFilteringAgg)
+                                {
+                                    if (!rlsTablesFilteringDetail.Contains(rlsTableFilteringAgg))
+                                    {
+                                        foundViolation = true;
+                                        warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) RLS filter on table {rlsTableFilteringAgg} that filters the agg, but does not filter detail table {detailTableName}.\n";
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!foundViolation && column.AlternateOf != null)
+                        {
+                            /* Rule 10: Relationships between aggregation tables and other (non-aggregation) tables are not allowed if the aggregation table is on the filtering side of a relationship (active or inactive relationships).
+                               This rule applies whether relationships are weak or strong, whether BiDi or not [including to-many BiDi, not just to-one]
+                             */
+
+                            //beginTable might be the From or the To table in TOM Relationship object; it depends on CrossFilterDirection.
+                            RelationshipChainsFromRoot referencedTableCollection = new RelationshipChainsFromRoot();
+                            foreach (Relationship filteringRelationship in table.FindFilteringRelationships())
+                            {
+                                // EndTable can be either the From or the To table of a Relationship object depending on CrossFilteringBehavior/SecurityBehavior
+                                string endTableName = GetEndTableName(table, filteringRelationship, out bool biDi);
+                                Table endTable = _tables.FindByName(endTableName);
+                                if (endTable != null)
+                                {
+                                    bool endTableContainsAggs = false;
+                                    foreach (Column col in endTable.TomTable.Columns)
+                                    {
+                                        if (col.AlternateOf != null)
+                                        {
+                                            //End table has at least 1 agg so we are good
+                                            endTableContainsAggs = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!endTableContainsAggs)
+                                    {
+                                        foundViolation = true;
+                                        warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) the agg table is on the filtering side of a relationship to a table ({endTable.Name}) that does not contain aggregations, which is not allowed.\n";
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!foundViolation && column.AlternateOf != null && detailTable != null)
+                        {
+                            /* Rule 3: Chained aggregations are disallowed
+                             */
+
+                            foreach (Column detailColumn in detailTable.TomTable.Columns)
+                            {
+                                if (detailColumn.AlternateOf != null)
+                                {
+                                    foundViolation = true;
+                                    warningMessage = $"Removed aggregations on table {table.Name} because summarization {column.AlternateOf.Summarization.ToString()} on column {column.Name} (considering changes) the detail table {detailTableName} also contains aggregations, which is not allowed.\n";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Clear all aggs on the agg table
+                if (foundViolation)
+                {
+                    _parentComparison.OnValidationMessage(new ValidationMessageEventArgs(warningMessage, ValidationMessageType.AggregationDependency, ValidationMessageStatus.Warning));
+
+                    foreach (Column column in table.TomTable.Columns)
+                    {
+                        if (column.AlternateOf != null)
+                        {
+                            column.AlternateOf = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ValidateLinkForAggsRls(RelationshipLink link, RelationshipChainsFromRoot chainsFromRoot, List<string> modelTablesWithRls, List<string> rlsTablesFiltering)
+        {
+            if (link.FilteringRelationship.TomRelationship.IsActive)
+            {
+                if (modelTablesWithRls.Contains(link.EndTable.Name) && !rlsTablesFiltering.Contains(link.EndTable.Name))
+                {
+                    rlsTablesFiltering.Add(link.EndTable.Name);
+                }
+
+                //Add the link to the chain and re-iterate ...
+                chainsFromRoot.Add(link);
+
+                Table beginTable = link.EndTable; //EndTable is now the begin table as iterating next level ...
+                foreach (Relationship filteringRelationship in beginTable.FindFilteredRelationships(checkSecurityBehavior: true))
+                {
+                    // EndTable can be either the From or the To table of a Relationship object depending on direction of CrossFilteringBehavior
+                    string endTableName = GetEndTableName(beginTable, filteringRelationship, out bool biDi);
+
+                    //Need to check if endTableName has already been covered by TablePath to avoid CrossFilteringBehavior leading both ways and never ending loop
+                    if (!link.TablePath.Contains("'" + endTableName + "'"))
+                    {
+                        RelationshipLink newLink = new RelationshipLink(beginTable, _tables.FindByName(endTableName), false, link.TablePath, link.PrecedingPathBiDiInvoked, filteringRelationship, biDi);
+                        ValidateLinkForAggsRls(newLink, chainsFromRoot, modelTablesWithRls, rlsTablesFiltering);
+                    }
                 }
             }
         }
@@ -1275,7 +1546,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             break;
                     }
 
-                    //If namedObjectTarget is null, the model object doesn't exist in target, so can ignore
+                    //If namedObjectTarget is null, the model object does not exist in target, so can ignore
                     if (namedObjectTarget != null)
                     {
                         //Does the translation already exist in cultureTarget?
@@ -1683,7 +1954,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 traceEvent.Columns.Add(Amo.TraceColumn.IntegerData);
                 traceEvent.Columns.Add(Amo.TraceColumn.SessionID);
                 traceEvent.Columns.Add(Amo.TraceColumn.Spid);
-                trace.Update();
+                trace.Update(Amo.UpdateOptions.Default, Amo.UpdateMode.CreateOrReplace);
                 trace.OnEvent += new TraceEventHandler(Trace_OnEvent);
                 trace.Start();
 
@@ -1707,8 +1978,20 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 // Show row count for each table
                 foreach (ProcessingTable table in _tablesToProcess)
                 {
-                    int rowCount = _connectionInfo.DirectQuery ? 0 : Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
-                    _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, $"Success. {String.Format("{0:#,###0}", rowCount)} rows transferred.", DeploymentStatus.Success));
+                    string message = "";
+                    if (
+                            this._tables.FindByName(table.Name)?.TableModeType == ModeType.DirectQuery ||
+                           (this._tables.FindByName(table.Name)?.TableModeType == ModeType.Default && _database.Model.DefaultMode == ModeType.DirectQuery)
+                       )
+                    {
+                        message = "Success. 0 rows transferred (DirectQuery).";
+                    }
+                    else
+                    {
+                        int rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
+                        message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows transferred.";
+                    }
+                    _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, message, DeploymentStatus.Success));
                 }
                 _parentComparison.OnDeploymentComplete(new DeploymentCompleteEventArgs(DeploymentStatus.Success, null));
             }
@@ -1785,7 +2068,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         PartitionRowCounter partition = processingTable.FindPartition(partitionNodeList[0].InnerText);
                         partition.RowCount = e.IntegerData;
 
-                        _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(processingTable.Name, $"Retreived {String.Format("{0:#,###0}", processingTable.GetRowCount())} rows ...", DeploymentStatus.Deploying));
+                        _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(processingTable.Name, $"Retrieved {String.Format("{0:#,###0}", processingTable.GetRowCount())} rows ...", DeploymentStatus.Deploying));
                     }
                 }
 
@@ -1860,10 +2143,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void FinalValidation()
         {
-            if (_connectionInfo.DirectQuery && _dataSources.Count > 1)
-            {
-                throw new InvalidOperationException("Target model contains multiple data sources, which are not allowed for Direct Query models. Re-run comparison and (considering changes) ensure there is a single connection in the target model.");
-            }
+            //if (_connectionInfo.DirectQuery && _dataSources.Count > 1)
+            //{
+            //    throw new InvalidOperationException("Target model contains multiple data sources, which are not allowed for Direct Query models. Re-run comparison and (considering changes) ensure there is a single connection in the target model.");
+            //}
         }
 
         public override string ToString() => this.GetType().FullName;

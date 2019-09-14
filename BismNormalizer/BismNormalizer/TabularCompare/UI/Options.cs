@@ -51,6 +51,8 @@ namespace BismNormalizer.TabularCompare.UI
             //chkActions.Checked = _comparisonInfo.OptionsInfo.OptionActions;
             chkPartitions.Checked = _comparisonInfo.OptionsInfo.OptionPartitions;
             chkRetainPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPartitions;
+            chkRetainPolicyPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions;
+            chkRetainStorageMode.Checked = _comparisonInfo.OptionsInfo.OptionRetainStorageMode;
             chkMeasureDependencies.Checked = _comparisonInfo.OptionsInfo.OptionMeasureDependencies;
             string processingOption = _comparisonInfo.OptionsInfo.OptionProcessingOption.ToString();
             cboProcessingOption.Text = processingOption == "DoNotProcess" ? "Do Not Process" : processingOption;
@@ -69,6 +71,8 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionActions = false;
             _comparisonInfo.OptionsInfo.OptionPartitions = chkPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPartitions = chkRetainPartitions.Checked;
+            _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions = chkRetainPolicyPartitions.Checked;
+            _comparisonInfo.OptionsInfo.OptionRetainStorageMode = chkRetainStorageMode.Checked;
             _comparisonInfo.OptionsInfo.OptionMeasureDependencies = chkMeasureDependencies.Checked;
             _comparisonInfo.OptionsInfo.OptionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), cboProcessingOption.Text.Replace(" ", ""));
             //_comparisonInfo.OptionsInfo.OptionTransaction = chkTransaction.Checked;
@@ -88,13 +92,25 @@ namespace BismNormalizer.TabularCompare.UI
             chkMergeCultures.Enabled = chkCultures.Checked;
         }
 
+        private void ChkRetainPartitions_CheckedChanged(object sender, EventArgs e)
+        {
+            chkRetainPolicyPartitions.Enabled = chkRetainPartitions.Checked;
+        }
+
         private void Options_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.D)
             {
-                if (MessageBox.Show($"Are you sure you want to toggle 192 Device DPI from optimized for {(Settings.Default.OptionHighDpiLocal ? "local" : "Remote Desktop")} to {(Settings.Default.OptionHighDpiLocal ? "Remote Desktop" : "local")}?", "BISM Normalizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to toggle 192 Device DPI from optimized for {(Settings.Default.OptionHighDpiLocal ? "local" : "Remote Desktop")} to {(Settings.Default.OptionHighDpiLocal ? "Remote Desktop" : "local")}?", "ALM Toolkit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Settings.Default.OptionHighDpiLocal = !Settings.Default.OptionHighDpiLocal;
+                }
+            }
+            else if (e.Control && e.Shift && e.KeyCode == Keys.C)
+            {
+                if (MessageBox.Show($"Are you sure you want to {(Settings.Default.OptionCompositeModelsOverride ? "*disallow*" : "*allow*")} composite model comparisons on Analysis Services?", "ALM Toolkit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    Settings.Default.OptionCompositeModelsOverride = !Settings.Default.OptionCompositeModelsOverride;
                 }
             }
         }
@@ -110,5 +126,6 @@ namespace BismNormalizer.TabularCompare.UI
             get { return _dpiScaleFactor; }
             set { _dpiScaleFactor = value; }
         }
+
     }
 }

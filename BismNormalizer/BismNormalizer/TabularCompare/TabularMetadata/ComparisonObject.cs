@@ -44,7 +44,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 }
                 else
                 {
-                    if (_comparisonObjectType == ComparisonObjectType.Relationship || _comparisonObjectType == ComparisonObjectType.Measure || _comparisonObjectType == ComparisonObjectType.Kpi)
+                    if (_comparisonObjectType == ComparisonObjectType.Relationship || _comparisonObjectType == ComparisonObjectType.Measure || _comparisonObjectType == ComparisonObjectType.Kpi || _comparisonObjectType == ComparisonObjectType.CalculationItem)
                     {
                         return "      " + _sourceObject.Name;
                     }
@@ -114,7 +114,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 }
                 else
                 {
-                    if (_comparisonObjectType == ComparisonObjectType.Relationship || _comparisonObjectType == ComparisonObjectType.Measure || _comparisonObjectType == ComparisonObjectType.Kpi)
+                    if (_comparisonObjectType == ComparisonObjectType.Relationship || _comparisonObjectType == ComparisonObjectType.Measure || _comparisonObjectType == ComparisonObjectType.Kpi || _comparisonObjectType == ComparisonObjectType.CalculationItem)
                     {
                         return "      " + _targetObject.Name;
                     }
@@ -172,35 +172,41 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             switch (this.ComparisonObjectType)
             {
                 //tabular objects
-                case ComparisonObjectType.DataSource:
+                case ComparisonObjectType.Model:
                     sortKey = "A";
                     break;
-                case ComparisonObjectType.Expression:
+                case ComparisonObjectType.DataSource:
                     sortKey = "B";
                     break;
-                case ComparisonObjectType.Table:
+                case ComparisonObjectType.Expression:
                     sortKey = "C";
                     break;
-                case ComparisonObjectType.Relationship:
+                case ComparisonObjectType.Table:
                     sortKey = "D";
                     break;
-                case ComparisonObjectType.Measure:
+                case ComparisonObjectType.Relationship:
                     sortKey = "E";
                     break;
-                case ComparisonObjectType.Kpi:
+                case ComparisonObjectType.Measure:
                     sortKey = "F";
                     break;
-                case ComparisonObjectType.Action:
+                case ComparisonObjectType.Kpi:
                     sortKey = "G";
                     break;
-                case ComparisonObjectType.Perspective:
+                case ComparisonObjectType.CalculationItem:
                     sortKey = "H";
                     break;
-                case ComparisonObjectType.Culture:
+                case ComparisonObjectType.Action:
                     sortKey = "I";
                     break;
-                case ComparisonObjectType.Role:
+                case ComparisonObjectType.Perspective:
                     sortKey = "J";
+                    break;
+                case ComparisonObjectType.Culture:
+                    sortKey = "K";
+                    break;
+                case ComparisonObjectType.Role:
+                    sortKey = "L";
                     break;
 
                 default:

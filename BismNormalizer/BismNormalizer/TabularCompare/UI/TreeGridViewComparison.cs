@@ -221,6 +221,10 @@ namespace BismNormalizer.TabularCompare.UI
             switch (comparisonObject.ComparisonObjectType)
             {
                 // Tabular objecs
+                case ComparisonObjectType.Model:
+                    node.ImageIndex = 25;
+                    node.Cells[0].Value = treeIndentLevel1 + "Model";
+                    break;
                 case ComparisonObjectType.DataSource:
                     node.ImageIndex = 0;
                     node.Cells[0].Value = treeIndentLevel1 + "Data Source";
@@ -240,6 +244,10 @@ namespace BismNormalizer.TabularCompare.UI
                 case ComparisonObjectType.Kpi:
                     node.ImageIndex = 4;
                     node.Cells[0].Value = treeIndentLevel2 + "KPI";
+                    break;
+                case ComparisonObjectType.CalculationItem:
+                    node.ImageIndex = 24;
+                    node.Cells[0].Value = treeIndentLevel2 + "Calculation Item";
                     break;
                 case ComparisonObjectType.Expression:
                     node.ImageIndex = 22;
@@ -261,6 +269,10 @@ namespace BismNormalizer.TabularCompare.UI
                     node.ImageIndex = 16;
                     node.Cells[0].Value = treeIndentLevel1 + "Action";
                     break;
+                //case ComparisonObjectType.RefreshPolicy:
+                //    node.ImageIndex = 26;
+                //    node.Cells[0].Value = treeIndentLevel1 + "Refresh Policy";
+                //    break;
 
                 default:
                     break;

@@ -58,16 +58,16 @@
             this.btnOptions = new System.Windows.Forms.ToolStripButton();
             this.btnReportDifferences = new System.Windows.Forms.ToolStripButton();
             this.scDifferenceResults = new System.Windows.Forms.SplitContainer();
-            this.pnlProgressBar = new System.Windows.Forms.Panel();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.lblProgressBar = new System.Windows.Forms.Label();
-            this.treeGridComparisonResults = new BismNormalizer.TabularCompare.UI.TreeGridViewComparison();
             this.TreeGridImageList = new System.Windows.Forms.ImageList(this.components);
             this.scObjectDefinitions = new System.Windows.Forms.SplitContainer();
-            this.txtSourceObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtTargetObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.pnlProgressBar = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.treeGridComparisonResults = new BismNormalizer.TabularCompare.UI.TreeGridViewComparison();
+            this.txtSourceObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
+            this.txtTargetObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spltSourceTarget)).BeginInit();
             this.spltSourceTarget.Panel1.SuspendLayout();
@@ -78,12 +78,12 @@
             this.scDifferenceResults.Panel1.SuspendLayout();
             this.scDifferenceResults.Panel2.SuspendLayout();
             this.scDifferenceResults.SuspendLayout();
-            this.pnlProgressBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.scObjectDefinitions)).BeginInit();
             this.scObjectDefinitions.Panel1.SuspendLayout();
             this.scObjectDefinitions.Panel2.SuspendLayout();
             this.scObjectDefinitions.SuspendLayout();
+            this.pnlProgressBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -92,8 +92,9 @@
             this.pnlHeader.Controls.Add(this.toolStrip1);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(653, 55);
+            this.pnlHeader.Size = new System.Drawing.Size(980, 85);
             this.pnlHeader.TabIndex = 46;
             // 
             // spltSourceTarget
@@ -101,6 +102,7 @@
             this.spltSourceTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spltSourceTarget.IsSplitterFixed = true;
             this.spltSourceTarget.Location = new System.Drawing.Point(0, 25);
+            this.spltSourceTarget.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.spltSourceTarget.Name = "spltSourceTarget";
             // 
             // spltSourceTarget.Panel1
@@ -112,16 +114,18 @@
             // 
             this.spltSourceTarget.Panel2.Controls.Add(this.txtTarget);
             this.spltSourceTarget.Panel2.Controls.Add(this.label2);
-            this.spltSourceTarget.Size = new System.Drawing.Size(653, 30);
-            this.spltSourceTarget.SplitterDistance = 321;
+            this.spltSourceTarget.Size = new System.Drawing.Size(980, 60);
+            this.spltSourceTarget.SplitterDistance = 481;
+            this.spltSourceTarget.SplitterWidth = 6;
             this.spltSourceTarget.TabIndex = 45;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 8);
+            this.label1.Location = new System.Drawing.Point(3, 12);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.Size = new System.Drawing.Size(60, 20);
             this.label1.TabIndex = 39;
             this.label1.Text = "Source";
             // 
@@ -131,9 +135,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSource.BackColor = System.Drawing.SystemColors.Control;
             this.txtSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSource.Location = new System.Drawing.Point(49, 7);
+            this.txtSource.Location = new System.Drawing.Point(74, 11);
+            this.txtSource.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSource.Name = "txtSource";
-            this.txtSource.Size = new System.Drawing.Size(269, 20);
+            this.txtSource.Size = new System.Drawing.Size(401, 26);
             this.txtSource.TabIndex = 41;
             this.txtSource.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
@@ -143,9 +148,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTarget.BackColor = System.Drawing.SystemColors.Control;
             this.txtTarget.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTarget.Location = new System.Drawing.Point(45, 7);
+            this.txtTarget.Location = new System.Drawing.Point(68, 11);
+            this.txtTarget.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtTarget.Name = "txtTarget";
-            this.txtTarget.Size = new System.Drawing.Size(272, 20);
+            this.txtTarget.Size = new System.Drawing.Size(408, 26);
             this.txtTarget.TabIndex = 42;
             this.txtTarget.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
@@ -154,9 +160,10 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 8);
+            this.label2.Location = new System.Drawing.Point(4, 12);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(55, 20);
             this.label2.TabIndex = 40;
             this.label2.Text = "Target";
             // 
@@ -173,7 +180,8 @@
             this.btnReportDifferences});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(653, 25);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStrip1.Size = new System.Drawing.Size(980, 25);
             this.toolStrip1.TabIndex = 46;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -325,14 +333,15 @@
             this.btnReportDifferences.Image = ((System.Drawing.Image)(resources.GetObject("btnReportDifferences.Image")));
             this.btnReportDifferences.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReportDifferences.Name = "btnReportDifferences";
-            this.btnReportDifferences.Size = new System.Drawing.Size(124, 20);
+            this.btnReportDifferences.Size = new System.Drawing.Size(124, 22);
             this.btnReportDifferences.Text = "Report Differences";
             this.btnReportDifferences.Click += new System.EventHandler(this.btnReportDifferences_Click);
             // 
             // scDifferenceResults
             // 
             this.scDifferenceResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scDifferenceResults.Location = new System.Drawing.Point(0, 55);
+            this.scDifferenceResults.Location = new System.Drawing.Point(0, 85);
+            this.scDifferenceResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scDifferenceResults.Name = "scDifferenceResults";
             this.scDifferenceResults.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -344,74 +353,10 @@
             // scDifferenceResults.Panel2
             // 
             this.scDifferenceResults.Panel2.Controls.Add(this.scObjectDefinitions);
-            this.scDifferenceResults.Size = new System.Drawing.Size(653, 510);
-            this.scDifferenceResults.SplitterDistance = 371;
+            this.scDifferenceResults.Size = new System.Drawing.Size(980, 784);
+            this.scDifferenceResults.SplitterDistance = 570;
+            this.scDifferenceResults.SplitterWidth = 6;
             this.scDifferenceResults.TabIndex = 2;
-            // 
-            // pnlProgressBar
-            // 
-            this.pnlProgressBar.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlProgressBar.Controls.Add(this.progressBar);
-            this.pnlProgressBar.Controls.Add(this.lblProgressBar);
-            this.pnlProgressBar.Location = new System.Drawing.Point(60, 21);
-            this.pnlProgressBar.Name = "pnlProgressBar";
-            this.pnlProgressBar.Size = new System.Drawing.Size(280, 54);
-            this.pnlProgressBar.TabIndex = 1;
-            this.pnlProgressBar.Visible = false;
-            // 
-            // progressBar
-            // 
-            this.progressBar.Location = new System.Drawing.Point(120, 16);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(137, 18);
-            this.progressBar.Step = 1;
-            this.progressBar.TabIndex = 1;
-            // 
-            // lblProgressBar
-            // 
-            this.lblProgressBar.AutoSize = true;
-            this.lblProgressBar.Location = new System.Drawing.Point(12, 16);
-            this.lblProgressBar.Name = "lblProgressBar";
-            this.lblProgressBar.Size = new System.Drawing.Size(101, 13);
-            this.lblProgressBar.TabIndex = 0;
-            this.lblProgressBar.Text = "Generating report ...";
-            // 
-            // treeGridComparisonResults
-            // 
-            this.treeGridComparisonResults.AllowUserToAddRows = false;
-            this.treeGridComparisonResults.AllowUserToDeleteRows = false;
-            this.treeGridComparisonResults.AllowUserToResizeRows = false;
-            this.treeGridComparisonResults.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.treeGridComparisonResults.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.treeGridComparisonResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.treeGridComparisonResults.Comparison = null;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.treeGridComparisonResults.DefaultCellStyle = dataGridViewCellStyle2;
-            this.treeGridComparisonResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeGridComparisonResults.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.treeGridComparisonResults.ImageList = this.TreeGridImageList;
-            this.treeGridComparisonResults.Location = new System.Drawing.Point(0, 0);
-            this.treeGridComparisonResults.Name = "treeGridComparisonResults";
-            this.treeGridComparisonResults.RowHeadersVisible = false;
-            this.treeGridComparisonResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.treeGridComparisonResults.Size = new System.Drawing.Size(653, 371);
-            this.treeGridComparisonResults.TabIndex = 0;
-            this.treeGridComparisonResults.Unloading = false;
-            this.treeGridComparisonResults.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.treeGridComparisonResults_DataError);
-            this.treeGridComparisonResults.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeGridComparisonResults_MouseUp);
             // 
             // TreeGridImageList
             // 
@@ -445,6 +390,7 @@
             // 
             this.scObjectDefinitions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scObjectDefinitions.Location = new System.Drawing.Point(0, 0);
+            this.scObjectDefinitions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.scObjectDefinitions.Name = "scObjectDefinitions";
             // 
             // scObjectDefinitions.Panel1
@@ -458,9 +404,92 @@
             this.scObjectDefinitions.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.scObjectDefinitions.Panel2.Controls.Add(this.txtTargetObjectDefinition);
             this.scObjectDefinitions.Panel2.Controls.Add(this.label5);
-            this.scObjectDefinitions.Size = new System.Drawing.Size(653, 135);
-            this.scObjectDefinitions.SplitterDistance = 331;
+            this.scObjectDefinitions.Size = new System.Drawing.Size(980, 208);
+            this.scObjectDefinitions.SplitterDistance = 496;
+            this.scObjectDefinitions.SplitterWidth = 6;
             this.scObjectDefinitions.TabIndex = 0;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 2);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(181, 20);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Source Object Definition";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 2);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(176, 20);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Target Object Definition";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(150, 16);
+            // 
+            // pnlProgressBar
+            // 
+            this.pnlProgressBar.ImageScalingSize = new System.Drawing.Size(36, 36);
+            this.pnlProgressBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.progressBar});
+            this.pnlProgressBar.Location = new System.Drawing.Point(0, 548);
+            this.pnlProgressBar.Name = "pnlProgressBar";
+            this.pnlProgressBar.Padding = new System.Windows.Forms.Padding(1, 0, 21, 0);
+            this.pnlProgressBar.Size = new System.Drawing.Size(980, 22);
+            this.pnlProgressBar.TabIndex = 49;
+            this.pnlProgressBar.Text = "Comparison Status";
+            this.pnlProgressBar.Visible = false;
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            // 
+            // treeGridComparisonResults
+            // 
+            this.treeGridComparisonResults.AllowUserToAddRows = false;
+            this.treeGridComparisonResults.AllowUserToDeleteRows = false;
+            this.treeGridComparisonResults.AllowUserToResizeRows = false;
+            this.treeGridComparisonResults.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.treeGridComparisonResults.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.treeGridComparisonResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.treeGridComparisonResults.Comparison = null;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.treeGridComparisonResults.DefaultCellStyle = dataGridViewCellStyle2;
+            this.treeGridComparisonResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeGridComparisonResults.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.treeGridComparisonResults.ImageList = this.TreeGridImageList;
+            this.treeGridComparisonResults.Location = new System.Drawing.Point(0, 0);
+            this.treeGridComparisonResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.treeGridComparisonResults.Name = "treeGridComparisonResults";
+            this.treeGridComparisonResults.RowHeadersVisible = false;
+            this.treeGridComparisonResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.treeGridComparisonResults.Size = new System.Drawing.Size(980, 570);
+            this.treeGridComparisonResults.TabIndex = 0;
+            this.treeGridComparisonResults.Unloading = false;
+            this.treeGridComparisonResults.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.treeGridComparisonResults_DataError);
+            this.treeGridComparisonResults.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeGridComparisonResults_MouseUp);
             // 
             // txtSourceObjectDefinition
             // 
@@ -469,24 +498,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSourceObjectDefinition.BackColor = System.Drawing.Color.White;
             this.txtSourceObjectDefinition.Font = new System.Drawing.Font("Consolas", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSourceObjectDefinition.Location = new System.Drawing.Point(0, 16);
+            this.txtSourceObjectDefinition.Location = new System.Drawing.Point(0, 25);
+            this.txtSourceObjectDefinition.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSourceObjectDefinition.Name = "txtSourceObjectDefinition";
             this.txtSourceObjectDefinition.ReadOnly = true;
-            this.txtSourceObjectDefinition.Size = new System.Drawing.Size(331, 119);
+            this.txtSourceObjectDefinition.Size = new System.Drawing.Size(494, 181);
             this.txtSourceObjectDefinition.TabIndex = 1;
             this.txtSourceObjectDefinition.Text = "";
             this.txtSourceObjectDefinition.WordWrap = false;
             this.txtSourceObjectDefinition.vScroll += new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox.vScrollEventHandler(this.txtSourceObjectDefinition_vScroll);
             this.txtSourceObjectDefinition.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSourceObjectDefinition_KeyUp);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 1);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(122, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Source Object Definition";
             // 
             // txtTargetObjectDefinition
             // 
@@ -495,33 +516,26 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTargetObjectDefinition.BackColor = System.Drawing.Color.White;
             this.txtTargetObjectDefinition.Font = new System.Drawing.Font("Consolas", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTargetObjectDefinition.Location = new System.Drawing.Point(0, 16);
+            this.txtTargetObjectDefinition.Location = new System.Drawing.Point(0, 25);
+            this.txtTargetObjectDefinition.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtTargetObjectDefinition.Name = "txtTargetObjectDefinition";
             this.txtTargetObjectDefinition.ReadOnly = true;
-            this.txtTargetObjectDefinition.Size = new System.Drawing.Size(313, 119);
+            this.txtTargetObjectDefinition.Size = new System.Drawing.Size(469, 181);
             this.txtTargetObjectDefinition.TabIndex = 2;
             this.txtTargetObjectDefinition.Text = "";
             this.txtTargetObjectDefinition.WordWrap = false;
             this.txtTargetObjectDefinition.vScroll += new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox.vScrollEventHandler(this.txtTargetObjectDefinition_vScroll);
             this.txtTargetObjectDefinition.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTargetObjectDefinition_KeyUp);
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 1);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(119, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Target Object Definition";
-            // 
             // ComparisonControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.scDifferenceResults);
             this.Controls.Add(this.pnlHeader);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ComparisonControl";
-            this.Size = new System.Drawing.Size(653, 565);
+            this.Size = new System.Drawing.Size(980, 869);
             this.Load += new System.EventHandler(this.BismNormalizer_Load);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
@@ -534,18 +548,19 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.scDifferenceResults.Panel1.ResumeLayout(false);
+            this.scDifferenceResults.Panel1.PerformLayout();
             this.scDifferenceResults.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scDifferenceResults)).EndInit();
             this.scDifferenceResults.ResumeLayout(false);
-            this.pnlProgressBar.ResumeLayout(false);
-            this.pnlProgressBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).EndInit();
             this.scObjectDefinitions.Panel1.ResumeLayout(false);
             this.scObjectDefinitions.Panel1.PerformLayout();
             this.scObjectDefinitions.Panel2.ResumeLayout(false);
             this.scObjectDefinitions.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scObjectDefinitions)).EndInit();
             this.scObjectDefinitions.ResumeLayout(false);
+            this.pnlProgressBar.ResumeLayout(false);
+            this.pnlProgressBar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -559,9 +574,6 @@
         private System.Windows.Forms.Label label4;
         private SynchronizedScrollRichTextBox txtTargetObjectDefinition;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel pnlProgressBar;
-        private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Label lblProgressBar;
         private System.Windows.Forms.Panel pnlHeader;
         public System.Windows.Forms.ImageList TreeGridImageList;
         private System.Windows.Forms.SplitContainer spltSourceTarget;
@@ -588,5 +600,8 @@
         private System.Windows.Forms.ToolStripButton btnOptions;
         private System.Windows.Forms.ToolStripButton btnReportDifferences;
         private System.Windows.Forms.ToolStripMenuItem hideSkipObjectsWithSameDefinitionToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip pnlProgressBar;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripProgressBar progressBar;
     }
 }

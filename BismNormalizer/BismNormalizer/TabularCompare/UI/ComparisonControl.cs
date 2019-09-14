@@ -131,7 +131,7 @@ namespace BismNormalizer.TabularCompare.UI
                     //Blank file not saved to yet
                     return;
                 }
-                _comparisonInfo = ComparisonInfo.DeserializeBsmnFile(fileName);
+                _comparisonInfo = ComparisonInfo.DeserializeBsmnFile(fileName, "BISM Normalizer");
 
                 PopulateSourceTargetTextBoxes();
             }

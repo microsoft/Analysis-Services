@@ -20,6 +20,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private string _dataSourceName;
         private RelationshipCollection _relationships = new RelationshipCollection();
         private MeasureCollection _measures = new MeasureCollection();
+        private bool _isCalculationGroup;
+        private ModeType _tableModeType;
+        private CalculationItemCollection _calculationItems = new CalculationItemCollection();
 
         /// <summary>
         /// Initializes a new instance of the Table class using multiple parameters.
@@ -60,6 +63,18 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         public MeasureCollection Measures => _measures;
 
         /// <summary>
+        /// True if the table is a calculation group.
+        /// </summary>
+        public bool IsCalculationGroup => _isCalculationGroup;
+
+        public ModeType TableModeType => _tableModeType;
+
+        /// <summary>
+        /// Collection of calculation items for the Table object.
+        /// </summary>
+        public CalculationItemCollection CalculationItems => _calculationItems;
+
+        /// <summary>
         /// Tabular Object Model Table object abtstracted by the Table class.
         /// </summary>
         public Tom.Table TomTable => _tomTable;
@@ -68,16 +83,18 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             base.RemovePropertyFromObjectDefinition("measures");
 
+            _isCalculationGroup = (_tomTable.CalculationGroup != null);
             _partitionsDefinition = "";
             _dataSourceName = "";
-            bool hasMOrQueryPartition = false;
+            bool hasMQueryOrPolicyPartition = false;
 
             //Associate table with a DataSource if possible. It's not possible if calc table or if M expression refers to a shared expression, or multiple data sources
             foreach (Partition partition in _tomTable.Partitions)
             {
+                _tableModeType = partition.Mode;
                 if (partition.SourceType == PartitionSourceType.M)
                 {
-                    hasMOrQueryPartition = true;
+                    hasMQueryOrPolicyPartition = true;
 
                     //Check M dependency tree to see if all partitions refer only to a single DataSource
                     CalcDependencyCollection calcDependencies = _parentTabularModel.MDependencies.DependenciesReferenceFrom(CalcDependencyObjectType.Partition, _tomTable.Name, partition.Name);
@@ -105,17 +122,24 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 //If old partition, find the primary partition (first one) to determine DataSource. Technically it is possible for different partitions in the same table to point to different DataSources, but the Tabular Designer in VS doesn't support it. If set manually in .bim file, the UI still associates with the first partition (e.g. when processing table by itself, or deletinig the DataSource gives a warning message listing associated tables).
                 if (partition.SourceType == PartitionSourceType.Query)
                 {
-                    hasMOrQueryPartition = true;
+                    hasMQueryOrPolicyPartition = true;
                     _dataSourceName = ((QueryPartitionSource)partition.Source).DataSource.Name;
+                    break;
+                }
+
+                //Might be a policy partition.
+                if (partition.SourceType == PartitionSourceType.PolicyRange)
+                {
+                    hasMQueryOrPolicyPartition = true;
                     break;
                 }
             }
 
-            if (hasMOrQueryPartition)
+            if (hasMQueryOrPolicyPartition || _isCalculationGroup)
             {
                 _partitionsDefinition = base.RetrievePropertyFromObjectDefinition("partitions");
 
-                //Option to hide partitions only applies to M and query partitions (calculated tables hold dax defintitions in their partitions)
+                //Option to hide partitions only applies to M, query and policy partitions (calculated tables hold dax defintitions in their partitions)
                 if (!_parentTabularModel.ComparisonInfo.OptionsInfo.OptionPartitions)
                 {
                     base.RemovePropertyFromObjectDefinition("partitions");
@@ -135,6 +159,15 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             foreach (Tom.Measure measure in _tomTable.Measures)
             {
                 _measures.Add(new Measure(this, measure, measure.KPI != null));
+            }
+
+            //Find calc items
+            if (_isCalculationGroup)
+            {
+                foreach (Tom.CalculationItem calcItem in _tomTable.CalculationGroup.CalculationItems)
+                {
+                    _calculationItems.Add(new CalculationItem(this, calcItem));
+                }
             }
         }
 
@@ -174,8 +207,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Find all direct relationships that filter this table. This is all ACTIVE relationships where 1) this is FROM table, or 2) this is TO table with CrossFilteringBehavior=BothDirections
         /// </summary>
         /// <returns>All the associated Relationships.</returns>
-        public List<Relationship> FindFilteringRelationships()
+        public List<Relationship> FindFilteredRelationships(bool checkSecurityBehavior = false)  
         {
+            //T1[C1]->T2[C2]
+            //FromTableName: T1   *** this.Name
+            //ToTableName:   T2   
+
             //Considers DIRECT relationships for this table ONLY (1 level).
             List<Relationship> filteringRelationships = new List<Relationship>();
             foreach (Table table in _parentTabularModel.Tables)
@@ -184,7 +221,36 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     if (relationship.TomRelationship.IsActive &&
                            (relationship.FromTableName == this.Name ||
-                               (relationship.ToTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections)
+                               (relationship.ToTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections && (!checkSecurityBehavior || (checkSecurityBehavior && relationship.TomRelationship.SecurityFilteringBehavior == SecurityFilteringBehavior.BothDirections)))
+                           )
+                       )
+                    {
+                        filteringRelationships.Add(relationship);
+                    }
+                }
+            }
+            return filteringRelationships;
+        }
+
+        /// <summary>
+        /// Find all direct relationships that filter this table. This is all ACTIVE relationships where 1) this is FROM table, or 2) this is TO table with CrossFilteringBehavior=BothDirections
+        /// </summary>
+        /// <returns>All the associated Relationships.</returns>
+        public List<Relationship> FindFilteringRelationships(bool checkSecurityBehavior = false)
+        {
+            //T1[C1]->T2[C2]
+            //FromTableName: T1
+            //ToTableName:   T2   *** this.Name
+
+            //Considers DIRECT relationships for this table ONLY (1 level).
+            List<Relationship> filteringRelationships = new List<Relationship>();
+            foreach (Table table in _parentTabularModel.Tables)
+            {
+                foreach (Relationship relationship in table.Relationships)
+                {
+                    if (relationship.TomRelationship.IsActive &&
+                           (relationship.ToTableName == this.Name ||
+                               (relationship.FromTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections && (!checkSecurityBehavior || (checkSecurityBehavior && relationship.TomRelationship.SecurityFilteringBehavior == SecurityFilteringBehavior.BothDirections)))
                            )
                        )
                     {
@@ -311,6 +377,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 return false;
             }
 
+            if (this.IsCalculationGroup || _parentTabularModel.Tables.FindByName(tabularRelationshipSource.ToTable.Name).IsCalculationGroup)
+            {
+                warningMessage = $"Unable to create Relationship {relationshipName} because one or more tables is a calculation group.";
+                return false;
+            }
+
             // Delete the target relationship with same tables/columns if still there. Not using RemoveByInternalName in case internal name is actually different.
             if (this.Relationships.ContainsName(relationshipSource.Name))
             {
@@ -403,9 +475,74 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             CreateMeasure(tomMeasureSource);
         }
 
+        // CalculationItems
+
+        /// <summary>
+        /// Delete calculation item associated with the Table object.
+        /// </summary>
+        /// <param name="name">Name of the calculationItem to be deleted.</param>
+        public void DeleteCalculationItem(string name)
+        {
+            if (_tomTable.CalculationGroup.CalculationItems.ContainsName(name))
+            {
+                _tomTable.CalculationGroup.CalculationItems.Remove(name);
+            }
+
+            // shell model
+            if (_calculationItems.ContainsName(name))
+            {
+                _calculationItems.RemoveByName(name);
+            }
+        }
+
+        /// <summary>
+        /// Create calculationItem associated with the Table object.
+        /// </summary>
+        /// <param name="tomCalculationItemSource">Tabular Object Model CalculationItem object from the source tabular model to be abstracted in the target.</param>
+        public void CreateCalculationItem(Tom.CalculationItem tomCalculationItemSource)
+        {
+            if (_tomTable.CalculationGroup.CalculationItems.ContainsName(tomCalculationItemSource.Name))
+            {
+                _tomTable.CalculationGroup.CalculationItems.Remove(tomCalculationItemSource.Name);
+            }
+
+            Tom.CalculationItem tomCalculationItemTarget = new Tom.CalculationItem();
+            tomCalculationItemSource.CopyTo(tomCalculationItemTarget);
+            _tomTable.CalculationGroup.CalculationItems.Add(tomCalculationItemTarget);
+
+            // shell model
+            _calculationItems.Add(new CalculationItem(this, tomCalculationItemTarget));
+        }
+
+        /// <summary>
+        /// Update calculationItem associated with the Table object.
+        /// </summary>
+        /// <param name="tomCalculationItemSource">Tabular Object Model CalculationItem object from the source tabular model to be abstracted in the target.</param>
+        public void UpdateCalculationItem(Tom.CalculationItem tomCalculationItemSource)
+        {
+            if (_calculationItems.ContainsName(tomCalculationItemSource.Name))
+            {
+                DeleteCalculationItem(tomCalculationItemSource.Name);
+            }
+            CreateCalculationItem(tomCalculationItemSource);
+        }
+
         #endregion
 
         #region Other public methods
+
+        /// <summary>
+        /// For option when retain storage mode in composite models.
+        /// </summary>
+        /// <param name="modeType"></param>
+        public void ResetStorageMode(ModeType modeType)
+        {
+            foreach (Partition partition in _tomTable.Partitions)
+            {
+                partition.Mode = modeType;
+            }
+            _tableModeType = modeType;
+        }
 
         /// <summary>
         /// A Boolean specifying whether the table contains a column with the same name searching without case sensitivity.

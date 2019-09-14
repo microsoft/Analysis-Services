@@ -24,6 +24,7 @@ namespace BismNormalizer.TabularCompare
         private string _projectName;
         private string _projectFile;
         private int _compatibilityLevel;
+        private string _dataSourceVersion;
         private bool _directQuery;
         private string _bimFileFullName;
         private EnvDTE.Project _project;
@@ -34,10 +35,10 @@ namespace BismNormalizer.TabularCompare
         private bool _credsProvided = false;
         private string _username;
         private string _password;
+        private bool _workspaceServerProvided = false;
+        private string _workspaceServer;
 
         #endregion
-
-        #region Properties
 
         /// <summary>
         /// Initializes a new instance of the ConnectionInfo class.
@@ -92,10 +93,16 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
-        /// The SSAS compatibility level for the connection.
+        /// Compatibility level for the connection.
         /// </summary>
         [XmlIgnore()]
         public int CompatibilityLevel => _compatibilityLevel;
+
+        /// <summary>
+        /// Default data source version for the connection.
+        /// </summary>
+        [XmlIgnore()]
+        public string DataSourceVersion => _dataSourceVersion;
 
         /// <summary>
         /// A Boolean specifying whether the tabular model for the connection is running in DirectQuery mode.
@@ -167,7 +174,25 @@ namespace BismNormalizer.TabularCompare
             set { _password = value; }
         }
 
-        #endregion
+        /// <summary>
+        /// Flag depending on whether workspace server was provided. Used for command line mode/automated build.
+        /// </summary>
+        [XmlIgnore()]
+        public bool WorkspaceServerProvided
+        {
+            get { return _workspaceServerProvided; }
+            set { _workspaceServerProvided = value; }
+        }
+
+        /// <summary>
+        /// Workspace server name for when WorkspaceServerProvided = true. Used for command line mode/automated build.
+        /// </summary>
+        [XmlIgnore()]
+        public string WorkspaceServer
+        {
+            get { return _workspaceServer; }
+            set { _workspaceServer = value; }
+        }
 
         private void ReadSettingsFile()
         {
@@ -336,7 +361,7 @@ namespace BismNormalizer.TabularCompare
         /// This method ensures the tabular model is online and populates the CompatibilityLevel property.
         /// </summary>
         /// <param name="closedBimFile">A Boolean specifying if the user cancelled the comparison. For the case where running in Visual Studio, the user has the option of cancelling if the project BIM file is open.</param>
-        public void InitializeCompatibilityLevel(bool closedBimFile = false, string workspaceServer = null)
+        public void InitializeCompatibilityLevel(bool closedBimFile = false)
         {
             if (UseProject)
             {
@@ -360,9 +385,9 @@ namespace BismNormalizer.TabularCompare
                 ReadProjectFile();
 
                 //Overwrite the server if a workspace server provided
-                if (!String.IsNullOrEmpty(workspaceServer))
+                if (_workspaceServerProvided)
                 {
-                    this.ServerName = workspaceServer;
+                    this.ServerName = _workspaceServer;
                 }
             }
 
@@ -549,7 +574,8 @@ $@"{{
                 throw new ConnectionException($"Can not load/find database {this.DatabaseName}.");
             }
             _compatibilityLevel = tabularDatabase.CompatibilityLevel;
-            _directQuery = ((tabularDatabase.Model != null && tabularDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) || 
+            _dataSourceVersion = tabularDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+            _directQuery = ((tabularDatabase.Model != null && tabularDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
                              tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
         }
 
