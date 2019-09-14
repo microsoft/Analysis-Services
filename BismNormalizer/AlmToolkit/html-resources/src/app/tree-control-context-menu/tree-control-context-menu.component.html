@@ -1,0 +1,8 @@
+<div class='tree-control-context-menu' [style.left.px] = 'contextMenuPositionX' [style.top.px] = 'contextMenuPositionY'>
+  <ul class='action-list'>
+    <li id='skip-selected'class='tree-control-context-menu-options' (click)='performAction("skip")' tabindex='0' (keydown)='onKeydown($event)' on-mouseover = 'focusElement($event)' data-action='skip'>Skip selected objects</li>
+    <li id='create-selected' class='tree-control-context-menu-options' (click)='performAction("create")' tabindex='0' (keydown)='onKeydown($event)' on-mouseover = 'focusElement($event)' data-action='create'>Create selected objects Missing in Target</li>
+    <li id='delete-selected' class='tree-control-context-menu-options' (click)='performAction("delete")' tabindex='0' (keydown)='onKeydown($event)' on-mouseover = 'focusElement($event)' data-action='delete'>Delete selected objects Missing in Source</li>
+    <li id='update-selected' class='tree-control-context-menu-options' (click)='performAction("update")' tabindex='0' (keydown)='onKeydown($event)' on-mouseover = 'focusElement($event)' data-action='update'>Update selected objects with Different Definitions</li>
+  </ul>
+</div>

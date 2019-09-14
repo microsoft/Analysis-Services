@@ -1,0 +1,58 @@
+<div *ngIf='showContextMenu == true'>
+  <app-tree-control-context-menu [contextMenuPositionX]='treeControlContextMenuX' [contextMenuPositionY]='treeControlContextMenuY'
+    [selectedNodes]='selectedNodes' [selectedCell]='selectedCell'></app-tree-control-context-menu>
+</div>
+<div class='clearfix' id='main-container' (click)='hideContextMenu()'>
+  <div *ngIf='comparisonDataToDisplay.length > 0' id='comparison-table-container'>
+    <table id='comparison-grid'>
+      <tr id='header-row' class='grid-row' (contextmenu)='showTreeControlContextMenu($event)'>
+        <td class='grid-header-column node-type-column' id='header-node-type' (click)='onSelect(null, $event)' data-column-type='node-type'>Type</td>
+        <td class='grid-header-column source-name-column' id='header-source-name' (click)='onSelect(null, $event)' data-column-type='source-name'>Source Name</td>
+        <td class='grid-header-column status-column' id='header-status' (click)='onSelect(null, $event)' data-column-type='status'>Status</td>
+        <td class='grid--header-column target-name-column' id='header-target-name' (click)='onSelect(null, $event)' data-column-type='target-name'>Target Name</td>
+        <td class='grid-header-column action-icon-column' id='header-selected-action' (click)='onSelect(null, $event)' data-column-type='selected-action'></td>
+        <td class='grid-header-column grid-column action-options' id='header-action-dropdown' (click)='onSelect(null, $event)' data-column-type='action-dropdown'>Action</td>
+      </tr>
+      <tr *ngFor='let dataObject of comparisonDataToDisplay; let first = first; let index = index;' class='grid-data-row object-level-{{dataObject.Level}}'
+        [class.hide-row]='!dataObject.ShowNode' [class.selected-row]='first' id='node-{{dataObject.Id}}' [attr.data-row-number]='index'
+        (contextmenu)='showTreeControlContextMenu($event)'>
+        <td class='grid-column node-type-column' [style.padding-left]='getIndentLevel(dataObject.Level)' (click)='onSelect(dataObject, $event)'
+          title='{{dataObject.NodeType}}' tabindex='{{index*10}}' (keydown)='onKeydown($event)' (keyup)='onKeyup($event)' id='node-{{dataObject.Id}}-node-type'
+          [class.first-column]='first' data-column-type='node-type'>
+          <span>
+            <img [src]='getImage(dataObject,1)' class='node-images' />
+          </span>
+          <span class='node-type'>{{dataObject.NodeType}}</span>
+        </td>
+        <td class='grid-column source-name-column' [style.padding-left]='getIndentLevel(dataObject.Level)' (click)='onSelect(dataObject, $event)'
+          [class.greyed-out-cell]='!dataObject.SourceName' [class.transparent-cell]='first' title='{{dataObject.SourceName}}'
+          tabindex='{{index*10+1}}' (keydown)='onKeydown($event)' (keyup)='onKeyup($event)' id='node-{{dataObject.Id}}-source-name'
+          data-column-type='source-name'>{{dataObject.SourceName}} </td>
+        <td class='grid-column status-column' (click)='onSelect(dataObject, $event)' title='{{dataObject.Status}}' id='node-{{dataObject.Id}}-status'
+          data-column-type='status' tabindex='{{index*10+2}}' (keydown)='onKeydown($event)' (keyup)='onKeyup($event)'>{{dataObject.Status}}</td>
+        <td class='grid-column target-name-column' [style.padding-left]='getIndentLevel(dataObject.Level)' (click)='onSelect(dataObject, $event)'
+          [class.greyed-out-cell]='!dataObject.TargetName' [class.transparent-cell]='first' title='{{dataObject.TargetName}}'
+          id='node-{{dataObject.Id}}-target-name' data-column-type='target-name' tabindex='{{index*10+3}}' (keydown)='onKeydown($event)'
+          (keyup)='onKeyup($event)'>{{dataObject.TargetName}}</td>
+        <td class='grid-column action-icon-column' (click)='onSelect(dataObject, $event)' tabindex='{{index*10+4}}' (keydown)='onKeydown($event)'
+          (keyup)='onKeyup($event)' id='node-{{dataObject.Id}}-selected-action' data-column-type='selected-action'>
+          <span>
+            <img [src]='getImage(dataObject,2)' class='node-images' />
+          </span>
+        </td>
+        <td class='grid-column action-options' (click)='onSelect(dataObject, $event)' tabindex='{{index*10+5}}' (keydown)='onKeydown($event)'
+          (keyup)='onKeyup($event)' id='node-{{dataObject.Id}}-action-dropdown' data-column-type='action-dropdown'>
+          <select class='action-dropdown' (change)='optionChange(dataObject.Id, $event.target.value)' [class.dropdown-disabled]='dataObject.DropdownDisabled ? true : false'
+            [disabled]='dataObject.DropdownDisabled ? true : null' id='node-{{dataObject.Id}}-select'>
+            <option *ngFor='let option of dataObject.AvailableActions; let index = index' [selected]='option == dataObject.MergeAction ? true : null'
+              id='node-{{dataObject.Id}}-option-{{index}}'>{{option}}</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id='draggable-bar' *ngIf='comparisonDataToDisplay.length > 0' (mousedown)='startDragging($event)' (contextmenu)='showTreeControlContextMenu($event)'></div>
+  <div id='code-editor-resizable' *ngIf='comparisonDataToDisplay.length > 0' (contextmenu)='showTreeControlContextMenu($event)'>
+    <app-codeeditor [comparisonData]='selectedObject'></app-codeeditor>
+  </div>
+</div>

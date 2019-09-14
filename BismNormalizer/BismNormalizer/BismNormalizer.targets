@@ -32,6 +32,7 @@
       <AssemblyInfoFiles Include="Properties\AssemblyInfo.cs" />
       <AssemblyInfoFiles Include="..\BismNormalizer.CommandLine\Properties\AssemblyInfo.cs" />
       <AssemblyInfoFiles Include="..\BismNormalizer.IconSetup\Properties\AssemblyInfo.cs" />
+      <AssemblyInfoFiles Include="..\AlmToolkit\Properties\AssemblyInfo.cs" />
     </ItemGroup>
 
     <!--Take package version from manifest file and set assembly/file versions for all projects to match-->

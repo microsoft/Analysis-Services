@@ -1,0 +1,29 @@
+.tree-control-context-menu {
+    position: absolute;
+    height: 88px;
+    width:350px;
+    z-index: 30;
+    background-color: #F2F2F2;
+    box-shadow: 2px 2px #D4D4D4;
+}
+
+.action-list{
+  list-style-type:none;
+  -webkit-margin-after: 0;
+  -webkit-margin-before: 0;
+  -webkit-padding-start: 0;
+  margin-top: 2px;
+}
+
+.tree-control-context-menu-options{
+  font-family:'Segoe UI';
+  font-size:12px;
+  color: #000;
+  padding:2px 0 2px 40px;
+}
+
+.tree-control-context-menu-options:focus{
+  background-color: #91C9F7;
+  outline:none;
+  cursor:default;
+}
