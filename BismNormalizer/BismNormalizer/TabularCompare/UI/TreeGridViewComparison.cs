@@ -209,9 +209,9 @@ namespace BismNormalizer.TabularCompare.UI
             node.Cells[1].Value = comparisonObject.SourceObjectName;
             node.Cells[2].Value = comparisonObject.SourceObjectInternalName;
             //node.Cells[8].Value = comparisonObject.MergeAction.ToString();  //set below instead
+            node.Cells[9].Value = comparisonObject.ComparisonObjectType.ToString();
             node.Cells[5].Value = comparisonObject.TargetObjectName;
             node.Cells[6].Value = comparisonObject.TargetObjectInternalName;
-            node.Cells[9].Value = comparisonObject.ComparisonObjectType.ToString();
             node.Cells[10].Value = comparisonObject.SourceObjectDefinition;
             node.Cells[11].Value = comparisonObject.TargetObjectDefinition;
 
@@ -230,8 +230,20 @@ namespace BismNormalizer.TabularCompare.UI
                     node.Cells[0].Value = treeIndentLevel1 + "Data Source";
                     break;
                 case ComparisonObjectType.Table:
-                    node.ImageIndex = 1;
-                    node.Cells[0].Value = treeIndentLevel1 + "Table";
+                    if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Table &&
+                       (
+                            (comparisonObject.Status != ComparisonObjectStatus.MissingInSource && comparisonObject.SourceObjectDefinition.Contains("\"calculationGroup\":")) ||
+                            (comparisonObject.Status == ComparisonObjectStatus.MissingInSource && comparisonObject.TargetObjectDefinition.Contains("\"calculationGroup\":"))
+                       ))
+                    {
+                        node.ImageIndex = 23;
+                        node.Cells[0].Value = treeIndentLevel1 + "Calculation Group";
+                    }
+                    else
+                    {
+                        node.ImageIndex = 1;
+                        node.Cells[0].Value = treeIndentLevel1 + "Table";
+                    }
                     break;
                 case ComparisonObjectType.Relationship:
                     node.ImageIndex = 2;
@@ -269,11 +281,6 @@ namespace BismNormalizer.TabularCompare.UI
                     node.ImageIndex = 16;
                     node.Cells[0].Value = treeIndentLevel1 + "Action";
                     break;
-                //case ComparisonObjectType.RefreshPolicy:
-                //    node.ImageIndex = 26;
-                //    node.Cells[0].Value = treeIndentLevel1 + "Refresh Policy";
-                //    break;
-
                 default:
                     break;
             };

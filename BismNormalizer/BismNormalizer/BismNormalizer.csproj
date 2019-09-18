@@ -230,8 +230,6 @@
     <Compile Include="TabularCompare\PasswordPromptEventArgs.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalculationItem.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalculationItemCollection.cs" />
-    <Compile Include="TabularCompare\TabularMetadata\RefreshPolicy.cs" />
-    <Compile Include="TabularCompare\TabularMetadata\RefreshPolicyCollection.cs" />
     <Compile Include="TabularCompare\TabularMetadata\Model.cs" />
     <Compile Include="TabularCompare\TabularMetadata\Expression.cs" />
     <Compile Include="TabularCompare\TabularMetadata\ExpressionCollection.cs" />

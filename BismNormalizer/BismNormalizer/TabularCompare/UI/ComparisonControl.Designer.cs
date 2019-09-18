@@ -58,16 +58,16 @@
             this.btnOptions = new System.Windows.Forms.ToolStripButton();
             this.btnReportDifferences = new System.Windows.Forms.ToolStripButton();
             this.scDifferenceResults = new System.Windows.Forms.SplitContainer();
-            this.TreeGridImageList = new System.Windows.Forms.ImageList(this.components);
-            this.scObjectDefinitions = new System.Windows.Forms.SplitContainer();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.pnlProgressBar = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.treeGridComparisonResults = new BismNormalizer.TabularCompare.UI.TreeGridViewComparison();
+            this.TreeGridImageList = new System.Windows.Forms.ImageList(this.components);
+            this.scObjectDefinitions = new System.Windows.Forms.SplitContainer();
             this.txtSourceObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.txtTargetObjectDefinition = new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spltSourceTarget)).BeginInit();
             this.spltSourceTarget.Panel1.SuspendLayout();
@@ -78,12 +78,12 @@
             this.scDifferenceResults.Panel1.SuspendLayout();
             this.scDifferenceResults.Panel2.SuspendLayout();
             this.scDifferenceResults.SuspendLayout();
+            this.pnlProgressBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.scObjectDefinitions)).BeginInit();
             this.scObjectDefinitions.Panel1.SuspendLayout();
             this.scObjectDefinitions.Panel2.SuspendLayout();
             this.scObjectDefinitions.SuspendLayout();
-            this.pnlProgressBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -101,7 +101,7 @@
             // 
             this.spltSourceTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spltSourceTarget.IsSplitterFixed = true;
-            this.spltSourceTarget.Location = new System.Drawing.Point(0, 25);
+            this.spltSourceTarget.Location = new System.Drawing.Point(0, 42);
             this.spltSourceTarget.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.spltSourceTarget.Name = "spltSourceTarget";
             // 
@@ -114,7 +114,7 @@
             // 
             this.spltSourceTarget.Panel2.Controls.Add(this.txtTarget);
             this.spltSourceTarget.Panel2.Controls.Add(this.label2);
-            this.spltSourceTarget.Size = new System.Drawing.Size(980, 60);
+            this.spltSourceTarget.Size = new System.Drawing.Size(980, 43);
             this.spltSourceTarget.SplitterDistance = 481;
             this.spltSourceTarget.SplitterWidth = 6;
             this.spltSourceTarget.TabIndex = 45;
@@ -151,7 +151,7 @@
             this.txtTarget.Location = new System.Drawing.Point(68, 11);
             this.txtTarget.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtTarget.Name = "txtTarget";
-            this.txtTarget.Size = new System.Drawing.Size(408, 26);
+            this.txtTarget.Size = new System.Drawing.Size(406, 26);
             this.txtTarget.TabIndex = 42;
             this.txtTarget.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
             // 
@@ -169,6 +169,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCompareTabularModels,
             this.ddSelectActions,
@@ -180,8 +181,7 @@
             this.btnReportDifferences});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStrip1.Size = new System.Drawing.Size(980, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(980, 42);
             this.toolStrip1.TabIndex = 46;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -190,7 +190,7 @@
             this.btnCompareTabularModels.Image = ((System.Drawing.Image)(resources.GetObject("btnCompareTabularModels.Image")));
             this.btnCompareTabularModels.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCompareTabularModels.Name = "btnCompareTabularModels";
-            this.btnCompareTabularModels.Size = new System.Drawing.Size(85, 22);
+            this.btnCompareTabularModels.Size = new System.Drawing.Size(163, 36);
             this.btnCompareTabularModels.Text = "Compare...";
             this.btnCompareTabularModels.ToolTipText = "Compare (Shift+Alt+C)";
             this.btnCompareTabularModels.Click += new System.EventHandler(this.btnCompareTabularModels_Click);
@@ -212,74 +212,74 @@
             this.ddSelectActions.Image = ((System.Drawing.Image)(resources.GetObject("ddSelectActions.Image")));
             this.ddSelectActions.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ddSelectActions.Name = "ddSelectActions";
-            this.ddSelectActions.Size = new System.Drawing.Size(110, 22);
+            this.ddSelectActions.Size = new System.Drawing.Size(218, 36);
             this.ddSelectActions.Text = "Select Actions";
             // 
             // mnuHideSkipObjects
             // 
             this.mnuHideSkipObjects.Name = "mnuHideSkipObjects";
-            this.mnuHideSkipObjects.Size = new System.Drawing.Size(303, 22);
+            this.mnuHideSkipObjects.Size = new System.Drawing.Size(617, 44);
             this.mnuHideSkipObjects.Text = "Hide Skip Objects";
             this.mnuHideSkipObjects.Click += new System.EventHandler(this.mnuHideSkipObjects_Click);
             // 
             // hideSkipObjectsWithSameDefinitionToolStripMenuItem
             // 
             this.hideSkipObjectsWithSameDefinitionToolStripMenuItem.Name = "hideSkipObjectsWithSameDefinitionToolStripMenuItem";
-            this.hideSkipObjectsWithSameDefinitionToolStripMenuItem.Size = new System.Drawing.Size(303, 22);
+            this.hideSkipObjectsWithSameDefinitionToolStripMenuItem.Size = new System.Drawing.Size(617, 44);
             this.hideSkipObjectsWithSameDefinitionToolStripMenuItem.Text = "Hide Skip Objects with Same Definition";
             this.hideSkipObjectsWithSameDefinitionToolStripMenuItem.Click += new System.EventHandler(this.mnuHideSkipObjectsWithSameDefinition_Click);
             // 
             // mnuShowSkipObjects
             // 
             this.mnuShowSkipObjects.Name = "mnuShowSkipObjects";
-            this.mnuShowSkipObjects.Size = new System.Drawing.Size(303, 22);
+            this.mnuShowSkipObjects.Size = new System.Drawing.Size(617, 44);
             this.mnuShowSkipObjects.Text = "Show Skip Objects";
             this.mnuShowSkipObjects.Click += new System.EventHandler(this.mnuShowSkipObjects_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(300, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(614, 6);
             // 
             // mnuSkipAllObjectsMissingInSource
             // 
             this.mnuSkipAllObjectsMissingInSource.Name = "mnuSkipAllObjectsMissingInSource";
-            this.mnuSkipAllObjectsMissingInSource.Size = new System.Drawing.Size(303, 22);
+            this.mnuSkipAllObjectsMissingInSource.Size = new System.Drawing.Size(617, 44);
             this.mnuSkipAllObjectsMissingInSource.Text = "Skip all objects Missing in Source";
             this.mnuSkipAllObjectsMissingInSource.Click += new System.EventHandler(this.mnuSkipAllObjectsMissingInSource_Click);
             // 
             // mnuDeleteAllObjectsMissingInSource
             // 
             this.mnuDeleteAllObjectsMissingInSource.Name = "mnuDeleteAllObjectsMissingInSource";
-            this.mnuDeleteAllObjectsMissingInSource.Size = new System.Drawing.Size(303, 22);
+            this.mnuDeleteAllObjectsMissingInSource.Size = new System.Drawing.Size(617, 44);
             this.mnuDeleteAllObjectsMissingInSource.Text = "Delete all objects Missing in Source";
             this.mnuDeleteAllObjectsMissingInSource.Click += new System.EventHandler(this.mnuDeleteAllObjectsMissingInSource_Click);
             // 
             // mnuSkipAllObjectsMissingInTarget
             // 
             this.mnuSkipAllObjectsMissingInTarget.Name = "mnuSkipAllObjectsMissingInTarget";
-            this.mnuSkipAllObjectsMissingInTarget.Size = new System.Drawing.Size(303, 22);
+            this.mnuSkipAllObjectsMissingInTarget.Size = new System.Drawing.Size(617, 44);
             this.mnuSkipAllObjectsMissingInTarget.Text = "Skip all objects Missing in Target";
             this.mnuSkipAllObjectsMissingInTarget.Click += new System.EventHandler(this.mnuSkipAllObjectsMissingInTarget_Click);
             // 
             // mnuCreateAllObjectsMissingInTarget
             // 
             this.mnuCreateAllObjectsMissingInTarget.Name = "mnuCreateAllObjectsMissingInTarget";
-            this.mnuCreateAllObjectsMissingInTarget.Size = new System.Drawing.Size(303, 22);
+            this.mnuCreateAllObjectsMissingInTarget.Size = new System.Drawing.Size(617, 44);
             this.mnuCreateAllObjectsMissingInTarget.Text = "Create all objects Missing in Target";
             this.mnuCreateAllObjectsMissingInTarget.Click += new System.EventHandler(this.mnuCreateAllObjectsMissingInTarget_Click);
             // 
             // mnuSkipAllObjectsWithDifferentDefinitions
             // 
             this.mnuSkipAllObjectsWithDifferentDefinitions.Name = "mnuSkipAllObjectsWithDifferentDefinitions";
-            this.mnuSkipAllObjectsWithDifferentDefinitions.Size = new System.Drawing.Size(303, 22);
+            this.mnuSkipAllObjectsWithDifferentDefinitions.Size = new System.Drawing.Size(617, 44);
             this.mnuSkipAllObjectsWithDifferentDefinitions.Text = "Skip all objects with Different Definitions";
             this.mnuSkipAllObjectsWithDifferentDefinitions.Click += new System.EventHandler(this.mnuSkipAllObjectsWithDifferentDefinitions_Click);
             // 
             // mnuUpdateAllObjectsWithDifferentDefinitions
             // 
             this.mnuUpdateAllObjectsWithDifferentDefinitions.Name = "mnuUpdateAllObjectsWithDifferentDefinitions";
-            this.mnuUpdateAllObjectsWithDifferentDefinitions.Size = new System.Drawing.Size(303, 22);
+            this.mnuUpdateAllObjectsWithDifferentDefinitions.Size = new System.Drawing.Size(617, 44);
             this.mnuUpdateAllObjectsWithDifferentDefinitions.Text = "Update all objects with Different Definitions";
             this.mnuUpdateAllObjectsWithDifferentDefinitions.Click += new System.EventHandler(this.mnuUpdateAllObjectsWithDifferentDefinitions_Click);
             // 
@@ -289,7 +289,7 @@
             this.btnValidateSelection.Image = ((System.Drawing.Image)(resources.GetObject("btnValidateSelection.Image")));
             this.btnValidateSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnValidateSelection.Name = "btnValidateSelection";
-            this.btnValidateSelection.Size = new System.Drawing.Size(119, 22);
+            this.btnValidateSelection.Size = new System.Drawing.Size(240, 36);
             this.btnValidateSelection.Text = "Validate Selection";
             this.btnValidateSelection.Click += new System.EventHandler(this.btnValidateSelection_Click);
             // 
@@ -299,7 +299,7 @@
             this.btnUpdate.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdate.Image")));
             this.btnUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(65, 22);
+            this.btnUpdate.Size = new System.Drawing.Size(128, 36);
             this.btnUpdate.Text = "Update";
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
@@ -309,7 +309,7 @@
             this.btnGenerateScript.Image = ((System.Drawing.Image)(resources.GetObject("btnGenerateScript.Image")));
             this.btnGenerateScript.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnGenerateScript.Name = "btnGenerateScript";
-            this.btnGenerateScript.Size = new System.Drawing.Size(107, 22);
+            this.btnGenerateScript.Size = new System.Drawing.Size(215, 36);
             this.btnGenerateScript.Text = "Generate Script";
             this.btnGenerateScript.Click += new System.EventHandler(this.btnGenerateScript_Click);
             // 
@@ -323,7 +323,7 @@
             this.btnOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnOptions.Image")));
             this.btnOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOptions.Name = "btnOptions";
-            this.btnOptions.Size = new System.Drawing.Size(69, 22);
+            this.btnOptions.Size = new System.Drawing.Size(135, 36);
             this.btnOptions.Text = "Options";
             this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
             // 
@@ -333,7 +333,7 @@
             this.btnReportDifferences.Image = ((System.Drawing.Image)(resources.GetObject("btnReportDifferences.Image")));
             this.btnReportDifferences.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReportDifferences.Name = "btnReportDifferences";
-            this.btnReportDifferences.Size = new System.Drawing.Size(124, 22);
+            this.btnReportDifferences.Size = new System.Drawing.Size(249, 36);
             this.btnReportDifferences.Text = "Report Differences";
             this.btnReportDifferences.Click += new System.EventHandler(this.btnReportDifferences_Click);
             // 
@@ -358,82 +358,6 @@
             this.scDifferenceResults.SplitterWidth = 6;
             this.scDifferenceResults.TabIndex = 2;
             // 
-            // TreeGridImageList
-            // 
-            this.TreeGridImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeGridImageList.ImageStream")));
-            this.TreeGridImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.TreeGridImageList.Images.SetKeyName(0, "Connection.png");
-            this.TreeGridImageList.Images.SetKeyName(1, "Table.png");
-            this.TreeGridImageList.Images.SetKeyName(2, "Relationship.png");
-            this.TreeGridImageList.Images.SetKeyName(3, "BismMeasure.png");
-            this.TreeGridImageList.Images.SetKeyName(4, "KPI.png");
-            this.TreeGridImageList.Images.SetKeyName(5, "DeleteAction.png");
-            this.TreeGridImageList.Images.SetKeyName(6, "UpdateAction.png");
-            this.TreeGridImageList.Images.SetKeyName(7, "CreateAction.png");
-            this.TreeGridImageList.Images.SetKeyName(8, "SkipAction.png");
-            this.TreeGridImageList.Images.SetKeyName(9, "Plus.png");
-            this.TreeGridImageList.Images.SetKeyName(10, "Minus.png");
-            this.TreeGridImageList.Images.SetKeyName(11, "Informational.png");
-            this.TreeGridImageList.Images.SetKeyName(12, "Warning.png");
-            this.TreeGridImageList.Images.SetKeyName(13, "WarningToolWindow.png");
-            this.TreeGridImageList.Images.SetKeyName(14, "Role.png");
-            this.TreeGridImageList.Images.SetKeyName(15, "Perspective.png");
-            this.TreeGridImageList.Images.SetKeyName(16, "Action.png");
-            this.TreeGridImageList.Images.SetKeyName(17, "CompareBismModels_Small.png");
-            this.TreeGridImageList.Images.SetKeyName(18, "DeleteActionGrey.png");
-            this.TreeGridImageList.Images.SetKeyName(19, "SkipActionGrey.png");
-            this.TreeGridImageList.Images.SetKeyName(20, "CreateActionGrey.png");
-            this.TreeGridImageList.Images.SetKeyName(21, "Culture.png");
-            this.TreeGridImageList.Images.SetKeyName(22, "Expression.png");
-            // 
-            // scObjectDefinitions
-            // 
-            this.scObjectDefinitions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.scObjectDefinitions.Location = new System.Drawing.Point(0, 0);
-            this.scObjectDefinitions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.scObjectDefinitions.Name = "scObjectDefinitions";
-            // 
-            // scObjectDefinitions.Panel1
-            // 
-            this.scObjectDefinitions.Panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.scObjectDefinitions.Panel1.Controls.Add(this.txtSourceObjectDefinition);
-            this.scObjectDefinitions.Panel1.Controls.Add(this.label4);
-            // 
-            // scObjectDefinitions.Panel2
-            // 
-            this.scObjectDefinitions.Panel2.BackColor = System.Drawing.SystemColors.Control;
-            this.scObjectDefinitions.Panel2.Controls.Add(this.txtTargetObjectDefinition);
-            this.scObjectDefinitions.Panel2.Controls.Add(this.label5);
-            this.scObjectDefinitions.Size = new System.Drawing.Size(980, 208);
-            this.scObjectDefinitions.SplitterDistance = 496;
-            this.scObjectDefinitions.SplitterWidth = 6;
-            this.scObjectDefinitions.TabIndex = 0;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 2);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(181, 20);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Source Object Definition";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 2);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(176, 20);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Target Object Definition";
-            // 
-            // progressBar
-            // 
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(150, 16);
-            // 
             // pnlProgressBar
             // 
             this.pnlProgressBar.ImageScalingSize = new System.Drawing.Size(36, 36);
@@ -451,7 +375,12 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 12);
+            // 
+            // progressBar
+            // 
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(150, 10);
             // 
             // treeGridComparisonResults
             // 
@@ -484,12 +413,68 @@
             this.treeGridComparisonResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeGridComparisonResults.Name = "treeGridComparisonResults";
             this.treeGridComparisonResults.RowHeadersVisible = false;
+            this.treeGridComparisonResults.RowHeadersWidth = 82;
             this.treeGridComparisonResults.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.treeGridComparisonResults.Size = new System.Drawing.Size(980, 570);
             this.treeGridComparisonResults.TabIndex = 0;
             this.treeGridComparisonResults.Unloading = false;
             this.treeGridComparisonResults.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.treeGridComparisonResults_DataError);
             this.treeGridComparisonResults.MouseUp += new System.Windows.Forms.MouseEventHandler(this.treeGridComparisonResults_MouseUp);
+            // 
+            // TreeGridImageList
+            // 
+            this.TreeGridImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("TreeGridImageList.ImageStream")));
+            this.TreeGridImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.TreeGridImageList.Images.SetKeyName(0, "Connection.png");
+            this.TreeGridImageList.Images.SetKeyName(1, "Table.png");
+            this.TreeGridImageList.Images.SetKeyName(2, "Relationship.png");
+            this.TreeGridImageList.Images.SetKeyName(3, "BismMeasure.png");
+            this.TreeGridImageList.Images.SetKeyName(4, "KPI.png");
+            this.TreeGridImageList.Images.SetKeyName(5, "DeleteAction.png");
+            this.TreeGridImageList.Images.SetKeyName(6, "UpdateAction.png");
+            this.TreeGridImageList.Images.SetKeyName(7, "CreateAction.png");
+            this.TreeGridImageList.Images.SetKeyName(8, "SkipAction.png");
+            this.TreeGridImageList.Images.SetKeyName(9, "Plus.png");
+            this.TreeGridImageList.Images.SetKeyName(10, "Minus.png");
+            this.TreeGridImageList.Images.SetKeyName(11, "Informational.png");
+            this.TreeGridImageList.Images.SetKeyName(12, "Warning.png");
+            this.TreeGridImageList.Images.SetKeyName(13, "WarningToolWindow.png");
+            this.TreeGridImageList.Images.SetKeyName(14, "Role.png");
+            this.TreeGridImageList.Images.SetKeyName(15, "Perspective.png");
+            this.TreeGridImageList.Images.SetKeyName(16, "Action.png");
+            this.TreeGridImageList.Images.SetKeyName(17, "CompareBismModels_Small.png");
+            this.TreeGridImageList.Images.SetKeyName(18, "DeleteActionGrey.png");
+            this.TreeGridImageList.Images.SetKeyName(19, "SkipActionGrey.png");
+            this.TreeGridImageList.Images.SetKeyName(20, "CreateActionGrey.png");
+            this.TreeGridImageList.Images.SetKeyName(21, "Culture.png");
+            this.TreeGridImageList.Images.SetKeyName(22, "Expression.png");
+            this.TreeGridImageList.Images.SetKeyName(23, "CalculationGroup.png");
+            this.TreeGridImageList.Images.SetKeyName(24, "CalculationItem.png");
+            this.TreeGridImageList.Images.SetKeyName(25, "Model.png");
+            this.TreeGridImageList.Images.SetKeyName(26, "RefreshPolicy.png");
+            // 
+            // scObjectDefinitions
+            // 
+            this.scObjectDefinitions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scObjectDefinitions.Location = new System.Drawing.Point(0, 0);
+            this.scObjectDefinitions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.scObjectDefinitions.Name = "scObjectDefinitions";
+            // 
+            // scObjectDefinitions.Panel1
+            // 
+            this.scObjectDefinitions.Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.scObjectDefinitions.Panel1.Controls.Add(this.txtSourceObjectDefinition);
+            this.scObjectDefinitions.Panel1.Controls.Add(this.label4);
+            // 
+            // scObjectDefinitions.Panel2
+            // 
+            this.scObjectDefinitions.Panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.scObjectDefinitions.Panel2.Controls.Add(this.txtTargetObjectDefinition);
+            this.scObjectDefinitions.Panel2.Controls.Add(this.label5);
+            this.scObjectDefinitions.Size = new System.Drawing.Size(980, 208);
+            this.scObjectDefinitions.SplitterDistance = 496;
+            this.scObjectDefinitions.SplitterWidth = 6;
+            this.scObjectDefinitions.TabIndex = 0;
             // 
             // txtSourceObjectDefinition
             // 
@@ -509,6 +494,16 @@
             this.txtSourceObjectDefinition.vScroll += new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox.vScrollEventHandler(this.txtSourceObjectDefinition_vScroll);
             this.txtSourceObjectDefinition.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSourceObjectDefinition_KeyUp);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 2);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(181, 20);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Source Object Definition";
+            // 
             // txtTargetObjectDefinition
             // 
             this.txtTargetObjectDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -520,12 +515,22 @@
             this.txtTargetObjectDefinition.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtTargetObjectDefinition.Name = "txtTargetObjectDefinition";
             this.txtTargetObjectDefinition.ReadOnly = true;
-            this.txtTargetObjectDefinition.Size = new System.Drawing.Size(469, 181);
+            this.txtTargetObjectDefinition.Size = new System.Drawing.Size(467, 181);
             this.txtTargetObjectDefinition.TabIndex = 2;
             this.txtTargetObjectDefinition.Text = "";
             this.txtTargetObjectDefinition.WordWrap = false;
             this.txtTargetObjectDefinition.vScroll += new BismNormalizer.TabularCompare.UI.SynchronizedScrollRichTextBox.vScrollEventHandler(this.txtTargetObjectDefinition_vScroll);
             this.txtTargetObjectDefinition.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtTargetObjectDefinition_KeyUp);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 2);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(176, 20);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Target Object Definition";
             // 
             // ComparisonControl
             // 
@@ -552,15 +557,15 @@
             this.scDifferenceResults.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scDifferenceResults)).EndInit();
             this.scDifferenceResults.ResumeLayout(false);
+            this.pnlProgressBar.ResumeLayout(false);
+            this.pnlProgressBar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).EndInit();
             this.scObjectDefinitions.Panel1.ResumeLayout(false);
             this.scObjectDefinitions.Panel1.PerformLayout();
             this.scObjectDefinitions.Panel2.ResumeLayout(false);
             this.scObjectDefinitions.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scObjectDefinitions)).EndInit();
             this.scObjectDefinitions.ResumeLayout(false);
-            this.pnlProgressBar.ResumeLayout(false);
-            this.pnlProgressBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.treeGridComparisonResults)).EndInit();
             this.ResumeLayout(false);
 
         }
