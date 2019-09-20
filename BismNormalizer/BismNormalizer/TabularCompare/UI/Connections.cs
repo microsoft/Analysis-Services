@@ -127,6 +127,7 @@ namespace BismNormalizer.TabularCompare.UI
                         rdoTargetProject.Checked = true;
                         pnlTargetProject.Enabled = true;
 
+                        cboSourceProject.SelectedIndex = 0;
                         cboTargetProject.SelectedIndex = 1;
                     }
                 }
@@ -163,7 +164,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         private bool BindSourceConnectionInfo()
         {
-            bool returnVal = false;
+            bool boundSuccessfully = false;
 
             if (_comparisonInfo?.ConnectionInfoSource != null)
             {
@@ -173,6 +174,8 @@ namespace BismNormalizer.TabularCompare.UI
                     {
                         rdoSourceProject.Checked = true;
                         pnlSourceProject.Enabled = true;
+                        pnlSourceDb.Enabled = false;
+                        pnlSourceFile.Enabled = false;
 
                         for (int i = 0; i < ((BindingSource)cboSourceProject.DataSource).Count; i++)
                         {
@@ -183,27 +186,39 @@ namespace BismNormalizer.TabularCompare.UI
                             }
                         }
 
-                        returnVal = true;
+                        boundSuccessfully = true;
                     }
+                }
+                else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
+                {
+                    rdoSourceFile.Checked = true;
+                    pnlSourceProject.Enabled = false;
+                    pnlSourceDb.Enabled = false;
+                    pnlSourceFile.Enabled = true;
+                    txtSourceFile.Text = _comparisonInfo.ConnectionInfoSource.BimFile;
+
+                    boundSuccessfully = true;
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.DatabaseName))
                 {
                     rdoSourceDb.Checked = true;
                     pnlSourceProject.Enabled = false;
+                    pnlSourceDb.Enabled = true;
+                    pnlSourceFile.Enabled = false;
 
                     cboSourceServer.Text = _comparisonInfo.ConnectionInfoSource.ServerName;
                     cboSourceDatabase.Text = _comparisonInfo.ConnectionInfoSource.DatabaseName;
 
-                    returnVal = true;
+                    boundSuccessfully = true;
                 }
             }
 
-            return returnVal;
+            return boundSuccessfully;
         }
 
         private bool BindTargetConnectionInfo(out bool boundTargetDatabase)
         {
-            bool returnVal = false;
+            bool boundSuccessfully = false;
             boundTargetDatabase = false;
 
             if (_comparisonInfo?.ConnectionInfoTarget != null)
@@ -214,6 +229,8 @@ namespace BismNormalizer.TabularCompare.UI
                     {
                         rdoTargetProject.Checked = true;
                         pnlTargetProject.Enabled = true;
+                        pnlTargetDb.Enabled = false;
+                        pnlTargetFile.Enabled = false;
 
                         for (int i = 0; i < ((BindingSource)cboTargetProject.DataSource).Count; i++)
                         {
@@ -224,23 +241,35 @@ namespace BismNormalizer.TabularCompare.UI
                             }
                         }
 
-                        returnVal = true;
+                        boundSuccessfully = true;
                     }
+                }
+                else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+                {
+                    rdoTargetFile.Checked = true;
+                    pnlTargetProject.Enabled = false;
+                    pnlTargetDb.Enabled = false;
+                    pnlTargetFile.Enabled = true;
+                    txtTargetFile.Text = _comparisonInfo.ConnectionInfoTarget.BimFile;
+
+                    boundSuccessfully = true;
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.DatabaseName))
                 {
                     rdoTargetDb.Checked = true;
                     pnlTargetProject.Enabled = false;
+                    pnlTargetDb.Enabled = true;
+                    pnlTargetFile.Enabled = false;
 
                     cboTargetServer.Text = _comparisonInfo.ConnectionInfoTarget.ServerName;
                     cboTargetDatabase.Text = _comparisonInfo.ConnectionInfoTarget.DatabaseName;
 
                     boundTargetDatabase = true;
-                    returnVal = true;
+                    boundSuccessfully = true;
                 }
             }
 
-            return returnVal;
+            return boundSuccessfully;
         }
 
         private static void IterateProject(SortedList projects, EnvDTE.Project project, string derivedProjectName = "")
@@ -299,25 +328,43 @@ namespace BismNormalizer.TabularCompare.UI
         {
             pnlSourceProject.Enabled = true;
             pnlSourceDb.Enabled = false;
+            pnlSourceFile.Enabled = false;
             cboSourceProject.Focus();
         }
         private void rdoSourceDb_CheckedChanged(object sender, EventArgs e)
         {
             pnlSourceProject.Enabled = false;
             pnlSourceDb.Enabled = true;
+            pnlSourceFile.Enabled = false;
             cboSourceServer.Focus();
+        }
+        private void rdoSourceFile_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlSourceProject.Enabled = false;
+            pnlSourceDb.Enabled = false;
+            pnlSourceFile.Enabled = true;
+            btnSourceFileOpen.Focus();
         }
         private void rdoTargetProject_CheckedChanged(object sender, EventArgs e)
         {
             pnlTargetProject.Enabled = true;
             pnlTargetDb.Enabled = false;
+            pnlTargetFile.Enabled = false;
             cboTargetProject.Focus();
         }
         private void rdoTargetDb_CheckedChanged(object sender, EventArgs e)
         {
             pnlTargetProject.Enabled = false;
             pnlTargetDb.Enabled = true;
+            pnlTargetFile.Enabled = false;
             cboTargetServer.Focus();
+        }
+        private void rdoTargetFile_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlTargetProject.Enabled = false;
+            pnlTargetDb.Enabled = false;
+            pnlTargetFile.Enabled = true;
+            btnTargetFileOpen.Focus();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -328,14 +375,24 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoSource.Project = (EnvDTE.Project)cboSourceProject.SelectedValue;
                 _comparisonInfo.ConnectionInfoSource.ProjectName = cboSourceProject.Text;
                 _comparisonInfo.ConnectionInfoSource.ProjectFile = ((EnvDTE.Project)cboSourceProject.SelectedValue).FullName;
+                _comparisonInfo.ConnectionInfoSource.BimFile = null;
+            }
+            else if (rdoSourceFile.Checked)
+            {
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = true;
+                _comparisonInfo.ConnectionInfoSource.BimFile = txtSourceFile.Text;
+                _comparisonInfo.ConnectionInfoSource.ProjectName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
             }
             else
             {
                 _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoSource.ServerName = cboSourceServer.Text;
                 _comparisonInfo.ConnectionInfoSource.DatabaseName = cboSourceDatabase.Text;
                 _comparisonInfo.ConnectionInfoSource.ProjectName = null;
                 _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoSource.BimFile = null;
             }
 
             if (rdoTargetProject.Checked)
@@ -344,14 +401,24 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoTarget.Project = (EnvDTE.Project)cboTargetProject.SelectedValue;
                 _comparisonInfo.ConnectionInfoTarget.ProjectName = cboTargetProject.Text;
                 _comparisonInfo.ConnectionInfoTarget.ProjectFile = ((EnvDTE.Project)cboTargetProject.SelectedValue).FullName;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = null;
+            }
+            else if (rdoTargetFile.Checked)
+            {
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = true;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = txtTargetFile.Text;
+                _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
             }
             else
             {
                 _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoTarget.ServerName = cboTargetServer.Text;
                 _comparisonInfo.ConnectionInfoTarget.DatabaseName = cboTargetDatabase.Text;
                 _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
                 _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = null;
             }
         }
 
@@ -361,24 +428,30 @@ namespace BismNormalizer.TabularCompare.UI
 
             ConnectionInfo infoSourceTemp = new ConnectionInfo();
             infoSourceTemp.UseProject = rdoSourceProject.Checked;
+            infoSourceTemp.UseBimFile = rdoSourceFile.Checked;
             infoSourceTemp.ProjectName = cboSourceProject.Text;
             infoSourceTemp.Project = (EnvDTE.Project)cboSourceProject.SelectedValue;
             infoSourceTemp.ServerName = cboSourceServer.Text;
             infoSourceTemp.DatabaseName = cboSourceDatabase.Text;
+            infoSourceTemp.BimFile = txtSourceFile.Text;
 
             rdoSourceProject.Checked = rdoTargetProject.Checked;
+            rdoSourceFile.Checked = rdoTargetFile.Checked;
             rdoSourceDb.Checked = rdoTargetDb.Checked;
             cboSourceProject.Text = cboTargetProject.Text;
             cboSourceProject.SelectedValue = cboTargetProject.SelectedValue;
             cboSourceServer.Text = cboTargetServer.Text;
             cboSourceDatabase.Text = cboTargetDatabase.Text;
+            txtSourceFile.Text = txtTargetFile.Text;
 
             rdoTargetProject.Checked = infoSourceTemp.UseProject;
-            rdoTargetDb.Checked = !infoSourceTemp.UseProject;
+            rdoTargetFile.Checked = infoSourceTemp.UseBimFile;
+            rdoTargetDb.Checked = (!infoSourceTemp.UseProject && !infoSourceTemp.UseBimFile);
             cboTargetProject.Text = infoSourceTemp.ProjectName;
             cboTargetProject.SelectedValue = infoSourceTemp.Project;
             cboTargetServer.Text = infoSourceTemp.ServerName;
             cboTargetDatabase.Text = infoSourceTemp.DatabaseName;
+            txtTargetFile.Text = infoSourceTemp.BimFile;
 
             _SetTargetDatabaseFromSourceProjectConfigurationAllowed = true;
         }
@@ -417,6 +490,35 @@ namespace BismNormalizer.TabularCompare.UI
             {
                 SetTargetDatabaseFromSourceProjectConfiguration();
             }
+        }
+
+        private void btnSourceFileOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = OpenBimFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                txtSourceFile.Text = ofd.FileName;
+                Settings.Default.LastBimFileLocation = ofd.FileName;
+            }
+        }
+
+        private void btnTargetFileOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = OpenBimFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                txtTargetFile.Text = ofd.FileName;
+                Settings.Default.LastBimFileLocation = ofd.FileName;
+            }
+        }
+
+        private OpenFileDialog OpenBimFileDialog()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = (String.IsNullOrEmpty(Settings.Default.LastBimFileLocation) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : Settings.Default.LastBimFileLocation);
+            ofd.Filter = "BIM Files (.bim)|*.bim|All files (*.*)|*.*";
+            ofd.Title = "Open";
+            return ofd;
         }
 
         private void BindDatabaseList(string serverName, ComboBox cboCatalog)

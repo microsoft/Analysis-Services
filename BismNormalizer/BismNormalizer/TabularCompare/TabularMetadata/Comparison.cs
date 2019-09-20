@@ -646,10 +646,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             if (reconnect || _uncommitedChanges)
             {
                 // Reconnect to re-initialize
-                _sourceTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoSource, _comparisonInfo);
-                _sourceTabularModel.Connect();
-                _targetTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoTarget, _comparisonInfo);
-                _targetTabularModel.Connect();
+                if (!_comparisonInfo.ConnectionInfoSource.UseBimFile)
+                {
+                    _sourceTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoSource, _comparisonInfo);
+                    _sourceTabularModel.Connect();
+                }
+                if (!_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+                {
+                    _targetTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoTarget, _comparisonInfo);
+                    _targetTabularModel.Connect();
+                }
             }
 
             if (!_sourceTabularModel.ConnectionInfo.UseProject && _sourceTabularModel.TomDatabase.LastSchemaUpdate > _lastSourceSchemaUpdate)

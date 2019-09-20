@@ -65,14 +65,8 @@ namespace BismNormalizer.TabularCompare
         {
             Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", comparisonInfo.AppName.Replace(" ", "") } });
 
-            ////Currently can't source from PBIP to AS because AS doesn't work with inline data sources:
-            //if (comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://"))
-            //{
-            //    throw new ConnectionException($"Source model is a Power BI dataset and the target is Analysis Services, which is not supported in the current version.");
-            //}
-
             //If composite models not allowed on AS, check DQ/Import at model level matches:
-            if (!comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
+            if (comparisonInfo.ConnectionInfoSource.ServerName != null && !comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
             {
                 throw new ConnectionException($"Mixed DirectQuery settings are not supported for AS skus.\nSource is {(comparisonInfo.SourceDirectQuery ? "On" : "Off")} and target is {(comparisonInfo.TargetDirectQuery ? "On" : "Off")}.");
             }
@@ -82,13 +76,13 @@ namespace BismNormalizer.TabularCompare
             //If Power BI, check the default datasource version
             //Source
             bool sourceDataSourceVersionRequiresUpgrade = false;
-            if (comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.SourceDataSourceVersion))
+            if (comparisonInfo.ConnectionInfoSource.ServerName != null && comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.SourceDataSourceVersion))
             {
                 sourceDataSourceVersionRequiresUpgrade = true;
             }
             //Target
             bool targetDataSourceVersionRequiresUpgrade = false;
-            if (comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.TargetDataSourceVersion))
+            if (comparisonInfo.ConnectionInfoTarget.ServerName != null && comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://") && !_supportedDataSourceVersions.Contains(comparisonInfo.TargetDataSourceVersion))
             {
                 targetDataSourceVersionRequiresUpgrade = true;
             }

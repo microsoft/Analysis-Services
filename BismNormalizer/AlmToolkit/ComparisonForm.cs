@@ -339,7 +339,7 @@ namespace AlmToolkit
 
         private void SetAutoComplete()
         {
-            if (!_comparisonInfo.ConnectionInfoSource.UseProject)
+            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
                 if (Settings.Default.SourceServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoSource.ServerName + "|") > -1)
                 {
@@ -355,7 +355,7 @@ namespace AlmToolkit
                 GetFromAutoCompleteSource();
             }
 
-            if (!_comparisonInfo.ConnectionInfoTarget.UseProject)
+            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {
                 if (Settings.Default.TargetServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoTarget.ServerName + "|") > -1)
                 {

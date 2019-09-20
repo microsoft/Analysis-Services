@@ -2515,9 +2515,9 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                 EnvDTE._DTE dte = _connectionInfo.Project.DTE;
 
                 //check out bim file if necessary
-                if (dte.SourceControl.IsItemUnderSCC(_connectionInfo.BimFileFullName) && !dte.SourceControl.IsItemCheckedOut(_connectionInfo.BimFileFullName))
+                if (dte.SourceControl.IsItemUnderSCC(_connectionInfo.SsdtBimFile) && !dte.SourceControl.IsItemCheckedOut(_connectionInfo.SsdtBimFile))
                 {
-                    dte.SourceControl.CheckOutItem(_connectionInfo.BimFileFullName);
+                    dte.SourceControl.CheckOutItem(_connectionInfo.SsdtBimFile);
                 }
             }
 
@@ -2533,7 +2533,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
             objectDefinitionDatabaseNameNode.InnerText = "SemanticModel";
 
             xml = WriteXmlFromDoc(bimFileDoc);
-            File.WriteAllText(_connectionInfo.BimFileFullName, xml);
+            File.WriteAllText(_connectionInfo.SsdtBimFile, xml);
         }
 
         #region Database deployment and processing methods

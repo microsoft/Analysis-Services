@@ -322,5 +322,17 @@ namespace BismNormalizer {
                 this["OptionRetainStorageMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastBimFileLocation {
+            get {
+                return ((string)(this["LastBimFileLocation"]));
+            }
+            set {
+                this["LastBimFileLocation"] = value;
+            }
+        }
     }
 }

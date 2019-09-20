@@ -57,16 +57,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             this.Disconnect();
 
-            _server = new Server();
-            _server.Connect(_connectionInfo.BuildConnectionString());
-
-            _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
-            if (_database == null)
+            if (_connectionInfo.UseBimFile)
             {
-                //Don't need try to load from project here as will already be done before instantiated Comparison
-                throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
+                _database = JsonSerializer.DeserializeDatabase(File.ReadAllText(_connectionInfo.BimFile));
             }
-            InitializeCalcDependencies();
+            else
+            {
+                _server = new Server();
+                _server.Connect(_connectionInfo.BuildConnectionString());
+
+                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
+                if (_database == null)
+                {
+                    //Don't need try to load from project here as will already be done before instantiated Comparison
+                    throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
+                }
+                InitializeCalcDependencies();
+            }
 
             //Shell model
             _model = new Model(this, _database.Model);
@@ -88,7 +95,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             foreach (ModelRole role in _database.Model.Roles)
             {
                 //Workaround for AAD role members - todo delete if changed in Azure AS
-                if (_parentComparison?.TargetTabularModel?.ConnectionInfo?.ServerName.Substring(0, 7) == "asazure")
+                if (_parentComparison?.TargetTabularModel?.ConnectionInfo?.ServerName?.Substring(0, 7) == "asazure")
                 {
                     List<ExternalModelRoleMember> membersToAdd = new List<ExternalModelRoleMember>();
                     foreach (ModelRoleMember member in role.Members)
@@ -1697,7 +1704,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>Boolean indicating whether update was successful.</returns>
         public bool Update()
         {
-            FinalValidation();
+            if (_connectionInfo.UseBimFile)
+            {
+                SaveBimFile();
+                return true;
+            }
 
             if (_connectionInfo.UseProject)
             {
@@ -1733,12 +1744,17 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 EnvDTE._DTE dte = _connectionInfo.Project.DTE;
 
                 //check out bim file if necessary
-                if (dte.SourceControl.IsItemUnderSCC(_connectionInfo.BimFileFullName) && !dte.SourceControl.IsItemCheckedOut(_connectionInfo.BimFileFullName))
+                if (dte.SourceControl.IsItemUnderSCC(_connectionInfo.SsdtBimFile) && !dte.SourceControl.IsItemCheckedOut(_connectionInfo.SsdtBimFile))
                 {
-                    dte.SourceControl.CheckOutItem(_connectionInfo.BimFileFullName);
+                    dte.SourceControl.CheckOutItem(_connectionInfo.SsdtBimFile);
                 }
             }
 
+            SaveBimFile();
+        }
+
+        private void SaveBimFile()
+        {
             //Script out db and write to project file
 
             //serialize db to json
@@ -1755,7 +1771,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             jDb["id"] = "SemanticModel";
             json = jDb.ToString();
 
-            File.WriteAllText(_connectionInfo.BimFileFullName, json);
+            if (_connectionInfo.UseBimFile)
+            {
+                File.WriteAllText(_connectionInfo.BimFile, json);
+            }
+            else
+            {
+                File.WriteAllText(_connectionInfo.SsdtBimFile, json);
+            }
         }
 
         #region Database deployment and processing methods
@@ -2119,8 +2142,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>JSON script of tabular model defintion.</returns>
         public string ScriptDatabase()
         {
-            FinalValidation();
-
             //script db to json
             string json = JsonScripter.ScriptCreateOrReplace(_database);
 
@@ -2139,14 +2160,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             return json;
-        }
-
-        private void FinalValidation()
-        {
-            //if (_connectionInfo.DirectQuery && _dataSources.Count > 1)
-            //{
-            //    throw new InvalidOperationException("Target model contains multiple data sources, which are not allowed for Direct Query models. Re-run comparison and (considering changes) ensure there is a single connection in the target model.");
-            //}
         }
 
         public override string ToString() => this.GetType().FullName;

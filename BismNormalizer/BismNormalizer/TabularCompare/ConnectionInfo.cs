@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Security.Principal;
 using Microsoft.AnalysisServices;
+using TOM = Microsoft.AnalysisServices.Tabular;
 using EnvDTE;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -19,6 +20,8 @@ namespace BismNormalizer.TabularCompare
         #region Private Variables
 
         private bool _useProject = false;
+        private bool _useBimFile = false;
+        private string _bimFile;
         private string _serverName;
         private string _databaseName;
         private string _projectName;
@@ -26,7 +29,7 @@ namespace BismNormalizer.TabularCompare
         private int _compatibilityLevel;
         private string _dataSourceVersion;
         private bool _directQuery;
-        private string _bimFileFullName;
+        private string _ssdtBimFile;
         private EnvDTE.Project _project;
         private string _deploymentServerName;
         private string _deploymentServerDatabase;
@@ -53,7 +56,35 @@ namespace BismNormalizer.TabularCompare
         public bool UseProject
         {
             get { return _useProject; }
-            set { _useProject = value; }
+            set
+            {
+                if (value)
+                {
+                    //To late to do an enum would break backwards compat
+                    _useBimFile = false;
+                    _bimFile = null;
+                }
+                _useProject = value;
+            }
+        }
+
+        /// <summary>
+        /// A Boolean specifying whether the connection represents a BIM file.
+        /// </summary>
+        public bool UseBimFile
+        {
+            get { return _useBimFile; }
+            set
+            {
+                if (value)
+                {
+                    //To late to do an enum would break backwards compat
+                    _useProject = false;
+                    _serverName = null;
+                    _databaseName = null;
+                }
+                _useBimFile = value;
+            }
         }
 
         /// <summary>
@@ -93,6 +124,25 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
+        /// Full path to the slected BIM file (offline).
+        /// </summary>
+        public string BimFile
+        {
+            get { return _bimFile; }
+            set { _bimFile = value; }
+        }
+
+        /// <summary>
+        /// Full path to the BIM file for the project.
+        /// </summary>
+        [XmlIgnore()]
+        public string SsdtBimFile
+        {
+            get { return _ssdtBimFile; }
+            set { _ssdtBimFile = value; }
+        }
+
+        /// <summary>
         /// Compatibility level for the connection.
         /// </summary>
         [XmlIgnore()]
@@ -119,12 +169,6 @@ namespace BismNormalizer.TabularCompare
             get { return _project; }
             set { _project = value; }
         }
-
-        /// <summary>
-        /// Full path to the BIM file for the project.
-        /// </summary>
-        [XmlIgnore()]
-        public string BimFileFullName => _bimFileFullName;
 
         /// <summary>
         /// The deployment server from the project file.
@@ -330,7 +374,7 @@ namespace BismNormalizer.TabularCompare
                 {
                     if (projectItem.Name.EndsWith(".bim") && projectItem.FileCount > 0)
                     {
-                        _bimFileFullName = projectItem.FileNames[0];
+                        _ssdtBimFile = projectItem.FileNames[0];
                         break;
                     }
                 }
@@ -348,7 +392,7 @@ namespace BismNormalizer.TabularCompare
                             FileInfo[] files = _projectDirectoryInfo.GetFiles(compileNode.Attributes["Include"].Value, SearchOption.TopDirectoryOnly);
                             if (files.Length > 0)
                             {
-                                _bimFileFullName = files[0].FullName;
+                                _ssdtBimFile = files[0].FullName;
                                 break;
                             }
                         }
@@ -363,6 +407,30 @@ namespace BismNormalizer.TabularCompare
         /// <param name="closedBimFile">A Boolean specifying if the user cancelled the comparison. For the case where running in Visual Studio, the user has the option of cancelling if the project BIM file is open.</param>
         public void InitializeCompatibilityLevel(bool closedBimFile = false)
         {
+            if (UseBimFile)
+            {
+                TOM.Database tomDatabase = null;
+                bool exceptionLoadingFile = false;
+                try
+                {
+                    tomDatabase = TOM.JsonSerializer.DeserializeDatabase(File.ReadAllText(_bimFile));
+                }
+                catch
+                {
+                    exceptionLoadingFile = true;
+                }
+                if (exceptionLoadingFile || tomDatabase == null)
+                {
+                    throw new ConnectionException($"Can't load file \"{_bimFile}\".");
+                }
+
+                _compatibilityLevel = tomDatabase.CompatibilityLevel;
+                _dataSourceVersion = tomDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+                _directQuery = (tomDatabase.Model != null && tomDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery);
+
+                return;
+            }
+
             if (UseProject)
             {
                 //Initialize _projectDirectoryInfo
@@ -440,8 +508,8 @@ namespace BismNormalizer.TabularCompare
                 throw new ConnectionException($"Analysis Server {this.ServerName} is not running in Tabular mode");
             }
 
-            Database tabularDatabase = amoServer.Databases.FindByName(this.DatabaseName);
-            if (tabularDatabase == null)
+            Database amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
+            if (amoDatabase == null)
             {
                 if (!this.UseProject)
                 {
@@ -489,7 +557,7 @@ namespace BismNormalizer.TabularCompare
                         //attach
                         amoServer.Attach(dbDir);
                         amoServer.Refresh();
-                        tabularDatabase = amoServer.Databases.FindByName(this.DatabaseName);
+                        amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
                     }
                 }
             }
@@ -497,7 +565,7 @@ namespace BismNormalizer.TabularCompare
             if (this.UseProject)
             {
                 //_bimFileFullName = GetBimFileFullName();
-                if (String.IsNullOrEmpty(_bimFileFullName))
+                if (String.IsNullOrEmpty(_ssdtBimFile))
                 {
                     throw new ConnectionException("Could not load BIM file for Project " + this.ProjectName);
                 }
@@ -510,11 +578,11 @@ namespace BismNormalizer.TabularCompare
                     try
                     {
                         //Replace "SemanticModel" with db name.
-                        JObject jDocument = JObject.Parse(File.ReadAllText(_bimFileFullName));
+                        JObject jDocument = JObject.Parse(File.ReadAllText(_ssdtBimFile));
 
                         if (jDocument["name"] == null || jDocument["id"] == null)
                         {
-                            throw new ConnectionException("Could not read JSON in BIM file " + _bimFileFullName);
+                            throw new ConnectionException("Could not read JSON in BIM file " + _ssdtBimFile);
                         }
 
                         jDocument["name"] = DatabaseName;
@@ -539,7 +607,7 @@ $@"{{
                         //Replace "SemanticModel" with db name.  Could do a global replace, but just in case it's not called SemanticModel, use dom instead
                         //string xmlaScript = File.ReadAllText(xmlaFileFullName);
                         XmlDocument document = new XmlDocument();
-                        document.Load(_bimFileFullName);
+                        document.Load(_ssdtBimFile);
                         XmlNamespaceManager nsmgr = new XmlNamespaceManager(document.NameTable);
                         nsmgr.AddNamespace("myns1", "http://schemas.microsoft.com/analysisservices/2003/engine");
 
@@ -549,7 +617,7 @@ $@"{{
 
                         if (objectDatabaseIdNode == null || objectDefinitionDatabaseIdNode == null || objectDefinitionDatabaseNameNode == null)
                         {
-                            throw new ConnectionException("Could not access XMLA in BIM file " + _bimFileFullName);
+                            throw new ConnectionException("Could not access XMLA in BIM file " + _ssdtBimFile);
                         }
 
                         objectDatabaseIdNode.InnerText = DatabaseName;
@@ -566,17 +634,18 @@ $@"{{
                 amoServer.Disconnect();
                 amoServer.Connect(BuildConnectionString());
 
-                tabularDatabase = amoServer.Databases.FindByName(this.DatabaseName);
+                amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
             }
 
-            if (tabularDatabase == null)
+            if (amoDatabase == null)
             {
                 throw new ConnectionException($"Can not load/find database {this.DatabaseName}.");
             }
-            _compatibilityLevel = tabularDatabase.CompatibilityLevel;
-            _dataSourceVersion = tabularDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
-            _directQuery = ((tabularDatabase.Model != null && tabularDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
-                             tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || tabularDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
+
+            _compatibilityLevel = amoDatabase.CompatibilityLevel;
+            _dataSourceVersion = amoDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+            _directQuery = ((amoDatabase.Model != null && amoDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
+                             amoDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
         }
 
         /// <summary>

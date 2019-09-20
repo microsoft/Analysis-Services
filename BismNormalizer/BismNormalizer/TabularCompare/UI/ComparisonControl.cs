@@ -261,7 +261,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void SetAutoComplete()
         {
-            if (!_comparisonInfo.ConnectionInfoSource.UseProject)
+            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
                 if (Settings.Default.SourceServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoSource.ServerName + "|") > -1)
                 {
@@ -277,7 +277,7 @@ namespace BismNormalizer.TabularCompare.UI
                 GetFromAutoCompleteSource();
             }
 
-            if (!_comparisonInfo.ConnectionInfoTarget.UseProject)
+            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {
                 if (Settings.Default.TargetServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoTarget.ServerName + "|") > -1)
                 {
@@ -772,9 +772,31 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void PopulateSourceTargetTextBoxes()
         {
-            txtSource.Text = (_comparisonInfo.ConnectionInfoSource.UseProject ? "Project: " + _comparisonInfo.ConnectionInfoSource.ProjectName : "Database: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName);
-            txtTarget.Text = (_comparisonInfo.ConnectionInfoTarget.UseProject ? "Project: " + _comparisonInfo.ConnectionInfoTarget.ProjectName : "Database: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName);
+            if (_comparisonInfo.ConnectionInfoSource.UseProject)
+            {
+                txtSource.Text = "Project: " + _comparisonInfo.ConnectionInfoSource.ProjectName;
+            }
+            else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
+            {
+                txtSource.Text = "File: " + _comparisonInfo.ConnectionInfoSource.BimFile;
+            }
+            else
+            {
+                txtSource.Text = "Database: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName;
+            }
 
+            if (_comparisonInfo.ConnectionInfoTarget.UseProject)
+            {
+                txtTarget.Text = "Project: " + _comparisonInfo.ConnectionInfoTarget.ProjectName;
+            }
+            else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+            {
+                txtTarget.Text = "File: " + _comparisonInfo.ConnectionInfoTarget.BimFile;
+            }
+            else
+            {
+                txtTarget.Text = "Database: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName;
+            }
         }
 
         #region UI click handlers
