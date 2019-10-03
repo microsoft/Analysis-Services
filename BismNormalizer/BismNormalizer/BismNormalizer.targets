@@ -19,7 +19,7 @@
     
      When do new release,
     - Increment version number in manifest file (if major increment, also InstalledProductRegistration [package object attribute])
-    - Run following command:
+    - Run following command from BismNormalizer project root:
         msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
     - Take VSIX from \ReleaseObfusc folder
 
