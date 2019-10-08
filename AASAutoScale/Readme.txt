@@ -56,6 +56,7 @@ Finally, there is an optional -Force parameter, which will prevent the script fr
 Infrastructure
 
 AutoScale deploys the following objects into Azure:
+
 * A runbook called AASAutoScale-<instancename>, deployed into the specified Automation Account.
 * Two web hooks for the runbook, which are used to invoke the script for up and down events.  They are named AutoScaleUpWebhookXXXXXXXXX and AutoScaleDownWebhookXXXXXXXXX.
 * Two action rules called AutoScaleUpAlert and AutoScaleDownAlert, for the AS server specified.
@@ -66,7 +67,9 @@ Calling the script with -Remove deletes all these objects from Azure so there is
 Monitoring/Debugging
 
 To monitor AutoScale, you can check a number of places:
+
 * The AAS instance’s own diagnostics and health history
 * The Alerts AutoScale creates for the AAS instance, where there is a history of when they were called
 * The history for the AASAutoScale-<instancename> runbook in the Automation Account
+
 The history for the runbook is particularly important.  You will see a history of times AutoScale was invoked, and for each, on the output from the runbook you can find the result, including the prior and new configuration  indicating the action AutoScale took, and the next action it will take when the threshold max or min values are reached.  QPU values here are expressed in hard values given current actual tier settings, rather than their configured AutoScale percentage values.  If there is any failure, you will find exception details, etc. here as well.
