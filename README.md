@@ -1,6 +1,9 @@
 # Analysis Services
 Git repo for Analysis Services samples and community projects
 
+## [AASAutoScale](ttps://github.com/Microsoft/Analysis-Services/tree/master/AASAutoScale)
+A customizeable QPU AutoScale solution for AAS that supports scale up/down as well as in/out
+
 ## [AsPartitionProcessing](https://github.com/Microsoft/Analysis-Services/tree/master/AsPartitionProcessing)
 Automated partition management of Analysis Services tabular models
 
