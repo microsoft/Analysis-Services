@@ -1,4 +1,4 @@
-#Azure Analysis Services QPU AutoScale
+Azure Analysis Services QPU AutoScale
 
 This PowerShell script deploys a customizable QPU AutoScale solution for Azure Analysis Services.  
 
