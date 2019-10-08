@@ -1,4 +1,4 @@
-Azure Analysis Services QPU AutoScale
+#Azure Analysis Services QPU AutoScale
 
 This PowerShell script deploys a customizable QPU AutoScale solution for Azure Analysis Services.  
 
@@ -41,15 +41,15 @@ When deploying or reconfiguring AutoScale, the following parameters are also req
 -MinReplicas
 -MaxReplicas
 
-The script checks the region of the specified AAS instance to be sure the specified tier and replica count max/min values are all within the region’s supported limits.  If they are not, an error is reported that outputs the available options within the region’s limits.
+The script checks the region of the specified AAS instance to be sure the specified tier and replica count max/min values are all within the regionâ€™s supported limits.  If they are not, an error is reported that outputs the available options within the regionâ€™s limits.
 
 The following optional parameters for deployment can be specified, but have default values:
 
 -SeparateProcessingNodeFromQueryReplicas = $true
 
-For scaling up or down and adding replicas, -ScaleUpDownOutAtPctDistanceFromTierMax controls the tier QPU threshold percentage.  It makes sense to set this threshold quite close to the top of the relevant tier’s range (10 by default is 90% of the max).  For up and out, we want to get the most out of our current tier before we pay for a higher tier or another instance.  Also, when scaling down, we want to scale down to the cheaper tier as soon as possible once we know we are under the limits for that tier.  
+For scaling up or down and adding replicas, -ScaleUpDownOutAtPctDistanceFromTierMax controls the tier QPU threshold percentage.  It makes sense to set this threshold quite close to the top of the relevant tierâ€™s range (10 by default is 90% of the max).  For up and out, we want to get the most out of our current tier before we pay for a higher tier or another instance.  Also, when scaling down, we want to scale down to the cheaper tier as soon as possible once we know we are under the limits for that tier.  
 
-But for scaling IN from a scaled-out scenario with multiple query replicas, then we will want to set a more relaxed threshold, so we have -ScaleInAtPctDistanceFromTierMax (25 by default is only 75% of the max).  That’s because a single instance falling below the max for the tier will not typically be enough reason to remove an entire node from the replica count.  Instead, we will wait for a more significant lull, and not scale in if that is the next action, until we are a greater distance from the tier maximum.
+But for scaling IN from a scaled-out scenario with multiple query replicas, then we will want to set a more relaxed threshold, so we have -ScaleInAtPctDistanceFromTierMax (25 by default is only 75% of the max).  Thatâ€™s because a single instance falling below the max for the tier will not typically be enough reason to remove an entire node from the replica count.  Instead, we will wait for a more significant lull, and not scale in if that is the next action, until we are a greater distance from the tier maximum.
 
 Finally, there is an optional -Force parameter, which will prevent the script from failing if the current tier/replica count is outside of the configured limit.  Normally this will cause an error to be reported, but if -Force is specified, the deployment will continue.  The limits will still be applied as specified, and the next scale event, up or down, will move the instance to the next appropriate selection of tier/replica count within its configuration.  If there is an existing alert being processed, or if something failed while a prior alert was being processed, this can also cause failure of the script too, but the -Force parameter will ignore any errors caused by these issues and continue to deploy when specified.  
 
@@ -66,7 +66,7 @@ Calling the script with -Remove deletes all these objects from Azure so there is
 Monitoring/Debugging
 
 To monitor AutoScale, you can check a number of places:
-* The AAS instance’s own diagnostics and health history
+* The AAS instanceâ€™s own diagnostics and health history
 * The Alerts AutoScale creates for the AAS instance, where there is a history of when they were called
 * The history for the AASAutoScale-<instancename> runbook in the Automation Account
 The history for the runbook is particularly important.  You will see a history of times AutoScale was invoked, and for each, on the output from the runbook you can find the result, including the prior and new configuration  indicating the action AutoScale took, and the next action it will take when the threshold max or min values are reached.  QPU values here are expressed in hard values given current actual tier settings, rather than their configured AutoScale percentage values.  If there is any failure, you will find exception details, etc. here as well.
