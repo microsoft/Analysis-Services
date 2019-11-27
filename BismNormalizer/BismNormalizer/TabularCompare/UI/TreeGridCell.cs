@@ -133,7 +133,7 @@ namespace BismNormalizer.TabularCompare.UI
 			// paint the cell normally
 			base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
 
-            float dpiFactor = HighDPIUtils.GetDpiFactor();
+            float dpiFactor = Utils.GetDpiFactor();
             int scaleBack = (dpiFactor > 1 ? Convert.ToInt32(dpiFactor) : 0);
 
             // TO_DO: Indent width needs to take image size into account

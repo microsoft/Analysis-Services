@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -9,8 +10,21 @@ namespace BismNormalizer.TabularCompare.UI
     /// <summary>
     /// Utilities class for handling high DPI scenarios
     /// </summary>
-    public class HighDPIUtils
+    public class Utils
     {
+        public static string AssemblyProduct
+        {
+            get
+            {
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                if (attributes.Length == 0)
+                {
+                    return "";
+                }
+                return ((AssemblyProductAttribute)attributes[0]).Product;
+            }
+        }
+
         // Since the move to .Net4.5.2 we should use this const to scale context menus or they will be scaled twice
         public static Size ContextMenuDefaultImageScalingSize = new Size(16, 16);
 
@@ -29,7 +43,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         public static Size ScaleByDpi(Size size)
         {
-            float dpiFactorFudged = GetDpiFactor() * HighDPIUtils.PrimaryFudgeFactor;
+            float dpiFactorFudged = GetDpiFactor() * Utils.PrimaryFudgeFactor;
             return new Size((int)(size.Width * dpiFactorFudged), (int)(size.Height * dpiFactorFudged));
         }
 
@@ -60,7 +74,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
 
             // According to MSDN, setting a new size resets the Images collection
-            imageList.ImageSize = HighDPIUtils.ScaleByDpi(imageList.ImageSize);
+            imageList.ImageSize = Utils.ScaleByDpi(imageList.ImageSize);
             foreach (KeyValuePair<string, Image> entry in originalImages)
             {
                 imageList.Images.Add(entry.Key, entry.Value);
@@ -103,20 +117,20 @@ namespace BismNormalizer.TabularCompare.UI
                     factor = (float)graphics.DpiX / 96F; //96 is the default windows DPI
                     if (factor > 1.3 && factor < 1.7)
                     {
-                        HighDPIUtils.PrimaryFudgeFactor = 0.66f;
-                        HighDPIUtils.SecondaryFudgeFactor = 1.1f;
+                        Utils.PrimaryFudgeFactor = 0.66f;
+                        Utils.SecondaryFudgeFactor = 1.1f;
                     }
                     else if (factor >= 1.7)
                     {
                         if (!Settings.Default.OptionHighDpiLocal)
                         {
-                            HighDPIUtils.PrimaryFudgeFactor = 0.72f;
-                            HighDPIUtils.SecondaryFudgeFactor = 1.6f;
+                            Utils.PrimaryFudgeFactor = 0.72f;
+                            Utils.SecondaryFudgeFactor = 1.6f;
                         }
                         else
                         {
-                            HighDPIUtils.PrimaryFudgeFactor = 0.54f;
-                            HighDPIUtils.SecondaryFudgeFactor = 1.2f;
+                            Utils.PrimaryFudgeFactor = 0.54f;
+                            Utils.SecondaryFudgeFactor = 1.2f;
                         }
                     }
                 }

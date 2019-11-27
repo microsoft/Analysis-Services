@@ -24,16 +24,16 @@ namespace BismNormalizer.TabularCompare.UI
         {
             if (_dpiScaleFactor > 1)
             {
-                float dpiScaleFactorFudged = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
+                float dpiScaleFactorFudged = _dpiScaleFactor * Utils.PrimaryFudgeFactor;
                 //DPI
-                this.Scale(new SizeF(dpiScaleFactorFudged * (_dpiScaleFactor > 1.7 ? 1 : HighDPIUtils.SecondaryFudgeFactor), dpiScaleFactorFudged * HighDPIUtils.SecondaryFudgeFactor));
+                this.Scale(new SizeF(dpiScaleFactorFudged * (_dpiScaleFactor > 1.7 ? 1 : Utils.SecondaryFudgeFactor), dpiScaleFactorFudged * Utils.SecondaryFudgeFactor));
                 this.Width = Convert.ToInt32(this.Width * dpiScaleFactorFudged);
-                foreach (Control control in HighDPIUtils.GetChildInControl(this)) //.OfType<Button>())
+                foreach (Control control in Utils.GetChildInControl(this)) //.OfType<Button>())
                 {
                     if (control is GroupBox || control is Button)
                     {
                         control.Font = new Font(control.Font.FontFamily,
-                                                control.Font.Size * dpiScaleFactorFudged * HighDPIUtils.SecondaryFudgeFactor,
+                                                control.Font.Size * dpiScaleFactorFudged * Utils.SecondaryFudgeFactor,
                                                 control.Font.Style);
                     }
                 }
@@ -101,14 +101,14 @@ namespace BismNormalizer.TabularCompare.UI
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.D)
             {
-                if (MessageBox.Show($"Are you sure you want to toggle 192 Device DPI from optimized for {(Settings.Default.OptionHighDpiLocal ? "local" : "Remote Desktop")} to {(Settings.Default.OptionHighDpiLocal ? "Remote Desktop" : "local")}?", "ALM Toolkit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to toggle 192 Device DPI from optimized for {(Settings.Default.OptionHighDpiLocal ? "local" : "Remote Desktop")} to {(Settings.Default.OptionHighDpiLocal ? "Remote Desktop" : "local")}?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Settings.Default.OptionHighDpiLocal = !Settings.Default.OptionHighDpiLocal;
                 }
             }
             else if (e.Control && e.Shift && e.KeyCode == Keys.C)
             {
-                if (MessageBox.Show($"Are you sure you want to {(Settings.Default.OptionCompositeModelsOverride ? "*disallow*" : "*allow*")} composite model comparisons on Analysis Services?", "ALM Toolkit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to {(Settings.Default.OptionCompositeModelsOverride ? "*disallow*" : "*allow*")} composite model comparisons on Analysis Services?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Settings.Default.OptionCompositeModelsOverride = !Settings.Default.OptionCompositeModelsOverride;
                 }

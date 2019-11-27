@@ -27,15 +27,15 @@ namespace BismNormalizer.TabularCompare.UI
                 //DPI
                 if (_dpiScaleFactor > 1)
                 {
-                    float fudgedDpiScaleFactor = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
+                    float fudgedDpiScaleFactor = _dpiScaleFactor * Utils.PrimaryFudgeFactor;
 
                     this.Scale(new SizeF(fudgedDpiScaleFactor, fudgedDpiScaleFactor));
                     picStatus.Scale(new SizeF(fudgedDpiScaleFactor, fudgedDpiScaleFactor));
-                    gridProcessing.Scale(new SizeF(fudgedDpiScaleFactor * HighDPIUtils.SecondaryFudgeFactor, fudgedDpiScaleFactor * HighDPIUtils.SecondaryFudgeFactor));
+                    gridProcessing.Scale(new SizeF(fudgedDpiScaleFactor * Utils.SecondaryFudgeFactor, fudgedDpiScaleFactor * Utils.SecondaryFudgeFactor));
                     this.Font = new Font(this.Font.FontFamily,
                                      this.Font.Size * fudgedDpiScaleFactor,
                                      this.Font.Style);
-                    foreach (Control control in HighDPIUtils.GetChildInControl(this)) //.OfType<Button>())
+                    foreach (Control control in Utils.GetChildInControl(this)) //.OfType<Button>())
                     {
                         if (control is DataGridView || control is Button)
                         {
@@ -48,7 +48,7 @@ namespace BismNormalizer.TabularCompare.UI
                     {
                         col.Width = Convert.ToInt32(col.Width * fudgedDpiScaleFactor * 1.5f);
                     }
-                    HighDPIUtils.ScaleStreamedImageListByDpi(DeployImageList);
+                    Utils.ScaleStreamedImageListByDpi(DeployImageList);
                 }
 
                 this.KeyPreview = true;
@@ -101,13 +101,13 @@ namespace BismNormalizer.TabularCompare.UI
             switch (e.DeploymentStatus)
             {
                 case DeploymentStatus.Success:
-                    picStatus.Image = (_dpiScaleFactor > 1 ? HighDPIUtils.ScaleByDpi(Resources.ProgressSuccess) : Resources.ProgressSuccess);
+                    picStatus.Image = (_dpiScaleFactor > 1 ? Utils.ScaleByDpi(Resources.ProgressSuccess) : Resources.ProgressSuccess);
                     lblStatus.Text = "Success";
                     _deployStatus = DeploymentStatus.Success;
                     break;
 
                 case DeploymentStatus.Cancel:
-                    picStatus.Image = (_dpiScaleFactor > 1 ? HighDPIUtils.ScaleByDpi(Resources.ProgressCancel) : Resources.ProgressCancel);
+                    picStatus.Image = (_dpiScaleFactor > 1 ? Utils.ScaleByDpi(Resources.ProgressCancel) : Resources.ProgressCancel);
                     lblStatus.Text = "Cancelled";
                     _deployStatus = DeploymentStatus.Cancel;
                     break;
@@ -136,7 +136,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             else
             {
-                picStatus.Image = (_dpiScaleFactor > 1 ? HighDPIUtils.ScaleByDpi(Resources.ProgressError) : Resources.ProgressError);
+                picStatus.Image = (_dpiScaleFactor > 1 ? Utils.ScaleByDpi(Resources.ProgressError) : Resources.ProgressError);
                 lblStatus.Text = "Error";
                 _deployStatus = DeploymentStatus.Error;
 

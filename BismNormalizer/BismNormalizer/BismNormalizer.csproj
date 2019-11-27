@@ -248,7 +248,7 @@
     <Compile Include="TabularCompare\UI\Connections.Designer.cs">
       <DependentUpon>Connections.cs</DependentUpon>
     </Compile>
-    <Compile Include="TabularCompare\UI\HighDpiUtils.cs" />
+    <Compile Include="TabularCompare\UI\Utils.cs" />
     <Compile Include="TabularCompare\UI\BlobCredentials.cs">
       <SubType>Form</SubType>
     </Compile>

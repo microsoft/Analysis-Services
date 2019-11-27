@@ -26,7 +26,6 @@ namespace AlmToolkit
         private Comparison _comparison;
         private ComparisonJSInteraction _comparisonInter; // CEFSharp Interface to connect to Angular Tree Control
         private ChromiumWebBrowser chromeBrowser;
-        private const string _appName = "ALM Toolkit";
         private CompareState _compareState = CompareState.NotCompared;
         private string _fileName = "";
         private bool _unsaved = false;
@@ -80,7 +79,7 @@ namespace AlmToolkit
         private void ComparisonForm_Load(object sender, EventArgs e)
         {
             _comparisonInfo = new ComparisonInfo();
-            _comparisonInfo.AppName = _appName;
+            _comparisonInfo.AppName = Utils.AssemblyProduct;
 
             GetFromAutoCompleteSource();
             GetFromAutoCompleteTarget();
@@ -227,7 +226,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
             finally
@@ -399,12 +398,12 @@ namespace AlmToolkit
                 {
                     File.WriteAllText(saveFile.FileName, _comparison.ScriptDatabase());
                     toolStripStatusLabel1.Text = "ALM Toolkit - finished generating script";
-                    MessageBox.Show("Created script\n" + saveFile.FileName, _appName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Created script\n" + saveFile.FileName, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
             finally
@@ -452,7 +451,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -592,7 +591,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
             finally
@@ -604,7 +603,7 @@ namespace AlmToolkit
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Are you sure you want to update target {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project" : "database")}?", _appName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show($"Are you sure you want to update target {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project" : "database")}?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }
@@ -625,7 +624,7 @@ namespace AlmToolkit
                     toolStripStatusLabel1.Text = "ALM Toolkit - finished committing changes";
 
                     SetNotComparedState();
-                    if (update && MessageBox.Show($"Updated {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project " + _comparisonInfo.ConnectionInfoTarget.ProjectName : "database " + _comparisonInfo.ConnectionInfoTarget.DatabaseName)}.\n\nDo you want to refresh the comparison?", _appName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (update && MessageBox.Show($"Updated {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project " + _comparisonInfo.ConnectionInfoTarget.ProjectName : "database " + _comparisonInfo.ConnectionInfoTarget.DatabaseName)}.\n\nDo you want to refresh the comparison?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         this.CompareTabularModels();
                     }
@@ -637,7 +636,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
             finally
@@ -707,11 +706,11 @@ namespace AlmToolkit
 
             if (String.IsNullOrEmpty(_fileName))
             {
-                this.Text = _appName;
+                this.Text = Utils.AssemblyProduct;
             }
             else
             {
-                this.Text = _appName + " - " + Path.GetFileName(_fileName);
+                this.Text = Utils.AssemblyProduct + " - " + Path.GetFileName(_fileName);
                 if (unsaved)
                 {
                     this.Text += " *";
@@ -728,14 +727,14 @@ namespace AlmToolkit
                     //Blank file not saved to yet
                     return;
                 }
-                _comparisonInfo = ComparisonInfo.DeserializeBsmnFile(fileName, _appName);
+                _comparisonInfo = ComparisonInfo.DeserializeBsmnFile(fileName, Utils.AssemblyProduct);
                 _fileName = fileName;
                 SetFileNameTitle(false);
                 PopulateSourceTargetTextBoxes();
             }
             catch (Exception exc)
             {
-                MessageBox.Show($"Error loading file {fileName}\n{exc.Message}\n\nPlease save over this file with a new version.", _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error loading file {fileName}\n{exc.Message}\n\nPlease save over this file with a new version.", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -752,7 +751,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show($"Error saving file {fileName}\n{exc.Message}", _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error saving file {fileName}\n{exc.Message}", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -777,7 +776,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
         }
@@ -813,7 +812,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
 
@@ -827,7 +826,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _appName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
         }
@@ -872,7 +871,7 @@ namespace AlmToolkit
 
         private DialogResult SaveChanges()
         {
-            DialogResult result = MessageBox.Show("Do you want to save changes?", _appName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            DialogResult result = MessageBox.Show("Do you want to save changes?", Utils.AssemblyProduct, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
             switch (result)
             {
                 case DialogResult.Yes:
@@ -897,7 +896,7 @@ namespace AlmToolkit
         private float _dpiScaleFactor = 1;
         private void Rescale()
         {
-            float fudgedDpiScaleFactor = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
+            float fudgedDpiScaleFactor = _dpiScaleFactor * BismNormalizer.TabularCompare.UI.Utils.PrimaryFudgeFactor;
 
             //pnlRibbon.Height = Convert.ToInt32(Convert.ToDouble(ribbonMain.Height) * HighDPIUtils.SecondaryFudgeFactor * 0.93);
             ribbonMain.Height = pnlRibbon.Height;
@@ -905,7 +904,7 @@ namespace AlmToolkit
             txtSource.Width = Convert.ToInt32(Convert.ToDouble(Convert.ToDouble(spltSourceTarget.Width) * 0.5) * 0.9);
             txtTarget.Width = Convert.ToInt32(Convert.ToDouble(Convert.ToDouble(spltSourceTarget.Width) * 0.5) * 0.9);
 
-            this._dpiScaleFactor = HighDPIUtils.GetDpiFactor();
+            this._dpiScaleFactor = BismNormalizer.TabularCompare.UI.Utils.GetDpiFactor();
             if (this._dpiScaleFactor == 1) return;
 
             this.Scale(new SizeF(fudgedDpiScaleFactor, fudgedDpiScaleFactor));

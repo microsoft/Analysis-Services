@@ -14,9 +14,16 @@ namespace AlmToolkit
         public About()
         {
             InitializeComponent();
-            this.Text = "ALM Toolkit";
+            this.Text = Utils.AssemblyProduct;
             this.lblProductName.Text = this.Text;
             this.lblProductVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            this.linkDocumentation.LinkVisited = false;
+        }
+
+        private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkDocumentation.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/microsoft/Analysis-Services/blob/master/BismNormalizer/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf");
         }
 
         #region Assembly Attribute Accessors
@@ -59,44 +66,7 @@ namespace AlmToolkit
             }
         }
 
-        public string AssemblyProduct
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyProductAttribute)attributes[0]).Product;
-            }
-        }
-
-        public string AssemblyCopyright
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-            }
-        }
-
-        public string AssemblyCompany
-        {
-            get
-            {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return "";
-                }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company;
-            }
-        }
         #endregion
+
     }
 }

@@ -317,7 +317,7 @@
             this.btnHelp.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnHelp.LargeImage")));
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.SmallImage = ((System.Drawing.Image)(resources.GetObject("btnHelp.SmallImage")));
-            this.btnHelp.Text = "About";
+            this.btnHelp.Text = "Info";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // pnlRibbon
@@ -495,7 +495,7 @@
             this.txtTarget.Location = new System.Drawing.Point(60, 7);
             this.txtTarget.Margin = new System.Windows.Forms.Padding(4);
             this.txtTarget.Name = "txtTarget";
-            this.txtTarget.Size = new System.Drawing.Size(438, 22);
+            this.txtTarget.Size = new System.Drawing.Size(437, 22);
             this.txtTarget.TabIndex = 42;
             // 
             // label2

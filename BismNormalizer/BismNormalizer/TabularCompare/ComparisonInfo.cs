@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using BismNormalizer.TabularCompare.UI;
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +25,7 @@ namespace BismNormalizer.TabularCompare
         private bool _targetDirectQuery;
         private bool _promptForDatabaseProcessing;
         private bool _interactive = true;
-        private string _appName = "<AppName>";
+        private string _appName = Utils.AssemblyProduct;
         private bool _credsProvided = false;
         private string _sourceUsername;
         private string _sourcePassword;

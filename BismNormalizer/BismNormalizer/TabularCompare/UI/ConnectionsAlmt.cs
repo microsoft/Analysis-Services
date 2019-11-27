@@ -26,17 +26,17 @@ namespace BismNormalizer.TabularCompare.UI
             if (_dpiScaleFactor > 1)
             {
                 //DPI
-                float dpiScaleFactorFudged = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
+                float dpiScaleFactorFudged = _dpiScaleFactor * Utils.PrimaryFudgeFactor;
                 float fudgeFactorWidth = 0.95f;
 
-                this.Scale(new SizeF(dpiScaleFactorFudged * (_dpiScaleFactor > 1.7 ? 1 : HighDPIUtils.SecondaryFudgeFactor), dpiScaleFactorFudged * HighDPIUtils.SecondaryFudgeFactor));
+                this.Scale(new SizeF(dpiScaleFactorFudged * (_dpiScaleFactor > 1.7 ? 1 : Utils.SecondaryFudgeFactor), dpiScaleFactorFudged * Utils.SecondaryFudgeFactor));
                 this.Width = Convert.ToInt32(this.Width * dpiScaleFactorFudged * fudgeFactorWidth);
-                foreach (Control control in HighDPIUtils.GetChildInControl(this)) //.OfType<Button>())
+                foreach (Control control in Utils.GetChildInControl(this)) //.OfType<Button>())
                 {
                     if (control is GroupBox || control is Button)
                     {
                         control.Font = new Font(control.Font.FontFamily,
-                                          control.Font.Size * dpiScaleFactorFudged * HighDPIUtils.SecondaryFudgeFactor,
+                                          control.Font.Size * dpiScaleFactorFudged * Utils.SecondaryFudgeFactor,
                                           control.Font.Style);
                     }
                     if (control is GroupBox || control.Name == "btnSwitch")

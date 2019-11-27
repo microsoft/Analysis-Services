@@ -32,6 +32,7 @@
             this.logoPictureBox = new System.Windows.Forms.PictureBox();
             this.lblProductVersion = new System.Windows.Forms.Label();
             this.lblProductName = new System.Windows.Forms.Label();
+            this.linkDocumentation = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -39,7 +40,7 @@
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(292, 102);
+            this.okButton.Location = new System.Drawing.Point(292, 109);
             this.okButton.Margin = new System.Windows.Forms.Padding(4);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(100, 31);
@@ -75,18 +76,30 @@
             this.lblProductName.TabIndex = 27;
             this.lblProductName.Text = "label1";
             // 
+            // linkDocumentation
+            // 
+            this.linkDocumentation.AutoSize = true;
+            this.linkDocumentation.Location = new System.Drawing.Point(117, 78);
+            this.linkDocumentation.Name = "linkDocumentation";
+            this.linkDocumentation.Size = new System.Drawing.Size(98, 16);
+            this.linkDocumentation.TabIndex = 28;
+            this.linkDocumentation.TabStop = true;
+            this.linkDocumentation.Text = "Documentation";
+            this.linkDocumentation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkDocumentation_LinkClicked);
+            // 
             // About
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(408, 148);
+            this.ClientSize = new System.Drawing.Size(408, 155);
+            this.Controls.Add(this.linkDocumentation);
             this.Controls.Add(this.lblProductName);
             this.Controls.Add(this.lblProductVersion);
             this.Controls.Add(this.logoPictureBox);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "About";
@@ -106,5 +119,6 @@
         private System.Windows.Forms.PictureBox logoPictureBox;
         private System.Windows.Forms.Label lblProductVersion;
         private System.Windows.Forms.Label lblProductName;
+        private System.Windows.Forms.LinkLabel linkDocumentation;
     }
 }

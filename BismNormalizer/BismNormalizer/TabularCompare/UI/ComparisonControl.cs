@@ -65,9 +65,9 @@ namespace BismNormalizer.TabularCompare.UI
         private float _dpiScaleFactor = 1;
         private void Rescale()
         {
-            this._dpiScaleFactor = HighDPIUtils.GetDpiFactor();
+            this._dpiScaleFactor = Utils.GetDpiFactor();
             if (this._dpiScaleFactor == 1) return;
-            float fudgedDpiScaleFactor = _dpiScaleFactor * HighDPIUtils.PrimaryFudgeFactor;
+            float fudgedDpiScaleFactor = _dpiScaleFactor * Utils.PrimaryFudgeFactor;
 
             this.Scale(new SizeF(fudgedDpiScaleFactor, fudgedDpiScaleFactor));
             
@@ -106,7 +106,7 @@ namespace BismNormalizer.TabularCompare.UI
             txtTargetObjectDefinition.Width = scObjectDefinitions.Panel2.Width;
             txtTargetObjectDefinition.Height = Convert.ToInt32(Convert.ToDouble(scObjectDefinitions.Panel2.Height) * 0.86);
 
-            if (_dpiScaleFactor > 1) HighDPIUtils.ScaleStreamedImageListByDpi(TreeGridImageList);
+            if (_dpiScaleFactor > 1) Utils.ScaleStreamedImageListByDpi(TreeGridImageList);
 
             treeGridComparisonResults.ResetColumnWidths(fudgedDpiScaleFactor);
             if (_comparison != null && _bismNormalizerPackage.ValidationOutput != null)
