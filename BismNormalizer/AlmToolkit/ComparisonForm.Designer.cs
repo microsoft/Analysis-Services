@@ -86,21 +86,22 @@
             this.StatusBarComparsion.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1});
-            this.StatusBarComparsion.Location = new System.Drawing.Point(0, 454);
+            this.StatusBarComparsion.Location = new System.Drawing.Point(0, 564);
             this.StatusBarComparsion.Name = "StatusBarComparsion";
-            this.StatusBarComparsion.Size = new System.Drawing.Size(825, 22);
+            this.StatusBarComparsion.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.StatusBarComparsion.Size = new System.Drawing.Size(1100, 22);
             this.StatusBarComparsion.TabIndex = 48;
             this.StatusBarComparsion.Text = "Comparison Status";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 12);
             // 
             // toolStripProgressBar1
             // 
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(133, 12);
             this.toolStripProgressBar1.Visible = false;
             // 
             // tabHome
@@ -316,7 +317,8 @@
             this.btnHelp.LargeImage = ((System.Drawing.Image)(resources.GetObject("btnHelp.LargeImage")));
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.SmallImage = ((System.Drawing.Image)(resources.GetObject("btnHelp.SmallImage")));
-            this.btnHelp.Text = "Info";
+            this.btnHelp.Text = "About";
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // pnlRibbon
             // 
@@ -325,9 +327,9 @@
             this.pnlRibbon.Controls.Add(this.ribbonMain);
             this.pnlRibbon.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlRibbon.Location = new System.Drawing.Point(0, 0);
-            this.pnlRibbon.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.pnlRibbon.Margin = new System.Windows.Forms.Padding(1);
             this.pnlRibbon.Name = "pnlRibbon";
-            this.pnlRibbon.Size = new System.Drawing.Size(825, 115);
+            this.pnlRibbon.Size = new System.Drawing.Size(1100, 142);
             this.pnlRibbon.TabIndex = 49;
             // 
             // maqSoftwareLogo
@@ -336,10 +338,10 @@
             this.maqSoftwareLogo.BackColor = System.Drawing.Color.White;
             this.maqSoftwareLogo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.maqSoftwareLogo.Image = ((System.Drawing.Image)(resources.GetObject("maqSoftwareLogo.Image")));
-            this.maqSoftwareLogo.Location = new System.Drawing.Point(511, 32);
-            this.maqSoftwareLogo.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.maqSoftwareLogo.Location = new System.Drawing.Point(681, 39);
+            this.maqSoftwareLogo.Margin = new System.Windows.Forms.Padding(1);
             this.maqSoftwareLogo.Name = "maqSoftwareLogo";
-            this.maqSoftwareLogo.Size = new System.Drawing.Size(163, 50);
+            this.maqSoftwareLogo.Size = new System.Drawing.Size(217, 62);
             this.maqSoftwareLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.maqSoftwareLogo.TabIndex = 3;
             this.maqSoftwareLogo.TabStop = false;
@@ -349,10 +351,10 @@
             // 
             this.powerBiLogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.powerBiLogo.Image = ((System.Drawing.Image)(resources.GetObject("powerBiLogo.Image")));
-            this.powerBiLogo.Location = new System.Drawing.Point(671, 28);
-            this.powerBiLogo.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.powerBiLogo.Location = new System.Drawing.Point(895, 34);
+            this.powerBiLogo.Margin = new System.Windows.Forms.Padding(1);
             this.powerBiLogo.Name = "powerBiLogo";
-            this.powerBiLogo.Size = new System.Drawing.Size(149, 58);
+            this.powerBiLogo.Size = new System.Drawing.Size(199, 71);
             this.powerBiLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.powerBiLogo.TabIndex = 2;
             this.powerBiLogo.TabStop = false;
@@ -362,7 +364,7 @@
             this.ribbonMain.CaptionBarVisible = false;
             this.ribbonMain.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.ribbonMain.Location = new System.Drawing.Point(0, 0);
-            this.ribbonMain.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.ribbonMain.Margin = new System.Windows.Forms.Padding(1);
             this.ribbonMain.Minimized = false;
             this.ribbonMain.Name = "ribbonMain";
             // 
@@ -380,7 +382,7 @@
             this.ribbonMain.OrbStyle = System.Windows.Forms.RibbonOrbStyle.Office_2013;
             this.ribbonMain.OrbText = "File";
             this.ribbonMain.RibbonTabFont = new System.Drawing.Font("Trebuchet MS", 9F);
-            this.ribbonMain.Size = new System.Drawing.Size(825, 90);
+            this.ribbonMain.Size = new System.Drawing.Size(1100, 111);
             this.ribbonMain.TabIndex = 1;
             this.ribbonMain.Tabs.Add(this.tabHome);
             this.ribbonMain.Tabs.Add(this.tabHelp);
@@ -432,9 +434,10 @@
             this.pnlHeader.BackColor = System.Drawing.SystemColors.HighlightText;
             this.pnlHeader.Controls.Add(this.spltSourceTarget);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(0, 115);
+            this.pnlHeader.Location = new System.Drawing.Point(0, 142);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(825, 33);
+            this.pnlHeader.Size = new System.Drawing.Size(1100, 41);
             this.pnlHeader.TabIndex = 50;
             // 
             // spltSourceTarget
@@ -442,6 +445,7 @@
             this.spltSourceTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spltSourceTarget.IsSplitterFixed = true;
             this.spltSourceTarget.Location = new System.Drawing.Point(0, 0);
+            this.spltSourceTarget.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.spltSourceTarget.Name = "spltSourceTarget";
             // 
             // spltSourceTarget.Panel1
@@ -455,16 +459,18 @@
             this.spltSourceTarget.Panel2.Controls.Add(this.txtTarget);
             this.spltSourceTarget.Panel2.Controls.Add(this.label2);
             this.spltSourceTarget.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.spltSourceTarget.Size = new System.Drawing.Size(825, 33);
-            this.spltSourceTarget.SplitterDistance = 418;
+            this.spltSourceTarget.Size = new System.Drawing.Size(1100, 41);
+            this.spltSourceTarget.SplitterDistance = 557;
+            this.spltSourceTarget.SplitterWidth = 5;
             this.spltSourceTarget.TabIndex = 45;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 8);
+            this.label1.Location = new System.Drawing.Point(3, 10);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.Size = new System.Drawing.Size(51, 16);
             this.label1.TabIndex = 39;
             this.label1.Text = "Source";
             // 
@@ -474,9 +480,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSource.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSource.Location = new System.Drawing.Point(49, 6);
+            this.txtSource.Location = new System.Drawing.Point(65, 7);
+            this.txtSource.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtSource.Name = "txtSource";
-            this.txtSource.Size = new System.Drawing.Size(330, 20);
+            this.txtSource.Size = new System.Drawing.Size(439, 22);
             this.txtSource.TabIndex = 41;
             // 
             // txtTarget
@@ -485,9 +492,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTarget.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtTarget.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtTarget.Location = new System.Drawing.Point(45, 6);
+            this.txtTarget.Location = new System.Drawing.Point(60, 7);
+            this.txtTarget.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtTarget.Name = "txtTarget";
-            this.txtTarget.Size = new System.Drawing.Size(329, 20);
+            this.txtTarget.Size = new System.Drawing.Size(439, 22);
             this.txtTarget.TabIndex = 42;
             // 
             // label2
@@ -495,23 +503,25 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 8);
+            this.label2.Location = new System.Drawing.Point(4, 10);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(48, 16);
             this.label2.TabIndex = 40;
             this.label2.Text = "Target";
             // 
             // ComparisonForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 476);
+            this.ClientSize = new System.Drawing.Size(1100, 586);
             this.Controls.Add(this.pnlHeader);
             this.Controls.Add(this.StatusBarComparsion);
             this.Controls.Add(this.pnlRibbon);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(769, 487);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(1017, 583);
             this.Name = "ComparisonForm";
             this.Text = "ALM Toolkit for Power BI";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

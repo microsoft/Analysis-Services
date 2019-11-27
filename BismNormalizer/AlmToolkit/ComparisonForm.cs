@@ -855,6 +855,12 @@ namespace AlmToolkit
             }
         }
 
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            About aboutForm = new About();
+            aboutForm.ShowDialog();
+        }
+
         private void mnuExit_Click(object sender, EventArgs e)
         {
             if (_unsaved && SaveChanges() == DialogResult.Cancel)

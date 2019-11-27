@@ -79,6 +79,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChromeDebugger.cs" />
     <Compile Include="ComparisonForm.cs">
       <SubType>Form</SubType>
@@ -97,6 +103,9 @@
     <Compile Include="WarningListForm.Designer.cs">
       <DependentUpon>WarningListForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ComparisonForm.resx">
       <DependentUpon>ComparisonForm.cs</DependentUpon>
     </EmbeddedResource>
