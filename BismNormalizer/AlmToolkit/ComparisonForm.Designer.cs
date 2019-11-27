@@ -435,7 +435,7 @@
             this.pnlHeader.Controls.Add(this.spltSourceTarget);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 142);
-            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1100, 41);
             this.pnlHeader.TabIndex = 50;
@@ -445,7 +445,7 @@
             this.spltSourceTarget.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spltSourceTarget.IsSplitterFixed = true;
             this.spltSourceTarget.Location = new System.Drawing.Point(0, 0);
-            this.spltSourceTarget.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.spltSourceTarget.Margin = new System.Windows.Forms.Padding(4);
             this.spltSourceTarget.Name = "spltSourceTarget";
             // 
             // spltSourceTarget.Panel1
@@ -481,7 +481,7 @@
             this.txtSource.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSource.Location = new System.Drawing.Point(65, 7);
-            this.txtSource.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSource.Margin = new System.Windows.Forms.Padding(4);
             this.txtSource.Name = "txtSource";
             this.txtSource.Size = new System.Drawing.Size(439, 22);
             this.txtSource.TabIndex = 41;
@@ -493,9 +493,9 @@
             this.txtTarget.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtTarget.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTarget.Location = new System.Drawing.Point(60, 7);
-            this.txtTarget.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTarget.Margin = new System.Windows.Forms.Padding(4);
             this.txtTarget.Name = "txtTarget";
-            this.txtTarget.Size = new System.Drawing.Size(439, 22);
+            this.txtTarget.Size = new System.Drawing.Size(438, 22);
             this.txtTarget.TabIndex = 42;
             // 
             // label2
@@ -520,7 +520,7 @@
             this.Controls.Add(this.pnlRibbon);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1017, 583);
             this.Name = "ComparisonForm";
             this.Text = "ALM Toolkit for Power BI";
