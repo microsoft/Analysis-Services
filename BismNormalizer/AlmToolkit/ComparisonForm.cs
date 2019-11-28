@@ -338,7 +338,7 @@ namespace AlmToolkit
 
         private void SetAutoComplete()
         {
-            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseBimFile)
+            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseDesktop && !_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
                 if (Settings.Default.SourceServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoSource.ServerName + "|") > -1)
                 {
@@ -354,7 +354,7 @@ namespace AlmToolkit
                 GetFromAutoCompleteSource();
             }
 
-            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseDesktop && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {
                 if (Settings.Default.TargetServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoTarget.ServerName + "|") > -1)
                 {
@@ -377,8 +377,32 @@ namespace AlmToolkit
 
         private void PopulateSourceTargetTextBoxes()
         {
-            txtSource.Text = _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName;
-            txtTarget.Text = _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName;
+            if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
+            {
+                txtSource.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoSource.DesktopName;
+            }
+            else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
+            {
+                txtSource.Text = "File: " + _comparisonInfo.ConnectionInfoSource.BimFile;
+            }
+            else
+            {
+                txtSource.Text = "Database: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName;
+            }
+
+            if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
+            {
+                txtTarget.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoTarget.DesktopName;
+            }
+            else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+            {
+                txtTarget.Text = "File: " + _comparisonInfo.ConnectionInfoTarget.BimFile;
+            }
+            else
+            {
+                txtTarget.Text = "Database: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName;
+            }
+
         }
 
         private void btnGenerateScript_Click(object sender, EventArgs e)
@@ -742,6 +766,8 @@ namespace AlmToolkit
         {
             try
             {
+                CleanUpConnectionInfo();
+
                 _fileName = fileName;
                 XmlSerializer writer = new XmlSerializer(typeof(ComparisonInfo));
                 StreamWriter file = new System.IO.StreamWriter(fileName);
@@ -752,6 +778,21 @@ namespace AlmToolkit
             catch (Exception exc)
             {
                 MessageBox.Show($"Error saving file {fileName}\n{exc.Message}", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CleanUpConnectionInfo()
+        {
+            if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
+            {
+                _comparisonInfo.ConnectionInfoSource.ServerName = null;
+                _comparisonInfo.ConnectionInfoSource.DatabaseName = null;
+            }
+
+            if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
+            {
+                _comparisonInfo.ConnectionInfoTarget.ServerName = null;
+                _comparisonInfo.ConnectionInfoTarget.DatabaseName = null;
             }
         }
 

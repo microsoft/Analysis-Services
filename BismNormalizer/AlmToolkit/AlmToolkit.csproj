@@ -42,6 +42,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>BismNorm.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AnalysisServices, Version=18.0.5.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.18.0.5\lib\net45\Microsoft.AnalysisServices.dll</HintPath>
@@ -155,6 +158,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BismNorm.ico" />
     <Content Include="html-resources\dist\0.chunk.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

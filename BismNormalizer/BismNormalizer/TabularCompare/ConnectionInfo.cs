@@ -19,15 +19,18 @@ namespace BismNormalizer.TabularCompare
     {
         #region Private Variables
 
-        private bool _useProject = false;
+        private bool _useProject = false; //Missed the boat to have an enum would break backwards compat with .bism file
         private bool _useBimFile = false;
+        private bool _useDesktop = false;
         private string _bimFile;
+        private string _desktopName;
         private string _serverName;
         private string _databaseName;
         private string _projectName;
         private string _projectFile;
         private int _compatibilityLevel;
         private string _dataSourceVersion;
+        private ServerMode _serverMode;
         private bool _directQuery;
         private string _ssdtBimFile;
         private EnvDTE.Project _project;
@@ -62,9 +65,30 @@ namespace BismNormalizer.TabularCompare
                 {
                     //To late to do an enum would break backwards compat
                     _useBimFile = false;
+                    _useDesktop = false;
                     _bimFile = null;
                 }
                 _useProject = value;
+            }
+        }
+
+        /// <summary>
+        /// A Boolean specifying whether the connection represents a Power BI Desktop or SSDT workspace AS instance.
+        /// </summary>
+        [XmlIgnore()]
+        public bool UseDesktop
+        {
+            get { return _useDesktop; }
+            set
+            {
+                if (value)
+                {
+                    //To late to do an enum would break backwards compat
+                    _useProject = false;
+                    _useBimFile = false;
+                    _bimFile = null;
+                }
+                _useDesktop = value;
             }
         }
 
@@ -85,6 +109,16 @@ namespace BismNormalizer.TabularCompare
                 }
                 _useBimFile = value;
             }
+        }
+
+        /// <summary>
+        /// Name of the PBIX or SSDT project to which workspace AS instance connected.
+        /// </summary>
+        [XmlIgnore()]
+        public string DesktopName
+        {
+            get { return _desktopName; }
+            set { _desktopName = value; }
         }
 
         /// <summary>
@@ -153,6 +187,12 @@ namespace BismNormalizer.TabularCompare
         /// </summary>
         [XmlIgnore()]
         public string DataSourceVersion => _dataSourceVersion;
+
+        /// <summary>
+        /// Server mode of the connection.
+        /// </summary>
+        [XmlIgnore()]
+        public ServerMode ServerMode => _serverMode;
 
         /// <summary>
         /// A Boolean specifying whether the tabular model for the connection is running in DirectQuery mode.
@@ -508,7 +548,20 @@ namespace BismNormalizer.TabularCompare
                 throw new ConnectionException($"Analysis Server {this.ServerName} is not running in Tabular mode");
             }
 
-            Database amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
+            Database amoDatabase = null;
+            if (this.DatabaseName == "" && this.ServerName.ToUpper().StartsWith("localhost:".ToUpper()))
+            {
+                //PBI Desktop doesn't have db name yet
+                if (amoServer.Databases.Count > 0)
+                {
+                    amoDatabase = amoServer.Databases[0];
+                    this.DatabaseName = amoDatabase.Name;
+                }
+            }
+            else
+            {
+                amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
+            }
             if (amoDatabase == null)
             {
                 if (!this.UseProject)
@@ -644,6 +697,7 @@ $@"{{
 
             _compatibilityLevel = amoDatabase.CompatibilityLevel;
             _dataSourceVersion = amoDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+            _serverMode = amoServer.ServerMode;
             _directQuery = ((amoDatabase.Model != null && amoDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
                              amoDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
         }

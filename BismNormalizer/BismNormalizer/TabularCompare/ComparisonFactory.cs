@@ -73,6 +73,18 @@ namespace BismNormalizer.TabularCompare
 
             #region Data-source versions check
 
+            //Check not working with Desktop and not V3
+            if (comparisonInfo.ConnectionInfoSource.ServerName != null && comparisonInfo.ConnectionInfoSource.ServerMode == ServerMode.SharePoint && !_supportedDataSourceVersions.Contains(comparisonInfo.SourceDataSourceVersion))
+            {
+                string message = $"The source is a Power BI Desktop dataset with default data-source version of {comparisonInfo.SourceDataSourceVersion}, which is not supported for comparison. Please ensure you're using the latest version of Power BI Desktop and if necessary enable the preview feature.";
+                throw new ConnectionException(message);
+            }
+            if (comparisonInfo.ConnectionInfoTarget.ServerName != null && comparisonInfo.ConnectionInfoTarget.ServerMode == ServerMode.SharePoint && !_supportedDataSourceVersions.Contains(comparisonInfo.TargetDataSourceVersion))
+            {
+                string message = $"The target is a Power BI Desktop dataset with default data-source version of {comparisonInfo.TargetDataSourceVersion}, which is not supported for comparison. Please ensure you're using the latest version of Power BI Desktop and if necessary enable the preview feature.";
+                throw new ConnectionException(message);
+            }
+
             //If Power BI, check the default datasource version
             //Source
             bool sourceDataSourceVersionRequiresUpgrade = false;
@@ -107,7 +119,7 @@ namespace BismNormalizer.TabularCompare
             }
             else if (targetDataSourceVersionRequiresUpgrade)
             {
-                string message = $"The target is a Power BI datasets with default data-source version of {comparisonInfo.TargetDataSourceVersion}, which is not supported for comparison.";
+                string message = $"The target is a Power BI dataset with default data-source version of {comparisonInfo.TargetDataSourceVersion}, which is not supported for comparison.";
                 if (comparisonInfo.Interactive && System.Windows.Forms.MessageBox.Show(
                     message += $"\nDo you want to upgrade it to {_supportedDataSourceVersions[0]} and allow the comparison?\n\nNOTE: this is a irreversible operation and you may not be able to download the PBIX file(s) to Power BI Desktop. You should only do this if you have the original PBIX as a backup.", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes)
                 {

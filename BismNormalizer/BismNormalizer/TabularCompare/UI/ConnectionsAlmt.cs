@@ -4,15 +4,22 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Microsoft.AnalysisServices;
 using System.Drawing;
+using BismNormalizer.TabularCompare.UI.DesktopInstances;
+using System.Linq.Expressions;
 
 namespace BismNormalizer.TabularCompare.UI
 {
     public partial class ConnectionsAlmt : Form
     {
+        #region Private members
+
         private ComparisonInfo _comparisonInfo;
         private float _dpiScaleFactor;
         private bool _sourceDatabaseBound = false;
         private bool _targetDatabaseBound = false;
+        private List<PowerBIInstance> _powerBIInstances = new List<PowerBIInstance>();
+
+        #endregion
 
         public ConnectionsAlmt()
         {
@@ -21,7 +28,14 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void Connections_Load(object sender, EventArgs e)
         {
-            this.Width = Convert.ToInt32(this.Width * 1.3);
+            //Settings.Default.SourceServerAutoCompleteEntries = "localhost|";
+            //Settings.Default.TargetServerAutoCompleteEntries = "localhost|";
+            //Settings.Default.SourceCatalog = "";
+            //Settings.Default.TargetCatalog = "";
+            //Settings.Default.Save();
+
+
+            //this.Width = Convert.ToInt32(this.Width * 1.3);
 
             if (_dpiScaleFactor > 1)
             {
@@ -62,87 +76,149 @@ namespace BismNormalizer.TabularCompare.UI
             cboSourceDatabase.Text = Settings.Default.SourceCatalog;
             cboTargetDatabase.Text = Settings.Default.TargetCatalog;
 
-            bool boundTargetDatabase = false;
-            BindSourceConnectionInfo();
-            BindTargetConnectionInfo(out boundTargetDatabase);
+            cboSourceDesktop.Items.Clear();
+            cboTargetDesktop.Items.Clear();
+
+            BindingSource desktopBindingSource = new BindingSource();
+            BindingSource desktopBindingTarget = new BindingSource();
+            _powerBIInstances.Clear();
+            try
+            {
+                _powerBIInstances = PowerBIHelper.GetLocalInstances();
+            }
+            catch { }
+
+            if (_powerBIInstances.Count > 1)
+            {
+                desktopBindingSource.DataSource = _powerBIInstances;
+                desktopBindingTarget.DataSource = _powerBIInstances;
+
+                cboSourceDesktop.DataSource = desktopBindingSource;
+                cboSourceDesktop.ValueMember = "Port";
+                cboSourceDesktop.DisplayMember = "Name";
+
+                cboTargetDesktop.DataSource = desktopBindingTarget;
+                cboTargetDesktop.ValueMember = "Port";
+                cboTargetDesktop.DisplayMember = "Name";
+
+                BindSourceConnectionInfo();
+                BindTargetConnectionInfo();
+            }
         }
 
         private bool BindSourceConnectionInfo()
         {
-            bool returnVal = false;
+            bool boundSuccessfully = false;
 
             if (_comparisonInfo?.ConnectionInfoSource != null)
             {
-                if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.DatabaseName))
+                if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
                 {
+                    rdoSourceFile.Checked = true;
+
+                    pnlSourceDataset.Enabled = false;
+                    pnlSourceDesktop.Enabled = false;
+                    pnlSourceFile.Enabled = true;
+
+                    txtSourceFile.Text = _comparisonInfo.ConnectionInfoSource.BimFile;
+
+                    boundSuccessfully = true;
+                }
+                else if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
+                {
+                    rdoSourceDesktop.Checked = true;
+
+                    pnlSourceDataset.Enabled = false;
+                    pnlSourceDesktop.Enabled = true;
+                    pnlSourceFile.Enabled = false;
+
+                    int portFromConnectionInfo = -1;
+                    if (_comparisonInfo.ConnectionInfoSource.ServerName != null &&
+                        int.TryParse(_comparisonInfo.ConnectionInfoSource.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
+                    {
+                        for (int i = 0; i < ((BindingSource)cboSourceDesktop.DataSource).Count; i++)
+                        {
+                            if (((PowerBIInstance)((BindingSource)cboSourceDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                            {
+                                cboSourceDesktop.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    boundSuccessfully = true;
+                }
+                else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.DatabaseName))
+                {
+                    rdoSourceDataset.Checked = true;
+
+                    pnlSourceDataset.Enabled = true;
+                    pnlSourceDesktop.Enabled = false;
+                    pnlSourceFile.Enabled = false;
+
                     cboSourceServer.Text = _comparisonInfo.ConnectionInfoSource.ServerName;
                     cboSourceDatabase.Text = _comparisonInfo.ConnectionInfoSource.DatabaseName;
 
-                    returnVal = true;
+                    boundSuccessfully = true;
                 }
             }
 
-            return returnVal;
+            return boundSuccessfully;
         }
 
-        private bool BindTargetConnectionInfo(out bool boundTargetDatabase)
+        private bool BindTargetConnectionInfo()
         {
-            bool returnVal = false;
-            boundTargetDatabase = false;
+            bool boundSuccessfully = false;
 
             if (_comparisonInfo?.ConnectionInfoTarget != null)
             {
-                if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.DatabaseName))
+                if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
                 {
+                    pnlTargetDataset.Enabled = false;
+                    pnlTargetDesktop.Enabled = false;
+                    rdoTargetFile.Checked = true;
+                    pnlTargetFile.Enabled = true;
+                    txtTargetFile.Text = _comparisonInfo.ConnectionInfoTarget.BimFile;
+
+                    boundSuccessfully = true;
+                }
+                else if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
+                {
+                    rdoTargetDesktop.Checked = true;
+
+                    pnlTargetDataset.Enabled = false;
+                    pnlTargetDesktop.Enabled = true;
+                    pnlTargetFile.Enabled = false;
+
+                    int portFromConnectionInfo = -1;
+                    if (_comparisonInfo.ConnectionInfoTarget.ServerName != null &&
+                        int.TryParse(_comparisonInfo.ConnectionInfoTarget.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
+                    {
+                        for (int i = 0; i < ((BindingSource)cboTargetDesktop.DataSource).Count; i++)
+                        {
+                            if (((PowerBIInstance)((BindingSource)cboTargetDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                            {
+                                cboTargetDesktop.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    boundSuccessfully = true;
+                }
+                else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.DatabaseName))
+                {
+                    rdoTargetDataset.Checked = true;
+                    pnlTargetDataset.Enabled = true;
+                    pnlTargetDesktop.Enabled = false;
+                    pnlTargetFile.Enabled = false;
+
                     cboTargetServer.Text = _comparisonInfo.ConnectionInfoTarget.ServerName;
                     cboTargetDatabase.Text = _comparisonInfo.ConnectionInfoTarget.DatabaseName;
 
-                    boundTargetDatabase = true;
-                    returnVal = true;
+                    boundSuccessfully = true;
                 }
             }
 
-            return returnVal;
-        }
-
-        private static void IterateProject(SortedList projects, EnvDTE.Project project, string derivedProjectName = "")
-        {
-            if (project.ProjectItems != null)  //if project is unloaded, its ProjectItems==null
-            {
-                derivedProjectName = AppendProjectName(project, derivedProjectName);
-                if (project.FileName.EndsWith(".smproj"))
-                {
-                    projects.Add(derivedProjectName, project);
-                }
-                else if (project.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
-                {
-                    foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
-                    {
-                        if (projectItem.SubProject != null)
-                        {
-                            IterateProject(projects, projectItem.SubProject, derivedProjectName);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static string AppendProjectName(EnvDTE.Project project, string derivedProjectName)
-        {
-            if (derivedProjectName != "")
-            {
-                derivedProjectName += "\\";
-            }
-            derivedProjectName += project.Name;
-
-            return derivedProjectName;
-        }
-
-        EnvDTE80.DTE2 _dte; //EnvDTE._DTE _dte;
-        public EnvDTE80.DTE2 Dte // EnvDTE._DTE DTE
-        {
-            get { return _dte; }
-            set { _dte = value; }
+            return boundSuccessfully;
         }
 
         public ComparisonInfo ComparisonInfo
@@ -157,33 +233,152 @@ namespace BismNormalizer.TabularCompare.UI
             set { _dpiScaleFactor = value; }
         }
 
+        private void rdoSourceDataset_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlSourceDataset.Enabled = true;
+            pnlSourceDesktop.Enabled = false;
+            pnlSourceFile.Enabled = false;
+            cboSourceServer.Focus();
+        }
+        private void rdoSourceDesktop_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlSourceDataset.Enabled = false;
+            pnlSourceDesktop.Enabled = true;
+            pnlSourceFile.Enabled = false;
+            cboSourceDesktop.Focus();
+        }
+        private void rdoSourceFile_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlSourceDataset.Enabled = false;
+            pnlSourceDesktop.Enabled = false;
+            pnlSourceFile.Enabled = true;
+            btnSourceFileOpen.Focus();
+        }
+        private void rdoTargetDataset_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlTargetDataset.Enabled = true;
+            pnlTargetDesktop.Enabled = false;
+            pnlTargetFile.Enabled = false;
+            cboTargetServer.Focus();
+        }
+        private void rdoTargetDesktop_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlTargetDataset.Enabled = false;
+            pnlTargetDesktop.Enabled = true;
+            pnlTargetFile.Enabled = false;
+            cboTargetDesktop.Focus();
+        }
+        private void rdoTargetFile_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlTargetDataset.Enabled = false;
+            pnlTargetDesktop.Enabled = false;
+            pnlTargetFile.Enabled = true;
+            btnTargetFileOpen.Focus();
+        }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
-            _comparisonInfo.ConnectionInfoSource.UseProject = false;
-            _comparisonInfo.ConnectionInfoSource.ServerName = cboSourceServer.Text;
-            _comparisonInfo.ConnectionInfoSource.DatabaseName = cboSourceDatabase.Text;
-            _comparisonInfo.ConnectionInfoSource.ProjectName = null;
-            _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+            if (rdoSourceDesktop.Checked)
+            {
+                _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoSource.UseDesktop = true;
+                _comparisonInfo.ConnectionInfoSource.ServerName = "localhost:" + cboSourceDesktop.SelectedValue.ToString();
+                _comparisonInfo.ConnectionInfoSource.DatabaseName = ""; //For Desktop/SSDT don't have DB name but get first when connect
+                _comparisonInfo.ConnectionInfoSource.DesktopName = cboSourceDesktop.Text;
+                _comparisonInfo.ConnectionInfoSource.ProjectName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoSource.BimFile = null;
+            }
+            else if (rdoSourceFile.Checked)
+            {
+                _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = true;
+                _comparisonInfo.ConnectionInfoSource.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoSource.BimFile = txtSourceFile.Text;
+                _comparisonInfo.ConnectionInfoSource.DesktopName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+            }
+            else
+            {
+                _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoSource.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoSource.ServerName = cboSourceServer.Text;
+                _comparisonInfo.ConnectionInfoSource.DatabaseName = cboSourceDatabase.Text;
+                _comparisonInfo.ConnectionInfoSource.DesktopName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoSource.BimFile = null;
+            }
 
-            _comparisonInfo.ConnectionInfoTarget.UseProject = false;
-            _comparisonInfo.ConnectionInfoTarget.ServerName = cboTargetServer.Text;
-            _comparisonInfo.ConnectionInfoTarget.DatabaseName = cboTargetDatabase.Text;
-            _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
-            _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+            if (rdoTargetDesktop.Checked)
+            {
+                _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoTarget.UseDesktop = true;
+                _comparisonInfo.ConnectionInfoTarget.ServerName = "localhost:" + cboTargetDesktop.SelectedValue.ToString();
+                _comparisonInfo.ConnectionInfoTarget.DatabaseName = ""; //For Desktop/SSDT don't have DB name but get first when connect
+                _comparisonInfo.ConnectionInfoTarget.DesktopName = cboTargetDesktop.Text;
+                _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = null;
+            }
+            else if (rdoTargetFile.Checked)
+            {
+                _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = true;
+                _comparisonInfo.ConnectionInfoTarget.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = txtTargetFile.Text;
+                _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+            }
+            else
+            {
+                _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoTarget.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoTarget.ServerName = cboTargetServer.Text;
+                _comparisonInfo.ConnectionInfoTarget.DatabaseName = cboTargetDatabase.Text;
+                _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = null;
+            }
         }
 
         private void btnSwitch_Click(object sender, EventArgs e)
         {
             ConnectionInfo infoSourceTemp = new ConnectionInfo();
-
+            infoSourceTemp.UseProject = rdoSourceDesktop.Checked;
+            infoSourceTemp.UseBimFile = rdoSourceFile.Checked;
+            infoSourceTemp.ProjectName = cboSourceDesktop.Text;
+            //infoSourceTemp.Project = (PowerBIInstance)cboSourceDesktop.SelectedValue;
+            int portSourceTemp = (int)cboSourceDesktop.SelectedValue; //Fudge start
             infoSourceTemp.ServerName = cboSourceServer.Text;
             infoSourceTemp.DatabaseName = cboSourceDatabase.Text;
+            infoSourceTemp.BimFile = txtSourceFile.Text;
 
+            rdoSourceDesktop.Checked = rdoTargetDesktop.Checked;
+            rdoSourceFile.Checked = rdoTargetFile.Checked;
+            rdoSourceDataset.Checked = rdoTargetDataset.Checked;
+            cboSourceDesktop.Text = cboTargetDesktop.Text;
+            cboSourceDesktop.SelectedValue = cboTargetDesktop.SelectedValue;
             cboSourceServer.Text = cboTargetServer.Text;
             cboSourceDatabase.Text = cboTargetDatabase.Text;
+            txtSourceFile.Text = txtTargetFile.Text;
 
+            rdoTargetDesktop.Checked = infoSourceTemp.UseProject;
+            rdoTargetFile.Checked = infoSourceTemp.UseBimFile;
+            rdoTargetDataset.Checked = (!infoSourceTemp.UseProject && !infoSourceTemp.UseBimFile);
+            cboTargetDesktop.Text = infoSourceTemp.ProjectName;
+            //cboTargetDesktop.SelectedValue = infoSourceTemp.Project;
+            cboTargetDesktop.SelectedValue = portSourceTemp; //Fudge end
             cboTargetServer.Text = infoSourceTemp.ServerName;
             cboTargetDatabase.Text = infoSourceTemp.DatabaseName;
+            txtTargetFile.Text = infoSourceTemp.BimFile;
         }
 
         private void cboSourceServer_TextChanged(object sender, EventArgs e)
@@ -214,6 +409,35 @@ namespace BismNormalizer.TabularCompare.UI
             }
         }
 
+        private void btnSourceFileOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = OpenBimFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                txtSourceFile.Text = ofd.FileName;
+                Settings.Default.LastBimFileLocation = ofd.FileName;
+            }
+        }
+
+        private void btnTargetFileOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = OpenBimFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                txtTargetFile.Text = ofd.FileName;
+                Settings.Default.LastBimFileLocation = ofd.FileName;
+            }
+        }
+
+        private OpenFileDialog OpenBimFileDialog()
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = (String.IsNullOrEmpty(Settings.Default.LastBimFileLocation) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : Settings.Default.LastBimFileLocation);
+            ofd.Filter = "BIM Files (.bim)|*.bim|All files (*.*)|*.*";
+            ofd.Title = "Open";
+            return ofd;
+        }
+
         private void BindDatabaseList(string serverName, ComboBox cboCatalog)
         {
             try
@@ -239,5 +463,6 @@ namespace BismNormalizer.TabularCompare.UI
                 cboCatalog.DataSource = null;
             }
         }
+
     }
 }
