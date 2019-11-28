@@ -88,8 +88,11 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch { }
 
-            if (_powerBIInstances.Count > 1)
+            if (_powerBIInstances.Count > 0)
             {
+                rdoSourceDesktop.Enabled = true;
+                rdoTargetDesktop.Enabled = true;
+
                 desktopBindingSource.DataSource = _powerBIInstances;
                 desktopBindingTarget.DataSource = _powerBIInstances;
 
@@ -103,6 +106,11 @@ namespace BismNormalizer.TabularCompare.UI
 
                 BindSourceConnectionInfo();
                 BindTargetConnectionInfo();
+            }
+            else
+            {
+                rdoSourceDesktop.Enabled = false;
+                rdoTargetDesktop.Enabled = false;
             }
         }
 
