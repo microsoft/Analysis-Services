@@ -903,7 +903,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Are you sure you want to update target {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project" : "database")}?", _bismNormalizerCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show($"Are you sure you want to update target?", _bismNormalizerCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }
@@ -925,7 +925,7 @@ namespace BismNormalizer.TabularCompare.UI
                 }
 
                 SetNotComparedState();
-                if (update && MessageBox.Show($"Updated {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project " + _comparisonInfo.ConnectionInfoTarget.ProjectName : "database " + _comparisonInfo.ConnectionInfoTarget.DatabaseName)}.\n\nDo you want to refresh the comparison?", _bismNormalizerCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (update && MessageBox.Show($"Updated the target.\n\nDo you want to refresh the comparison?", _bismNormalizerCaption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     this.CompareTabularModels();
                 }

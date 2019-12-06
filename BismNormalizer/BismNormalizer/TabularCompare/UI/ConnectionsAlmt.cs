@@ -37,6 +37,8 @@ namespace BismNormalizer.TabularCompare.UI
 
             //this.Width = Convert.ToInt32(this.Width * 1.3);
 
+            this.Height = Convert.ToInt32(grpSource.Height * 2.6);
+
             if (_dpiScaleFactor > 1)
             {
                 //DPI

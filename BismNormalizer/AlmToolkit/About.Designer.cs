@@ -40,20 +40,20 @@
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(292, 109);
-            this.okButton.Margin = new System.Windows.Forms.Padding(4);
+            this.okButton.Location = new System.Drawing.Point(511, 198);
+            this.okButton.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(100, 31);
+            this.okButton.Size = new System.Drawing.Size(175, 56);
             this.okButton.TabIndex = 24;
             this.okButton.Text = "&OK";
             // 
             // logoPictureBox
             // 
             this.logoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logoPictureBox.Image")));
-            this.logoPictureBox.Location = new System.Drawing.Point(16, 11);
-            this.logoPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.logoPictureBox.Location = new System.Drawing.Point(28, 20);
+            this.logoPictureBox.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
             this.logoPictureBox.Name = "logoPictureBox";
-            this.logoPictureBox.Size = new System.Drawing.Size(84, 83);
+            this.logoPictureBox.Size = new System.Drawing.Size(147, 150);
             this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.logoPictureBox.TabIndex = 12;
             this.logoPictureBox.TabStop = false;
@@ -61,27 +61,30 @@
             // lblProductVersion
             // 
             this.lblProductVersion.AutoSize = true;
-            this.lblProductVersion.Location = new System.Drawing.Point(117, 44);
+            this.lblProductVersion.Location = new System.Drawing.Point(205, 80);
+            this.lblProductVersion.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblProductVersion.Name = "lblProductVersion";
-            this.lblProductVersion.Size = new System.Drawing.Size(45, 16);
+            this.lblProductVersion.Size = new System.Drawing.Size(79, 29);
             this.lblProductVersion.TabIndex = 26;
             this.lblProductVersion.Text = "label1";
             // 
             // lblProductName
             // 
             this.lblProductName.AutoSize = true;
-            this.lblProductName.Location = new System.Drawing.Point(117, 11);
+            this.lblProductName.Location = new System.Drawing.Point(205, 20);
+            this.lblProductName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblProductName.Name = "lblProductName";
-            this.lblProductName.Size = new System.Drawing.Size(45, 16);
+            this.lblProductName.Size = new System.Drawing.Size(79, 29);
             this.lblProductName.TabIndex = 27;
             this.lblProductName.Text = "label1";
             // 
             // linkDocumentation
             // 
             this.linkDocumentation.AutoSize = true;
-            this.linkDocumentation.Location = new System.Drawing.Point(117, 78);
+            this.linkDocumentation.Location = new System.Drawing.Point(205, 141);
+            this.linkDocumentation.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.linkDocumentation.Name = "linkDocumentation";
-            this.linkDocumentation.Size = new System.Drawing.Size(98, 16);
+            this.linkDocumentation.Size = new System.Drawing.Size(174, 29);
             this.linkDocumentation.TabIndex = 28;
             this.linkDocumentation.TabStop = true;
             this.linkDocumentation.Text = "Documentation";
@@ -90,20 +93,21 @@
             // About
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(408, 155);
+            this.CancelButton = this.okButton;
+            this.ClientSize = new System.Drawing.Size(714, 281);
             this.Controls.Add(this.linkDocumentation);
             this.Controls.Add(this.lblProductName);
             this.Controls.Add(this.lblProductVersion);
             this.Controls.Add(this.logoPictureBox);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "About";
-            this.Padding = new System.Windows.Forms.Padding(12, 11, 12, 11);
+            this.Padding = new System.Windows.Forms.Padding(21, 20, 21, 20);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

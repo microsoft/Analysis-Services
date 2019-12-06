@@ -1704,6 +1704,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>Boolean indicating whether update was successful.</returns>
         public bool Update()
         {
+            //Set model annotation for telemetry tagging later
+            const string AnnotationName = "__BNorm";
+            Tom.Annotation annotationBNorm = new Tom.Annotation();
+            annotationBNorm.Name = AnnotationName;
+            annotationBNorm.Value = "1";
+            if (!_model.TomModel.Annotations.Contains(AnnotationName))
+                _model.TomModel.Annotations.Add(annotationBNorm);
+
             if (_connectionInfo.UseBimFile)
             {
                 SaveBimFile();

@@ -379,7 +379,7 @@ namespace AlmToolkit
         {
             if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
             {
-                txtSource.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoSource.DesktopName;
+                txtSource.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DesktopName;
             }
             else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
@@ -392,7 +392,7 @@ namespace AlmToolkit
 
             if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
             {
-                txtTarget.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoTarget.DesktopName;
+                txtTarget.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DesktopName;
             }
             else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {
@@ -627,7 +627,7 @@ namespace AlmToolkit
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Are you sure you want to update target {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project" : "database")}?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show($"Are you sure you want to update target?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }
@@ -648,7 +648,7 @@ namespace AlmToolkit
                     toolStripStatusLabel1.Text = "ALM Toolkit - finished committing changes";
 
                     SetNotComparedState();
-                    if (update && MessageBox.Show($"Updated {(_comparisonInfo.ConnectionInfoTarget.UseProject ? "project " + _comparisonInfo.ConnectionInfoTarget.ProjectName : "database " + _comparisonInfo.ConnectionInfoTarget.DatabaseName)}.\n\nDo you want to refresh the comparison?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (update && MessageBox.Show($"Updated the target.\n\nDo you want to refresh the comparison?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         this.CompareTabularModels();
                     }
