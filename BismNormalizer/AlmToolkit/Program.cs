@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AnalysisServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,28 +19,37 @@ namespace AlmToolkit
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //with args(user open file with the program)
             if (args != null && args.Length > 0)
             {
-                string fileName = args[0];
-                //Check file exists
-                if (File.Exists(fileName))
+                if (args.Length > 1)
+                //User opened from Desktop with server/db name
                 {
+                    string serverName = args[0];
+                    string databaseName = args[1];
+
                     ComparisonForm MainFrom = new ComparisonForm();
-                    MainFrom.LoadFile(fileName);
+                    MainFrom.LoadFromDesktop(serverName, databaseName);
                     Application.Run(MainFrom);
+                    return;
                 }
-                //The file does not exist
                 else
+                //User opened file with the program
                 {
-                    Application.Run(new ComparisonForm());
+                    string fileName = args[0];
+                    //Check file exists, if not will run without args below
+                    if (File.Exists(fileName))
+                    {
+                        ComparisonForm MainFrom = new ComparisonForm();
+                        MainFrom.LoadFile(fileName);
+                        Application.Run(MainFrom);
+                        return;
+                    }
                 }
             }
-            //without args
-            else
-            {
-                Application.Run(new ComparisonForm());
-            }
+
+            //Without valid args
+            Application.Run(new ComparisonForm());
+
         }
     }
 }

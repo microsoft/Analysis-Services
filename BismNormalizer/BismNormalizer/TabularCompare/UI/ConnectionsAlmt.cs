@@ -78,6 +78,8 @@ namespace BismNormalizer.TabularCompare.UI
             cboSourceDatabase.Text = Settings.Default.SourceCatalog;
             cboTargetDatabase.Text = Settings.Default.TargetCatalog;
 
+            #region Prep Desktop/SSDT instances
+
             cboSourceDesktop.Items.Clear();
             cboTargetDesktop.Items.Clear();
 
@@ -105,15 +107,17 @@ namespace BismNormalizer.TabularCompare.UI
                 cboTargetDesktop.DataSource = desktopBindingTarget;
                 cboTargetDesktop.ValueMember = "Port";
                 cboTargetDesktop.DisplayMember = "Name";
-
-                BindSourceConnectionInfo();
-                BindTargetConnectionInfo();
             }
             else
             {
                 rdoSourceDesktop.Enabled = false;
                 rdoTargetDesktop.Enabled = false;
             }
+
+            #endregion
+
+            BindSourceConnectionInfo();
+            BindTargetConnectionInfo();
         }
 
         private bool BindSourceConnectionInfo()
@@ -136,26 +140,29 @@ namespace BismNormalizer.TabularCompare.UI
                 }
                 else if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
                 {
-                    rdoSourceDesktop.Checked = true;
-
-                    pnlSourceDataset.Enabled = false;
-                    pnlSourceDesktop.Enabled = true;
-                    pnlSourceFile.Enabled = false;
-
-                    int portFromConnectionInfo = -1;
-                    if (_comparisonInfo.ConnectionInfoSource.ServerName != null &&
-                        int.TryParse(_comparisonInfo.ConnectionInfoSource.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
+                    if (_powerBIInstances.Count > 0)
                     {
-                        for (int i = 0; i < ((BindingSource)cboSourceDesktop.DataSource).Count; i++)
+                        rdoSourceDesktop.Checked = true;
+
+                        pnlSourceDataset.Enabled = false;
+                        pnlSourceDesktop.Enabled = true;
+                        pnlSourceFile.Enabled = false;
+
+                        int portFromConnectionInfo = -1;
+                        if (_comparisonInfo.ConnectionInfoSource.ServerName != null &&
+                            int.TryParse(_comparisonInfo.ConnectionInfoSource.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
                         {
-                            if (((PowerBIInstance)((BindingSource)cboSourceDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                            for (int i = 0; i < ((BindingSource)cboSourceDesktop.DataSource).Count; i++)
                             {
-                                cboSourceDesktop.SelectedIndex = i;
-                                break;
+                                if (((PowerBIInstance)((BindingSource)cboSourceDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                                {
+                                    cboSourceDesktop.SelectedIndex = i;
+                                    break;
+                                }
                             }
                         }
+                        boundSuccessfully = true;
                     }
-                    boundSuccessfully = true;
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.DatabaseName))
                 {
@@ -193,26 +200,30 @@ namespace BismNormalizer.TabularCompare.UI
                 }
                 else if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
                 {
-                    rdoTargetDesktop.Checked = true;
-
-                    pnlTargetDataset.Enabled = false;
-                    pnlTargetDesktop.Enabled = true;
-                    pnlTargetFile.Enabled = false;
-
-                    int portFromConnectionInfo = -1;
-                    if (_comparisonInfo.ConnectionInfoTarget.ServerName != null &&
-                        int.TryParse(_comparisonInfo.ConnectionInfoTarget.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
+                    if (_powerBIInstances.Count > 0)
                     {
-                        for (int i = 0; i < ((BindingSource)cboTargetDesktop.DataSource).Count; i++)
+
+                        rdoTargetDesktop.Checked = true;
+
+                        pnlTargetDataset.Enabled = false;
+                        pnlTargetDesktop.Enabled = true;
+                        pnlTargetFile.Enabled = false;
+
+                        int portFromConnectionInfo = -1;
+                        if (_comparisonInfo.ConnectionInfoTarget.ServerName != null &&
+                            int.TryParse(_comparisonInfo.ConnectionInfoTarget.ServerName.ToUpper().Replace("localhost:".ToUpper(), ""), out portFromConnectionInfo))
                         {
-                            if (((PowerBIInstance)((BindingSource)cboTargetDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                            for (int i = 0; i < ((BindingSource)cboTargetDesktop.DataSource).Count; i++)
                             {
-                                cboTargetDesktop.SelectedIndex = i;
-                                break;
+                                if (((PowerBIInstance)((BindingSource)cboTargetDesktop.DataSource)[i]).Port == portFromConnectionInfo)
+                                {
+                                    cboTargetDesktop.SelectedIndex = i;
+                                    break;
+                                }
                             }
                         }
+                        boundSuccessfully = true;
                     }
-                    boundSuccessfully = true;
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.DatabaseName))
                 {

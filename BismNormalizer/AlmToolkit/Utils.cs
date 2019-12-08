@@ -21,7 +21,5 @@ namespace AlmToolkit
                 return ((AssemblyProductAttribute)attributes[0]).Product;
             }
         }
-
-
     }
 }

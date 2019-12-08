@@ -78,13 +78,16 @@ namespace AlmToolkit
 
         private void ComparisonForm_Load(object sender, EventArgs e)
         {
-            _comparisonInfo = new ComparisonInfo();
-            _comparisonInfo.AppName = Utils.AssemblyProduct;
+            if (_comparisonInfo == null)
+            { 
+                _comparisonInfo = new ComparisonInfo();
+                _comparisonInfo.AppName = Utils.AssemblyProduct;
 
-            GetFromAutoCompleteSource();
-            GetFromAutoCompleteTarget();
+                //GetFromAutoCompleteSource();
+                //GetFromAutoCompleteTarget();
 
-            SetNotComparedState();
+                SetNotComparedState();
+            }
 
             //hdpi
             Rescale();
@@ -307,19 +310,19 @@ namespace AlmToolkit
 
 
 
-        private void GetFromAutoCompleteSource()
-        {
-            string serverNameSource = ReverseArray<string>(Settings.Default.SourceServerAutoCompleteEntries.Substring(0,
-                Settings.Default.SourceServerAutoCompleteEntries.Length - 1).Split("|".ToCharArray()))[0]; //.Reverse().ToArray();
-            //_connectionInfoSource = new ConnectionInfo(serverNameSource, Settings.Default.SourceCatalog);
-        }
+        //private void GetFromAutoCompleteSource()
+        //{
+        //    string serverNameSource = ReverseArray<string>(Settings.Default.SourceServerAutoCompleteEntries.Substring(0,
+        //        Settings.Default.SourceServerAutoCompleteEntries.Length - 1).Split("|".ToCharArray()))[0]; //.Reverse().ToArray();
+        //    _connectionInfoSource = new ConnectionInfo(serverNameSource, Settings.Default.SourceCatalog);
+        //}
 
-        private void GetFromAutoCompleteTarget()
-        {
-            string serverNameTarget = ReverseArray<string>(Settings.Default.TargetServerAutoCompleteEntries.Substring(0,
-                Settings.Default.TargetServerAutoCompleteEntries.Length - 1).Split("|".ToCharArray()))[0];
-            //_connectionInfoTarget = new ConnectionInfo(serverNameTarget, Settings.Default.TargetCatalog);
-        }
+        //private void GetFromAutoCompleteTarget()
+        //{
+        //    string serverNameTarget = ReverseArray<string>(Settings.Default.TargetServerAutoCompleteEntries.Substring(0,
+        //        Settings.Default.TargetServerAutoCompleteEntries.Length - 1).Split("|".ToCharArray()))[0];
+        //    //_connectionInfoTarget = new ConnectionInfo(serverNameTarget, Settings.Default.TargetCatalog);
+        //}
 
         internal static T[] ReverseArray<T>(T[] array)
         {
@@ -351,7 +354,7 @@ namespace AlmToolkit
                 Settings.Default.SourceCatalog = _comparisonInfo.ConnectionInfoSource.DatabaseName;
 
                 Settings.Default.Save();
-                GetFromAutoCompleteSource();
+                //GetFromAutoCompleteSource();
             }
 
             if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseDesktop && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
@@ -367,7 +370,7 @@ namespace AlmToolkit
                 Settings.Default.TargetCatalog = _comparisonInfo.ConnectionInfoTarget.DatabaseName;
 
                 Settings.Default.Save();
-                GetFromAutoCompleteTarget();
+                //GetFromAutoCompleteTarget();
             }
         }
 
@@ -724,22 +727,19 @@ namespace AlmToolkit
             catch { }
         }
 
-        private void SetFileNameTitle(bool unsaved)
+        public void LoadFromDesktop(string serverName, string databaseName)
         {
-            _unsaved = unsaved;
+            _comparisonInfo = new ComparisonInfo();
+            _comparisonInfo.AppName = Utils.AssemblyProduct;
 
-            if (String.IsNullOrEmpty(_fileName))
-            {
-                this.Text = Utils.AssemblyProduct;
-            }
-            else
-            {
-                this.Text = Utils.AssemblyProduct + " - " + Path.GetFileName(_fileName);
-                if (unsaved)
-                {
-                    this.Text += " *";
-                }
-            }
+            _comparisonInfo.ConnectionInfoSource.UseDesktop = true;
+            _comparisonInfo.ConnectionInfoSource.ServerName = serverName;
+            _comparisonInfo.ConnectionInfoSource.DatabaseName = databaseName;
+
+            //GetFromAutoCompleteSource();
+            //GetFromAutoCompleteTarget();
+
+            SetNotComparedState();
         }
 
         public void LoadFile(string fileName)
@@ -759,6 +759,24 @@ namespace AlmToolkit
             catch (Exception exc)
             {
                 MessageBox.Show($"Error loading file {fileName}\n{exc.Message}\n\nPlease save over this file with a new version.", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetFileNameTitle(bool unsaved)
+        {
+            _unsaved = unsaved;
+
+            if (String.IsNullOrEmpty(_fileName))
+            {
+                this.Text = Utils.AssemblyProduct;
+            }
+            else
+            {
+                this.Text = Utils.AssemblyProduct + " - " + Path.GetFileName(_fileName);
+                if (unsaved)
+                {
+                    this.Text += " *";
+                }
             }
         }
 
