@@ -18,6 +18,7 @@ namespace AlmToolkit
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
             if (args != null && args.Length > 0)
             {

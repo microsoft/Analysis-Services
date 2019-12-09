@@ -401,8 +401,15 @@ namespace BismNormalizer.TabularCompare.UI
             infoSourceTemp.UseProject = rdoSourceDesktop.Checked;
             infoSourceTemp.UseBimFile = rdoSourceFile.Checked;
             infoSourceTemp.ProjectName = cboSourceDesktop.Text;
+
+            //Fudge start
             //infoSourceTemp.Project = (PowerBIInstance)cboSourceDesktop.SelectedValue;
-            int portSourceTemp = (int)cboSourceDesktop.SelectedValue; //Fudge start
+            int portSourceTemp = -1;
+            if (cboSourceDesktop.SelectedValue != null)
+            {
+                portSourceTemp = (int)cboSourceDesktop.SelectedValue;
+            }
+
             infoSourceTemp.ServerName = cboSourceServer.Text;
             infoSourceTemp.DatabaseName = cboSourceDatabase.Text;
             infoSourceTemp.BimFile = txtSourceFile.Text;
@@ -420,8 +427,14 @@ namespace BismNormalizer.TabularCompare.UI
             rdoTargetFile.Checked = infoSourceTemp.UseBimFile;
             rdoTargetDataset.Checked = (!infoSourceTemp.UseProject && !infoSourceTemp.UseBimFile);
             cboTargetDesktop.Text = infoSourceTemp.ProjectName;
+
             //cboTargetDesktop.SelectedValue = infoSourceTemp.Project;
-            cboTargetDesktop.SelectedValue = portSourceTemp; //Fudge end
+            if (portSourceTemp != -1)
+            { 
+                cboTargetDesktop.SelectedValue = portSourceTemp;
+            }
+            //Fudge end
+
             cboTargetServer.Text = infoSourceTemp.ServerName;
             cboTargetDatabase.Text = infoSourceTemp.DatabaseName;
             txtTargetFile.Text = infoSourceTemp.BimFile;
