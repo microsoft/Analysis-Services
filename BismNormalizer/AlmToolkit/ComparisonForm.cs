@@ -208,6 +208,8 @@ namespace AlmToolkit
             {
                 string sourceTemp = txtSource.Text;
                 string targetTemp = txtTarget.Text;
+                string sourceDesktopNameTemp = _comparisonInfo.ConnectionInfoSource.DesktopName;
+                string targetDesktopNameTemp = _comparisonInfo.ConnectionInfoTarget.DesktopName;
 
                 if (!ShowConnectionsForm()) return;
 
@@ -216,7 +218,12 @@ namespace AlmToolkit
                 toolStripStatusLabel1.Text = "ALM Toolkit - comparing datasets ...";
 
                 PopulateSourceTargetTextBoxes();
-                if (sourceTemp != txtSource.Text || targetTemp != txtTarget.Text)
+                if (
+                        (_comparisonInfo.ConnectionInfoSource.UseDesktop && sourceDesktopNameTemp != _comparisonInfo.ConnectionInfoSource.DesktopName) ||
+                        (!_comparisonInfo.ConnectionInfoSource.UseDesktop && sourceTemp != txtSource.Text) ||
+                        (_comparisonInfo.ConnectionInfoTarget.UseDesktop && targetDesktopNameTemp != _comparisonInfo.ConnectionInfoTarget.DesktopName) ||
+                        (!_comparisonInfo.ConnectionInfoTarget.UseDesktop && targetTemp != txtTarget.Text)
+                   )
                 {
                     // New connections
                     //ComparisonCtrl.TriggerComparisonChanged();
@@ -806,11 +813,19 @@ namespace AlmToolkit
                 _comparisonInfo.ConnectionInfoSource.ServerName = null;
                 _comparisonInfo.ConnectionInfoSource.DatabaseName = null;
             }
+            else
+            {
+                _comparisonInfo.ConnectionInfoSource.DesktopName = null;
+            }
 
             if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
             {
                 _comparisonInfo.ConnectionInfoTarget.ServerName = null;
                 _comparisonInfo.ConnectionInfoTarget.DatabaseName = null;
+            }
+            else
+            {
+                _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
             }
         }
 

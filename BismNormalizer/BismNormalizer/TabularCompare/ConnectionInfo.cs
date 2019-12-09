@@ -75,7 +75,6 @@ namespace BismNormalizer.TabularCompare
         /// <summary>
         /// A Boolean specifying whether the connection represents a Power BI Desktop or SSDT workspace AS instance.
         /// </summary>
-        [XmlIgnore()]
         public bool UseDesktop
         {
             get { return _useDesktop; }
@@ -114,7 +113,6 @@ namespace BismNormalizer.TabularCompare
         /// <summary>
         /// Name of the PBIX or SSDT project to which workspace AS instance connected.
         /// </summary>
-        [XmlIgnore()]
         public string DesktopName
         {
             get { return _desktopName; }

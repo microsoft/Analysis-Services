@@ -36,7 +36,6 @@ namespace BismNormalizer.TabularCompare.UI
 
 
             //this.Width = Convert.ToInt32(this.Width * 1.3);
-
             this.Height = Convert.ToInt32(grpSource.Height * 2.6);
 
             if (_dpiScaleFactor > 1)
@@ -157,11 +156,24 @@ namespace BismNormalizer.TabularCompare.UI
                                 if (((PowerBIInstance)((BindingSource)cboSourceDesktop.DataSource)[i]).Port == portFromConnectionInfo)
                                 {
                                     cboSourceDesktop.SelectedIndex = i;
+                                    boundSuccessfully = true;
                                     break;
                                 }
                             }
                         }
-                        boundSuccessfully = true;
+                        //For case when open .almt file and want to connect to new server/port for same dataset
+                        if (_comparisonInfo.ConnectionInfoSource.ServerName == null && _comparisonInfo.ConnectionInfoSource.DesktopName != null)
+                        {
+                            for (int i = 0; i < ((BindingSource)cboSourceDesktop.DataSource).Count; i++)
+                            {
+                                if (((PowerBIInstance)((BindingSource)cboSourceDesktop.DataSource)[i]).Name == _comparisonInfo.ConnectionInfoSource.DesktopName)
+                                {
+                                    cboSourceDesktop.SelectedIndex = i;
+                                    boundSuccessfully = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoSource.DatabaseName))
@@ -218,11 +230,24 @@ namespace BismNormalizer.TabularCompare.UI
                                 if (((PowerBIInstance)((BindingSource)cboTargetDesktop.DataSource)[i]).Port == portFromConnectionInfo)
                                 {
                                     cboTargetDesktop.SelectedIndex = i;
+                                    boundSuccessfully = true;
                                     break;
                                 }
                             }
                         }
-                        boundSuccessfully = true;
+                        //For case when open .almt file and want to connect to new server/port for same dataset
+                        if (_comparisonInfo.ConnectionInfoTarget.ServerName == null && _comparisonInfo.ConnectionInfoTarget.DesktopName != null)
+                        {
+                            for (int i = 0; i < ((BindingSource)cboTargetDesktop.DataSource).Count; i++)
+                            {
+                                if (((PowerBIInstance)((BindingSource)cboTargetDesktop.DataSource)[i]).Name == _comparisonInfo.ConnectionInfoTarget.DesktopName)
+                                {
+                                    cboTargetDesktop.SelectedIndex = i;
+                                    boundSuccessfully = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 else if (!String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.ServerName) && !String.IsNullOrEmpty(_comparisonInfo.ConnectionInfoTarget.DatabaseName))
