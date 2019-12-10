@@ -134,6 +134,7 @@
     <None Include="html-resources\src\tsconfig.spec.json" />
     <None Include="html-resources\tsconfig.json" />
     <None Include="html-resources\tslint.json" />
+    <None Include="License.rtf" />
     <None Include="packages.config" />
     <EmbeddedResource Include="WarningListForm.resx">
       <DependentUpon>WarningListForm.cs</DependentUpon>
@@ -416,6 +417,7 @@
     <Content Include="html-resources\src\index.html" />
     <Content Include="html-resources\src\styles.css" />
     <Content Include="Images\AlmToolkit.ico" />
+    <Content Include="Images\BismNormalizerBanner.png" />
     <Content Include="Images\Compare.png" />
     <Content Include="Images\Exit.png" />
     <Content Include="Images\Help.png" />
