@@ -19,9 +19,16 @@
     
      When do new release,
     - Increment version number in manifest file (if major increment, also InstalledProductRegistration [package object attribute])
+    - Increment version number in Setup project (3 digits only), and change ProductCode guid
+          *** Save all files!!! ***
+      
     - Run following command from BismNormalizer project root:
-        msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
-    - Take VSIX from \ReleaseObfusc folder
+          msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
+
+    - Reload changed files in VS, change configuration to Release, build ALMT setup project
+    - Change configuration back to Debug
+    - Take VSIX and AlmToolkitSetup.msi from \ReleaseObfusc folder
+          Test installer locally
 
   -->
 
@@ -181,6 +188,38 @@
         ZipFileName="$(ObfuscVsix)"
         RemoveRoot="$(ObfuscDir)" 
         />
+
+    <ItemGroup>
+      <SetupProjFile Include="..\AlmToolkitSetup\AlmToolkitSetup.vdproj" />
+    </ItemGroup>
+
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to point ALMT setup project at signed version of BismNormalizer.dll" Importance="high" />
+
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace" 
+      TextEncoding="ASCII"
+      RegexPattern='"SourcePath" = "8:BismNormalizer.dll"' 
+      Replacement='"SourcePath" = "8:..\\BismNormalizer\\bin\\ReleaseObfusc\\BismNormalizer.dll"' 
+      Files="@(SetupProjFile)"/>
+    
+    <!--12/10/2019: building setup project from DevEnv can take forever and doesn't support build from MSBuild
+    <PropertyGroup>
+      <DevEnvExePath>$(ProgramFiles)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com</DevEnvExePath>
+    </PropertyGroup>
+
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to build ALMT setup project at $([System.DateTime]::Now)" Importance="high" />
+    
+    <Exec Command="&quot;$(DevEnvExePath)&quot; &quot;$(MSBuildProjectDirectory)\..\BismNormalizer.sln&quot; /Build &quot;Release|AnyCPU&quot; /Project &quot;$(MSBuildProjectDirectory)\..\AlmToolkitSetup\AlmToolkitSetup.vdproj&quot;"/>
+
+    <Message Text="- Finish build ALMT setup project at $([System.DateTime]::Now)" Importance="high" />
+    <Message Text=" " Importance="high" />
+    <Message Text="- About to copy AlmToolkitSetup.msi to $(ObfuscDir)" Importance="high" />
+    <Copy
+        SourceFiles="$(MSBuildProjectDirectory)\..\AlmToolkitSetup\Release\AlmToolkitSetup.msi"
+        DestinationFolder="$(ObfuscDir)"
+        />
+    -->
 
   </Target>
   
