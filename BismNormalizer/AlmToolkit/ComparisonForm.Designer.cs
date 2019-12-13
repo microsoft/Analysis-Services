@@ -32,6 +32,7 @@
             this.StatusBarComparsion = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.NewVersionLink = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabHome = new System.Windows.Forms.RibbonTab();
             this.panelCompare = new System.Windows.Forms.RibbonPanel();
             this.btnCompareTabularModels = new System.Windows.Forms.RibbonButton();
@@ -69,6 +70,7 @@
             this.txtSource = new System.Windows.Forms.TextBox();
             this.txtTarget = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusBarComparsion.SuspendLayout();
             this.pnlRibbon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maqSoftwareLogo)).BeginInit();
@@ -85,7 +87,9 @@
             this.StatusBarComparsion.ImageScalingSize = new System.Drawing.Size(36, 36);
             this.StatusBarComparsion.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.toolStripProgressBar1});
+            this.toolStripProgressBar1,
+            this.toolStripStatusLabel2,
+            this.NewVersionLink});
             this.StatusBarComparsion.Location = new System.Drawing.Point(0, 810);
             this.StatusBarComparsion.Name = "StatusBarComparsion";
             this.StatusBarComparsion.Size = new System.Drawing.Size(1176, 22);
@@ -102,6 +106,15 @@
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             this.toolStripProgressBar1.Visible = false;
+            // 
+            // NewVersionLink
+            // 
+            this.NewVersionLink.IsLink = true;
+            this.NewVersionLink.Name = "NewVersionLink";
+            this.NewVersionLink.Size = new System.Drawing.Size(72, 17);
+            this.NewVersionLink.Text = "New version";
+            this.NewVersionLink.Visible = false;
+            this.NewVersionLink.Click += new System.EventHandler(this.NewVersionLink_Click);
             // 
             // tabHome
             // 
@@ -502,6 +515,12 @@
             this.label2.TabIndex = 40;
             this.label2.Text = "Target";
             // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(956, 17);
+            this.toolStripStatusLabel2.Spring = true;
+            // 
             // ComparisonForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -575,6 +594,8 @@
         private System.Windows.Forms.RibbonOrbMenuItem mnuSave;
         private System.Windows.Forms.RibbonOrbMenuItem mnuSaveAs;
         private System.Windows.Forms.RibbonOrbMenuItem mnuExit;
+        private System.Windows.Forms.ToolStripStatusLabel NewVersionLink;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
     }
 }
 

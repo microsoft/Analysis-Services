@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -27,8 +28,10 @@ namespace AlmToolkit
         private ComparisonJSInteraction _comparisonInter; // CEFSharp Interface to connect to Angular Tree Control
         private ChromiumWebBrowser chromeBrowser;
         private CompareState _compareState = CompareState.NotCompared;
-        private string _fileName = "";
+        private string _fileName = null;
         private bool _unsaved = false;
+        private bool _newerVersionAvailable = false;
+        private string _latestVersion = null;
 
         #endregion
 
@@ -89,6 +92,8 @@ namespace AlmToolkit
                 SetNotComparedState();
             }
 
+            Task.Run(() => CheckForNewVersion());
+
             //hdpi
             Rescale();
         }
@@ -96,6 +101,37 @@ namespace AlmToolkit
         private void ComparisonForm_Shown(object sender, EventArgs e)
         {
             this.InitializeAndCompareTabularModels();
+        }
+
+        private async void CheckForNewVersion()
+        {
+            try
+            {
+                var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Microsoft"));
+                var releases = await client.Repository.Release.GetAll("Microsoft", "Analysis-Services");
+
+                //TODO: iterate releases and check for latest.Name starts with "ALM Toolkit"
+                var latest = releases[0];
+                _latestVersion = latest.TagName;
+                var installedVersion = new Version(Utils.AssemblyVersion);
+                var latestVersion = new Version(_latestVersion);
+                var result = latestVersion.CompareTo(installedVersion);
+
+                if (result > 0)
+                {
+                    //There is a newer release on GitHub
+                    _newerVersionAvailable = true;
+                    NewVersionLink.Text = $"New version available: {_latestVersion}";
+                    NewVersionLink.Visible = true;
+                }
+            }
+            catch { }
+        }
+
+        private void NewVersionLink_Click(object sender, EventArgs e)
+        {
+            NewVersionLink.LinkVisited = true;
+            System.Diagnostics.Process.Start(Utils.LatestVersionDownloadUrl);
         }
 
         private void SetNotComparedState()
@@ -175,7 +211,6 @@ namespace AlmToolkit
                 //just in case user has some selections, store them to the SkipSelections collection
                 _comparison.RefreshSkipSelectionsFromComparisonObjects();
             }
-
 
             ConnectionsAlmt connForm = new ConnectionsAlmt();
             connForm.ComparisonInfo = _comparisonInfo;
@@ -931,6 +966,8 @@ namespace AlmToolkit
         private void btnHelp_Click(object sender, EventArgs e)
         {
             About aboutForm = new About();
+            aboutForm.NewerVersionAvailable = _newerVersionAvailable;
+            aboutForm.LatestVersion = _latestVersion;
             aboutForm.ShowDialog();
         }
 
@@ -995,6 +1032,5 @@ namespace AlmToolkit
         }
 
         #endregion
-
     }
 }

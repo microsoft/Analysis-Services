@@ -25,8 +25,11 @@
     - Run following command from BismNormalizer project root:
           msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
 
-    - Reload changed files in VS, change configuration to Release, build ALMT setup project
-    - Change configuration back to Debug
+    - Reload changed files in VS
+          Change configuration to Release
+          Build ALMT setup project
+          Change configuration back to Debug
+    
     - Take VSIX and AlmToolkitSetup.msi from \ReleaseObfusc folder
           Test installer locally
 
