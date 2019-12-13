@@ -432,7 +432,7 @@ namespace AlmToolkit
             }
             else
             {
-                txtSource.Text = "Database: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName;
+                txtSource.Text = "Dataset: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DatabaseName;
             }
 
             if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
@@ -445,7 +445,7 @@ namespace AlmToolkit
             }
             else
             {
-                txtTarget.Text = "Database: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName;
+                txtTarget.Text = "Dataset: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DatabaseName;
             }
 
         }

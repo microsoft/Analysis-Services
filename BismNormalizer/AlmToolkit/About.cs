@@ -48,6 +48,18 @@ namespace AlmToolkit
             this.linkReleaseHistory.LinkVisited = false;
         }
 
+        private void linkALMTWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkALMTWebsite.LinkVisited = true;
+            System.Diagnostics.Process.Start(Utils.AlmtWebsiteUrl);
+        }
+
+        private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkDocumentation.LinkVisited = true;
+            System.Diagnostics.Process.Start(Utils.DocumentationUrl);
+        }
+
         private void linkLatestVersion_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.linkLatestVersion.LinkVisited = true;
@@ -60,10 +72,10 @@ namespace AlmToolkit
             System.Diagnostics.Process.Start(Utils.ReleaseHistoryUrl);
         }
 
-        private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkTwitter_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.linkDocumentation.LinkVisited = true;
-            System.Diagnostics.Process.Start(Utils.DocumentationUrl);
+            this.linkTwitter.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://twitter.com/_christianWade");
         }
     }
 }

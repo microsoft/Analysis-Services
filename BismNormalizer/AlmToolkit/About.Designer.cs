@@ -36,6 +36,8 @@
             this.linkDocumentation = new System.Windows.Forms.LinkLabel();
             this.linkALMTWebsite = new System.Windows.Forms.LinkLabel();
             this.linkLatestVersion = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.linkTwitter = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,7 +45,7 @@
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(203, 140);
+            this.okButton.Location = new System.Drawing.Point(203, 204);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 25);
             this.okButton.TabIndex = 24;
@@ -62,7 +64,7 @@
             // lblProductVersion
             // 
             this.lblProductVersion.AutoSize = true;
-            this.lblProductVersion.Location = new System.Drawing.Point(88, 65);
+            this.lblProductVersion.Location = new System.Drawing.Point(89, 92);
             this.lblProductVersion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProductVersion.Name = "lblProductVersion";
             this.lblProductVersion.Size = new System.Drawing.Size(35, 13);
@@ -83,7 +85,7 @@
             // linkReleaseHistory
             // 
             this.linkReleaseHistory.AutoSize = true;
-            this.linkReleaseHistory.Location = new System.Drawing.Point(88, 113);
+            this.linkReleaseHistory.Location = new System.Drawing.Point(89, 140);
             this.linkReleaseHistory.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkReleaseHistory.Name = "linkReleaseHistory";
             this.linkReleaseHistory.Size = new System.Drawing.Size(79, 13);
@@ -95,7 +97,7 @@
             // linkDocumentation
             // 
             this.linkDocumentation.AutoSize = true;
-            this.linkDocumentation.Location = new System.Drawing.Point(88, 41);
+            this.linkDocumentation.Location = new System.Drawing.Point(89, 68);
             this.linkDocumentation.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkDocumentation.Name = "linkDocumentation";
             this.linkDocumentation.Size = new System.Drawing.Size(79, 13);
@@ -107,19 +109,19 @@
             // linkALMTWebsite
             // 
             this.linkALMTWebsite.AutoSize = true;
-            this.linkALMTWebsite.Location = new System.Drawing.Point(137, 10);
+            this.linkALMTWebsite.Location = new System.Drawing.Point(89, 44);
             this.linkALMTWebsite.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkALMTWebsite.Name = "linkALMTWebsite";
-            this.linkALMTWebsite.Size = new System.Drawing.Size(64, 13);
+            this.linkALMTWebsite.Size = new System.Drawing.Size(113, 13);
             this.linkALMTWebsite.TabIndex = 31;
             this.linkALMTWebsite.TabStop = true;
-            this.linkALMTWebsite.Text = "ALM Toolkit";
-            this.linkALMTWebsite.Visible = false;
+            this.linkALMTWebsite.Text = "http://alm-toolkit.com/";
+            this.linkALMTWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkALMTWebsite_LinkClicked);
             // 
             // linkLatestVersion
             // 
             this.linkLatestVersion.AutoSize = true;
-            this.linkLatestVersion.Location = new System.Drawing.Point(88, 88);
+            this.linkLatestVersion.Location = new System.Drawing.Point(89, 115);
             this.linkLatestVersion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLatestVersion.Name = "linkLatestVersion";
             this.linkLatestVersion.Size = new System.Drawing.Size(73, 13);
@@ -129,13 +131,37 @@
             this.linkLatestVersion.Visible = false;
             this.linkLatestVersion.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLatestVersion_LinkClicked);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(89, 166);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 13);
+            this.label1.TabIndex = 33;
+            this.label1.Text = "Created by ";
+            // 
+            // linkTwitter
+            // 
+            this.linkTwitter.AutoSize = true;
+            this.linkTwitter.Location = new System.Drawing.Point(145, 166);
+            this.linkTwitter.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkTwitter.Name = "linkTwitter";
+            this.linkTwitter.Size = new System.Drawing.Size(79, 13);
+            this.linkTwitter.TabIndex = 34;
+            this.linkTwitter.TabStop = true;
+            this.linkTwitter.Text = "Christian Wade";
+            this.linkTwitter.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkTwitter_LinkClicked);
+            // 
             // About
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size(290, 177);
+            this.ClientSize = new System.Drawing.Size(290, 241);
+            this.Controls.Add(this.linkTwitter);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.linkLatestVersion);
             this.Controls.Add(this.linkALMTWebsite);
             this.Controls.Add(this.linkDocumentation);
@@ -169,5 +195,7 @@
         private System.Windows.Forms.LinkLabel linkDocumentation;
         private System.Windows.Forms.LinkLabel linkALMTWebsite;
         private System.Windows.Forms.LinkLabel linkLatestVersion;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.LinkLabel linkTwitter;
     }
 }
