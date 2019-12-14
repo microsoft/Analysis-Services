@@ -45,19 +45,19 @@ namespace AlmToolkit
                 linkLatestVersion.Visible = true;
                 linkLatestVersion.Text = String.Format("Latest version {0}", _latestVersion);
             }
-            this.linkReleaseHistory.LinkVisited = false;
+            this.linkReportIssue.LinkVisited = false;
         }
 
         private void linkALMTWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.linkALMTWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start(Utils.AlmtWebsiteUrl);
+            System.Diagnostics.Process.Start("http://alm-toolkit.com/");
         }
 
         private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.linkDocumentation.LinkVisited = true;
-            System.Diagnostics.Process.Start(Utils.DocumentationUrl);
+            System.Diagnostics.Process.Start("https://github.com/microsoft/Analysis-Services/blob/master/BismNormalizer/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf");
         }
 
         private void linkLatestVersion_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -66,10 +66,10 @@ namespace AlmToolkit
             System.Diagnostics.Process.Start(Utils.LatestVersionDownloadUrl);
         }
 
-        private void linkReleaseHistory_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkReportIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.linkReleaseHistory.LinkVisited = true;
-            System.Diagnostics.Process.Start(Utils.ReleaseHistoryUrl);
+            this.linkReportIssue.LinkVisited = true;
+            System.Diagnostics.Process.Start("https://github.com/microsoft/Analysis-Services/issues");
         }
 
         private void linkTwitter_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

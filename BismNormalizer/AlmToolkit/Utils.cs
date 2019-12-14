@@ -60,35 +60,11 @@ namespace AlmToolkit
             }
         }
 
-        public static string AlmtWebsiteUrl
-        {
-            get
-            {
-                return "http://alm-toolkit.com/";
-            }
-        }
-
-        public static string DocumentationUrl
-        {
-            get
-            {
-                return "https://github.com/microsoft/Analysis-Services/blob/master/BismNormalizer/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf";
-            }
-        }
-
         public static string LatestVersionDownloadUrl
         {
             get
             {
                 return "https://github.com/microsoft/Analysis-Services/releases/latest/download/AlmToolkitSetup.msi";
-            }
-        }
-
-        public static string ReleaseHistoryUrl
-        {
-            get
-            {
-                return "https://github.com/microsoft/Analysis-Services/releases/latest";
             }
         }
     }
