@@ -1,4 +1,5 @@
-﻿using Microsoft.AnalysisServices;
+﻿using BismNormalizer;
+using Microsoft.AnalysisServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,18 @@ namespace AlmToolkit
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
+            //If new install, see if need to migrate settings file from previous version
+            try
+            {
+                if (Settings.Default.UpgradeRequired)
+                {
+                    Settings.Default.Upgrade();
+                    Settings.Default.UpgradeRequired = false;
+                    Settings.Default.Save();
+                }
+            }
+            catch { }
 
             if (args != null && args.Length > 0)
             {
