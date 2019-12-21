@@ -892,24 +892,33 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Delete)
                 {
-                    _targetTabularModel.DeleteRole(comparisonObject.TargetObjectInternalName);
-                    OnValidationMessage(new ValidationMessageEventArgs($"Delete role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
+                    {
+                        _targetTabularModel.DeleteRole(comparisonObject.TargetObjectInternalName);
+                        OnValidationMessage(new ValidationMessageEventArgs($"Delete role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    }
                 }
             }
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Create)
                 {
-                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
-                    OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
+                    {
+                        _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
+                        OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    }
                 }
             }
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Update)
                 {
-                    _targetTabularModel.UpdateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName), _targetTabularModel.Roles.FindById(comparisonObject.TargetObjectInternalName));
-                    OnValidationMessage(new ValidationMessageEventArgs($"Update role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
+                    {
+                        _targetTabularModel.UpdateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName), _targetTabularModel.Roles.FindById(comparisonObject.TargetObjectInternalName));
+                        OnValidationMessage(new ValidationMessageEventArgs($"Update role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
+                    }
                 }
             }
 
@@ -1241,6 +1250,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Delete)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                {
+                    return;
+                };
+
                 //Check any objects in target that depend on the DataSource are also going to be deleted
                 List<string> warningObjectList = new List<string>();
                 bool toDependencies = HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, CalcDependencyObjectType.DataSource, ref warningObjectList);
@@ -1250,7 +1264,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     foreach (Partition partition in table.TomTable.Partitions)
                     {
-                        if (partition.SourceType == PartitionSourceType.Query && 
+                        if (partition.SourceType == PartitionSourceType.Query &&
                             table.DataSourceName == comparisonObject.TargetObjectName)
                         {
                             foreach (ComparisonObject comparisonObjectToCheck in _comparisonObjects)
@@ -1303,6 +1317,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Create)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                {
+                    return;
+                };
+
                 _targetTabularModel.CreateDataSource(_sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName));
                 OnValidationMessage(new ValidationMessageEventArgs($"Create data source [{comparisonObject.SourceObjectName}].", ValidationMessageType.DataSource, ValidationMessageStatus.Informational));
             }
@@ -1312,6 +1331,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Update)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                {
+                    return;
+                };
+
                 DataSource sourceDataSource = _sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName);
                 DataSource targetDataSource = _targetTabularModel.DataSources.FindByName(comparisonObject.TargetObjectName);
 
@@ -1335,6 +1359,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Delete)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                {
+                    return;
+                };
+
                 //Check any objects in target that depend on the expression are also going to be deleted
                 List<string> warningObjectList = new List<string>();
                 if (!HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, CalcDependencyObjectType.Expression, ref warningObjectList))
@@ -1358,6 +1387,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Create)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                {
+                    return;
+                };
+
                 //Check any objects in source that this expression depends on are also going to be created if not already in target
                 List<string> warningObjectList = new List<string>();
                 if (!HasBlockingFromDependenciesInSource(
@@ -1388,6 +1422,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Update)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                {
+                    return;
+                };
+
                 //Check any objects in source that this expression depends on are also going to be created if not already in target
                 List<string> warningObjectList = new List<string>();
                 if (!HasBlockingFromDependenciesInSource(
@@ -1425,6 +1464,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 Table targetTable = _targetTabularModel.Tables.FindByName(comparisonObject.TargetObjectName);
                 bool isCalculationGroup = false;
                 if (targetTable != null) isCalculationGroup = targetTable.IsCalculationGroup;
+                if (!isCalculationGroup && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                {
+                    return;
+                };
                 _targetTabularModel.DeleteTable(comparisonObject.TargetObjectName);
                 OnValidationMessage(new ValidationMessageEventArgs($"Delete {(isCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'.", ValidationMessageType.Table, ValidationMessageStatus.Informational));
             }
@@ -1473,6 +1516,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
+                        if (!DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        {
+                            return;
+                        };
                         _targetTabularModel.CreateTable(sourceTable);
                         OnValidationMessage(new ValidationMessageEventArgs($"Create table '{comparisonObject.SourceObjectName}'.", ValidationMessageType.Table, ValidationMessageStatus.Informational));
                     }
@@ -1528,6 +1575,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
+                        if (!tableSource.IsCalculationGroup && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        {
+                            return;
+                        };
                         _targetTabularModel.UpdateTable(tableSource, tableTarget, out string retainPartitionsMessage);
                         OnValidationMessage(new ValidationMessageEventArgs($"Update {(tableSource.IsCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'. {retainPartitionsMessage}", ValidationMessageType.Table, ValidationMessageStatus.Informational));
                     }
@@ -1554,6 +1605,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Delete)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
+                {
+                    return;
+                };
                 foreach (Table tableTarget in _targetTabularModel.Tables)
                 {
                     Relationship relationshipTarget = tableTarget.Relationships.FindByName(comparisonObject.TargetObjectName.Trim());
@@ -1574,6 +1629,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Create)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
+                {
+                    return;
+                };
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
                 Relationship relationshipSource = tableSource.Relationships.FindByInternalName(comparisonObject.SourceObjectInternalName);
@@ -1595,6 +1654,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Update)
             {
+                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
+                {
+                    return;
+                };
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
                 Relationship relationshipSource = tableSource.Relationships.FindByInternalName(comparisonObject.SourceObjectInternalName);
@@ -1762,6 +1825,20 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         #endregion
 
         #endregion
+
+        private bool DesktopHardened(ComparisonObject comparisonObject, ValidationMessageType validationMessageType)
+        {
+            if (_targetTabularModel.ConnectionInfo.UseDesktop && _targetTabularModel.ConnectionInfo.ServerMode == Microsoft.AnalysisServices.ServerMode.SharePoint)
+            {
+                //V3 hardening
+                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {comparisonObject.TargetObjectName} because target is Power BI Desktop, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Update target tabular model with changes defined by actions in ComparisonObject instances.

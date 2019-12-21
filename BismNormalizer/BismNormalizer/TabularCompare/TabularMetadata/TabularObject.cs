@@ -41,16 +41,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 _objectDefinition = token.ToString(Formatting.Indented);
             }
 
-            //todo: remove with Giri's fix
-            //Remove return characters
-            if (namedMetaDataObject is Tom.NamedExpression || namedMetaDataObject is Tom.Table)
-            {
-                _objectDefinition = _objectDefinition.Replace("\\r", "");
-            }
+            ////todo: remove with Giri's fix
+            ////Remove return characters
+            //if (namedMetaDataObject is Tom.NamedExpression || namedMetaDataObject is Tom.Table)
+            //{
+            //    _objectDefinition = _objectDefinition.Replace("\\r", "");
+            //}
 
             //Order table columns
             if (namedMetaDataObject is Tom.Table)
-            { 
+            {
                 if (((Tom.Table)namedMetaDataObject).CalculationGroup != null)
                 {
                     JToken token = JToken.Parse(_objectDefinition);

@@ -15,7 +15,7 @@ namespace BismNormalizer.TabularCompare
         // Factory pattern: https://msdn.microsoft.com/en-us/library/orm-9780596527730-01-05.aspx 
 
         private static int _minCompatibilityLevel = 1100;
-        private static int _maxCompatibilityLevel = 1500;
+        private static int _maxCompatibilityLevel = 1600;
         private static List<string> _supportedDataSourceVersions = new List<string> { "PowerBI_V3" };
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace BismNormalizer.TabularCompare
                     )
                )
             {
-                throw new ConnectionException($"This combination of mixed compatibility levels is not supported.\nSource is {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and target is {Convert.ToString(comparisonInfo.TargetCompatibilityLevel)}.");
+                throw new ConnectionException($"This combination of mixed compatibility levels is not supported.\nSource is {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and target is {Convert.ToString(comparisonInfo.TargetCompatibilityLevel)}.\nMin supported compatibility level is {Convert.ToString(_minCompatibilityLevel)} and max is {Convert.ToString(_maxCompatibilityLevel)}.");
             }
 
             //Return the comparison object & offer upgrade of target if appropriate
@@ -166,12 +166,13 @@ namespace BismNormalizer.TabularCompare
                 //Check if source has a higher compat level than the target and offer upgrade if appropriate.
                 if (comparisonInfo.SourceCompatibilityLevel > comparisonInfo.TargetCompatibilityLevel)
                 {
-                    string message = $"Source compatibility level is { Convert.ToString(comparisonInfo.SourceCompatibilityLevel) } and target is { Convert.ToString(comparisonInfo.TargetCompatibilityLevel) }, which is not supported for comparison.\n";
+                    string message = $"Source compatibility level { Convert.ToString(comparisonInfo.SourceCompatibilityLevel) } is higher than the target { Convert.ToString(comparisonInfo.TargetCompatibilityLevel) }, which is not supported for comparison.\n";
 
                     if (comparisonInfo.Interactive && 
                         !comparisonInfo.ConnectionInfoTarget.UseProject && //Upgrade in SSDT not supported
+                        !comparisonInfo.ConnectionInfoTarget.UseDesktop && //Upgrade via port number to Desktop or SSDT not supported
                         System.Windows.Forms.MessageBox.Show(
-                    message += $"\nDo you want to upgrade the target to {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and allow the comparison?", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                    message + $"\nDo you want to upgrade the target to {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and allow the comparison?", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                     {
                         returnTabularComparison.TargetTabularModel.Connect();
                         returnTabularComparison.TargetTabularModel.TomDatabase.CompatibilityLevel = comparisonInfo.SourceCompatibilityLevel;
