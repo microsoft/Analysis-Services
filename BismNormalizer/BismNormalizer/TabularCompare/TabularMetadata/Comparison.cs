@@ -1364,6 +1364,33 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     return;
                 };
 
+                //Check if incremental refresh param and there is an incremental refresh table in the model
+                if (comparisonObject.TargetObjectName == "RangeStart" || comparisonObject.TargetObjectName == "RangeEnd")
+                {
+                    foreach (Table table in _targetTabularModel.Tables)
+                    {
+                        if (table.TomTable.RefreshPolicy != null)
+                        {
+                            //Confirm the table with incremental refresh policy isn't going to be deleted anyway
+                            bool tableBeingDeletedAnyway = false;
+                            foreach (ComparisonObject comparisonObjectToCheck in _comparisonObjects)
+                            {
+                                if (comparisonObjectToCheck.TargetObjectName == table.Name && comparisonObjectToCheck.MergeAction == MergeAction.Delete)
+                                {
+                                    tableBeingDeletedAnyway = true;
+                                    break;
+                                }
+                            }
+
+                            if (!tableBeingDeletedAnyway)
+                            {
+                                OnValidationMessage(new ValidationMessageEventArgs($"Unable to delete expression {comparisonObject.TargetObjectName} because it is an incremental-refresh parameter and table {table.Name} contains an incremental-refresh policy.", ValidationMessageType.Expression, ValidationMessageStatus.Warning));
+                                return;
+                            }
+                        }
+                    }
+                }
+
                 //Check any objects in target that depend on the expression are also going to be deleted
                 List<string> warningObjectList = new List<string>();
                 if (!HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, CalcDependencyObjectType.Expression, ref warningObjectList))
