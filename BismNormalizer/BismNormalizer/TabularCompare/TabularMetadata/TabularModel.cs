@@ -239,7 +239,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             _calcDependencies.Clear();
             List<MObject> mObjects = new List<MObject>();
 
-            //Add table partitions to mObjects collection
+            #region Add M-dependent objects to collection
+
             foreach (Table table in _tables)
             {
                 foreach (Partition partition in table.TomTable.Partitions)
@@ -258,7 +259,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 }
             }
 
-            //Add other M expressions to mObjects collection
             foreach (Expression expression in _expressions)
             {
                 mObjects.Add(
@@ -271,7 +271,24 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 );
             }
 
-            char[] delimiterChars = { ' ', ',', ':', '\t', '\n', '[', ']', '(', ')', '{', '}' };
+            foreach (DataSource dataSource in _dataSources)
+            {
+                if (dataSource.TomDataSource.Type == DataSourceType.Structured)
+                {
+                    mObjects.Add(
+                        new MObject(
+                            objectType: "DATA_SOURCE",
+                            tableName: "",
+                            objectName: dataSource.Name,
+                            expression: ""
+                        )
+                    );
+                }
+            }
+
+            #endregion
+
+            char[] delimiterChars = { ' ', ',', ':', '=', '\t', '\n', '[', ']', '(', ')', '{', '}' };
             List<string> keywords = new List<string>() { "and", "as", "each", "else", "error", "false", "if", "in", "is", "let", "meta", "not", "otherwise", "or", "section", "shared", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
                                                                                                      
             foreach (MObject mObject in mObjects)
@@ -291,16 +308,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             mObject.TableName == referencedMObject.TableName
                          ))
                     {
-                        if (  //if M_EXPRESSION name contains spaces or is a keyword, only need to check for occurrence like #"My Query" or #"let"
-                            (referencedMObject.ObjectType == "M_EXPRESSION" && (referencedMObject.ObjectName.Contains(" ") || keywords.Contains(referencedMObject.ObjectName))) &&
-                            (mObject.Expression.Contains("\"" + referencedMObject.ObjectName + "\""))
+                        if (  //if M_EXPRESSION or DATA_SOURCE, check for occurrence like #"My Query" or #"let"
+                            (referencedMObject.ObjectType == "M_EXPRESSION" || referencedMObject.ObjectType == "DATA_SOURCE") &&
+                            (mObject.Expression.Contains("#\"" + referencedMObject.ObjectName + "\""))
                         )
                         {
                             foundDependency = true;
                         }
-                        else if ( //if table name contains spaces or is a keyword, only need to check for occurrence like #"My Query" or #"let"
-                            (referencedMObject.ObjectType == "PARTITION" && (referencedMObject.TableName.Contains(" ") || keywords.Contains(referencedMObject.TableName))) &&
-                            (mObject.Expression.Contains("\"" + referencedMObject.TableName + "\""))
+                        else if ( //if table name, check for occurrence like #"My Query" or #"let"
+                            referencedMObject.ObjectType == "PARTITION" &&
+                            (mObject.Expression.Contains("#\"" + referencedMObject.TableName + "\""))
                         )
                         {
                             foundDependency = true;
@@ -310,8 +327,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             foreach (string word in words)
                             {
                                 if (
-                                        (referencedMObject.ObjectType == "M_EXPRESSION" && word == referencedMObject.ObjectName && !keywords.Contains(referencedMObject.ObjectName)) ||
-                                        (referencedMObject.ObjectType == "PARTITION" && word == referencedMObject.TableName && !keywords.Contains(referencedMObject.TableName))
+                                        (
+                                            (referencedMObject.ObjectType == "M_EXPRESSION" || referencedMObject.ObjectType == "DATA_SOURCE") &&
+                                            word == referencedMObject.ObjectName && !keywords.Contains(referencedMObject.ObjectName)
+                                        ) ||
+                                        (
+                                            referencedMObject.ObjectType == "PARTITION" &&
+                                            word == referencedMObject.TableName && !keywords.Contains(referencedMObject.TableName)
+                                        )
                                    )
                                 {
                                     foundDependency = true;
@@ -1846,13 +1869,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>Boolean indicating whether update was successful.</returns>
         public bool Update()
         {
-            //Set model annotation for telemetry tagging later
-            const string AnnotationName = "__BNorm";
-            Tom.Annotation annotationBNorm = new Tom.Annotation();
-            annotationBNorm.Name = AnnotationName;
-            annotationBNorm.Value = "1";
-            if (!_model.TomModel.Annotations.Contains(AnnotationName))
-                _model.TomModel.Annotations.Add(annotationBNorm);
+            SetBNormAnnotation();
 
             if (_connectionInfo.UseBimFile)
             {
@@ -1882,6 +1899,17 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             return true;
+        }
+
+        private void SetBNormAnnotation()
+        {
+            //Set model annotation for telemetry tagging later
+            const string AnnotationName = "__BNorm";
+            Tom.Annotation annotationBNorm = new Tom.Annotation();
+            annotationBNorm.Name = AnnotationName;
+            annotationBNorm.Value = "1";
+            if (!_model.TomModel.Annotations.Contains(AnnotationName))
+                _model.TomModel.Annotations.Add(annotationBNorm);
         }
 
         private void UpdateProject()
@@ -2315,6 +2343,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>JSON script of tabular model defintion.</returns>
         public string ScriptDatabase()
         {
+            SetBNormAnnotation();
+
             //script db to json
             string json = JsonScripter.ScriptCreateOrReplace(_database);
 

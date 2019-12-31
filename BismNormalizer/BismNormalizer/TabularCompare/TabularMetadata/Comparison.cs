@@ -635,8 +635,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             bool reconnect = false;
             try
             {
-                _sourceTabularModel.TomDatabase.Refresh();
-                _targetTabularModel.TomDatabase.Refresh();
+                if (!_sourceTabularModel.ConnectionInfo.UseBimFile) _sourceTabularModel.TomDatabase.Refresh();
+                if (!_targetTabularModel.ConnectionInfo.UseBimFile) _targetTabularModel.TomDatabase.Refresh();
             }
             catch (Exception)
             {
@@ -646,16 +646,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             if (reconnect || _uncommitedChanges)
             {
                 // Reconnect to re-initialize
-                if (!_comparisonInfo.ConnectionInfoSource.UseBimFile)
-                {
-                    _sourceTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoSource, _comparisonInfo);
-                    _sourceTabularModel.Connect();
-                }
-                if (!_comparisonInfo.ConnectionInfoTarget.UseBimFile)
-                {
-                    _targetTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoTarget, _comparisonInfo);
-                    _targetTabularModel.Connect();
-                }
+                _sourceTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoSource, _comparisonInfo);
+                _sourceTabularModel.Connect();
+
+                _targetTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoTarget, _comparisonInfo);
+                _targetTabularModel.Connect();
             }
 
             if (!_sourceTabularModel.ConnectionInfo.UseProject && _sourceTabularModel.TomDatabase.LastSchemaUpdate > _lastSourceSchemaUpdate)
@@ -989,13 +984,13 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         #region Calc dependencies validation
 
-        private bool HasBlockingToDependenciesInTarget(string targetObjectName, CalcDependencyObjectType targetObjectType, ref List<string> warningObjectList)
+        private bool HasBlockingToDependenciesInTarget(string targetObjectName, string referencedTableName, CalcDependencyObjectType targetObjectType, ref List<string> warningObjectList)
         {
             //For deletion.
             //Check any objects in target that depend on this object are also going to be deleted or updated.
 
             bool returnVal = false;
-            CalcDependencyCollection targetToDepdendencies = _targetTabularModel.MDependencies.DependenciesReferenceTo(targetObjectType, targetObjectName);
+            CalcDependencyCollection targetToDepdendencies = _targetTabularModel.MDependencies.DependenciesReferenceTo(targetObjectType, targetObjectName, referencedTableName);
             foreach (CalcDependency targetToDependency in targetToDepdendencies)
             {
                 foreach (ComparisonObject comparisonObjectToCheck in _comparisonObjects)
@@ -1086,9 +1081,28 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                                 comparisonObjectToCheck.SourceObjectName == sourceFromDependency.ReferencedObjectName &&
                                 comparisonObjectToCheck.Status == ComparisonObjectStatus.MissingInTarget &&  //Creates being skipped (dependency will be missing).
                                 comparisonObjectToCheck.MergeAction == MergeAction.Skip)
-                                //Deletes are impossible for this object to depend on, so don't need to detect. Other Skips can assume are fine, so don't need to detect.
+                            //Deletes are impossible for this object to depend on, so don't need to detect. Other Skips can assume are fine, so don't need to detect.
                             {
                                 string warningObject = $"Expression {comparisonObjectToCheck.SourceObjectName}";
+                                if (!warningObjectList.Contains(warningObject))
+                                {
+                                    warningObjectList.Add(warningObject);
+                                }
+                                returnVal = true;
+                            }
+
+                            break;
+                        case CalcDependencyObjectType.Partition:
+                            //Does the object about to be created/updated (sourceObjectName) have a source dependency on this table (comparisonObjectToCheck)?
+
+                            if (!_targetTabularModel.Tables.ContainsName(sourceFromDependency.ReferencedTableName) &&
+                                comparisonObjectToCheck.ComparisonObjectType == ComparisonObjectType.Table &&
+                                comparisonObjectToCheck.SourceObjectName == sourceFromDependency.ReferencedTableName &&
+                                comparisonObjectToCheck.Status == ComparisonObjectStatus.MissingInTarget &&  //Creates being skipped (dependency will be missing).
+                                comparisonObjectToCheck.MergeAction == MergeAction.Skip)
+                            //Deletes are impossible for this object to depend on, so don't need to detect. Other Skips can assume are fine, so don't need to detect.
+                            {
+                                string warningObject = $"Table {comparisonObjectToCheck.SourceObjectName}";
                                 if (!warningObjectList.Contains(warningObject))
                                 {
                                     warningObjectList.Add(warningObject);
@@ -1257,7 +1271,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 //Check any objects in target that depend on the DataSource are also going to be deleted
                 List<string> warningObjectList = new List<string>();
-                bool toDependencies = HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, CalcDependencyObjectType.DataSource, ref warningObjectList);
+                bool toDependencies = HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, "", CalcDependencyObjectType.DataSource, ref warningObjectList);
 
                 //For old non-M partitions, check if any such tables have reference to this DataSource, and will not be deleted
                 foreach (Table table in _targetTabularModel.Tables)
@@ -1393,7 +1407,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 //Check any objects in target that depend on the expression are also going to be deleted
                 List<string> warningObjectList = new List<string>();
-                if (!HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, CalcDependencyObjectType.Expression, ref warningObjectList))
+                if (!HasBlockingToDependenciesInTarget(comparisonObject.TargetObjectName, "", CalcDependencyObjectType.Expression, ref warningObjectList))
                 {
                     _targetTabularModel.DeleteExpression(comparisonObject.TargetObjectName);
                     OnValidationMessage(new ValidationMessageEventArgs($"Delete expression [{comparisonObject.TargetObjectName}].", ValidationMessageType.Expression, ValidationMessageStatus.Informational));
@@ -1495,8 +1509,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     return;
                 };
-                _targetTabularModel.DeleteTable(comparisonObject.TargetObjectName);
-                OnValidationMessage(new ValidationMessageEventArgs($"Delete {(isCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'.", ValidationMessageType.Table, ValidationMessageStatus.Informational));
+
+                //Check any objects in target that depend on the table expression are also going to be deleted
+                List<string> warningObjectList = new List<string>();
+                if (!HasBlockingToDependenciesInTarget("", comparisonObject.TargetObjectName, CalcDependencyObjectType.Partition, ref warningObjectList))
+                {
+                    _targetTabularModel.DeleteTable(comparisonObject.TargetObjectName);
+                    OnValidationMessage(new ValidationMessageEventArgs($"Delete {(isCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'.", ValidationMessageType.Table, ValidationMessageStatus.Informational));
+                }
+                else
+                {
+                    string message = $"Unable to delete table {comparisonObject.TargetObjectName} because the following objects depend on it: {String.Join(", ", warningObjectList)}.";
+                    if (_comparisonInfo.OptionsInfo.OptionRetainPartitions && !_comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions)
+                    {
+                        message += " Note: the option to retain partitions is on, which may be affecting this.";
+                    }
+                    OnValidationMessage(new ValidationMessageEventArgs(message, ValidationMessageType.Table, ValidationMessageStatus.Warning));
+                }
             }
         }
 
@@ -1855,10 +1884,13 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private bool DesktopHardened(ComparisonObject comparisonObject, ValidationMessageType validationMessageType)
         {
-            if (_targetTabularModel.ConnectionInfo.UseDesktop && _targetTabularModel.ConnectionInfo.ServerMode == Microsoft.AnalysisServices.ServerMode.SharePoint)
+            if (
+                  (_targetTabularModel.ConnectionInfo.UseDesktop && _targetTabularModel.ConnectionInfo.ServerMode == Microsoft.AnalysisServices.ServerMode.SharePoint) ||
+                  (_targetTabularModel.ConnectionInfo.UseBimFile && _targetTabularModel.ConnectionInfo.BimFile != null && _targetTabularModel.ConnectionInfo.BimFile.ToUpper().EndsWith(".PBIT"))
+               )
             {
                 //V3 hardening
-                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {comparisonObject.TargetObjectName} because target is Power BI Desktop, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
+                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {comparisonObject.TargetObjectName} because target is Power BI Desktop or .PBIT, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
                 return false;
             }
             else

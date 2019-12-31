@@ -234,7 +234,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                     while (whatsLeftOfLine.Contains('[') && whatsLeftOfLine.Contains(']'))
                     {
                         int openSquareBracketPosition = whatsLeftOfLine.IndexOf('[', 0);
-                        //brilliant person at microsoft has ]] instead of ]
+                        //someone has ]] instead of ]
                         int closeSquareBracketPosition = whatsLeftOfLine.Replace("]]", "  ").IndexOf(']', openSquareBracketPosition + 1);
 
                         if (openSquareBracketPosition < closeSquareBracketPosition - 1)
@@ -242,7 +242,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                             string potentialDependency = whatsLeftOfLine.Substring(openSquareBracketPosition + 1, closeSquareBracketPosition - openSquareBracketPosition - 1);
                             if (!potentialDependency.Contains('"') && !dependencies.Contains(potentialDependency))
                             {
-                                //unbelievable: some genius at m$ did a replace on ] with ]]
+                                //someone did a replace on ] with ]]
                                 dependencies.Add(potentialDependency);
                             }
                         }

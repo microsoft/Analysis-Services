@@ -68,7 +68,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         while (whatsRemainingOfLine.Contains('[') && whatsRemainingOfLine.Contains(']'))
                         {
                             int openSquareBracketPosition = whatsRemainingOfLine.IndexOf('[', 0);
-                            //brilliant person at microsoft has ]] instead of ]
+                            //someone has ]] instead of ]
                             int closeSquareBracketPosition = whatsRemainingOfLine.Replace("]]", "  ").IndexOf(']', openSquareBracketPosition + 1);
 
                             if (openSquareBracketPosition < closeSquareBracketPosition - 1)
@@ -78,7 +78,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                                     !_tomCalculationItem.Expression.Contains($"\"{potentialDependency}\"") && //it's possible the calculationItem itself is deriving the column name from an ADDCOLUMNS for example
                                     !dependencies.Contains(potentialDependency))
                                 {
-                                    //unbelievable: some genius at m$ did a replace on ] with ]]
+                                    //someone did a replace on ] with ]]
                                     dependencies.Add(potentialDependency);
                                 }
                             }

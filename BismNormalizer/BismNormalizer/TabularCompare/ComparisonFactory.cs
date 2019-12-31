@@ -66,7 +66,7 @@ namespace BismNormalizer.TabularCompare
             Telemetry.TrackEvent("CreateComparisonInitialized", new Dictionary<string, string> { { "App", comparisonInfo.AppName.Replace(" ", "") } });
 
             //If composite models not allowed on AS, check DQ/Import at model level matches:
-            if (comparisonInfo.ConnectionInfoSource.ServerName != null && !comparisonInfo.ConnectionInfoSource.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
+            if (comparisonInfo.AppName == "BISM Normalizer" && comparisonInfo.ConnectionInfoTarget.ServerName != null && !comparisonInfo.ConnectionInfoTarget.ServerName.StartsWith("powerbi://") && !Settings.Default.OptionCompositeModelsOverride && comparisonInfo.SourceDirectQuery != comparisonInfo.TargetDirectQuery)
             {
                 throw new ConnectionException($"Mixed DirectQuery settings are not supported for AS skus.\nSource is {(comparisonInfo.SourceDirectQuery ? "On" : "Off")} and target is {(comparisonInfo.TargetDirectQuery ? "On" : "Off")}.");
             }

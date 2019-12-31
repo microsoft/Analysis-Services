@@ -39,20 +39,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="objectType">Type of the object to look up dependencies.</param>
         /// <param name="objectName">Name of the object to look up dependencies.</param>
         /// <returns></returns>
-        public CalcDependencyCollection DependenciesReferenceTo(CalcDependencyObjectType referencedObjectType, string referencedObjectName)
+        public CalcDependencyCollection DependenciesReferenceTo(CalcDependencyObjectType referencedObjectType, string referencedObjectName, string referencedTableName)
         {
             CalcDependencyCollection returnVal = new CalcDependencyCollection();
-            LookUpDependenciesReferenceTo(referencedObjectType, referencedObjectName, returnVal);
+            LookUpDependenciesReferenceTo(referencedObjectType, referencedObjectName, referencedTableName, returnVal);
             return returnVal;
         }
 
-        private void LookUpDependenciesReferenceTo(CalcDependencyObjectType referencedObjectType, string referencedObjectName, CalcDependencyCollection returnVal)
+        private void LookUpDependenciesReferenceTo(CalcDependencyObjectType referencedObjectType, string referencedObjectName, string referencedTableName, CalcDependencyCollection returnVal)
         {
             foreach (CalcDependency calcDependency in this)
             {
-                if (calcDependency.ReferencedObjectType == referencedObjectType && calcDependency.ReferencedObjectName == referencedObjectName)
+                if (
+                      (calcDependency.ReferencedObjectType == referencedObjectType && referencedObjectType != CalcDependencyObjectType.Partition && calcDependency.ReferencedObjectName == referencedObjectName) ||
+                      (calcDependency.ReferencedObjectType == referencedObjectType && referencedObjectType == CalcDependencyObjectType.Partition && calcDependency.ReferencedTableName == referencedTableName) //References to table-partition expressions are by table name, not partition name
+                   )
                 {
-                    LookUpDependenciesReferenceTo(calcDependency.ObjectType, calcDependency.ObjectName, returnVal);
+                    LookUpDependenciesReferenceTo(calcDependency.ObjectType, calcDependency.ObjectName, calcDependency.TableName, returnVal);
                     returnVal.Add(calcDependency);
                 }
             }
