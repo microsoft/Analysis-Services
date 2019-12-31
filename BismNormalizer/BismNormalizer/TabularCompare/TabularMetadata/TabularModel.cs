@@ -7,6 +7,8 @@ using Tom = Microsoft.AnalysisServices.Tabular;
 using Amo = Microsoft.AnalysisServices;
 using Newtonsoft.Json.Linq;
 using BismNormalizer.TabularCompare.Core;
+using System.Web.UI.WebControls.WebParts;
+using System.Text.RegularExpressions;
 
 namespace BismNormalizer.TabularCompare.TabularMetadata
 {
@@ -72,7 +74,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     //Don't need try to load from project here as will already be done before instantiated Comparison
                     throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
                 }
-                InitializeCalcDependencies();
             }
 
             //Shell model
@@ -148,9 +149,18 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 _cultures.Add(new Culture(this, culture));
             }
+
+            if (_connectionInfo.UseBimFile)
+            {
+                InitializeCalcDependenciesFromM();
+            }
+            else
+            {
+                InitializeCalcDependenciesFromServer();
+            }
         }
 
-        private void InitializeCalcDependencies()
+        private void InitializeCalcDependenciesFromServer()
         {
             _calcDependencies.Clear();
             string command =
@@ -159,42 +169,174 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 "NOT (OBJECT_TYPE = REFERENCED_OBJECT_TYPE AND " +
                 "     [TABLE] = REFERENCED_TABLE AND" +
                 "     OBJECT = REFERENCED_OBJECT);"; //Ignore recursive M expression dependencies
-            XmlNodeList rows = Core.Comparison.ExecuteXmlaCommand(_server, _connectionInfo.DatabaseName, command);
-
-            foreach (XmlNode row in rows)
+            bool foundFault = false;
+            XmlNodeList rows = Core.Comparison.ExecuteXmlaCommand(_server, _connectionInfo.DatabaseName, command, ref foundFault);
+            
+            if (foundFault)
             {
-                string objectType = "";
-                string tableName = "";
-                string objectName = "";
-                string expression = "";
-                string referencedObjectType = "";
-                string referencedTableName = "";
-                string referencedObjectName = "";
-                string referencedExpression = "";
-
-                foreach (XmlNode col in row.ChildNodes)
+                InitializeCalcDependenciesFromM();
+            }
+            else
+            {
+                foreach (XmlNode row in rows)
                 {
-                    if (col.Name == "OBJECT_TYPE") objectType = col.InnerText;
-                    if (col.Name == "TABLE") tableName = col.InnerText;
-                    if (col.Name == "OBJECT") objectName = col.InnerText;
-                    if (col.Name == "EXPRESSION") expression = col.InnerText;
-                    if (col.Name == "REFERENCED_OBJECT_TYPE") referencedObjectType = col.InnerText;
-                    if (col.Name == "REFERENCED_TABLE") referencedTableName = col.InnerText;
-                    if (col.Name == "REFERENCED_OBJECT") referencedObjectName = col.InnerText;
-                    if (col.Name == "REFERENCED_EXPRESSION") referencedExpression = col.InnerText;
-                }
+                    string objectType = "";
+                    string tableName = "";
+                    string objectName = "";
+                    string expression = "";
+                    string referencedObjectType = "";
+                    string referencedTableName = "";
+                    string referencedObjectName = "";
+                    string referencedExpression = "";
 
-                _calcDependencies.Add(new CalcDependency(this,
-                    objectType,
-                    tableName,
-                    objectName,
-                    expression,
-                    referencedObjectType,
-                    referencedTableName,
-                    referencedObjectName,
-                    referencedExpression
+                    foreach (XmlNode col in row.ChildNodes)
+                    {
+                        if (col.Name == "OBJECT_TYPE") objectType = col.InnerText;
+                        if (col.Name == "TABLE") tableName = col.InnerText;
+                        if (col.Name == "OBJECT") objectName = col.InnerText;
+                        if (col.Name == "EXPRESSION") expression = col.InnerText;
+                        if (col.Name == "REFERENCED_OBJECT_TYPE") referencedObjectType = col.InnerText;
+                        if (col.Name == "REFERENCED_TABLE") referencedTableName = col.InnerText;
+                        if (col.Name == "REFERENCED_OBJECT") referencedObjectName = col.InnerText;
+                        if (col.Name == "REFERENCED_EXPRESSION") referencedExpression = col.InnerText;
+                    }
+
+                    _calcDependencies.Add(new CalcDependency(this,
+                        objectType,
+                        tableName,
+                        objectName,
+                        expression,
+                        referencedObjectType,
+                        referencedTableName,
+                        referencedObjectName,
+                        referencedExpression
+                        )
+                    );
+                }
+            }
+        }
+
+        private struct MObject
+        {
+            public string ObjectType;
+            public string TableName;
+            public string ObjectName;
+            public string Expression;
+
+            public MObject(string objectType, string tableName, string objectName, string expression)
+            {
+                ObjectType = objectType;
+                TableName = tableName;
+                ObjectName = objectName;
+                Expression = expression;
+            }
+        }
+
+        private void InitializeCalcDependenciesFromM()
+        {
+            //TODO: Doesn't deal with structured data sources (DSRs) yet
+
+            _calcDependencies.Clear();
+            List<MObject> mObjects = new List<MObject>();
+
+            //Add table partitions to mObjects collection
+            foreach (Table table in _tables)
+            {
+                foreach (Partition partition in table.TomTable.Partitions)
+                {
+                    if (partition.SourceType == PartitionSourceType.M)
+                    {
+                        mObjects.Add(
+                            new MObject(
+                                objectType: "PARTITION",
+                                tableName: table.Name,
+                                objectName: partition.Name,
+                                expression: ((MPartitionSource)partition.Source).Expression
+                            )
+                        );
+                    }
+                }
+            }
+
+            //Add other M expressions to mObjects collection
+            foreach (Expression expression in _expressions)
+            {
+                mObjects.Add(
+                    new MObject(
+                        objectType: "M_EXPRESSION",
+                        tableName: "",
+                        objectName: expression.Name,
+                        expression: expression.TomExpression.Expression
                     )
                 );
+            }
+
+            char[] delimiterChars = { ' ', ',', ':', '\t', '\n', '[', ']', '(', ')', '{', '}' };
+            List<string> keywords = new List<string>() { "let", "in" }; //TODO: need list of all M keywords
+
+            foreach (MObject mObject in mObjects)
+            {
+                string regex = "(#\"(.*?)\")";
+                //Expression with double quote references removed
+                string expressionRegex = Regex.Replace(mObject.Expression, regex, "");
+                string[] words = expressionRegex.Split(delimiterChars);
+
+                foreach (MObject referencedMObject in mObjects)
+                {
+                    bool foundDependency = false;
+
+                    if (!(  //Ignore circular dependencies
+                            mObject.ObjectName == referencedMObject.ObjectName &&
+                            mObject.ObjectType == referencedMObject.ObjectType &&
+                            mObject.TableName == referencedMObject.TableName
+                         ))
+                    {
+                        if (  //if M_EXPRESSION name contains spaces or is a keyword, only need to check for occurrence like #"My Query" or #"let"
+                            (referencedMObject.ObjectType == "M_EXPRESSION" && (referencedMObject.ObjectName.Contains(" ") || keywords.Contains(referencedMObject.ObjectName))) &&
+                            (mObject.Expression.Contains("\"" + referencedMObject.ObjectName + "\""))
+                        )
+                        {
+                            foundDependency = true;
+                        }
+                        else if ( //if table name contains spaces or is a keyword, only need to check for occurrence like #"My Query" or #"let"
+                            (referencedMObject.ObjectType == "PARTITION" && (referencedMObject.TableName.Contains(" ") || keywords.Contains(referencedMObject.TableName))) &&
+                            (mObject.Expression.Contains("\"" + referencedMObject.TableName + "\""))
+                        )
+                        {
+                            foundDependency = true;
+                        }
+                        else
+                        {
+                            foreach (string word in words)
+                            {
+                                if (
+                                        (referencedMObject.ObjectType == "M_EXPRESSION" && word == referencedMObject.ObjectName && !keywords.Contains(referencedMObject.ObjectName)) ||
+                                        (referencedMObject.ObjectType == "PARTITION" && word == referencedMObject.TableName && !keywords.Contains(referencedMObject.TableName))
+                                   )
+                                {
+                                    foundDependency = true;
+                                }
+                            }
+                        }
+
+                        if (foundDependency)
+                        {
+                            _calcDependencies.Add(
+                                new CalcDependency(
+                                    this,
+                                    objectType: mObject.ObjectType,
+                                    tableName: mObject.TableName,
+                                    objectName: mObject.ObjectName,
+                                    expression: mObject.Expression,
+                                    referencedObjectType: referencedMObject.ObjectType,
+                                    referencedTableName: referencedMObject.TableName,
+                                    referencedObjectName: referencedMObject.ObjectName,
+                                    referencedExpression: referencedMObject.Expression
+                                )
+                            );
+                        }
+                    }
+                }
             }
         }
 

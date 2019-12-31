@@ -522,7 +522,8 @@ namespace BismNormalizer.TabularCompare.Core
         public static int FindRowCount(Microsoft.AnalysisServices.Core.Server server, string tableName, string databaseName)
         {
             string dax = String.Format("EVALUATE ROW( \"RowCount\", COUNTROWS('{0}'))", tableName);
-            XmlNodeList rows = ExecuteXmlaCommand(server, databaseName, dax);
+            bool foundFault = false;
+            XmlNodeList rows = ExecuteXmlaCommand(server, databaseName, dax, ref foundFault);
 
             foreach (XmlNode row in rows)
             {
@@ -552,7 +553,7 @@ namespace BismNormalizer.TabularCompare.Core
         /// <param name="server"></param>
         /// <param name="commandStatement"></param>
         /// <returns>XmlNodeList containing results of the command execution.</returns>
-        public static XmlNodeList ExecuteXmlaCommand(Microsoft.AnalysisServices.Core.Server server, string catalog, string commandStatement)
+        public static XmlNodeList ExecuteXmlaCommand(Microsoft.AnalysisServices.Core.Server server, string catalog, string commandStatement, ref bool foundFault)
         {
             XmlWriter xmlWriter = server.StartXmlaRequest(XmlaRequestType.Undefined);
             WriteSoapEnvelopeWithCommandStatement(xmlWriter, server.SessionID, catalog, commandStatement);
@@ -567,6 +568,12 @@ namespace BismNormalizer.TabularCompare.Core
             nsmgr.AddNamespace("myns1", "urn:schemas-microsoft-com:xml-analysis");
             nsmgr.AddNamespace("myns2", "urn:schemas-microsoft-com:xml-analysis:rowset");
             XmlNodeList rows = documentResponse.SelectNodes("//myns1:ExecuteResponse/myns1:return/myns2:root/myns2:row", nsmgr);
+
+            if (rows.Count == 0 && documentResponse.GetElementsByTagName("faultcode").Count > 0)
+            {
+                foundFault = true;
+            }
+
             return rows;
         }
 

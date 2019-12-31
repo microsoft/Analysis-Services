@@ -576,7 +576,8 @@ namespace BismNormalizer.TabularCompare
                     string dataDir = amoServer.ServerProperties["DataDir"].Value;
                     if (dataDir.EndsWith("\\")) dataDir = dataDir.Substring(0, dataDir.Length - 1);
                     string commandStatement = String.Format("SystemGetSubdirs '{0}'", dataDir);
-                    XmlNodeList rows = Core.Comparison.ExecuteXmlaCommand(amoServer, "", commandStatement);
+                    bool foundFault = false;
+                    XmlNodeList rows = Core.Comparison.ExecuteXmlaCommand(amoServer, "", commandStatement, ref foundFault);
 
                     string dbDir = "";
                     foreach (XmlNode row in rows)
