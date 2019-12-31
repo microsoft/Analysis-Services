@@ -4,6 +4,7 @@ using System.Diagnostics;
 //using Serilog;
 using System.Security.Principal;
 
+//namespace DaxStudio.UI.Utils
 namespace BismNormalizer.TabularCompare.UI.DesktopInstances
 {
     public enum EmbeddedSSASIcon

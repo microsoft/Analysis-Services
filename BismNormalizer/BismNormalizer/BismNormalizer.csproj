@@ -210,6 +210,7 @@
     </Reference>
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
@@ -230,6 +231,7 @@
     <Compile Include="TabularCompare\Enums.cs" />
     <Compile Include="TabularCompare\BlobKeyEventArgs.cs" />
     <Compile Include="TabularCompare\PasswordPromptEventArgs.cs" />
+    <Compile Include="TabularCompare\PowerBiTemplate.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalculationItem.cs" />
     <Compile Include="TabularCompare\TabularMetadata\CalculationItemCollection.cs" />
     <Compile Include="TabularCompare\TabularMetadata\Model.cs" />
@@ -250,10 +252,10 @@
     <Compile Include="TabularCompare\UI\Connections.Designer.cs">
       <DependentUpon>Connections.cs</DependentUpon>
     </Compile>
-    <Compile Include="TabularCompare\UI\DesktopInstances\ManagedIpHelper.cs" />
-    <Compile Include="TabularCompare\UI\DesktopInstances\PowerBIHelper.cs" />
-    <Compile Include="TabularCompare\UI\DesktopInstances\ProcessExtensions.cs" />
-    <Compile Include="TabularCompare\UI\DesktopInstances\WindowTitle.cs" />
+    <Compile Include="TabularCompare\DesktopInstances\ManagedIpHelper.cs" />
+    <Compile Include="TabularCompare\DesktopInstances\PowerBIHelper.cs" />
+    <Compile Include="TabularCompare\DesktopInstances\ProcessExtensions.cs" />
+    <Compile Include="TabularCompare\DesktopInstances\WindowTitle.cs" />
     <Compile Include="TabularCompare\UI\Utils.cs" />
     <Compile Include="TabularCompare\UI\BlobCredentials.cs">
       <SubType>Form</SubType>

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Management;
 
+//namespace DaxStudio.UI.Extensions
 namespace BismNormalizer.TabularCompare.UI.DesktopInstances
 {
     public static class ProcessExtensions

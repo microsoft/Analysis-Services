@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+//namespace DaxStudio.Common
 namespace BismNormalizer.TabularCompare.UI.DesktopInstances
 {
     public class WindowTitle

@@ -59,7 +59,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             if (_connectionInfo.UseBimFile)
             {
-                _database = JsonSerializer.DeserializeDatabase(File.ReadAllText(_connectionInfo.BimFile));
+                _database = _connectionInfo.OpenDatabaseFromFile();
             }
             else
             {
@@ -1767,21 +1767,44 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             //serialize db to json
             SerializeOptions options = new SerializeOptions();
-            options.IgnoreInferredProperties = true;
-            options.IgnoreInferredObjects = true;
-            options.IgnoreTimestamps = true;
+            bool isPbit = (_connectionInfo.UseBimFile && _connectionInfo.BimFile.ToUpper().EndsWith(".PBIT"));
+
+            if (isPbit)
+            {
+                options.IgnoreInferredProperties = false;
+                options.IgnoreInferredObjects = false;
+                options.IgnoreTimestamps = false;
+            }
+            else
+            { 
+                options.IgnoreInferredProperties = true;
+                options.IgnoreInferredObjects = true;
+                options.IgnoreTimestamps = true;
+            }
             options.SplitMultilineStrings = true;
             string json = JsonSerializer.SerializeDatabase(_database, options);
 
             //replace db name with "SemanticModel"
-            JObject jDb = JObject.Parse(json);
-            jDb["name"] = "SemanticModel";
-            jDb["id"] = "SemanticModel";
-            json = jDb.ToString();
+            if (!isPbit)
+            { 
+                JObject jDb = JObject.Parse(json);
+                jDb["name"] = "SemanticModel";
+                jDb["id"] = "SemanticModel";
+                json = jDb.ToString();
+            }
 
             if (_connectionInfo.UseBimFile)
             {
-                File.WriteAllText(_connectionInfo.BimFile, json);
+                if (isPbit)
+                {
+                    PowerBiTemplate pbit = new PowerBiTemplate(_connectionInfo.BimFile);
+                    pbit.ModelJson = json;
+                    pbit.SaveAs(_connectionInfo.BimFile);
+                }
+                else
+                { 
+                    File.WriteAllText(_connectionInfo.BimFile, json);
+                }
             }
             else
             {
@@ -2153,7 +2176,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             //script db to json
             string json = JsonScripter.ScriptCreateOrReplace(_database);
 
-            if (_connectionInfo.UseProject)
+            if (_connectionInfo.UseProject || _connectionInfo.UseBimFile)
             {
                 //replace db/cube name/id with name of deploymnet db from the project file
                 JObject jScript = JObject.Parse(json);
@@ -2163,6 +2186,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     ((JObject)createOrReplace["object"])["database"] = _connectionInfo.DeploymentServerDatabase;
                     ((JObject)createOrReplace["database"])["name"] = _connectionInfo.DeploymentServerDatabase;
                     ((JObject)createOrReplace["database"])["id"] = _connectionInfo.DeploymentServerDatabase;
+                }
+                else if (_connectionInfo.UseBimFile)
+                {
+                    try
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(_connectionInfo.BimFile);
+                        ((JObject)createOrReplace["object"])["database"] = fileName;
+                        ((JObject)createOrReplace["database"])["name"] = fileName;
+                    }
+                    catch { }
                 }
                 json = jScript.ToString();
             }

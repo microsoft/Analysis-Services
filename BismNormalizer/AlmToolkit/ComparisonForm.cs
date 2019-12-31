@@ -194,18 +194,10 @@ namespace AlmToolkit
             btnGenerateScript.Enabled = true;
 
             _compareState = CompareState.Validated;
-            // This method needs to be moved out of comparison control during clean up
-            //ComparisonCtrl.SetValidatedState();
         }
 
         private bool ShowConnectionsForm()
         {
-            //if (ComparisonCtrl.CompareState != CompareState.NotCompared)
-            //{
-            //    
-            //    ComparisonCtrl.RefreshSkipSelections();
-            //}
-
             if (_compareState != CompareState.NotCompared)
             {
                 //just in case user has some selections, store them to the SkipSelections collection
@@ -672,7 +664,7 @@ namespace AlmToolkit
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Are you sure you want to update target?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show($"Are you sure you want to update the target?", Utils.AssemblyProduct, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }

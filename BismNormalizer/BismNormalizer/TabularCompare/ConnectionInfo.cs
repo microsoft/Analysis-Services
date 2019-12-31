@@ -451,7 +451,7 @@ namespace BismNormalizer.TabularCompare
                 bool exceptionLoadingFile = false;
                 try
                 {
-                    tomDatabase = TOM.JsonSerializer.DeserializeDatabase(File.ReadAllText(_bimFile));
+                    tomDatabase = OpenDatabaseFromFile();
                 }
                 catch
                 {
@@ -497,7 +497,7 @@ namespace BismNormalizer.TabularCompare
                 }
             }
 
-            Server amoServer = new Server();
+            Microsoft.AnalysisServices.Server amoServer = new Microsoft.AnalysisServices.Server();
             try
             {
                 amoServer.Connect(BuildConnectionString());
@@ -546,7 +546,7 @@ namespace BismNormalizer.TabularCompare
                 throw new ConnectionException($"Analysis Server {this.ServerName} is not running in Tabular mode");
             }
 
-            Database amoDatabase = null;
+            Microsoft.AnalysisServices.Database amoDatabase = null;
             if (this.DatabaseName == "" && this.ServerName.ToUpper().StartsWith("localhost:".ToUpper()))
             {
                 //PBI Desktop doesn't have db name yet
@@ -698,6 +698,27 @@ $@"{{
             _serverMode = amoServer.ServerMode;
             _directQuery = ((amoDatabase.Model != null && amoDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
                              amoDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
+        }
+
+        /// <summary>
+        /// Check if file is PBIT and return instantiated TOM database.
+        /// </summary>
+        /// <returns></returns>
+        public TOM.Database OpenDatabaseFromFile()
+        {
+            TOM.Database tomDatabase;
+            string modelJson;
+            if (_bimFile.ToUpper().EndsWith(".PBIT"))
+            {
+                PowerBiTemplate pbit = new PowerBiTemplate(_bimFile);
+                modelJson = pbit.ModelJson;
+            }
+            else
+            {
+                modelJson = File.ReadAllText(_bimFile);
+            }
+            tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson);
+            return tomDatabase;
         }
 
         /// <summary>
