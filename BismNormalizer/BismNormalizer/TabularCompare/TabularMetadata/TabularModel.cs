@@ -272,12 +272,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             char[] delimiterChars = { ' ', ',', ':', '\t', '\n', '[', ']', '(', ')', '{', '}' };
-            List<string> keywords = new List<string>() { "let", "in" }; //TODO: need list of all M keywords
-
+            List<string> keywords = new List<string>() { "and", "as", "each", "else", "error", "false", "if", "in", "is", "let", "meta", "not", "otherwise", "or", "section", "shared", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
+                                                                                                     
             foreach (MObject mObject in mObjects)
             {
                 string regex = "(#\"(.*?)\")";
-                //Expression with double quote references removed
+                //Expression with double quote references like #"Query" removed
                 string expressionRegex = Regex.Replace(mObject.Expression, regex, "");
                 string[] words = expressionRegex.Split(delimiterChars);
 
