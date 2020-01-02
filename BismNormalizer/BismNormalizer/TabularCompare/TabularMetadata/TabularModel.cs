@@ -234,8 +234,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void InitializeCalcDependenciesFromM()
         {
-            //TODO: Doesn't deal with structured data sources (DSRs) yet
-
             _calcDependencies.Clear();
             List<MObject> mObjects = new List<MObject>();
 

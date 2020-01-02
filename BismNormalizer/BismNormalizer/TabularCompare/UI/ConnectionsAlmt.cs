@@ -492,7 +492,7 @@ namespace BismNormalizer.TabularCompare.UI
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = (String.IsNullOrEmpty(Settings.Default.LastBimFileLocation) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : Settings.Default.LastBimFileLocation);
-            ofd.Filter = "PBIT files (.pbit)|*.pbit|BIM files (.bim)|*.bim|All files (*.*)|*.*";
+            ofd.Filter = "PBIT/BIM files (*.pbit;*.bim)|*.pbit;*.bim|All files (*.*)|*.*";
             ofd.Title = "Open";
             return ofd;
         }

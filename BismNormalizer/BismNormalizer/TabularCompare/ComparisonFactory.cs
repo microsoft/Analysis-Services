@@ -171,6 +171,7 @@ namespace BismNormalizer.TabularCompare
                     if (comparisonInfo.Interactive && 
                         !comparisonInfo.ConnectionInfoTarget.UseProject && //Upgrade in SSDT not supported
                         !comparisonInfo.ConnectionInfoTarget.UseDesktop && //Upgrade via port number to Desktop or SSDT not supported
+                        !comparisonInfo.ConnectionInfoTarget.UseBimFile && //Upgrade to offline file not (currently) supported
                         System.Windows.Forms.MessageBox.Show(
                     message + $"\nDo you want to upgrade the target to {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and allow the comparison?", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                     {
