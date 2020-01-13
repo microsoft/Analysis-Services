@@ -2194,7 +2194,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 //Need recalc even if created no tables in case of new relationships without tables
                 _database.Model.RequestRefresh(RefreshType.Calculate);
-
                 _database.Model.SaveChanges();
 
                 // Show row count for each table

@@ -215,8 +215,11 @@ namespace BismNormalizer.TabularCompare.UI
             node.Cells[10].Value = comparisonObject.SourceObjectDefinition;
             node.Cells[11].Value = comparisonObject.TargetObjectDefinition;
 
+            bool isMdMetadata = (comparisonObject is MultidimensionalMetadata.ComparisonObject);
+
             string treeIndentLevel1 = new String(' ', 13);
             string treeIndentLevel2 = new String(' ', 20);
+            string treeIndentLevel3 = new String(' ', 27);
 
             switch (comparisonObject.ComparisonObjectType)
             {
@@ -242,20 +245,20 @@ namespace BismNormalizer.TabularCompare.UI
                     else
                     {
                         node.ImageIndex = 1;
-                        node.Cells[0].Value = treeIndentLevel1 + "Table";
+                        node.Cells[0].Value = (isMdMetadata ? treeIndentLevel2 : treeIndentLevel1) + "Table";
                     }
                     break;
                 case ComparisonObjectType.Relationship:
                     node.ImageIndex = 2;
-                    node.Cells[0].Value = treeIndentLevel2 + "Relationship";
+                    node.Cells[0].Value = (isMdMetadata ? treeIndentLevel3 : treeIndentLevel2) + "Relationship";
                     break;
                 case ComparisonObjectType.Measure:
                     node.ImageIndex = 3;
-                    node.Cells[0].Value = treeIndentLevel2 + "Measure";
+                    node.Cells[0].Value = (isMdMetadata ? treeIndentLevel3 : treeIndentLevel2) + "Measure";
                     break;
                 case ComparisonObjectType.Kpi:
                     node.ImageIndex = 4;
-                    node.Cells[0].Value = treeIndentLevel2 + "KPI";
+                    node.Cells[0].Value = (isMdMetadata ? treeIndentLevel3 : treeIndentLevel2) + "KPI";
                     break;
                 case ComparisonObjectType.CalculationItem:
                     node.ImageIndex = 24;

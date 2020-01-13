@@ -695,7 +695,7 @@ $@"{{
             }
 
             _compatibilityLevel = amoDatabase.CompatibilityLevel;
-            _dataSourceVersion = amoDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+            if (_compatibilityLevel >= 1400) _dataSourceVersion = amoDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
             _serverMode = amoServer.ServerMode;
             _directQuery = ((amoDatabase.Model != null && amoDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery) ||
                              amoDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
