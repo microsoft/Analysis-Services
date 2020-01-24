@@ -721,7 +721,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             bool updatedModel = false;
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
-                updatedModel = UpdateModel(comparisonObject, true);
+                if (UpdateModel(comparisonObject, true))
+                {
+                    updatedModel = true;
+                    break;
+                }
             }
 
             #endregion
@@ -783,7 +787,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 foreach (ComparisonObject comparisonObject in _comparisonObjects)
                 {
-                    UpdateModel(comparisonObject, false);
+                    if (UpdateModel(comparisonObject, false))
+                        break;
                 }
             }
 
