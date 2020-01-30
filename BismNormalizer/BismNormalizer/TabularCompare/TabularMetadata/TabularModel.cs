@@ -1729,7 +1729,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                                 (
                                     //check columns are both in same table (could have columns with same name in different tables)
                                     !(translation.Object.Parent.ObjectType == ObjectType.Table && namedObjectSource.Parent.ObjectType == ObjectType.Table) ||
-                                    (((NamedMetadataObject)translation.Parent).Name == ((NamedMetadataObject)namedObjectSource.Parent).Name)
+                                    (((NamedMetadataObject)translation.Parent).Name == ((NamedMetadataObject)namedObjectSource.Parent).Name) ||  //Is this line necessary? I don't think so.
+                                    (((NamedMetadataObject)translation.Object.Parent).Name == ((NamedMetadataObject)namedObjectSource.Parent).Name)
                                 ) &&
                                 translation.Property == translationSource.Property
                                )
@@ -2134,19 +2135,26 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void UpdateWithScript()
         {
-            //_database.Update(Amo.UpdateOptions.ExpandFull); //If make minor changes to table (e.g. display folder) without changes to the partition or column structure, this command will still lose the data due to TOM applying a full log of operations. So instead reconnect and run TMSL script.
+            if (_connectionInfo.UseDesktop)
+            {
+                _database.Update(Amo.UpdateOptions.ExpandFull); //Not bothered about losing partition data, and till Desktop hardened, won't accept the full TMSL command
+            }
+            else
+            {
+                //_database.Update(Amo.UpdateOptions.ExpandFull); //If make minor changes to table (e.g. display folder) without changes to the partition or column structure, this command will still lose the data due to TOM applying a full log of operations. So instead reconnect and run TMSL script.
 
-            //includeRestrictedInformation only includes passwords in connections if they were added during this session (does not allow derivation of passwords from the server)
-            string tmslCommand = JsonScripter.ScriptCreateOrReplace(_database, includeRestrictedInformation: true);
+                //includeRestrictedInformation only includes passwords in connections if they were added during this session (does not allow derivation of passwords from the server)
+                string tmslCommand = JsonScripter.ScriptCreateOrReplace(_database, includeRestrictedInformation: true);
 
-            _server.Disconnect();
-            _server = new Server();
-            _server.Connect(_connectionInfo.BuildConnectionString());
-            Amo.XmlaResultCollection results = _server.Execute(tmslCommand);
-            if (results.ContainsErrors)
-                throw new Amo.OperationException(results);
+                _server.Disconnect();
+                _server = new Server();
+                _server.Connect(_connectionInfo.BuildConnectionString());
+                Amo.XmlaResultCollection results = _server.Execute(tmslCommand);
+                if (results.ContainsErrors)
+                    throw new Amo.OperationException(results);
 
-            _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
+                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
+            }
 
             //FROM THIS POINT ONWARDS use only TOM as have not bothered re-hydrating the BismNorm object model
         }
