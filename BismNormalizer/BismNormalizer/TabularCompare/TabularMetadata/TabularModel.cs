@@ -2283,7 +2283,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 XmlNodeList partitionNodeList = document.GetElementsByTagName("Partition");
                 XmlNodeList tableNodeList = document.GetElementsByTagName("Table");
 
-                if (partitionNodeList != null && tableNodeList != null)
+                if (partitionNodeList != null && partitionNodeList.Count > 0 && tableNodeList != null && tableNodeList.Count > 0)
                 {
                     if (_tablesToProcess.ContainsId(tableNodeList[0].InnerText))
                     {

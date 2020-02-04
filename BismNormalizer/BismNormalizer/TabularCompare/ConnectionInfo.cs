@@ -729,6 +729,10 @@ $@"{{
         public string BuildConnectionString()
         {
             string connectionString = $"Provider=MSOLAP;Data Source={this.ServerName};";
+            if (!String.IsNullOrEmpty(this.DatabaseName))
+            {
+                connectionString += $"Initial Catalog={this.DatabaseName};";
+            }
             if (this.CredsProvided)
             {
                 connectionString += $"User ID={this.Username};Password={this.Password};";
