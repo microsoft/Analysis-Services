@@ -27,7 +27,7 @@
 
     - Reload changed files in VS
           Change configuration to Release
-          Build ALMT setup project
+          Build ALMT setup project (not Rebuild)
           Change configuration back to Debug
     
     - Take VSIX and AlmToolkitSetup.msi from \ReleaseObfusc folder
