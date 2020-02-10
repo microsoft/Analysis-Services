@@ -240,7 +240,7 @@
             this.rdoSourceDesktop.Name = "rdoSourceDesktop";
             this.rdoSourceDesktop.Size = new System.Drawing.Size(333, 33);
             this.rdoSourceDesktop.TabIndex = 3;
-            this.rdoSourceDesktop.Text = "Power BI Desktop / SSDT";
+            this.rdoSourceDesktop.Text = "Power BI Desktop";
             this.rdoSourceDesktop.UseVisualStyleBackColor = true;
             this.rdoSourceDesktop.CheckedChanged += new System.EventHandler(this.rdoSourceDesktop_CheckedChanged);
             // 
@@ -431,7 +431,7 @@
             this.rdoTargetDesktop.Name = "rdoTargetDesktop";
             this.rdoTargetDesktop.Size = new System.Drawing.Size(321, 33);
             this.rdoTargetDesktop.TabIndex = 12;
-            this.rdoTargetDesktop.Text = "Power BI Desktop / SSDT";
+            this.rdoTargetDesktop.Text = "Power BI Desktop";
             this.rdoTargetDesktop.UseVisualStyleBackColor = true;
             this.rdoTargetDesktop.CheckedChanged += new System.EventHandler(this.rdoTargetDesktop_CheckedChanged);
             // 

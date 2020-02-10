@@ -416,7 +416,7 @@ namespace AlmToolkit
         {
             if (_comparisonInfo.ConnectionInfoSource.UseDesktop)
             {
-                txtSource.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DesktopName;
+                txtSource.Text = "PBI Desktop: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DesktopName;
             }
             else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
@@ -429,7 +429,7 @@ namespace AlmToolkit
 
             if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
             {
-                txtTarget.Text = "PBI Desktop/SSDT: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DesktopName;
+                txtTarget.Text = "PBI Desktop: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DesktopName;
             }
             else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {
