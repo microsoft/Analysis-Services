@@ -54,6 +54,12 @@ namespace AlmToolkit
             System.Diagnostics.Process.Start("http://alm-toolkit.com/");
         }
 
+        private void linkHowToUse_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkHowToUse.LinkVisited = true;
+            System.Diagnostics.Process.Start("http://alm-toolkit.com/HowToUse");
+        }
+
         private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.linkDocumentation.LinkVisited = true;
