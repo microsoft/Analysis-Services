@@ -2218,7 +2218,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     else
                     {
                         int rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
-                        message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows transferred.";
+                        message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows.";
                     }
                     _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, message, DeploymentStatus.Success));
                 }
