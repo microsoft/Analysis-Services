@@ -16,6 +16,7 @@ using BismNormalizer.TabularCompare.Core;
 using BismNormalizer.TabularCompare.UI;
 using CefSharp;
 using CefSharp.WinForms;
+using Microsoft.AnalysisServices.Tabular;
 
 namespace AlmToolkit
 {
@@ -272,6 +273,11 @@ namespace AlmToolkit
 
                 this.CompareTabularModels();
                 toolStripStatusLabel1.Text = "ALM Toolkit - finished comparing datasets";
+            }
+            catch (TomInternalException)
+            {
+                MessageBox.Show("TOM internal serialization error occurred. Please ensure JSON is valid tabular model metadata.", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetNotComparedState();
             }
             catch (Exception exc)
             {
