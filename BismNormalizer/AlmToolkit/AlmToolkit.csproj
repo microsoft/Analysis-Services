@@ -125,6 +125,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="almtoolkit.pbitool.json" />
     <None Include="app.manifest" />
     <None Include="html-resources\.angular-cli.json" />
     <None Include="html-resources\.editorconfig" />

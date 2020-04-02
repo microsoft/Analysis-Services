@@ -1689,6 +1689,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BD84964882224F1BB08CFE6B4D807632"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BE16C201755759965787B7DDD5BFF7B9"
         "OwnerKey" = "8:_FE0B8AF887B17779D6EC623137D58D35"
         "MsmSig" = "8:_UNDEFINED"
@@ -2752,7 +2758,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.6.1               "
+                "FrameworkVersion" = "8:v4.6.1                "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -2764,7 +2770,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.0.1.5, Culture=neutral, PublicKeyToken=aa6675aad991a644, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.0.2.0, Culture=neutral, PublicKeyToken=aa6675aad991a644, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_0020EC0A2900F50F0F5DCC3E7BBE4237"
@@ -7354,6 +7360,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD84964882224F1BB08CFE6B4D807632"
+            {
+            "SourcePath" = "8:..\\AlmToolkit\\almtoolkit.pbitool.json"
+            "TargetName" = "8:almtoolkit.pbitool.json"
+            "Tag" = "8:"
+            "Folder" = "8:_2CC592BFF45447CC808329CBC3094E17"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BE16C201755759965787B7DDD5BFF7B9"
             {
             "AssemblyRegister" = "3:1"
@@ -8910,6 +8936,50 @@
                 {
                 }
             }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_57FF4D5CBEB94D45AD92A4C22DF60C04"
+            {
+            "Name" = "8:#1910"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:CommonFilesFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_41C5386794D54376A50C12DC9BAC41E8"
+                    {
+                    "Name" = "8:Microsoft Shared"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_FC2E979366994D62885FA7A483032BDF"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_21801B26E87F47679A4DA46B1C8BEC52"
+                            {
+                            "Name" = "8:Power BI Desktop"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_D442A2DC32C24BFBBD26DFDC9ADEBC20"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_2CC592BFF45447CC808329CBC3094E17"
+                                    {
+                                    "Name" = "8:External Tools"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_032591BBBBB04A26B2A455AAF63E1470"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_CAD31D6A85364CAA9F9BFC2750F80458"
             {
             "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
@@ -9744,7 +9814,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_577232D49DA84949B3604BA695B35542"
             {
-            "SourcePath" = "8:..\\BismNormalizer.CommandLine\\obj\\Release\\BismNormalizer.exe"
+            "SourcePath" = "8:..\\BismNormalizer.CommandLine\\obj\\Debug\\BismNormalizer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CAD31D6A85364CAA9F9BFC2750F80458"
@@ -9772,7 +9842,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7936400E6C154464B76D26251125123A"
             {
-            "SourcePath" = "8:..\\AlmToolkit\\obj\\Release\\AlmToolkit.exe"
+            "SourcePath" = "8:..\\AlmToolkit\\obj\\Debug\\AlmToolkit.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_CAD31D6A85364CAA9F9BFC2750F80458"
