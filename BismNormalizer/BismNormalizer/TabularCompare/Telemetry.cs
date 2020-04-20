@@ -23,7 +23,6 @@ namespace BismNormalizer.TabularCompare
             var config = new TelemetryConfiguration();
             config.InstrumentationKey = TelemetryKey;
             config.TelemetryChannel = new Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.ServerTelemetryChannel();
-            //config.TelemetryChannel = new Microsoft.ApplicationInsights.Channel.InMemoryChannel(); // Default channel
             config.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
 #if DEBUG
             config.TelemetryChannel.DeveloperMode = true;
@@ -32,7 +31,6 @@ namespace BismNormalizer.TabularCompare
             client.Context.Component.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             client.Context.Session.Id = Guid.NewGuid().ToString();
             client.Context.User.Id = (Environment.UserName + Environment.MachineName).GetHashCode().ToString();
-            //client.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             return client;
         }
 

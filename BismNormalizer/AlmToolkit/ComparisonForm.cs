@@ -277,7 +277,7 @@ namespace AlmToolkit
             catch (TomInternalException)
             {
                 //todo: delete extra info once Oren's fix
-                MessageBox.Show("TOM internal serialization error occurred.\n\nThis is likely caused by a known bug in TOM that is being worked on. In the meantime, the workaround is described here:\nhttps://github.com/microsoft/Analysis-Services/issues/47", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("TOM internal serialization error occurred.", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetNotComparedState();
             }
             catch (Exception exc)
