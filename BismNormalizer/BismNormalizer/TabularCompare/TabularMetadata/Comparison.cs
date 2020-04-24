@@ -1837,17 +1837,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             if ((comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem || comparisonObject.ComparisonObjectType == ComparisonObjectType.Kpi) &&
                     comparisonObject.MergeAction == MergeAction.Create)
             {
-                foreach (Table tableInTarget in _targetTabularModel.Tables)
-                {
-                    CalculationItem calculationItemInTarget = tableInTarget.CalculationItems.FindByName(comparisonObject.SourceObjectInternalName);
-
-                    if (calculationItemInTarget != null)
-                    {
-                        OnValidationMessage(new ValidationMessageEventArgs($"Unable to create calculation item {comparisonObject.SourceObjectInternalName} because name already exists in target model.", ValidationMessageType.CalculationItem, ValidationMessageStatus.Warning));
-                        return;
-                    }
-                }
-
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
 
