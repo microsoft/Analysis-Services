@@ -519,7 +519,7 @@ namespace BismNormalizer.TabularCompare.Core
         /// <param name="tableName"></param>
         /// <param name="databaseName"></param>
         /// <returns>Row count.</returns>
-        public static int FindRowCount(Microsoft.AnalysisServices.Core.Server server, string tableName, string databaseName)
+        public static Int64 FindRowCount(Microsoft.AnalysisServices.Core.Server server, string tableName, string databaseName)
         {
             string dax = String.Format("EVALUATE ROW( \"RowCount\", COUNTROWS('{0}'))", tableName);
             bool foundFault = false;

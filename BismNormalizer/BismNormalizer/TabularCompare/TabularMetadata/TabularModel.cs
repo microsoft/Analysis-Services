@@ -607,6 +607,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             //decouple from original model to the current one
             foreach (Partition partition in tomTableTarget.Partitions)
             {
+                if (partition.QueryGroup != null)
+                {
+                    CreateQueryGroup(partition.QueryGroup);
+                }
+
                 if (partition.SourceType == PartitionSourceType.Query)
                 {
                     QueryPartitionSource queryPartition = ((QueryPartitionSource)partition.Source);
@@ -783,10 +788,41 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             NamedExpression tomExpressionTarget = new NamedExpression();
             tomExpressionSource.CopyTo(tomExpressionTarget);
+
+            if (tomExpressionTarget.QueryGroup != null)
+            {
+                CreateQueryGroup(tomExpressionTarget.QueryGroup);
+            }
+
             _database.Model.Expressions.Add(tomExpressionTarget);
 
             // shell model
             _expressions.Add(new Expression(this, tomExpressionTarget));
+        }
+
+        private void CreateQueryGroup(QueryGroup queryGroupToCreate)
+        {
+            List<string> foldersToCreate = new List<string>();
+            string currentPath = "";
+            string[] folders = queryGroupToCreate.Folder.Split('\\');
+            for (int i = 0; i < folders.Length; ++i)
+            {
+                if (i==0)
+                    currentPath += folders[i];
+                else
+                    currentPath += '\\' + folders[i];
+
+                foldersToCreate.Add(currentPath);
+            }
+            foreach (string folderToCreate in foldersToCreate)
+            {
+                if (!_database.Model.QueryGroups.ContainsName(folderToCreate))
+                {
+                    QueryGroup queryGroup = new QueryGroup();
+                    queryGroup.Folder = folderToCreate;
+                    _database.Model.QueryGroups.Add(queryGroup);
+                }
+            }
         }
 
         /// <summary>
@@ -2217,7 +2253,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
-                        int rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
+                        Int64 rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
                         message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows.";
                     }
                     _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, message, DeploymentStatus.Success));

@@ -2712,7 +2712,7 @@ namespace BismNormalizer.TabularCompare.MultidimensionalMetadata
                     // Show row count for each table
                     foreach (ProcessingTable table in _tablesToProcess)
                     {
-                        int rowCount = Core.Comparison.FindRowCount(_amoServer, table.Name, _amoDatabase.Name);
+                        Int64 rowCount = Core.Comparison.FindRowCount(_amoServer, table.Name, _amoDatabase.Name);
                         _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, "Success. " + String.Format("{0:#,###0}", rowCount) + " rows transferred.", DeploymentStatus.Success));
                     }
                     _parentComparison.OnDeploymentComplete(new DeploymentCompleteEventArgs(DeploymentStatus.Success, null));
