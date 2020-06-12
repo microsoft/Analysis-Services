@@ -1509,8 +1509,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 Table targetTable = _targetTabularModel.Tables.FindByName(comparisonObject.TargetObjectName);
                 bool isCalculationGroup = false;
-                if (targetTable != null) isCalculationGroup = targetTable.IsCalculationGroup;
-                if (!isCalculationGroup && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                bool isCalcTable = false;
+
+                if (targetTable != null)
+                {
+                    isCalculationGroup = targetTable.IsCalculationGroup;
+                    isCalcTable = (targetTable.TomTable.Partitions.Count > 0 && targetTable.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+                }
+                if (!isCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
                 {
                     return;
                 };
@@ -1577,7 +1583,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
-                        if (!DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        bool isCalcTable = (sourceTable.TomTable.Partitions.Count > 0 && sourceTable.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+
+                        if (!isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
                         {
                             return;
                         };
@@ -1636,7 +1644,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
-                        if (!tableSource.IsCalculationGroup && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        bool isCalcTable = (tableSource.TomTable.Partitions.Count > 0 && tableSource.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+
+                        if (!tableSource.IsCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
                         {
                             return;
                         };
