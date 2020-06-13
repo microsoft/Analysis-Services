@@ -29,7 +29,7 @@ namespace BismNormalizer.TabularCompare
     /// <summary>
     /// Processing option for database deployment.
     /// </summary>
-    public enum ProcessingOption { Default, DoNotProcess, Full };
+    public enum ProcessingOption { Recalc, Default, DoNotProcess, Full };
 
     /// <summary>
     /// Status of database deployment.

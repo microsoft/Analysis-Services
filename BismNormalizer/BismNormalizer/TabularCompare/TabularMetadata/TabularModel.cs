@@ -2208,30 +2208,50 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             try
             {
                 _stopProcessing = false;
-                RefreshType refreshType = _comparisonInfo.OptionsInfo.OptionProcessingOption == ProcessingOption.Default ? RefreshType.Automatic : RefreshType.Full;
-
-                //Set up server trace to capture how many rows processed
-                _sessionId = _server.SessionID;
-                trace = _server.Traces.Add();
-                TraceEvent traceEvent = trace.Events.Add(Amo.TraceEventClass.ProgressReportCurrent);
-                traceEvent.Columns.Add(Amo.TraceColumn.ObjectID);
-                traceEvent.Columns.Add(Amo.TraceColumn.ObjectName);
-                traceEvent.Columns.Add(Amo.TraceColumn.ObjectReference);
-                traceEvent.Columns.Add(Amo.TraceColumn.IntegerData);
-                traceEvent.Columns.Add(Amo.TraceColumn.SessionID);
-                traceEvent.Columns.Add(Amo.TraceColumn.Spid);
-                trace.Update(Amo.UpdateOptions.Default, Amo.UpdateMode.CreateOrReplace);
-                trace.OnEvent += new TraceEventHandler(Trace_OnEvent);
-                trace.Start();
-
-                if (_tablesToProcess.Count > 0)
+                RefreshType refreshType = RefreshType.Calculate;
+                switch (_comparisonInfo.OptionsInfo.OptionProcessingOption)
                 {
-                    foreach (ProcessingTable tableToProcess in _tablesToProcess)
+                    //case ProcessingOption.Recalc:
+                    //    refreshType = RefreshType.Calculate;
+                    //    break;
+                    case ProcessingOption.Default:
+                        refreshType = RefreshType.Automatic;
+                        break;
+                    //case ProcessingOption.DoNotProcess:
+                    //    break;
+                    case ProcessingOption.Full:
+                        refreshType = RefreshType.Full;
+                        break;
+                    default:
+                        break;
+                }
+
+                TraceEvent traceEvent = null;
+                if (refreshType != RefreshType.Calculate)
+                { 
+                    //Set up server trace to capture how many rows processed
+                    _sessionId = _server.SessionID;
+                    trace = _server.Traces.Add();
+                    traceEvent = trace.Events.Add(Amo.TraceEventClass.ProgressReportCurrent);
+                    traceEvent.Columns.Add(Amo.TraceColumn.ObjectID);
+                    traceEvent.Columns.Add(Amo.TraceColumn.ObjectName);
+                    traceEvent.Columns.Add(Amo.TraceColumn.ObjectReference);
+                    traceEvent.Columns.Add(Amo.TraceColumn.IntegerData);
+                    traceEvent.Columns.Add(Amo.TraceColumn.SessionID);
+                    traceEvent.Columns.Add(Amo.TraceColumn.Spid);
+                    trace.Update(Amo.UpdateOptions.Default, Amo.UpdateMode.CreateOrReplace);
+                    trace.OnEvent += new TraceEventHandler(Trace_OnEvent);
+                    trace.Start();
+
+                    if (_tablesToProcess.Count > 0)
                     {
-                        Tom.Table table = _database.Model.Tables.Find(tableToProcess.Name);
-                        if (table != null)
+                        foreach (ProcessingTable tableToProcess in _tablesToProcess)
                         {
-                            table.RequestRefresh(refreshType);
+                            Tom.Table table = _database.Model.Tables.Find(tableToProcess.Name);
+                            if (table != null)
+                            {
+                                table.RequestRefresh(refreshType);
+                            }
                         }
                     }
                 }
@@ -2240,24 +2260,32 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 _database.Model.RequestRefresh(RefreshType.Calculate);
                 _database.Model.SaveChanges();
 
-                // Show row count for each table
-                foreach (ProcessingTable table in _tablesToProcess)
+                if (refreshType != RefreshType.Calculate)
                 {
-                    string message = "";
-                    if (
-                            this._tables.FindByName(table.Name)?.TableModeType == ModeType.DirectQuery ||
-                           (this._tables.FindByName(table.Name)?.TableModeType == ModeType.Default && _database.Model.DefaultMode == ModeType.DirectQuery)
-                       )
+                    // Show row count for each table
+                    foreach (ProcessingTable table in _tablesToProcess)
                     {
-                        message = "Success. 0 rows transferred (DirectQuery).";
+                        string message = "";
+                        if (
+                                this._tables.FindByName(table.Name)?.TableModeType == ModeType.DirectQuery ||
+                               (this._tables.FindByName(table.Name)?.TableModeType == ModeType.Default && _database.Model.DefaultMode == ModeType.DirectQuery)
+                           )
+                        {
+                            message = "Success. 0 rows transferred (DirectQuery).";
+                        }
+                        else
+                        {
+                            Int64 rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
+                            message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows.";
+                        }
+                        _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, message, DeploymentStatus.Success));
                     }
-                    else
-                    {
-                        Int64 rowCount = Core.Comparison.FindRowCount(_server, table.Name, _database.Name);
-                        message = $"Success. {String.Format("{0:#,###0}", rowCount)} rows.";
-                    }
-                    _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(table.Name, message, DeploymentStatus.Success));
                 }
+                else
+                {
+                    _parentComparison.OnDeploymentMessage(new DeploymentMessageEventArgs(_database.Name, "Success. Process recalc done.", DeploymentStatus.Success));
+                }
+
                 _parentComparison.OnDeploymentComplete(new DeploymentCompleteEventArgs(DeploymentStatus.Success, null));
             }
             //catch (InvalidOperationException exc) when (exc.Message == "Operation is not valid due to the current state of the object.")
@@ -2272,8 +2300,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 try
                 {
-                    trace.Stop();
-                    trace.Drop();
+                    if (trace != null)
+                    {
+                        trace.Stop();
+                        trace.Drop();
+                    }
                 }
                 catch { }
             }

@@ -64,10 +64,21 @@ namespace BismNormalizer.TabularCompare.UI
                 btnClose.Enabled = false;
                 _errorMessageForm = new ProcessingErrorMessage();
 
-                ProcessingTableCollection tablesToProcess = _comparison.GetTablesToProcess();
-                foreach (ProcessingTable table in tablesToProcess)
+                ProcessingTableCollection tablesToProcess = null;
+                if (_comparisonInfo.OptionsInfo.OptionProcessingOption == ProcessingOption.Recalc)
                 {
-                    AddRow(table.Name, "Processing in progress ...");
+                    string dbName = _comparisonInfo.ConnectionInfoTarget.DatabaseName;
+                    tablesToProcess = new ProcessingTableCollection();
+                    tablesToProcess.Add(new ProcessingTable(dbName, dbName));
+                    AddRow(dbName, "Processing in progress ...");
+                }
+                else
+                {
+                    tablesToProcess = _comparison.GetTablesToProcess();
+                    foreach (ProcessingTable table in tablesToProcess)
+                    {
+                        AddRow(table.Name, "Processing in progress ...");
+                    }
                 }
                 if (tablesToProcess.Count > 0)
                 {

@@ -531,10 +531,11 @@ namespace BismNormalizer.TabularCompare.Core
 
                 foreach (XmlNode childNode in row.ChildNodes)
                 {
-                    if (childNode.Name.Contains("RowCount"))
-                    {
+                    //cbw not good:
+                    //if (childNode.Name.Contains("RowCount"))
+                    //{
                         rowCountNode = childNode;
-                    }
+                    //}
                 }
 
                 int result;
