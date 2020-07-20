@@ -2,6 +2,11 @@
 
 Job Graph events can be used to identify bottlenecks in data refreshes by highlighting the critical path. For instances of Analysis Services not running on-premise, the graph is broken into 16 Kb chunks, each in their own event. The events can be reassembled with this script. 
 
+## Requirements
+
+* Python 3.8 or later
+* Visual Studio
+
 ## Usage
 
 1. Start a trace in SQL Server Profiler and select "Job Graph Events".
