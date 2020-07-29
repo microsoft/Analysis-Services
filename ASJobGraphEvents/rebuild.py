@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Rebuilds a DGML file. Requires Python 3.8.
 """
@@ -36,7 +38,14 @@ def load_file(filename: str) -> List[Row]:
     if ext == ".csv":
         with open(filename) as file:
             dict_rows = csv.DictReader(file)
-            rows = [make_row_from_jarvis(row["MessageText"]) for row in dict_rows]
+            rows = [
+                make_row_from_jarvis(
+                    row["MessageText"],
+                    row["CurrentActivityId"],
+                    int(row["Engine_EventSubclass"]),
+                )
+                for row in dict_rows
+            ]
 
             return [r for r in rows if r]
 
@@ -64,7 +73,7 @@ def make_row_from_xml(event: ET.Element, ns: Dict[str, str]) -> Optional[Row]:
     subclass = None
 
     for col in event.findall("Column", ns):
-        if col.attrib["id"] == "46":
+        if col.attrib["id"] == "46" or col.attrib["id"] == "53":
             guid = col.text
 
         if col.attrib["id"] == "1":
@@ -83,19 +92,29 @@ def make_row_from_xml(event: ET.Element, ns: Dict[str, str]) -> Optional[Row]:
     return None
 
 
-def make_row_from_jarvis(message_txt: str) -> Optional[Row]:
-    if "graphcorrelationid" in message_txt.lower():
-        print(
-            "This event is from an older version of the job graph feature (shouldn't have 'GraphCorrelationID' in it)"
-        )
+def make_row_from_jarvis(
+    message_txt: str, activity_id: str, subclass: int
+) -> Optional[Row]:
+    guid = activity_id + str(subclass) + ("-annotated" if subclass == 2 else "-plan")
 
-    match = re.match(r"TextData: (.*); IntegerData: (.\d*)", message_txt)
-    if match:
-        textdata, guid, order_marker_str = match.group(1, 2, 3)
+    if "graphcorrelationid" in message_txt.lower():
+        match = re.match(
+            r"TextData: (.*); GraphCorrelationID: (.*); IntegerData: (.\d*)",
+            message_txt,
+        )
+        if match:
+            textdata, order_marker_str = match.group(1, 3)
+    else:
+        match = re.match(r"TextData: (.*); IntegerData: (.\d*)", message_txt)
+
+        if match:
+            textdata, order_marker_str = match.group(1, 2)
+
+    try:
         order_marker = int(order_marker_str)
         return Row(guid, order_marker, textdata)
-
-    return None
+    except UnboundLocalError:
+        return None
 
 
 def extract_metadata(header_row: Row) -> Optional[Tuple[int, int]]:
