@@ -22,6 +22,9 @@ BISM Normalizer is a schema diff tool for tabular models
 ## [UsqlScripts](https://github.com/Microsoft/Analysis-Services/tree/master/UsqlScripts)
 Sample U-SQL scripts that demonstrate how to process a TPC-DS data set in Azure Data Lake.
 
+## [ASJobGraph](https://github.com/Microsoft/Analysis-Services/tree/master/ASJobGraphEvents)
+Python script to reassemble job graph events from Anlysis Services.
+
 ## Code of Conduct
 This project has adopted the [Microsoft Open Source Code of
 Conduct](https://opensource.microsoft.com/codeofconduct/).
