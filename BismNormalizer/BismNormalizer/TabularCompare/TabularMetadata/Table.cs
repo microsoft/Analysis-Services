@@ -221,7 +221,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     if (relationship.TomRelationship.IsActive &&
                            (relationship.FromTableName == this.Name ||
-                               (relationship.ToTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections && (!checkSecurityBehavior || (checkSecurityBehavior && relationship.TomRelationship.SecurityFilteringBehavior == SecurityFilteringBehavior.BothDirections)))
+                               //Alex Whittles fix 9/20 removed !checkSecurityBehavior || 
+                               //(relationship.ToTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections && (!checkSecurityBehavior || (checkSecurityBehavior && relationship.TomRelationship.SecurityFilteringBehavior == SecurityFilteringBehavior.BothDirections)))
+                               (relationship.ToTableName == this.Name && relationship.TomRelationship.CrossFilteringBehavior == CrossFilteringBehavior.BothDirections && (checkSecurityBehavior && relationship.TomRelationship.SecurityFilteringBehavior == SecurityFilteringBehavior.BothDirections))
                            )
                        )
                     {

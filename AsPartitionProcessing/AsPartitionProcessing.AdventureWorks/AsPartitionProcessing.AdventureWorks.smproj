@@ -31,6 +31,10 @@
     <DeploymentOptionTransactionalDeployment>False</DeploymentOptionTransactionalDeployment>
     <DeploymentOptionDirectQueryMode>InMemory</DeploymentOptionDirectQueryMode>
     <DeploymentOptionQueryImpersonation>Default</DeploymentOptionQueryImpersonation>
+    <DeploymentOptionADALCache>Default</DeploymentOptionADALCache>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == '' ">
+    <DeploymentOptionADALCache>Default</DeploymentOptionADALCache>
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
