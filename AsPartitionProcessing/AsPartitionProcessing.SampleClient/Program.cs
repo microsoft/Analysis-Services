@@ -129,7 +129,7 @@ namespace AsPartitionProcessing.SampleClient
         {
             ModelConfiguration partitionedModel = new ModelConfiguration(
                 modelConfigurationID: 1,
-                analysisServicesServer: "localhost",
+                analysisServicesServer: "DESKTOP-T00RA8Q\\TABULAR",
                 analysisServicesDatabase: "AdventureWorks",
                 initialSetUp: true,
                 incrementalOnline: true,
@@ -151,11 +151,11 @@ namespace AsPartitionProcessing.SampleClient
                         {
                             new PartitioningConfiguration(
                                 partitioningConfigurationID: 1,
-                                granularity: Granularity.Monthly,
-                                numberOfPartitionsFull: 12,
-                                numberOfPartitionsForIncrementalProcess: 3,
-                                maxDateIsNow: false,
-                                maxDate: Convert.ToDateTime("2012-12-01"),
+                                granularity: Granularity.Weekly,
+                                numberOfPartitionsFull: 52,
+                                numberOfPartitionsForIncrementalProcess: 2,
+                                maxDateIsNow: true,
+                                maxDate: Convert.ToDateTime("2014-12-01"),
                                 integerDateKey: true,
                                 templateSourceQuery:
                                 "let\n" +
@@ -179,8 +179,8 @@ namespace AsPartitionProcessing.SampleClient
                                 granularity: Granularity.Yearly,
                                 numberOfPartitionsFull: 3,
                                 numberOfPartitionsForIncrementalProcess: 1,
-                                maxDateIsNow: false,
-                                maxDate: Convert.ToDateTime("2012-12-01"),
+                                maxDateIsNow: true,
+                                maxDate: Convert.ToDateTime("2014-12-01"),
                                 integerDateKey: false,
                                 templateSourceQuery:
                                 "let\n" +

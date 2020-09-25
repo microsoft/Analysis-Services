@@ -81,7 +81,7 @@ namespace AsPartitionProcessing
             NumberOfPartitionsForIncrementalProcess = numberOfPartitionsForIncrementalProcess;
             if (maxDateIsNow)
             {
-                MaxDate = DateTime.Today;
+                MaxDate = GetNextWeekday(DateTime.Today, DayOfWeek.Wednesday);
             }
             else
             {
@@ -102,6 +102,11 @@ namespace AsPartitionProcessing
                     UpperBoundary = Convert.ToDateTime(MaxDate.AddMonths(1).ToString("yyyy-MMM-01")).AddDays(-1);
                     break;
 
+                case Granularity.Weekly:
+                    LowerBoundary = GetNextWeekday(MaxDate.AddDays((-numberOfPartitionsFull + 1) * 7), DayOfWeek.Wednesday);
+                    UpperBoundary = GetNextWeekday(MaxDate, DayOfWeek.Wednesday);
+                    break;
+
                 case Granularity.Yearly:
                     LowerBoundary = Convert.ToDateTime(MaxDate.AddYears(-numberOfPartitionsFull + 1).ToString("yyyy-01-01"));
                     UpperBoundary = Convert.ToDateTime(MaxDate.AddYears(1).ToString("yyyy-01-01")).AddDays(-1);
@@ -113,6 +118,13 @@ namespace AsPartitionProcessing
         }
 
         public int CompareTo(PartitioningConfiguration other) => string.Compare(this.LowerBoundary.ToString("yyyy-MM-dd"), other.LowerBoundary.ToString("yyyy-MM-dd"));
+
+        public static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
+        {
+            // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
+            int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+            return start.AddDays(daysToAdd);
+        }
     }
 
     /// <summary>
@@ -121,7 +133,10 @@ namespace AsPartitionProcessing
     public enum Granularity
     {
         Daily = 0,
-        Monthly = 1,
-        Yearly = 2
+        Weekly = 1,
+        Monthly = 2,
+        Yearly = 3
     }
+
+
 }

@@ -491,12 +491,12 @@ namespace AsPartitionProcessing
 
             try
             {
-                if (granularity == Granularity.Monthly || granularity == Granularity.Daily)
+                if (granularity == Granularity.Monthly || granularity == Granularity.Daily || granularity == Granularity.Weekly)
                 {
                     returnVal += "-" + partitionKey.Substring(4, 2);
                 }
 
-                if (granularity == Granularity.Daily)
+                if (granularity == Granularity.Daily || granularity == Granularity.Weekly)
                 {
                     returnVal += "-" + partitionKey.Substring(6, 2);
                 }
@@ -561,6 +561,10 @@ namespace AsPartitionProcessing
                 {
                     case Granularity.Daily:
                         periodToAdd = partitioningConfiguration.MaxDate.AddDays(-i);
+                        partitionKeys.Add(Convert.ToString((periodToAdd.Year * 100 + periodToAdd.Month) * 100 + periodToAdd.Day));
+                        break;
+                    case Granularity.Weekly:
+                        periodToAdd = partitioningConfiguration.MaxDate.AddDays(-i*7);
                         partitionKeys.Add(Convert.ToString((periodToAdd.Year * 100 + periodToAdd.Month) * 100 + periodToAdd.Day));
                         break;
                     case Granularity.Monthly:
@@ -648,6 +652,13 @@ namespace AsPartitionProcessing
                         dateVal = dateVal.AddDays(1);
                     }
                     break;
+                case Granularity.Weekly:
+                    dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), Convert.ToInt32(partitionKey.Substring(6, 2)));
+                    if (addPeriod)
+                    {
+                        dateVal = dateVal.AddDays(7);
+                    }
+                    break;
                 case Granularity.Monthly:
                     dateVal = new DateTime(Convert.ToInt32(partitionKey.Substring(0, 4)), Convert.ToInt32(partitionKey.Substring(4, 2)), 1);
                     if (addPeriod)
@@ -688,7 +699,8 @@ namespace AsPartitionProcessing
             //Ignore partitions that don't follow the convention yyyy, yyyymm or yyyymmdd, or are not included in the filter expression
             return ( (partition.Name.Length == 4 && granularity == Granularity.Yearly) ||
                      (partition.Name.Length == 6 && granularity == Granularity.Monthly) ||
-                     (partition.Name.Length == 8 && granularity == Granularity.Daily)
+                     (partition.Name.Length == 8 && (granularity == Granularity.Daily || granularity == Granularity.Weekly))
+                     
                    ) && int.TryParse(partition.Name, out partitionKey) &&
                    partition.Name.StartsWith(filter);
         }
