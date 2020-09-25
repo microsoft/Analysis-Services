@@ -287,7 +287,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             #endregion
 
             char[] delimiterChars = { ' ', ',', ':', '=', '\t', '\n', '[', ']', '(', ')', '{', '}' };
-            List<string> keywords = new List<string>() { "and", "as", "each", "else", "error", "false", "if", "in", "is", "let", "meta", "not", "otherwise", "or", "section", "shared", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
+
+            //9/2020: stack overflow exception fix was to add "Data" "Item" and "Source" to list of keywords
+            List<string> keywords = new List<string>() { "and", "as", "Data", "each", "else", "error", "false", "if", "in", "is", "Item", "let", "meta", "not", "otherwise", "or", "section", "shared", "Source", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
                                                                                                      
             foreach (MObject mObject in mObjects)
             {
