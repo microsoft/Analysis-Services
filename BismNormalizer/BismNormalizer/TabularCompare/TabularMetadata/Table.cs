@@ -98,6 +98,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                     //Check M dependency tree to see if all partitions refer only to a single DataSource
                     CalcDependencyCollection calcDependencies = _parentTabularModel.MDependencies.DependenciesReferenceFrom(CalcDependencyObjectType.Partition, _tomTable.Name, partition.Name);
+
                     if (calcDependencies.Count == 1 && calcDependencies[0].ReferencedObjectType == CalcDependencyObjectType.DataSource)
                     {
                         if (_dataSourceName == "")

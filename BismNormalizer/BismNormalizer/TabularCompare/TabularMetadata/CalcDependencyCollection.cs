@@ -3,6 +3,18 @@ using System.Collections.Generic;
 
 namespace BismNormalizer.TabularCompare.TabularMetadata
 {
+    [Serializable]
+    public class CalcDependenciesInfiniteRecursionException : Exception
+    {
+        public CalcDependenciesInfiniteRecursionException() { }
+
+        public CalcDependenciesInfiniteRecursionException(string message)
+            : base(message) { }
+
+        public CalcDependenciesInfiniteRecursionException(string message, Exception inner)
+            : base(message, inner) { }
+    }
+
     /// <summary>
     /// Represents a collection of CalcDependency objects.
     /// </summary>
@@ -18,7 +30,13 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             CalcDependencyCollection returnVal = new CalcDependencyCollection();
             recursionCounter = 0;
-            LookUpDependenciesReferenceFrom(objectType, tableName, objectName, returnVal);
+            try
+            { 
+                LookUpDependenciesReferenceFrom(objectType, tableName, objectName, returnVal);
+            }
+            catch (CalcDependenciesInfiniteRecursionException)
+            {   //Some M is not parsable
+            }
             return returnVal;
         }
 
@@ -29,7 +47,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             recursionCounter++;
             if (recursionCounter >= RecursionCounterMax)
             {
-                Exception infRecursion = new Exception($"Calc dependencies infinite recursion detected for type \"{objectType}\", table \"{tableName}\", name \"{objectName}\".");
+                Exception infRecursion = new CalcDependenciesInfiniteRecursionException($"Calc dependencies infinite recursion detected for type \"{objectType}\", table \"{tableName}\", name \"{objectName}\".");
                 Telemetry.TrackException(infRecursion);
                 throw infRecursion;
             }

@@ -290,7 +290,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             //9/20/2020: stack overflow exception fix added to list of keywords: "Data", "Item", "Source",
             //9/28/2020: stack overflow exception fix added to list of keywords: "Severity", "SeverityID",
-            List<string> keywords = new List<string>() { "and", "as", "Data", "each", "else", "error", "false", "if", "in", "is", "Item", "let", "meta", "not", "otherwise", "or", "section", "shared", "Source", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
+            //9/29/2020: stack overflow exception fix added to list of keywords: "SQL"
+            List<string> keywords = new List<string>() { "and", "as", "Data", "each", "else", "error", "false", "if", "in", "is", "Item", "let", "meta", "not", "otherwise", "or", "section", "Severity", "SeverityID", "shared", "Source", "SQL", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
                                                                                                      
             foreach (MObject mObject in mObjects)
             {
