@@ -17,12 +17,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         public CalcDependencyCollection DependenciesReferenceFrom(CalcDependencyObjectType objectType, string tableName, string objectName)
         {
             CalcDependencyCollection returnVal = new CalcDependencyCollection();
+            recursionCounter = 0;
             LookUpDependenciesReferenceFrom(objectType, tableName, objectName, returnVal);
             return returnVal;
         }
 
+        private const int RecursionCounterMax = 1000;
+        static int recursionCounter = 0;
         private void LookUpDependenciesReferenceFrom(CalcDependencyObjectType objectType, string tableName, string objectName, CalcDependencyCollection returnVal)
         {
+            recursionCounter++;
+            if (recursionCounter >= RecursionCounterMax)
+            {
+                Exception infRecursion = new Exception($"Calc dependencies infinite recursion detected for type \"{objectType}\", table \"{tableName}\", name \"{objectName}\".");
+                Telemetry.TrackException(infRecursion);
+                throw infRecursion;
+            }
+
             foreach (CalcDependency calcDependency in this)
             {
                 if (calcDependency.ObjectType == objectType && calcDependency.TableName == tableName && calcDependency.ObjectName == objectName)

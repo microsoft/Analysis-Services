@@ -288,7 +288,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             char[] delimiterChars = { ' ', ',', ':', '=', '\t', '\n', '[', ']', '(', ')', '{', '}' };
 
-            //9/2020: stack overflow exception fix was to add "Data" "Item" and "Source" to list of keywords
+            //9/20/2020: stack overflow exception fix added to list of keywords: "Data", "Item", "Source",
+            //9/28/2020: stack overflow exception fix added to list of keywords: "Severity", "SeverityID",
             List<string> keywords = new List<string>() { "and", "as", "Data", "each", "else", "error", "false", "if", "in", "is", "Item", "let", "meta", "not", "otherwise", "or", "section", "shared", "Source", "then", "true", "try", "type", "#binary", "#date", "#datetime", "#datetimezone", "#duration", "#infinity", "#nan", "#sections", "#shared", "#table", "#time" };
                                                                                                      
             foreach (MObject mObject in mObjects)
@@ -2258,9 +2259,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                 }
 
-                //Need recalc even if created no tables in case of new relationships without tables
-                _database.Model.RequestRefresh(RefreshType.Calculate);
-                _database.Model.SaveChanges();
+                if (_comparisonInfo.OptionsInfo.OptionProcessingOption != ProcessingOption.DoNotProcess)
+                {
+                    //Need recalc even if created no tables in case of new relationships without tables
+                    _database.Model.RequestRefresh(RefreshType.Calculate);
+                    _database.Model.SaveChanges();
+                }
 
                 if (refreshType != RefreshType.Calculate)
                 {
