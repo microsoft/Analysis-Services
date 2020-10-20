@@ -1823,8 +1823,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void DeleteCalculationItem(ComparisonObject comparisonObject, string tableName)
         {
-            if ((comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem || comparisonObject.ComparisonObjectType == ComparisonObjectType.Kpi) &&
-                    comparisonObject.MergeAction == MergeAction.Delete)
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem && comparisonObject.MergeAction == MergeAction.Delete)
             {
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
                 if (tableTarget != null)
@@ -1843,8 +1842,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void CreateCalculationItem(ComparisonObject comparisonObject, string tableName)
         {
-            if ((comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem || comparisonObject.ComparisonObjectType == ComparisonObjectType.Kpi) &&
-                    comparisonObject.MergeAction == MergeAction.Create)
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem && comparisonObject.MergeAction == MergeAction.Create)
             {
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
@@ -1869,8 +1867,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void UpdateCalculationItem(ComparisonObject comparisonObject, string tableName)
         {
-            if ((comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem || comparisonObject.ComparisonObjectType == ComparisonObjectType.Kpi) &&
-                    comparisonObject.MergeAction == MergeAction.Update)
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.CalculationItem && comparisonObject.MergeAction == MergeAction.Update)
             {
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
