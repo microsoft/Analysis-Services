@@ -1,8 +1,18 @@
-# Job Graph Events in Power BI
+# Job Graph Events in Power BI / Azure Analysis Services
 
 Job Graph events can be used to identify bottlenecks in data refreshes by highlighting the critical path. For instances of Analysis Services not running on-premise, the graph is broken into 16 Kb chunks, each in their own event. The events can be reassembled with this script. 
 
-# Rebuilding the DGMl file
+# Summary
+
+The Job Graph event is emitted by AS Engine before and after processing. Both graphs show the order that jobs execute within the sequence point algorithm. The final (annotated) graph shows execution times for each job. In addition, the annotated graph shows the critical path.
+
+## Critical Path
+
+When the job graph executes, there is always a job that finishes last before the engine can commit the change. This job that finishes last is the "critical dependency" for the commit; the entire commit needs to wait for this one job to finish before executing. This last job depends on other jobs, one of which finished after all the others. This is the next critical dependency. Tracing this path of critical dependencies forms the critical path, which helps engineers and customers identify why processing takes so long.
+
+The critical path is shown via dark backgrounds and white text in the job graph file.
+
+# Rebuilding the DGML file
 
 ## Requirements
 
@@ -22,6 +32,12 @@ python rebuild.py path\to\trace.xml output_folder
 ```
 
 6. Inside `output_folder` there will be two .DGML files, which can be opened in Visual Studio.
+
+# Diagnosing from DGML
+
+Now that the graph is open, look for the critical path (darker nodes) or for failed jobs (white with a dashed border). Failed jobs include an "Error Code" that specifies why the job failed.
+
+To diagnose slow refresh times, look for the critical path and start at the top. Look at "Blocked duration", "Waiting duration", and "Running duration". If a job has a long blocked duration, it spent a long time waiting on other jobs. If a job has a long waiting duration, it was waiting for an available thread, so increasing maxParallelism could help. If a job has a long running duration, then the model might have to be changed to speed up the job.
 
 # Creating a Gantt Chart
 
