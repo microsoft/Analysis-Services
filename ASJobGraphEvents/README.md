@@ -1,12 +1,12 @@
 # Summary
 
-The Job Graph events are emitted by AS Engine before and after any processing (aka refresh) commands. Both job graphs show the order in which processing jobs execute within the sequence point algorithm, in the Analysis Services engine. The graph associated with the GraphEnd (2) Subclass is annotated, in that it contains the "Blocked duration", "Waiting duration", "Running duration" etc for each job. In addition, the annotated graph shows the critical path. Job Graph events can be used to identify bottlenecks in processing jobs, by highlighting the critical path.
+The Job Graph events are emitted by AS Engine before and after any processing (aka refresh) commands. Both job graphs show the order in which processing jobs execute within the sequence point algorithm, in the Analysis Services engine. The graph associated with the GraphEnd (2) Subclass is annotated, in that it contains additional pieces of information, such as "Blocked duration", "Waiting duration", and "Running duration" for each job. Morever, the annotated graph highlights the critical path, which can be used to identify bottlenecks in processing jobs.
 
 In the cloud instances of Analysis Services, such as Azure Analysis Services or Power BI, the job graph is broken down into smaller chunks, each in their own event. The events can be reassembled with this script.
 
 ## Critical Path
 
-When the job graph executes, there is always a job that finishes last before the engine can commit the change. This job that finishes last is the "critical dependency" for the commit; the entire commit needs to wait for this one job to finish before executing. This last job depends on other jobs, one of which finished after all the others. This is the next critical dependency. Tracing this path of critical dependencies forms the critical path, which helps engineers and customers identify why processing takes so long.
+When the job graph executes, there is always a job that finishes last before the engine can commit the change. This job that finishes last is the "critical dependency" for the commit; the entire commit needs to wait for this one job to finish before executing. This last job depends on other jobs, one of which finished after all the others. This is the next critical dependency. Tracing this path of critical dependencies forms the critical path, which can help engineers and customers identify the bottlenecks during processing.
 
 The critical path is shown via dark backgrounds and white text in the job graph file.
 
@@ -38,9 +38,13 @@ Once the Job Graph is rendered, look for the critical path (darker nodes) or for
 
 To diagnose slow refresh times, look for the critical path and start at the top. Look at "Blocked duration", "Waiting duration", and "Running duration". If a job has a long blocked duration, it spent a long time waiting on other jobs. If a job has a long waiting duration, it was waiting for an available thread, so increasing maxParallelism could help. If a job has a long running duration, then the model might have to be changed to speed up the job.
 
-# Creating a Gantt Chart
+# Customized View
 
-The Gantt Chart can also come in handy when diagnosing processing issues. Power BI Desktop provides first party and 3rd party Gantt Chart visuals, that can be used to visualize the job graph.
+Besides Gantt Chart, the DGML can also be used to create a customized view in tools such as Power BI Desktop and Excel. Since the DGML is an XML file that conforms to the schema as described in https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference?view=vs-2019 , the DGML can be imported into any suitable tool and manipulated, as one deems fit.
+
+# Gantt Chart
+
+The Gantt Chart can also come in handy when diagnosing processing issues. Power BI Desktop provides first party and several 3rd party Gantt Chart visuals, that can be used to visualize the job graph.
 
 We have also provided a script to generate a Gantt Chart as a simple HTML file. Please follow the below instructions to generate the HTML
 
