@@ -6,8 +6,8 @@ import xml.etree.ElementTree as ET
 from structures import Job
 from gantt_types import ThreadId
 
-def get_nodeId(elem: Job) -> int:
-    return elem.nodeId
+def get_jobEnd(elem: Job) -> datetime:
+    return elem.end
 
 def read_jobs(filename: str) -> List[Job]:
     jobs: List[Job] = []
@@ -25,7 +25,7 @@ def read_jobs(filename: str) -> List[Job]:
             jobs.append(job)
 
     sortedJobs: List[Job] = []
-    sortedJobs = sorted(jobs, key=get_nodeId)
+    sortedJobs = sorted(jobs, key=get_jobEnd)
     return sortedJobs
 
 
