@@ -6,6 +6,8 @@ import xml.etree.ElementTree as ET
 from structures import Job
 from gantt_types import ThreadId
 
+def get_jobEnd(elem: Job) -> datetime:
+    return elem.end
 
 def read_jobs(filename: str) -> List[Job]:
     jobs: List[Job] = []
@@ -22,7 +24,9 @@ def read_jobs(filename: str) -> List[Job]:
         if job := parse_job_node(node):
             jobs.append(job)
 
-    return jobs
+    sortedJobs: List[Job] = []
+    sortedJobs = sorted(jobs, key=get_jobEnd)
+    return sortedJobs
 
 
 def parse_iso(time: str) -> datetime:
@@ -51,9 +55,11 @@ def parse_job_node(node: ET.Element) -> Optional[Job]:
             name = value
         if attr == "Slot" or attr == "Thread":
             thread = value
+        if attr == "Id":
+            nodeId = value
 
     try:
-        return Job(start, end, strip_newlines(name), parse_thread_id(thread))
+        return Job(start, end, strip_newlines(name), parse_thread_id(thread), int(nodeId))
     except UnboundLocalError:
         # most likely doesn't include "Thread" or "Slot" attribute.
         return None

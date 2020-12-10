@@ -12,6 +12,7 @@ class Job(NamedTuple):
     end: datetime
     name: str
     thread: ThreadId
+    nodeId: int
 
 
 class Row(NamedTuple):
