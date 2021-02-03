@@ -19,7 +19,7 @@ Following these steps will automatically load the Best Practice Rules into your 
         System.Net.WebClient w = new System.Net.WebClient();
 
         string userName = System.Environment.UserName;
-        string url = "https://raw.githubusercontent.com/m-kovalsky/BestPracticeRules/main/BPARules.json";
+        string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
         string downloadLoc = @"C:\Users\"+userName+@"\AppData\Local\TabularEditor\BPARules.json";
 
         w.DownloadFile(url, downloadLoc);
