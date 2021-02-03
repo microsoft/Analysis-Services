@@ -49,7 +49,7 @@ Following these steps will automatically load the Best Practice Rules into your 
   * Reduce usage of long-length columns with high cardinality**
   * Split date and time*
   
-  *Use this [script](https://www.elegantbi.com/post/vertipaqintabulareditor "Script") as documented [here](https://www.elegantbi.com/post/vertipaqintabulareditor "Instructions").
+  *Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/VertipaqAnnotations.cs "Script") as documented [here](https://www.elegantbi.com/post/vertipaqintabulareditor "Instructions").
   
   **Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_LongLengthColumns.cs "script") in the same fashion as the note above.
   
