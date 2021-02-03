@@ -2,6 +2,12 @@
 
 Running this collection of rules inside [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer") will inform you of potential issues to fix or improvements to be made with regard to performance optimization and model design.
 
+## Feedback
+
+We would love to hear feedback on how this tool has helped your organization. Please email feedback to: pbibestpractice@microsoft.com.
+
+If you find any issues or have any requests for new rules, please submit an issue within this repository. Just prefix the issue with "BPARules" to make it easier to track.
+
 ## Setup (automated)
 
 Following these steps will automatically load the Best Practice Rules into your local Tabular Editor. Note that this will overwrite the existing BPARules.json file (if you are already have one).
