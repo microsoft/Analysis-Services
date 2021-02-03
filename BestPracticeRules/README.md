@@ -47,7 +47,7 @@ Following these steps will automatically load the Best Practice Rules into your 
   * Avoid bi-directional relationships against high-cardinality columns*
   * Large tables should be partitioned*
   * Reduce usage of long-length columns with high cardinality**
-  * Split date and time*
+  * Split date and time***
   
   *Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/VertipaqAnnotations.cs "Script") as documented [here](https://www.elegantbi.com/post/vertipaqintabulareditor "Instructions").
   
