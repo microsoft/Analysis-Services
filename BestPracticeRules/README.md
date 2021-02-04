@@ -1,3 +1,5 @@
+# Best Practice Rules
+
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
 ## Purpose 
@@ -8,7 +10,7 @@ Running this collection of rules inside [Tabular Editor](https://tabulareditor.c
 
 We would love to hear feedback on how this tool has helped your organization. Please email feedback to: pbibestpractice@microsoft.com.
 
-If you find any issues or have any requests for new rules, please submit an issue within this repository. Just prefix the issue with "BPARules" to make it easier to track.
+If you find any issues or have any requests for new rules, please [submit an issue](https://github.com/microsoft/Analysis-Services/issues "submit an issue") within this repository. Just prefix the issue with "BPARules" to make it easier to track.
 
 ## Setup (automated)
 
@@ -59,4 +61,4 @@ Following these steps will automatically load the Best Practice Rules into your 
   
 ## Requirements
 
-[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.12.1 or higher
+[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.12.1 or higher.
