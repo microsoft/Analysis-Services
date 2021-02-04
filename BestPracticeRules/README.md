@@ -53,11 +53,15 @@ Following these steps will automatically load the Best Practice Rules into your 
   * Reduce usage of long-length columns with high cardinality**
   * Split date and time***
   
-  *Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/VertipaqAnnotations.cs "Script") as documented [here](https://www.elegantbi.com/post/vertipaqintabulareditor "Instructions").
+  *These rules use [Vertipaq Analyzer](https://www.sqlbi.com/tools/vertipaq-analyzer/) data. There are 2 methods to load this data into Tabular Editor:
+ 
+  1. Load Vertipaq Analyzer data directly from a server ([instructions](https://www.elegantbi.com/post/vertipaqintabulareditor)) ([script](https://github.com/m-kovalsky/Tabular/blob/master/VertipaqAnnotations.cs)).
   
-  **Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_LongLengthColumns.cs "script") in the same fashion as the note above.
+  2. Load Vertipaq Analyzer data from .vpax file ([instructions](https://www.elegantbi.com/post/vpaxtotabulareditor)) ([script](https://github.com/m-kovalsky/Tabular/blob/master/VpaxToTabularEditor.cs)).
   
-  ***Use this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_SplitDateAndTime.cs "script") in the same fashion as the note above.
+  **Run this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_LongLengthColumns.cs "script") while live-connected to the model.
+  
+  ***Run this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_SplitDateAndTime.cs "script") while live-connected to the model.
   
 ## Requirements
 
