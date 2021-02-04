@@ -48,10 +48,10 @@ Following these steps will automatically load the Best Practice Rules into your 
 
 * The following rules require running an additional script before running the Best Practice Analyzer
 
-  * Avoid bi-directional relationships against high-cardinality columns*
-  * Large tables should be partitioned*
-  * Reduce usage of long-length columns with high cardinality**
-  * Split date and time***
+  * Avoid bi-directional relationships against high-cardinality columns *
+  * Large tables should be partitioned *
+  * Reduce usage of long-length columns with high cardinality *^
+  * Split date and time ***
   
   *These rules use [Vertipaq Analyzer](https://www.sqlbi.com/tools/vertipaq-analyzer/) data. There are 2 methods to load this data into Tabular Editor:
  
@@ -59,7 +59,7 @@ Following these steps will automatically load the Best Practice Rules into your 
   
   2. Load Vertipaq Analyzer data from .vpax file ([instructions](https://www.elegantbi.com/post/vpaxtotabulareditor)) ([script](https://github.com/m-kovalsky/Tabular/blob/master/VpaxToTabularEditor.cs)).
   
-  **Run this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_LongLengthColumns.cs "script") while live-connected to the model.
+  ^Run this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_LongLengthColumns.cs "script") while live-connected to the model.
   
   ***Run this [script](https://github.com/m-kovalsky/Tabular/blob/master/BestPracticeRule_SplitDateAndTime.cs "script") while live-connected to the model.
   
