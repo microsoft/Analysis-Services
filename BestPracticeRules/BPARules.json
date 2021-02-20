@@ -319,6 +319,17 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "ISAVAILABLEINMDX_TRUE_ATTRIBUTE_COLUMNS",
+    "Name": "[Error Prevention] Set IsAvailableInMdx to true on attribute columns",
+    "Category": "Error Prevention",
+    "Description": "although they are not recommended , attribute hierarchies should be built for columns that are used for slicing by MDX clients. In other words, all visible columns that are used as a Sort By Column or referenced in user hierarchies should have their IsAvailableInMdx property set to true.\r\nReference: https://blog.crossjoin.co.uk/2018/07/02/isavailableinmdx-ssas-tabular/",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "not IsAvailableInMDX\r\nand\r\n\n(not IsHidden or not Table.IsHidden or UsedInSortBy.Any() or UsedInHierarchies.Any())",
+    "FixExpression": "IsAvailableInMDX = true",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "UNNECESSARY_COLUMNS",
     "Name": "[Maintenance] Remove unnecessary columns",
     "Category": "Maintenance",
