@@ -32,12 +32,9 @@ namespace Metadata_Translator
     /// </summary>
     public partial class MainWindow : Window
     { 
-        Configuration AppConfig { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-
-            AppConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             SetDependencyProperty("SubscriptionKey");
             SetDependencyProperty("TranslatorEndpoint");
@@ -102,20 +99,19 @@ namespace Metadata_Translator
             switch (parameterName)
             {
                 case "SubscriptionKey":
-                    SubscriptionKey = AppConfig.AppSettings.Settings[parameterName].Value;
+                    SubscriptionKey = Properties.Settings.Default.SubscriptionKey;
                     break;
                 case "TranslatorEndpoint":
-                    TranslatorEndpoint = AppConfig.AppSettings.Settings[parameterName].Value;
+                    TranslatorEndpoint = Properties.Settings.Default.TranslatorEndpoint;
                     break;
                 case "TranslatorLocation":
-                    TranslatorLocation = AppConfig.AppSettings.Settings[parameterName].Value;
+                    TranslatorLocation = Properties.Settings.Default.TranslatorLocation;
                     break;
                 case "OverwriteTranslation":
-                    string configSetting = AppConfig.AppSettings.Settings[parameterName].Value;
-                    OverwriteTranslation = bool.TryParse(configSetting, out bool value) && value;
+                    OverwriteTranslation = Properties.Settings.Default.OverwriteTranslation;
                     break;
                 case "LastUsedExportFolder":
-                    LastUsedExportFolder = AppConfig.AppSettings.Settings[parameterName].Value;
+                    LastUsedExportFolder = Properties.Settings.Default.LastUsedExportFolder;
                     break;
                 case "Languages":
                     Languages = new ObservableCollection<Language>();
@@ -244,18 +240,6 @@ namespace Metadata_Translator
             {
                 return GetMainWindow(parentObject);
             }
-        }
-
-        /// <summary>
-        /// Save app settings to the application config file.
-        /// </summary>
-        /// <param name="settingName"></param>
-        /// <param name="newValue"></param>
-        private void OnAppSettingChanged(string settingName, string newValue)
-        {
-            AppConfig.AppSettings.Settings[settingName].Value = newValue;
-            AppConfig.Save(ConfigurationSaveMode.Modified);
-            ConfigurationManager.RefreshSection("appSettings");
         }
         #endregion
 
@@ -390,8 +374,7 @@ namespace Metadata_Translator
 
         private static void OnSubscriptionKeyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MainWindow)?.OnAppSettingChanged("SubscriptionKey", (string)e.NewValue);
-
+            Properties.Settings.Default.SubscriptionKey = (string)e.NewValue;
         }
 
         /// <summary>
@@ -409,8 +392,7 @@ namespace Metadata_Translator
 
         private static void OnTranslatorEndpointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MainWindow)?.OnAppSettingChanged("TranslatorEndpoint", (string)e.NewValue);
-
+            Properties.Settings.Default.TranslatorEndpoint = (string)e.NewValue;
         }
 
         /// <summary>
@@ -428,8 +410,7 @@ namespace Metadata_Translator
 
         private static void OnTranslatorLocationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MainWindow)?.OnAppSettingChanged("TranslatorLocation", (string)e.NewValue);
-
+            Properties.Settings.Default.TranslatorLocation = (string)e.NewValue;
         }
 
         /// <summary>
@@ -447,8 +428,7 @@ namespace Metadata_Translator
 
         private static void OnOverwriteTranslationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MainWindow)?.OnAppSettingChanged("OverwriteTranslation", e.NewValue.ToString());
-
+            Properties.Settings.Default.OverwriteTranslation = (bool)e.NewValue;
         }
 
         /// <summary>
@@ -466,8 +446,7 @@ namespace Metadata_Translator
 
         private static void OnLastUsedExportFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as MainWindow)?.OnAppSettingChanged("LastUsedExportFolder", (string)e.NewValue);
-
+            Properties.Settings.Default.LastUsedExportFolder = (string)e.NewValue;
         }
 
         /// <summary>
@@ -632,6 +611,16 @@ namespace Metadata_Translator
         private void OnApplyButton_Click(object sender, RoutedEventArgs e)
         {
             DataModel.Update();
+        }
+
+        /// <summary>
+        /// Saves modified user settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnMainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.Save();
         }
         #endregion
     }

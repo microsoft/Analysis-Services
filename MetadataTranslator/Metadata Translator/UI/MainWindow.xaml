@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Metadata_Translator"
         mc:Ignorable="d"
         x:Name="main"
-        Title="Metadata Translator" Height="450" Width="800">
+        Title="Metadata Translator" Height="450" Width="800"
+        Closing="OnMainWindow_Closing">
     <Window.Resources>
         <local:TrueFalseVisibilityConverter x:Key="TrueFalseVisibilityConverter" />
         <local:FalseTrueVisibilityConverter x:Key="FalseTrueVisibilityConverter" />

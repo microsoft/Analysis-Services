@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata Translator", "Metadata Translator\Metadata Translator.csproj", "{CB7D493C-B67E-4438-B304-EFE5D418ADDF}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Metadata Translator Setup", "Metadata Translator Setup\Metadata Translator Setup.vdproj", "{FC353DA7-B669-4EDF-B465-CB9827C7F035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{CB7D493C-B67E-4438-B304-EFE5D418ADDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB7D493C-B67E-4438-B304-EFE5D418ADDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB7D493C-B67E-4438-B304-EFE5D418ADDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC353DA7-B669-4EDF-B465-CB9827C7F035}.Debug|Any CPU.ActiveCfg = Debug
+		{FC353DA7-B669-4EDF-B465-CB9827C7F035}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
