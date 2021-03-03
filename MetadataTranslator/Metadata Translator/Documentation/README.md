@@ -88,10 +88,20 @@ Metadata Translator detects the default language and all translations in the dat
 
 ![Applying translations](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/Applying%20translations.png)
 
+## Connecting to an online dataset
+
+Metadata Translator can also connect to data models hosted in SQL Server Analysis Services, Azure Analysis Services, and the Power BI service so you can add translations to an online dataset. Simply start Metadata Translator directly from the installation folder, type the full dataset connection string in the input form, and then click OK to connect.
+
+![Connection string to a PowerBI dataset](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/ConnectionStringToAPowerBIDataset.png)
+
+> Note
+
+> You must provide the full connection string. This is especially important to keep in mind when connecting to a dataset in the Power BI service. The connection string that Power BI displays on the dataset settings page does not include the Data Source property name. It is an incomplete connection string, such as *powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks*. Make sure to add "Data Source=" in front of it. The screenshot above shows the full connection string: *data source=powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks*.
+
 # Additional features
 
-Metadata Translator v1.0 does not support connections to data models hosted in SQL Server Analysis Services, Azure Analysis Services, or the Power BI service yet. A future version will provide this capability to add translations to an online dataset.
+Metadata Translator v1.1 does not support editing the default language strings because the external tools integration feature of Power BI Desktop does not support these operations yet. 
 
-It is also planned to add support for editing the default language strings as soon as the external tools integration feature of Power BI Desktop supports these operations. 
+It is planned to add support for command-line import and export operations so that translations can be automated.
 
 For additional feature requests, create a new item under [Issues](https://github.com/microsoft/Analysis-Services/issues).

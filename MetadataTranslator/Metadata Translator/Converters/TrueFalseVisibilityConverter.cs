@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AnalysisServices;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,7 +14,12 @@ namespace Metadata_Translator
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (System.Convert.ToBoolean(value))? Visibility.Collapsed : Visibility.Visible;
+            if(value is bool notVisible)
+            {
+                return notVisible ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+                return (value == null)? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,7 +32,12 @@ namespace Metadata_Translator
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (System.Convert.ToBoolean(value)) ? Visibility.Visible : Visibility.Collapsed;
+            if (value is bool notVisible)
+            {
+                return notVisible ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+                return (value == null) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

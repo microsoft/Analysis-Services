@@ -22,6 +22,7 @@
     <system:String x:Key="ImportExportToolTip">Opens the Import/Export pane to export and import the captions, descriptions, and display folder names via .csv files.</system:String>
     <system:String x:Key="InvalidArguments">Metadata Translator cannot start without server and database arguments. Double-check the 'arguments' setting in the metadata-translator.pbitool.json file in your Microsoft Shared\Power BI Desktop\External Tools folder. The value must be: "\"%server%\" \"%database%\"".</system:String>
     <system:String x:Key="DatasetConnection">Dataset Connection String</system:String>
+    <system:String x:Key="DatasetConnectionPrompt">Enter the connection string to the dataset.</system:String>
     <system:String x:Key="SubscriptionKey">Translator Subscription Key</system:String>
     <system:String x:Key="TranslatorEndpoint">Translator Endpoint</system:String>
     <system:String x:Key="TranslatorLocation">Translator Location</system:String>

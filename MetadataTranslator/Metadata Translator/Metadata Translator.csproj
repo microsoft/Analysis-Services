@@ -104,6 +104,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="UI\ConnectionStringInput.xaml.cs">
+      <DependentUpon>ConnectionStringInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\CollectionEmptyTrueFalseConverter.cs" />
     <Compile Include="Converters\TranslationPropertyToolTipConverter.cs" />
     <Compile Include="Data\CsvRow.cs" />
@@ -138,6 +141,10 @@
     <Compile Include="Converters\TrueFalseVisibilityConverter.cs" />
     <Compile Include="Translations\Translation.cs" />
     <Compile Include="Translations\TranslationResult.cs" />
+    <Page Include="UI\ConnectionStringInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\ImportExportPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

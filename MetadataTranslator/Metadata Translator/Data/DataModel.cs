@@ -13,6 +13,9 @@ using System.Windows.Data;
 using System.IO;
 using System.Web.Script.Serialization;
 using Microsoft.VisualBasic.FileIO;
+using Adomd = Microsoft.AnalysisServices.AdomdClient;
+using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 
 namespace Metadata_Translator
 {
@@ -27,6 +30,9 @@ namespace Metadata_Translator
 
         public string DefaultCulture { get; set; }
 
+        public string ServerName { get; private set; }
+        public string DatabaseName { get; private set; }
+
         public List<string> CultureNames 
         {
             get
@@ -40,22 +46,72 @@ namespace Metadata_Translator
         public List<Language> SelectedLanguages { get => SupportedLanguages?.Where(x => x.IsSelected==true).ToList(); }
         public bool HasTargetLanguages { get => SelectedLanguages?.Count > 1; }
 
+        /// <summary>
+        /// Connect to the dataset by using server and database name. This is how external tools typically connect to a dataset inside of Power BI Desktop.
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="database"></param>
         public DataModel(string server, string database)
         {
-            LoadLanguages();
+            ServerName = server;
+            DatabaseName = database;
 
             Server pbiDesktop = new Server();
-            pbiDesktop.Connect($"Data Source={server}");
-            Database dataset = pbiDesktop.Databases.GetByName(database);
+            pbiDesktop.Connect($"Data Source={ServerName}");
+            Database dataset = pbiDesktop.Databases.GetByName(DatabaseName);
             Model = dataset.Model;
 
-            DefaultCulture = Model.Culture;
+            Initialize();
+        }
 
+        /// <summary>
+        /// Connects to a dataset using a connection string. This is how  tools typically connect to online datasets in SQL Server Analysis Services, Azure Analysis Services, and Power BI.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        public DataModel(string connectionString)
+        {
+            /// Connect using the full connection string, as it may contain more than
+            /// just data source and intial catalog, such as user id and password.
+            /// 
+            Server pbiDesktop = new Server();
+            pbiDesktop.Connect(connectionString);
+
+            /// Parse the connection string using regex to avoid resolving server and database names through the AMO objects.
+            /// 
+            RegexOptions options = RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled;
+            foreach (Match match in Regex.Matches(connectionString, "([^=;]*)=([^=;]*)", options))
+            {
+                string[] parts = match.Value.Split('=');
+                if (parts?.Length == 2 && parts[0].ToLower() == "data source")
+                {
+                    ServerName = parts[1];
+                }
+                else if (parts?.Length == 2 && parts[0].ToLower() == "initial catalog")
+                {
+                    DatabaseName = parts[1];
+                }
+            }
+
+            /// Select the database based on the extracted database name.
+            /// 
+            Database dataset = pbiDesktop.Databases.GetByName(DatabaseName);
+            Model = dataset.Model;
+
+            Initialize();
+        }
+
+        /// <summary>
+        /// Initializes the list of supported languages and the named object collections.
+        /// </summary>
+        private void Initialize()
+        {
+            LoadLanguages();
+            DefaultCulture = Model.Culture;
             LoadNamedObjectCollections();
         }
 
         /// <summary>
-        /// A static helper to get the DataModel object.
+        /// A static helper to get the DataModel object based on server and database name.
         /// </summary>
         /// <param name="server"></param>
         /// <param name="database"></param>
@@ -63,6 +119,16 @@ namespace Metadata_Translator
         public static DataModel Connect(string server, string database)
         {
             return new DataModel(server, database);
+        }
+
+        /// <summary>
+        /// A static helper to get the DataModel object based on a connection string.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
+        public static DataModel Connect(string connectionString)
+        {
+            return new DataModel(connectionString);
         }
 
         /// <summary>

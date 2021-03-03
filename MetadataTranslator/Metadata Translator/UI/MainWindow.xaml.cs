@@ -50,27 +50,9 @@ namespace Metadata_Translator
 
         public MainWindow(StartupEventArgs e) : this()
         {
-            try
+            if (e.Args.Length == 2)
             {
-                if (e.Args.Length != 2)
-                {
-                    throw new Exception((string)Application.Current.FindResource("InvalidArguments"));
-                }
-                else
-                {
-                    PowerBIEngine = e.Args[0];
-                    DatabaseName = e.Args[1];
-                }
-
-                DataModel = DataModel.Connect(PowerBIEngine, DatabaseName);
-
-                SetDependencyProperty("Languages");
-                InitializeDataGrid();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                Application.Current.Shutdown();
+                ConnectToDataset(e.Args[0], e.Args[1]);
             }
         }
 
@@ -89,7 +71,55 @@ namespace Metadata_Translator
             }
         }
 
+        /// <summary>
+        /// Connects to the dataset using a connection string.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        public void ConnectToDataset(string connectionString)
+        {
+            try
+            {
+                DataModel = DataModel.Connect(connectionString);
+                InitTranslationUI();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Connects to the dataset via server and database name.
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="database"></param>
+        public void ConnectToDataset(string server, string database)
+        {
+            try
+            {
+                DataModel = DataModel.Connect(server, database);
+                InitTranslationUI();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Application.Current.Shutdown();
+            }
+        }
+
         #region Helper functions
+        /// <summary>
+        /// Initializes the translation grid.
+        /// </summary>
+        private void InitTranslationUI()
+        {
+            PowerBIEngine = DataModel.ServerName;
+            DatabaseName = DataModel.DatabaseName;
+
+            SetDependencyProperty("Languages");
+            InitializeDataGrid();
+        }
+
         /// <summary>
         /// Set Dependency Properties that wrap apps ettings.
         /// </summary>
@@ -244,6 +274,9 @@ namespace Metadata_Translator
         #endregion
 
         #region Dependency Properties
+        /// <summary>
+        /// DataModel object
+        /// </summary>
         public static readonly DependencyProperty DataModelProperty =
             DependencyProperty.Register("DataModel", typeof(DataModel), typeof(MainWindow));
 
