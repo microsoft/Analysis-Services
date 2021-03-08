@@ -148,6 +148,6 @@
     <value>Use the --import-file option to specify an import file for this operation.</value>
   </data>
   <data name="rootCmdDescription" xml:space="preserve">
-    <value>Machine Translator command-line app</value>
+    <value>Metadata Translator command-line app</value>
   </data>
 </root>

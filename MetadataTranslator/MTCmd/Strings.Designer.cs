@@ -151,7 +151,7 @@ namespace MTCmd {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Machine Translator command-line app.
+        ///   Looks up a localized string similar to Metadata Translator command-line app.
         /// </summary>
         internal static string rootCmdDescription {
             get {
