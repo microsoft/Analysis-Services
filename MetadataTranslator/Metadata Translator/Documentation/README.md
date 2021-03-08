@@ -80,9 +80,7 @@ If you import a .csv file for a culture that you haven’t added to the dataset 
 >
 > During the import operation, Metadata Translators first expects a full match of the default strings including their ordering. If the ordering is different, Metadata Translators switches to case-sensitive string matching. Any strings that don’t have an exact match are ignored and the corresponding cells remain empty in the translation grid. 
 
- 
-
-## Applying translations to a dataset
+##  Applying translations to a dataset
 
 Metadata Translator detects the default language and all translations in the dataset and reads corresponding the captions, descriptions, and display folder names on startup. As you work with the translation grid, add or remove cultures, perform machine translations, or import translated strings, the changes only affect the data in Metadata Translator. To apply the changes to the dataset, click on the Apply button in the toolbar, and then save the .pbix file in Power BI Desktop to persist the changes.
 
@@ -98,10 +96,40 @@ Metadata Translator can also connect to data models hosted in SQL Server Analysi
 
 > You must provide the full connection string. This is especially important to keep in mind when connecting to a dataset in the Power BI service. The connection string that Power BI displays on the dataset settings page does not include the Data Source property name. It is an incomplete connection string, such as *powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks*. Make sure to add "Data Source=" in front of it. The screenshot above shows the full connection string: *data source=powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks*.
 
-# Additional features
+## Command-line operations
 
-Metadata Translator v1.1 does not support editing the default language strings because the external tools integration feature of Power BI Desktop does not support these operations yet. 
+Metadata Translator supports command-line operations through a thin console application called MTCmd.exe so that you can import and export translations in an automated way. You can find MTCmd.exe in the Metadata Translator installation folder. Run MTCmd /? to display available command-line options and operations, as in the following screenshot.
 
-It is planned to add support for command-line import and export operations so that translations can be automated.
+![Metadata Translator command-line app](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/MT%20command-line%20app.png)
+
+### Connecting to a dataset
+
+In order to connect to a dataset hosted in SQL Server Analysis Services, Azure Analysis Services, or the Power BI service, you must specify the full connection string by using the --connection-string parameter (or -cs). See also the previous "*Connecting to an online dataset*" section. The --connection-string parameter is mandatory for all export and import operations.
+
+### Exporting translations
+
+To export existing translations from a dataset, you must specify full path to an export folder by using the --export-folder (-ef) parameter. For example, the following command exports all translations from an AdventureWorks dataset hosted in Power BI into a folder called ExportedTranslations:
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations`
+
+> Note
+>
+> The specified export folder must exist prior to running the command-line app. MTCmd.exe does not create the export folder. However, if any files exist in the export folder, MTCmd.exe might overwrite them without warning. MTCmd.exe exports each culture into a separate .csv file based on the locale identifier (LCID). 
+
+### Importing translations
+
+To import translations from a .csv file, you must specify full path to the import file by using the --import-file (-if) parameter. The file name must correspond to the locale identifier (LCID) of the target language. You must also specify the --mode (-m) parameter. Valid options are Import or Overwrite. Import applies translations for strings that have not been translated yet in the dataset. Overwrite, as the name implies, overwrites any existing translations in the dataset. Both, Import and Overwrite create new translations if you import a locale that does not yet exist in the dataset.
+
+The following command imports German translations from a .csv file called de-DE.csv into an AdventureWorks dataset hosted in Power BI, overwriting any existing German strings in the dataset:
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -if C:\Translations\de-DE.csv -m Overwrite`
+
+> Note
+>
+> MTCmd.exe only imports one translation file at a time. To import multiple languages, run MTCmd.exe in a loop.
+
+## Additional features
+
+Metadata Translator v1.2 does not support editing the default language strings because the external tools integration feature of Power BI Desktop does not support these operations yet. 
 
 For additional feature requests, create a new item under [Issues](https://github.com/microsoft/Analysis-Services/issues).

@@ -201,6 +201,62 @@ namespace Metadata_Translator
         }
 
         /// <summary>
+        /// Marks the languages in the list of supported lanuages as selected and model default.
+        /// </summary>
+        public void InitializeLanguages()
+        {
+            if (this.CultureNames?.Count > 0)
+            {
+                /// First the model culture.
+                /// 
+                SetLanguageFlags(this.CultureNames[0], true, true);
+
+                /// Then all others
+                /// 
+                for (int i = 1; i < this.CultureNames.Count; i++)
+                {
+                    SetLanguageFlags(this.CultureNames[i], true, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Marks a language specified by lcid as selected and as model default.
+        /// </summary>
+        /// <param name="lcid"></param>
+        /// <param name="isSelected"></param>
+        /// <param name="isModelDefault"></param>
+        public bool SetLanguageFlags(string lcid, bool isSelected, bool isModelDefault = false)
+        {
+            if (lcid.Equals(DefaultCulture, StringComparison.InvariantCultureIgnoreCase) && isModelDefault == false)
+            {
+                return false;
+            }
+
+            Language language = this.SupportedLanguages.Where(x => x.LanguageTag.Equals(lcid)).FirstOrDefault();
+            if (language != null)
+            {
+                language.IsSelected = isSelected;
+                language.IsModelDefault = isModelDefault;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Language object based on the lcid (i.e. LanguageTag).
+        /// </summary>
+        /// <param name="lcid"></param>
+        /// <returns></returns>
+        public Language GetLanguageByLcid(string lcid)
+        {
+            return this.SupportedLanguages.Where(x => x.LanguageTag.Equals(lcid)).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Creates a new ExpandoObject for a source string (displayString).
         /// </summary>
         /// <param name="objectContainer"></param>

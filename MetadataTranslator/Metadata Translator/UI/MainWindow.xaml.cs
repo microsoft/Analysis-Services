@@ -58,7 +58,7 @@ namespace Metadata_Translator
 
         public void AddColumn(string lcid)
         {
-            Language language = GetLanguageByLcid(lcid);
+            Language language = DataModel.GetLanguageByLcid(lcid);
             if (language != null)
             {
                 dataGrid.Columns.Add(new DataGridTextColumn
@@ -201,7 +201,7 @@ namespace Metadata_Translator
             objectHeaderStyle.Setters.Add(new Setter(ToolTipService.ToolTipProperty, 
                 FindResource("DefaultCultureColumnHeaderToolTip").ToString()));
 
-            Language defaultLang = GetLanguageByLcid(cultures[0]);
+            Language defaultLang = DataModel.GetLanguageByLcid(cultures[0]);
             dataGrid.Columns.Add(new DataGridTextColumn
             {
                 Header = $"{defaultLang.DisplayName}*",
@@ -210,7 +210,7 @@ namespace Metadata_Translator
                 IsReadOnly = true,
                 CellStyle = defaultLangColumnStyle
             });
-            SetLanguageFlags(cultures[0], true, true);
+            DataModel.SetLanguageFlags(cultures[0], true, true);
 
 
             /// Add the remaining languages that already exist in the data model
@@ -223,32 +223,6 @@ namespace Metadata_Translator
 
             /// And set Captions as the default content of the datagrid.
             dataGrid.ItemsSource = DataModel.Captions;
-        }
-
-        /// <summary>
-        /// Marks a language specified by lcid as selected and as model default.
-        /// </summary>
-        /// <param name="lcid"></param>
-        /// <param name="isSelected"></param>
-        /// <param name="isModelDefault"></param>
-        private void SetLanguageFlags(string lcid, bool isSelected, bool isModelDefault = false)
-        {
-            Language language = Languages.Where(x => x.LanguageTag.Equals(lcid)).FirstOrDefault();
-            if (language != null)
-            {
-                language.IsSelected = isSelected;
-                language.IsModelDefault = isModelDefault;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Language object based on the lcid (i.e. LanguageTag).
-        /// </summary>
-        /// <param name="lcid"></param>
-        /// <returns></returns>
-        private Language GetLanguageByLcid(string lcid)
-        {
-            return Languages.Where(x => x.LanguageTag.Equals(lcid)).FirstOrDefault();
         }
 
         /// <summary>
