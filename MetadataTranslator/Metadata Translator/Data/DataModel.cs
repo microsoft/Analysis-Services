@@ -45,6 +45,8 @@ namespace Metadata_Translator
         public List<Language> SupportedLanguages { get; private set; }
         public List<Language> SelectedLanguages { get => SupportedLanguages?.Where(x => x.IsSelected==true).ToList(); }
         public bool HasTargetLanguages { get => SelectedLanguages?.Count > 1; }
+        
+        private const string appTag = "__MT";
 
         /// <summary>
         /// Connect to the dataset by using server and database name. This is how external tools typically connect to a dataset inside of Power BI Desktop.
@@ -217,6 +219,18 @@ namespace Metadata_Translator
                 {
                     SetLanguageFlags(this.CultureNames[i], true, false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Marks all translation languages as unselected.
+        /// </summary>
+        public void DeselectAllLanguages()
+        {
+            foreach(Language lang in SelectedLanguages)
+            {
+                if (lang.IsNotModelDefault)
+                    lang.IsSelected = false;
             }
         }
 
@@ -397,6 +411,14 @@ namespace Metadata_Translator
 
             /// Save the changes in the dataset.
             /// 
+            Annotation mtAnnotation = new Annotation();
+            mtAnnotation.Name = appTag;
+            mtAnnotation.Value = "1";
+            if (!Model.Annotations.Contains(appTag))
+            {
+                Model.Annotations.Add(mtAnnotation);
+            }
+
             Model.Database.Update(AS.UpdateOptions.ExpandFull);
         }
 

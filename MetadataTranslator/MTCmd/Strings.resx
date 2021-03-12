@@ -135,6 +135,9 @@
   <data name="invalidLocale" xml:space="preserve">
     <value>Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv.</value>
   </data>
+  <data name="lcidDescription" xml:space="preserve">
+    <value>A valid Windows Language Code Identifier (LCID), aka language tag, such as en-US, af-NA, and zh-CN.</value>
+  </data>
   <data name="modeDescription" xml:space="preserve">
     <value>The mode of the command-line operation</value>
   </data>
@@ -149,5 +152,8 @@
   </data>
   <data name="rootCmdDescription" xml:space="preserve">
     <value>Metadata Translator command-line app</value>
+  </data>
+  <data name="singleLocalExportSuccess" xml:space="preserve">
+    <value>Translations for '{0}' exported to: {1}</value>
   </data>
 </root>

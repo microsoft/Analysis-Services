@@ -32,12 +32,14 @@ namespace MTCmd
                 new Option<DirectoryInfo>(
                     new string[]{ "--export-folder", "-ef" }, Strings.efDescription).ExistingOnly(),
                 new Option<FileInfo>(
-                    new string[]{ "--import-file", "-if" }, Strings.ifDescription).ExistingOnly()
+                    new string[]{ "--import-file", "-if" }, Strings.ifDescription).ExistingOnly(),
+                new Option<string>(
+                    new string[]{ "--locale-id", "-lcid" }, Strings.lcidDescription)
             };
 
 
             // Note that the parameters of the handler method are matched according to the names of the options
-            rootCommand.Handler = CommandHandler.Create<string, Mode, DirectoryInfo, FileInfo>((connectionString, mode, exportFolder, importFile) =>
+            rootCommand.Handler = CommandHandler.Create<string, Mode, DirectoryInfo, FileInfo, string>((connectionString, mode, exportFolder, importFile, localeId) =>
             {
                 try
                 {
@@ -47,7 +49,7 @@ namespace MTCmd
                     switch (mode)
                     {
                         case Mode.Export:
-                            Export(model, exportFolder);
+                            Export(model, exportFolder, localeId);
                             break;
                         case Mode.Import:
                             Import(model, importFile, false);
@@ -91,11 +93,19 @@ namespace MTCmd
             }
         }
 
-        static void Export(DataModel model, DirectoryInfo exportFolder)
+        static void Export(DataModel model, DirectoryInfo exportFolder, string lcid)
         {
             if (exportFolder != null)
             {
-                if (model.HasTargetLanguages)
+                if(!string.IsNullOrEmpty(lcid))
+                {
+                    model.DeselectAllLanguages();
+                    model.SetLanguageFlags(lcid, true, false);
+
+                    model.ExportToCsv(exportFolder.FullName);
+                    Console.WriteLine(Strings.singleLocalExportSuccess, lcid, exportFolder);
+                }
+                else if (model.HasTargetLanguages)
                 {
                     model.ExportToCsv(exportFolder.FullName);
                     Console.WriteLine(Strings.exportSuccess, exportFolder);

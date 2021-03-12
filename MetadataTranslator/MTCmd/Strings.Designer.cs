@@ -115,6 +115,15 @@ namespace MTCmd {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A valid Windows Language Code Identifier (LCID), aka language tag, such as en-US, af-NA, and zh-CN..
+        /// </summary>
+        internal static string lcidDescription {
+            get {
+                return ResourceManager.GetString("lcidDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The mode of the command-line operation.
         /// </summary>
         internal static string modeDescription {
@@ -156,6 +165,15 @@ namespace MTCmd {
         internal static string rootCmdDescription {
             get {
                 return ResourceManager.GetString("rootCmdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translations for &apos;{0}&apos; exported to: {1}.
+        /// </summary>
+        internal static string singleLocalExportSuccess {
+            get {
+                return ResourceManager.GetString("singleLocalExportSuccess", resourceCulture);
             }
         }
     }

@@ -116,6 +116,16 @@ To export existing translations from a dataset, you must specify full path to an
 >
 > The specified export folder must exist prior to running the command-line app. MTCmd.exe does not create the export folder. However, if any files exist in the export folder, MTCmd.exe might overwrite them without warning. MTCmd.exe exports each culture into a separate .csv file based on the locale identifier (LCID). 
 
+### Generating new translations
+
+The -ef option exports existing translations from a dataset. If you want to add a new translation, you can specify the corresponding locale identifier by using the --locale-id (-lcid) option. For example, the following command generates a translation file in the aforementioned export folder for the locale 'de-DE':
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations -lcid "de-DE" `
+
+> Note
+>
+> If a translation exists for the specified locale identifier, MTCmd exports the existing translated strings. If a translation does not exist, MTCmd generates a translation file without translated strings. You can then add the translations by using a localization tool and import the file as explained in the next section to add the translations to the dataset. For a list of supported locale identifiers, refer to the [supportedlanguages.json](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata Translator/Resources/supportedlanguages.json) file.
+
 ### Importing translations
 
 To import translations from a .csv file, you must specify full path to the import file by using the --import-file (-if) parameter. The file name must correspond to the locale identifier (LCID) of the target language. You must also specify the --mode (-m) parameter. Valid options are Import or Overwrite. Import applies translations for strings that have not been translated yet in the dataset. Overwrite, as the name implies, overwrites any existing translations in the dataset. Both, Import and Overwrite create new translations if you import a locale that does not yet exist in the dataset.
