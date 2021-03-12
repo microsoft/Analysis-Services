@@ -6,7 +6,7 @@ Metadata Translator helps to streamline the localization of Power BI data models
 
 ## Installation
 
-Metadata Translator can be installed by using a Windows Installer Package (.msi) file. The Metadata Translator solution includes a Metadata Translator Setup project to build this .msi file, or use the pre-built installer package.
+Metadata Translator can be installed by using a Windows Installer Package (.msi) file. The Metadata Translator solution includes a Metadata Translator Setup project to build this .msi file. 
 
 <img src="https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/Installing%20Metadata%20Translator.png" alt="Installing Metadata Translator" style="zoom:50%;" />
 
