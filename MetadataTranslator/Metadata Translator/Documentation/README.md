@@ -124,7 +124,7 @@ The -ef option exports existing translations from a dataset. If you want to add 
 
 > Note
 >
-> If a translation exists for the specified locale identifier, MTCmd exports the existing translated strings. If a translation does not exist, MTCmd generates a translation file without translated strings. You can then add the translations by using a localization tool and import the file as explained in the next section to add the translations to the dataset. For a list of supported locale identifiers, refer to the [supportedlanguages.json]('https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata Translator/Resources/supportedlanguages.json') file.
+> If a translation exists for the specified locale identifier, MTCmd exports the existing translated strings. If a translation does not exist, MTCmd generates a translation file without translated strings. You can then add the translations by using a localization tool and import the file as explained in the next section to add the translations to the dataset. For a list of supported locale identifiers, refer to the [supportedlanguages.json]('https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata Translator/Resources/supportedlanguages.json') file under Resources in the Metadata Translator project folder.
 
 ### Importing translations
 
