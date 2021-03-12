@@ -6,7 +6,7 @@ Metadata Translator helps to streamline the localization of Power BI data models
 
 ## Installation
 
-Metadata Translator can be installed by using a Windows Installer Package (.msi) file. The Metadata Translator solution includes a Metadata Translator Setup project to build this .msi file. 
+Metadata Translator can be installed by using a Windows Installer Package (.msi) file. The Metadata Translator solution includes a Metadata Translator Setup project to build this .msi file, or use the pre-built installer package.
 
 <img src="https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/Installing%20Metadata%20Translator.png" alt="Installing Metadata Translator" style="zoom:50%;" />
 
@@ -124,7 +124,7 @@ The -ef option exports existing translations from a dataset. If you want to add 
 
 > Note
 >
-> If a translation exists for the specified locale identifier, MTCmd exports the existing translated strings. If a translation does not exist, MTCmd generates a translation file without translated strings. You can then add the translations by using a localization tool and import the file as explained in the next section to add the translations to the dataset. For a list of supported locale identifiers, refer to the [supportedlanguages.json](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata Translator/Resources/supportedlanguages.json) file.
+> If a translation exists for the specified locale identifier, MTCmd exports the existing translated strings. If a translation does not exist, MTCmd generates a translation file without translated strings. You can then add the translations by using a localization tool and import the file as explained in the next section to add the translations to the dataset. For a list of supported locale identifiers, refer to the [supportedlanguages.json]('https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata Translator/Resources/supportedlanguages.json') file.
 
 ### Importing translations
 
