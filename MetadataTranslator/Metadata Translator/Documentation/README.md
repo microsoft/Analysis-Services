@@ -4,6 +4,10 @@ Metadata Translator helps to streamline the localization of Power BI data models
 
 ![MetadataTranslator](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/MetadataTranslator.png)
 
+> Note
+>
+> Metadata Translator can add translations to datasets hosted in SQL Server Analysis Services, Azure Analysis Services, and Power BI. However, Power BI only supports multiple locales for dataset hosted on Power BI Premium, Premium per User, or a Power BI Embedded SKU. Datasets on shared capacity cannot take advantage of metadata translations yet.
+
 ## Installation
 
 Metadata Translator can be installed by using a Windows Installer Package (.msi) file. The Metadata Translator solution includes a Metadata Translator Setup project to build this .msi file. 
