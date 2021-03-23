@@ -37,14 +37,13 @@ Following these steps will automatically load the Best Practice Rules into your 
 
 ## Setup (manual)
 
-1. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
-2. Download the BPARules.json file from GitHub (in this repository).
-3. Within the Start Menu, type %localappdata% and click Enter.
-4. Navigate to the 'TabularEditor' folder.
-5. Copy the rules file (.json) and paste it into the TabularEditor folder.*
-6. Open Tabular Editor and connect to your model.
-7. Select 'Tools' from the File menu and select 'Best Practice Analyzer'.
-8. Click the Refresh icon (in blue).
+1. Download the BPARules.json file from GitHub (in this repository).
+2. Within the Start Menu, type %localappdata% and click Enter.
+3. Navigate to the 'TabularEditor' folder.
+4. Copy the rules file (.json) and paste it into the TabularEditor folder.*
+5. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") and connect to your model.
+6. Select 'Tools' from the File menu and select 'Best Practice Analyzer'.
+7. Click the Refresh icon (in blue).
 
 ## Notes
 
