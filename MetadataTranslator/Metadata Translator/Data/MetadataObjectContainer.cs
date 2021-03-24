@@ -11,10 +11,13 @@ namespace Metadata_Translator
     {
         public virtual NamedMetadataObject TabularObject { get; protected set; }
         public TranslatedProperty TranslatedProperty { get; protected set; }
+
+        public Guid TemporaryObjectId { get; protected set; }
         public MetadataObjectContainer(NamedMetadataObject metadataObject, TranslatedProperty translatedProperty)
         {
             TabularObject = metadataObject;
             TranslatedProperty = translatedProperty;
+            TemporaryObjectId = Guid.NewGuid();
         }
 
         public override string ToString()

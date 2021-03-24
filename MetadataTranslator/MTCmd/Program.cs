@@ -11,7 +11,8 @@ namespace MTCmd
     {
         Export,
         Import,
-        Overwrite
+        Overwrite,
+        ExportResx
     }
 
     class Program
@@ -49,7 +50,8 @@ namespace MTCmd
                     switch (mode)
                     {
                         case Mode.Export:
-                            Export(model, exportFolder, localeId);
+                        case Mode.ExportResx:
+                            Export(mode, model, exportFolder, localeId);
                             break;
                         case Mode.Import:
                             Import(model, importFile, false);
@@ -61,7 +63,7 @@ namespace MTCmd
                             break;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"{ex}");
                 }
@@ -93,21 +95,23 @@ namespace MTCmd
             }
         }
 
-        static void Export(DataModel model, DirectoryInfo exportFolder, string lcid)
+        static void Export(Mode mode, DataModel model, DirectoryInfo exportFolder, string lcid)
         {
+            Action<string> export = (path) => { if (mode == Mode.ExportResx) model.ExportToResx(path); else model.ExportToCsv(path); };
+
             if (exportFolder != null)
             {
-                if(!string.IsNullOrEmpty(lcid))
+                if (!string.IsNullOrEmpty(lcid))
                 {
                     model.DeselectAllLanguages();
                     model.SetLanguageFlags(lcid, true, false);
 
-                    model.ExportToCsv(exportFolder.FullName);
+                    export(exportFolder.FullName);
                     Console.WriteLine(Strings.singleLocalExportSuccess, lcid, exportFolder);
                 }
                 else if (model.HasTargetLanguages)
                 {
-                    model.ExportToCsv(exportFolder.FullName);
+                    export(exportFolder.FullName);
                     Console.WriteLine(Strings.exportSuccess, exportFolder);
                 }
                 else

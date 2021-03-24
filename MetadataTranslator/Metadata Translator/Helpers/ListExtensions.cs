@@ -26,5 +26,30 @@ namespace Metadata_Translator
             }
             return values;
         }
+
+        public static Dictionary<Guid, string> GetValues(this List<ExpandoObject> collection, string containerColumnName, string columnName)
+        {
+            if (collection == null) return new Dictionary<Guid, string>();
+
+            var values = new Dictionary<Guid, string>();
+            foreach (ExpandoObject row in collection)
+            {
+                var metaContainer = (MetadataObjectContainer)row.GetObject(containerColumnName);
+                var columnValue = row.GetValue(columnName);
+
+                if (metaContainer != null && !string.IsNullOrEmpty(columnValue))
+                {
+                    try
+                    {
+                        values.Add(metaContainer.TemporaryObjectId, columnValue);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message + " --- " + metaContainer.TemporaryObjectId.ToString() + metaContainer.ToString());
+                    }
+                }
+            }
+            return values;
+        }
     }
 }

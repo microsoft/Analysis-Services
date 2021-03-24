@@ -16,6 +16,7 @@ using Microsoft.VisualBasic.FileIO;
 using Adomd = Microsoft.AnalysisServices.AdomdClient;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Resources;
 
 namespace Metadata_Translator
 {
@@ -423,7 +424,7 @@ namespace Metadata_Translator
         }
 
         /// <summary>
-        /// Exports the translations to individual language files.
+        /// Exports the translations to individual language (csv) files.
         /// The files are placed into the specified export folder.
         /// </summary>
         /// <param name="exportFolderPath"></param>
@@ -461,6 +462,34 @@ namespace Metadata_Translator
                             sw.Write(preamble, 0, preamble.Length);
                             var data = Encoding.UTF8.GetBytes(csvContent.ToString());
                             sw.Write(data, 0, data.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Exports the translations to individual resx files.
+        /// The files are placed into the specified export folder.
+        /// </summary>
+        /// <param name="exportFolderPath"></param>
+        public void ExportToResx(string exportFolderPath)
+        {
+            List<ExpandoObject> dataRows = GetAllDataRows();
+            if (dataRows != null && dataRows.Count > 0)
+            {
+                List<string> languages = SelectedLanguages.Select(l => l.LanguageTag).ToList();
+
+                if (languages != null && languages.Count > 0)
+                {
+                    foreach (string lcid in languages)
+                    {
+                        using (ResXResourceWriter resx = new ResXResourceWriter(System.IO.Path.Combine(exportFolderPath, $"{lcid}.resx")))
+                        {
+                            foreach(var kvp in dataRows.GetValues(ContainerColumnHeader, lcid))
+                            {
+                                resx.AddResource(kvp.Key.ToString(), kvp.Value);
+                            }
                         }
                     }
                 }
