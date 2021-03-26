@@ -142,8 +142,90 @@ The following command imports German translations from a .csv file called de-DE.
 >
 > MTCmd.exe only imports one translation file at a time. To import multiple languages, run MTCmd.exe in a loop.
 
+### Working with resx files
+
+While the graphical user interface of Metadata Translator only works with csv files, the command-line tool supports an additional option to work with XML resource (.resx) files as well. Resx files rely on a well-defined XML schema, including a header followed by data in name/value pairs. These files are often used for software localization. Among other things, Visual Studio provides a convenient interface for creating and maintaining resx files. And with command-line support for resx files in Metadata Translator, you can reuse these software translations by applying them to your Power BI datasets. 
+
+#### Csv versus Resx
+
+Conceptually, resx files are slightly more difficult to work with than csv files because software localization and dataset localization use different approaches. In software projects structured for localization, UI elements are typically assigned an identifier, which then maps to an actual value in a resx file. For each supported language, the software project includes a separate resx file (or set of resx files). In this sense, there is no default locale. The identifiers establish the relationship or string mapping, and all supported languages are equal.
+
+In Power BI datasets, on the other hand, named objects don't have identifiers. They hold the strings of the default locale so that measures, relationships, and other metadata elements can use meaningful references and clients connecting without specifying a locale on the connection string get meaningful information, such as human-readable table and column names. Moreover, there is no reliable way to associate the metadata objects in a dataset with a persisted unique identifier. For this reason, Metadata Translator strongly favors csv files because csv permits a direct relationship between the strings of the default locale and the translated strings of an additional locale without the help of a relationship base on an identifier.
+
+The following figure illustrates the differences between csv and resx files for a dataset with a default locale of *en-US* and an additional locale of *it-IT*. Exporting the strings into a csv file produces a single it-IT.csv file containing both the original (default locale) strings and the translated strings. On the other hand, exporting the strings into resx produces two files, one for each locale with a globally unique identifier establishing the relationship between them. If you lost the en-US.resx file, for example, you practically also lost the Italian translations because you no longer have a mapping to the strings of the default locale.
+
+![csv versus resx](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/csv%20versus%20resx.png)
+
+#### Exporting into resx files
+
+Exporting translations from a dataset into resx files is very similar to exporting into csv files. Just specify the ExportResx as the mode of operation. For example, the following command exports all translations into resx files from an AdventureWorks dataset hosted in Power BI into a folder called ExportedTranslations:
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations -m ExportResx`
+
+> Note
+>
+> The specified export folder must exist prior to running the command. MTCmd.exe does not create the export folder. However, if any files exist in the export folder, MTCmd.exe might overwrite them without warning. MTCmd.exe exports each locale into a separate .csv file based on the locale identifier (LCID), including the default locale.
+
+#### Repeatedly exporting into resx files
+
+It is important to note that Metadata Translator generates new globally unique identifiers (GUIDs) every time you export translations from a dataset. There is no reliable way for Metadata Translator to persist previously generated GUIDs with their corresponding metadata objects in the model. It is therefore not recommended to export translations into an existing set of resx files. 
+
+For illustration, imagine the following scenario:
+
+1. You export the translations from a dataset that supports the locales en-US, it-IT, and es-ES. The default locale is en-US. 
+2. Metadata Translator creates to following files in the export folder: en-US.resx, it-IT.resx, and es-ES.resx. All three files use the same GUIDs to establish the string relationships. In other words, these three files from a translation set of resx files.
+3. You export the Italian translations again by using the -lcid parameter (-lcid it-IT). You use the same export folder. Metadata Translator overwrites the en-US.resx and it-IT.resx files.
+4. The existing es-ES.resx file is now orphaned because the GUIDs in the new en-US.resx file, representing the default locale of this dataset, no longer match. 
+5. To bring this translation set of resx files back into a consistent state, you must export the full set of locales again. 
+
+> Note
+>
+> To avoid orphaned resx files, it is a good idea to always export all locales together. If you must export individual languages, make sure you export them into a separate (empty) folder to avoid possibly overwriting an existing resx file of the default locale.
+
+#### Importing translations from resx files
+
+Importing translations from resx files is practically identical to importing from csv files. Simply specify the resx import file by using the --import-file (-if) parameter. Metadata Translator detects the import mode based in the .resx file name extension. For more details, refer to the section "Importing translations" earlier in this document. 
+
+The following command imports German translations from a resx file called de-DE.resx into an AdventureWorks dataset hosted in Power BI, overwriting any existing German strings in the dataset:
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -if C:\Translations\de-DE.resx -m Overwrite`
+
+> Note
+>
+> For a resx import operation to succeed, Metadata Translator requires the resx file of the dataset's default locale to be located in the same folder as the translation resx file. For example, if the above command attempts to import German translations into a dataset with the default locale of en-US, you must have a matching en-US.resx file in the same folder as the de-DE.resx file.
+
+#### Importing translations from external resx files
+
+There is no real difference between resx files generated by Metadata Translator vs. other tools. The GUIDs that Metadata Translator generates merely provide a convenient way to establish unique relationships between strings, but the Name values don't have to be GUIDs necessarily. Metadata Translator can use any kind of name to find a matching translation as long as the name is unique. The resx XML schema enforces uniqueness for the Name property.
+
+Metadata Translator performs the following steps during a resx import operation:
+
+1. Iterate over all the name/value pairs from the resx file of the default locale.
+2. Use the name to lookup the corresponding value string in the translation resx file.
+3. Use the value strings from the default and translated locales to construct a set of string pairs dynamically.
+4. Use the same logic as if the string pairs were from a csv file to apply the translations to the dataset.
+
+
+
+## CSV Format for translation files
+
+Metadata Translator translation files use a straightforward schema with only three columns: Type,Original,Translation. Do not delete or add columns or change the column ordering because Metadata Translator will not process translation files that don't follow this schema. Refer to the following table for more details.
+
+| Column      | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| Type        | An optional value to specify the metadata property type to which the translation should apply when Metadata Translator switches to case-sensitive string matching. <br />Supported values are: <br />    Caption<br />    Description<br />    DisplayFolder<br />If you specify an invalid property type, the translation might be ignored. Leave this column blank if you want to apply a translation to all property types across the board. |
+| Original    | A string in the default locale of the dataset. Metadata Translator compares the caption, description, or display folder name of a metadata object with this string using case-sensitive string matching to determine if the translation applies to this object. Make sure the captions, descriptions, and display folder names of your metadata objects match the strings in the Original column exactly. |
+| Translation | A translated string in the locale of the csv file, as identified by the csv file name, such as de-DE.csv. |
+
+> Note
+>
+> Ideally, strings in the Original column of a translation file fully match of the captions, descriptions, and display folder names of the metadata objects, including their ordering. However, you can also maintain a global set of translation files that apply to multiple different datasets. In this case, Metadata Translators uses case-sensitive string matching to determine which translation to apply. If you compile translation files by using a separate tool and don't know the property type, leave the Type column empty, but make sure the column exists. 
+
 ## Additional features
 
-Metadata Translator v1.2 does not support editing the default language strings because the external tools integration feature of Power BI Desktop does not support these operations yet. 
+Metadata Translator v1.3 does not support editing the default language strings because the external tools integration feature of Power BI Desktop does not support these operations yet. 
+
+Metadata Translator v1.3 does not yet support translating synonyms for Power BI Q&A, mainly because Power BI Q&A currently only supports answering natural language queries asked in English. Although there is a preview available for Spanish, the current support policy is English only (see [Supported languages and countries/regions for Power BI - Power BI | Microsoft Docs](https://docs.microsoft.com/power-bi/fundamentals/supported-languages-countries-regions#whats-translated)).
 
 For additional feature requests, create a new item under [Issues](https://github.com/microsoft/Analysis-Services/issues).
+

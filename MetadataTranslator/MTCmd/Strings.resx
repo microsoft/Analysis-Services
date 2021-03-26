@@ -127,13 +127,16 @@
     <value>Existing translations exported to: {0}</value>
   </data>
   <data name="ifDescription" xml:space="preserve">
-    <value>The full path and name of the comma-separated values (csv) translation file to import.</value>
+    <value>The full path and name of the comma-separated values (csv) or resource (resx) translation file to import.</value>
   </data>
   <data name="importSuccess" xml:space="preserve">
     <value>Translation file {0} imported successfully.</value>
   </data>
+  <data name="invalidFileType" xml:space="preserve">
+    <value>Invalid translation file type. The file must be either a comma-separated values (csv) file or a resource (resx) file.</value>
+  </data>
   <data name="invalidLocale" xml:space="preserve">
-    <value>Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv.</value>
+    <value>Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv or &lt;lcid&gt;.resx.</value>
   </data>
   <data name="lcidDescription" xml:space="preserve">
     <value>A valid Windows Language Code Identifier (LCID), aka language tag, such as en-US, af-NA, and zh-CN.</value>
@@ -149,6 +152,12 @@
   </data>
   <data name="noImportFileSpecified" xml:space="preserve">
     <value>Use the --import-file option to specify an import file for this operation.</value>
+  </data>
+  <data name="NoResxMatches" xml:space="preserve">
+    <value>No translated strings found! The keys of the reference resx '{0}' and the translation resx '{1}' don't seem to match.</value>
+  </data>
+  <data name="noResxReferenceFile" xml:space="preserve">
+    <value>Unable to import '{0}' because the reference resx file with the default language strings was not found. In addition to the import resx, make sure the following reference resx file also exists: {1}</value>
   </data>
   <data name="rootCmdDescription" xml:space="preserve">
     <value>Metadata Translator command-line app</value>

@@ -65,7 +65,7 @@ namespace MTCmd
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{ex}");
+                    Console.Error.WriteLine($"{ex}");
                 }
             });
 
@@ -75,29 +75,66 @@ namespace MTCmd
 
         static void Import(DataModel model, FileInfo importFile, bool overwriteMode)
         {
+            Func<string, bool> import = (lcid) => {
+                if (Path.GetExtension(importFile.Name).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    model.ImportFromCsv(importFile.FullName, lcid, overwriteMode);
+                    return true;
+                }
+                else if (Path.GetExtension(importFile.Name).Equals(".resx", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    string referenceResx = $"{importFile.DirectoryName}\\{model.DefaultCulture}.resx";
+                    if(File.Exists(referenceResx))
+                    {
+                        try
+                        {
+                            model.ImportFromResx(importFile.FullName, referenceResx, lcid, overwriteMode);
+                            return true;
+                        }
+                        catch (NoResxMatchesException noMatch)
+                        {
+                            Console.Error.WriteLine(string.Format(Strings.NoResxMatches, noMatch.TranslationResx, noMatch.ReferenceResx));
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine(string.Format(Strings.noResxReferenceFile, importFile.FullName, referenceResx));
+                        return false;
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine(Strings.invalidFileType);
+                    return false;
+                }
+            };
+
             if (importFile != null)
             {
                 string lcid = Path.GetFileNameWithoutExtension(importFile.Name);
                 if (model.SetLanguageFlags(lcid, true))
                 {
-                    model.ImportFromCsv(importFile.FullName, lcid, overwriteMode);
-                    model.Update();
-                    Console.WriteLine(Strings.importSuccess, importFile);
+                    if (import(lcid))
+                    {
+                        model.Update();
+                        Console.WriteLine(Strings.importSuccess, importFile);
+                    }
                 }
                 else
                 {
-                    Console.WriteLine(Strings.invalidLocale);
+                    Console.Error.WriteLine(Strings.invalidLocale);
                 }
             }
             else
             {
-                Console.WriteLine(Strings.noImportFileSpecified);
+                Console.Error.WriteLine(Strings.noImportFileSpecified);
             }
         }
 
         static void Export(Mode mode, DataModel model, DirectoryInfo exportFolder, string lcid)
         {
-            Action<string> export = (path) => { if (mode == Mode.ExportResx) model.ExportToResx(path); else model.ExportToCsv(path); };
+            Action export = () => { if (mode == Mode.ExportResx) model.ExportToResx(exportFolder.FullName); else model.ExportToCsv(exportFolder.FullName); };
 
             if (exportFolder != null)
             {
@@ -106,22 +143,22 @@ namespace MTCmd
                     model.DeselectAllLanguages();
                     model.SetLanguageFlags(lcid, true, false);
 
-                    export(exportFolder.FullName);
+                    export();
                     Console.WriteLine(Strings.singleLocalExportSuccess, lcid, exportFolder);
                 }
-                else if (model.HasTargetLanguages)
+                else if (model.HasTargetLanguages || mode == Mode.ExportResx)
                 {
-                    export(exportFolder.FullName);
+                    export();
                     Console.WriteLine(Strings.exportSuccess, exportFolder);
                 }
                 else
                 {
-                    Console.WriteLine(Strings.noExportableTranslations);
+                    Console.Error.WriteLine(Strings.noExportableTranslations);
                 }
             }
             else
             {
-                Console.WriteLine(Strings.noExportFolderSpecified);
+                Console.Error.WriteLine(Strings.noExportFolderSpecified);
             }
         }
     }

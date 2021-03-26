@@ -104,6 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\NoResxMatchesException.cs" />
     <Compile Include="UI\ConnectionStringInput.xaml.cs">
       <DependentUpon>ConnectionStringInput.xaml</DependentUpon>
     </Compile>

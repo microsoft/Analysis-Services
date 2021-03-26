@@ -48,14 +48,19 @@ namespace Metadata_Translator
 
                 if (openFileDialog1.ShowDialog() == true)
                 {
-                     using (new Hourglass())
+                    using (new Hourglass())
                     {
 
                         foreach (string filePath in openFileDialog1.FileNames)
                         {
                             string lcid = Path.GetFileNameWithoutExtension(filePath);
                             mainWnd.AddColumn(lcid);
-                            mainWnd.DataModel?.ImportFromCsv(filePath, lcid, mainWnd.OverwriteTranslation);
+
+                            try
+                            {
+                                mainWnd.DataModel?.ImportFromCsv(filePath, lcid, mainWnd.OverwriteTranslation);
+                            }
+                            catch { }
                         }
                     }
                 }

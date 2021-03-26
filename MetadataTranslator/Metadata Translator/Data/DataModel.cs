@@ -17,6 +17,7 @@ using Adomd = Microsoft.AnalysisServices.AdomdClient;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Resources;
+using System.Collections;
 
 namespace Metadata_Translator
 {
@@ -504,40 +505,66 @@ namespace Metadata_Translator
         /// <param name="replaceExistingTranslations"></param>
         public void ImportFromCsv(string filePath, string lcid, bool replaceExistingTranslations)
         {
-            try
+            string csvData = File.ReadAllText(filePath);
+            if (string.IsNullOrEmpty(csvData)) return;
+
+            List<CsvRow> parsedRows = new List<CsvRow>();
+
+            using (TextFieldParser parser = new TextFieldParser(new StringReader(csvData)))
             {
-                string csvData = File.ReadAllText(filePath);
-                if (string.IsNullOrEmpty(csvData)) return;
+                parser.CommentTokens = new string[] { "#" };
+                parser.SetDelimiters(new string[] { "," });
+                parser.HasFieldsEnclosedInQuotes = true;
 
-                List<CsvRow> parsedRows = new List<CsvRow>();
-
-                using (TextFieldParser parser = new TextFieldParser(new StringReader(csvData)))
+                /// Skip the header row.
+                /// 
+                parser.ReadFields();
+                while (!parser.EndOfData)
                 {
-                    parser.CommentTokens = new string[] { "#" };
-                    parser.SetDelimiters(new string[] { "," });
-                    parser.HasFieldsEnclosedInQuotes = true;
-
-                    /// Skip the header row.
-                    /// 
-                    parser.ReadFields();
-                    while (!parser.EndOfData)
+                    var textFields = parser.ReadFields();
+                    if (textFields != null && textFields.Count() == 3)
                     {
-                        var textFields = parser.ReadFields();
-                        if (textFields != null && textFields.Count() == 3)
+                        parsedRows.Add(new CsvRow
                         {
-                            parsedRows.Add(new CsvRow
-                            {
-                                Type = textFields[0],
-                                Original = textFields[1],
-                                Translation = textFields[2]
-                            });
-                        }
+                            Type = textFields[0],
+                            Original = textFields[1],
+                            Translation = textFields[2]
+                        });
                     }
                 }
-
-                ApplyTranslation(lcid, parsedRows, replaceExistingTranslations);
             }
-            catch { }
+
+            ApplyTranslation(lcid, parsedRows, replaceExistingTranslations);
+        }
+
+        public void ImportFromResx(string filePath, string referencePath, string lcid, bool replaceExistingTranslations)
+        {
+            List<CsvRow> parsedRows = new List<CsvRow>();
+
+            using (ResXResourceReader defaultLocaleStrings = new ResXResourceReader(referencePath))
+            using (ResXResourceSet translatedStrings = new ResXResourceSet(filePath))
+            {
+                foreach (DictionaryEntry kvp in defaultLocaleStrings)
+                {
+                    string key = kvp.Key.ToString();
+                    string value = kvp.Value?.ToString();
+                    string translation = translatedStrings.GetString(key);
+                    if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(translation))
+                    {
+                        parsedRows.Add(new CsvRow
+                        {
+                            Type = string.Empty,
+                            Original = value,
+                            Translation = translation
+                        });
+                    }
+                }
+            }
+
+            if (parsedRows.Count == 0)
+                throw new NoResxMatchesException(filePath, referencePath);
+
+            ApplyTranslation(lcid, parsedRows, replaceExistingTranslations);
         }
 
         /// <summary>
@@ -548,6 +575,11 @@ namespace Metadata_Translator
         /// <param name="replaceExistingTranslations"></param>
         private void ApplyTranslation(string lcid, List<CsvRow> translatedRows, bool replaceExistingTranslations)
         {
+            if (translatedRows == null || translatedRows.Count == 0)
+                return;
+
+            bool hasTypeInfo = !string.IsNullOrEmpty(translatedRows[0].Type);
+
             var allDataRows = GetAllDataRows();
             if(!MatchAllRows(allDataRows, lcid, translatedRows, replaceExistingTranslations))
             {
@@ -558,7 +590,8 @@ namespace Metadata_Translator
                 {
                     var metaContainer = (MetadataObjectContainer)row.GetObject(ContainerColumnHeader);
                     var original = row.GetValue(DefaultCulture);
-                    var csvRow = translatedRows.Where(x => x.Type == metaContainer.TranslatedProperty.ToString() && x.Original.Equals(original)).FirstOrDefault();
+                    var csvRow = (hasTypeInfo)? translatedRows.Where(x => x.Type == metaContainer.TranslatedProperty.ToString() && x.Original.Equals(original)).FirstOrDefault() :
+                        translatedRows.Where(x => x.Original.Equals(original)).FirstOrDefault();
                     if(csvRow != null)
                     {
                         row.SetValue(lcid, csvRow.Translation, replaceExistingTranslations);

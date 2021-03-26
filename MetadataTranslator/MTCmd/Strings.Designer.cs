@@ -88,7 +88,7 @@ namespace MTCmd {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The full path and name of the comma-separated values (csv) translation file to import..
+        ///   Looks up a localized string similar to The full path and name of the comma-separated values (csv) or resource (resx) translation file to import..
         /// </summary>
         internal static string ifDescription {
             get {
@@ -106,7 +106,16 @@ namespace MTCmd {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv..
+        ///   Looks up a localized string similar to Invalid translation file type. The file must be either a comma-separated values (csv) file or a resource (resx) file..
+        /// </summary>
+        internal static string invalidFileType {
+            get {
+                return ResourceManager.GetString("invalidFileType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv or &lt;lcid&gt;.resx..
         /// </summary>
         internal static string invalidLocale {
             get {
@@ -156,6 +165,24 @@ namespace MTCmd {
         internal static string noImportFileSpecified {
             get {
                 return ResourceManager.GetString("noImportFileSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No translated strings found! The keys of the reference resx &apos;{0}&apos; and the translation resx &apos;{1}&apos; don&apos;t seem to match..
+        /// </summary>
+        internal static string NoResxMatches {
+            get {
+                return ResourceManager.GetString("NoResxMatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to import &apos;{0}&apos; because the reference resx file with the default language strings was not found. In addition to the import resx, make sure the following reference resx file also exists: {1}.
+        /// </summary>
+        internal static string noResxReferenceFile {
+            get {
+                return ResourceManager.GetString("noResxReferenceFile", resourceCulture);
             }
         }
         
