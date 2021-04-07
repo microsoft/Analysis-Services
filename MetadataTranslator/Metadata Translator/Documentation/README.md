@@ -196,11 +196,11 @@ For illustration, imagine the following scenario:
 
 #### Generating static key names instead of random GUIDs
 
-If you find GUID-based resx files difficult to work with, you can switch to more statically generated key names based on the translated property types and the metadata object names in your dataset. In this case, use the --key-prefix option to specify an arbitrary prefix in ExportResx mode. With a key prefix specified, Metadata Translator generates key names following the format: <key prefix>#<metadata object name>#<translated property type>. 
+If you find GUID-based resx files difficult to work with, you can switch to more statically generated key names based on the translated property types and the metadata object names in your dataset. In this case, use the --key-prefix option to specify an arbitrary prefix in ExportResx mode. With a key prefix specified, Metadata Translator generates key names following the format: \<key prefix\>#\<metadata object name\>#\<translated property type\>. 
 
 The following command  exports all translations from an AdventureWorks dataset hosted in Power BI into resx files in a folder called ExportedTranslations using static key names instead of random GUIDs in the resx files (see also the following screenshot for a generated resx):
 
-`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations -m ExportResx`
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations -m ExportResx -kp arbitraryPrefix`
 
 ![A resx with static key names instead of random GUIDs](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/A%20resx%20with%20static%20key%20names%20instead%20of%20random%20GUIDs.png)
 
