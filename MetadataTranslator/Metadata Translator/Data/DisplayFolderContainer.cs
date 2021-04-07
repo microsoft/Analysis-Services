@@ -24,5 +24,23 @@ namespace Metadata_Translator
                 $"DisplayFolder - {TabularObjects.Count} Objects" :
                 $"DisplayFolder - 1 {TabularObject.ObjectType}";
         }
+
+        protected override string GetFullName(MetadataObject metadataObject)
+        {
+            if (metadataObject is Measure measure)
+            {
+                return "#" + Convert.ToBase64String(Encoding.UTF8.GetBytes(measure.DisplayFolder));
+            }
+            else if (metadataObject is Column column)
+            {
+                return "#" + Convert.ToBase64String(Encoding.UTF8.GetBytes(column.DisplayFolder));
+            }
+            else if (metadataObject is Hierarchy hierarchy)
+            {
+                return "#" + Convert.ToBase64String(Encoding.UTF8.GetBytes(hierarchy.DisplayFolder));
+            }
+
+            return string.Empty;
+        }
     }
 }

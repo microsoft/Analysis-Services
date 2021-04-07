@@ -474,7 +474,7 @@ namespace Metadata_Translator
         /// The files are placed into the specified export folder.
         /// </summary>
         /// <param name="exportFolderPath"></param>
-        public void ExportToResx(string exportFolderPath)
+        public void ExportToResx(string exportFolderPath, string keyPrefix)
         {
             List<ExpandoObject> dataRows = GetAllDataRows();
             if (dataRows != null && dataRows.Count > 0)
@@ -487,7 +487,7 @@ namespace Metadata_Translator
                     {
                         using (ResXResourceWriter resx = new ResXResourceWriter(System.IO.Path.Combine(exportFolderPath, $"{lcid}.resx")))
                         {
-                            foreach(var kvp in dataRows.GetValues(ContainerColumnHeader, lcid))
+                            foreach(var kvp in dataRows.GetKeyValuePairs(ContainerColumnHeader, lcid, keyPrefix))
                             {
                                 resx.AddResource(kvp.Key.ToString(), kvp.Value);
                             }
@@ -503,7 +503,7 @@ namespace Metadata_Translator
         /// <param name="filePath"></param>
         /// <param name="lcid"></param>
         /// <param name="replaceExistingTranslations"></param>
-        public void ImportFromCsv(string filePath, string lcid, bool replaceExistingTranslations)
+        public void ImportFromCsv(string filePath, string lcid, bool replaceExistingTranslations, bool fallbackToDefaultLocale = false)
         {
             string csvData = File.ReadAllText(filePath);
             if (string.IsNullOrEmpty(csvData)) return;
@@ -528,7 +528,7 @@ namespace Metadata_Translator
                         {
                             Type = textFields[0],
                             Original = textFields[1],
-                            Translation = textFields[2]
+                            Translation = (fallbackToDefaultLocale && string.IsNullOrEmpty(textFields[2]))? textFields[1] : textFields[2]
                         });
                     }
                 }
@@ -537,7 +537,7 @@ namespace Metadata_Translator
             ApplyTranslation(lcid, parsedRows, replaceExistingTranslations);
         }
 
-        public void ImportFromResx(string filePath, string referencePath, string lcid, bool replaceExistingTranslations)
+        public void ImportFromResx(string filePath, string referencePath, string lcid, bool replaceExistingTranslations, bool fallbackToDefaultLocale)
         {
             List<CsvRow> parsedRows = new List<CsvRow>();
 
@@ -549,6 +549,10 @@ namespace Metadata_Translator
                     string key = kvp.Key.ToString();
                     string value = kvp.Value?.ToString();
                     string translation = translatedStrings.GetString(key);
+
+                    if (fallbackToDefaultLocale && string.IsNullOrEmpty(translation))
+                        translation = value;
+
                     if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(translation))
                     {
                         parsedRows.Add(new CsvRow

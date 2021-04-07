@@ -35,12 +35,16 @@ namespace MTCmd
                 new Option<FileInfo>(
                     new string[]{ "--import-file", "-if" }, Strings.ifDescription).ExistingOnly(),
                 new Option<string>(
-                    new string[]{ "--locale-id", "-lcid" }, Strings.lcidDescription)
-            };
+                    new string[]{ "--locale-id", "-lcid" }, Strings.lcidDescription),
+                new Option<bool>(
+                    new string[]{ "--fallback-mode", "-fm" }, Strings.fallbackDescription),
+                 new Option<string>(
+                    new string[]{ "--key-prefix", "-kp" }, Strings.keyPrefixDescription)
+           };
 
 
             // Note that the parameters of the handler method are matched according to the names of the options
-            rootCommand.Handler = CommandHandler.Create<string, Mode, DirectoryInfo, FileInfo, string>((connectionString, mode, exportFolder, importFile, localeId) =>
+            rootCommand.Handler = CommandHandler.Create<string, Mode, DirectoryInfo, FileInfo, string, bool, string>((connectionString, mode, exportFolder, importFile, localeId, fallbackMode, keyPrefix) =>
             {
                 try
                 {
@@ -51,13 +55,13 @@ namespace MTCmd
                     {
                         case Mode.Export:
                         case Mode.ExportResx:
-                            Export(mode, model, exportFolder, localeId);
+                            Export(mode, model, exportFolder, localeId, keyPrefix);
                             break;
                         case Mode.Import:
-                            Import(model, importFile, false);
+                            Import(model, importFile, false, fallbackMode);
                             break;
                         case Mode.Overwrite:
-                            Import(model, importFile, true);
+                            Import(model, importFile, true, fallbackMode);
                             break;
                         default:
                             break;
@@ -73,12 +77,12 @@ namespace MTCmd
             return rootCommand.InvokeAsync(args).Result;
         }
 
-        static void Import(DataModel model, FileInfo importFile, bool overwriteMode)
+        static void Import(DataModel model, FileInfo importFile, bool overwriteMode, bool fallbackDefault)
         {
             Func<string, bool> import = (lcid) => {
                 if (Path.GetExtension(importFile.Name).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    model.ImportFromCsv(importFile.FullName, lcid, overwriteMode);
+                    model.ImportFromCsv(importFile.FullName, lcid, overwriteMode, fallbackDefault);
                     return true;
                 }
                 else if (Path.GetExtension(importFile.Name).Equals(".resx", StringComparison.InvariantCultureIgnoreCase))
@@ -88,7 +92,7 @@ namespace MTCmd
                     {
                         try
                         {
-                            model.ImportFromResx(importFile.FullName, referenceResx, lcid, overwriteMode);
+                            model.ImportFromResx(importFile.FullName, referenceResx, lcid, overwriteMode, fallbackDefault);
                             return true;
                         }
                         catch (NoResxMatchesException noMatch)
@@ -132,9 +136,9 @@ namespace MTCmd
             }
         }
 
-        static void Export(Mode mode, DataModel model, DirectoryInfo exportFolder, string lcid)
+        static void Export(Mode mode, DataModel model, DirectoryInfo exportFolder, string lcid, string keyPrefix)
         {
-            Action export = () => { if (mode == Mode.ExportResx) model.ExportToResx(exportFolder.FullName); else model.ExportToCsv(exportFolder.FullName); };
+            Action export = () => { if (mode == Mode.ExportResx) model.ExportToResx(exportFolder.FullName, keyPrefix); else model.ExportToCsv(exportFolder.FullName); };
 
             if (exportFolder != null)
             {

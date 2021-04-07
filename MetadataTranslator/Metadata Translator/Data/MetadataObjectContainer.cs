@@ -34,5 +34,23 @@ namespace Metadata_Translator
                     return TabularObject.ObjectType.ToString();
             }
         }
+
+        public virtual string GetUniqueName(string namePrefix)
+        {
+           return (string.IsNullOrEmpty(namePrefix)) ? TemporaryObjectId.ToString() : $"{namePrefix}{GetFullName(TabularObject)}#{TranslatedProperty}";
+        }
+
+        protected virtual string GetFullName(MetadataObject metadataObject)
+        {
+            string fullName = string.Empty;
+
+            if(metadataObject is NamedMetadataObject tabularObject)
+            {
+                string parentName = (tabularObject.Parent != null) ? GetFullName(tabularObject.Parent) : string.Empty;
+                fullName = string.Concat(parentName, "#", tabularObject.Name);
+            }
+
+            return fullName;
+        }
     }
 }

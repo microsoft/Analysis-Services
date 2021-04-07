@@ -126,6 +126,9 @@
   <data name="exportSuccess" xml:space="preserve">
     <value>Existing translations exported to: {0}</value>
   </data>
+  <data name="fallbackDescription" xml:space="preserve">
+    <value>In Import mode, determines if the string from the default locale should be applied to the translated locale if the translated string is missing or cannot be found. The default setting is false, which leaves the translated string empty in the translated locale.</value>
+  </data>
   <data name="ifDescription" xml:space="preserve">
     <value>The full path and name of the comma-separated values (csv) or resource (resx) translation file to import.</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="invalidLocale" xml:space="preserve">
     <value>Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv or &lt;lcid&gt;.resx.</value>
+  </data>
+  <data name="keyPrefixDescription" xml:space="preserve">
+    <value>In ExportResx mode, influences how Metadata Translator generates the names of the key/value pairs. By default, a random GUID is generated as the name. If a key prefix is specified, then Metadata Translator generates keys based on the translated property types and the metadata object names.</value>
   </data>
   <data name="lcidDescription" xml:space="preserve">
     <value>A valid Windows Language Code Identifier (LCID), aka language tag, such as en-US, af-NA, and zh-CN.</value>

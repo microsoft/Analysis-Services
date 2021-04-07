@@ -27,11 +27,11 @@ namespace Metadata_Translator
             return values;
         }
 
-        public static Dictionary<Guid, string> GetValues(this List<ExpandoObject> collection, string containerColumnName, string columnName)
+        public static Dictionary<string, string> GetKeyValuePairs(this List<ExpandoObject> collection, string containerColumnName, string columnName, string namePrefix)
         {
-            if (collection == null) return new Dictionary<Guid, string>();
+            if (collection == null) return new Dictionary<string, string>();
 
-            var values = new Dictionary<Guid, string>();
+            var values = new Dictionary<string, string>();
             foreach (ExpandoObject row in collection)
             {
                 var metaContainer = (MetadataObjectContainer)row.GetObject(containerColumnName);
@@ -41,7 +41,7 @@ namespace Metadata_Translator
                 {
                     try
                     {
-                        values.Add(metaContainer.TemporaryObjectId, columnValue);
+                        values.Add(metaContainer.GetUniqueName(namePrefix), columnValue);
                     }
                     catch (Exception ex)
                     {

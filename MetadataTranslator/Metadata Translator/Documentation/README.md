@@ -132,7 +132,7 @@ The -ef option exports existing translations from a dataset. If you want to add 
 
 ### Importing translations
 
-To import translations from a .csv file, you must specify full path to the import file by using the --import-file (-if) parameter. The file name must correspond to the locale identifier (LCID) of the target language. You must also specify the --mode (-m) parameter. Valid options are Import or Overwrite. Import applies translations for strings that have not been translated yet in the dataset. Overwrite, as the name implies, overwrites any existing translations in the dataset. Both, Import and Overwrite create new translations if you import a locale that does not yet exist in the dataset.
+To import translations from a .csv file, you must specify full path to the import file by using the --import-file (-if) parameter. The file name must correspond to the locale identifier (LCID) of the target language. You must also specify the --mode (-m) parameter. Valid options are Import or Overwrite. Import applies translations for strings that have not been translated yet in the dataset. Overwrite, as the name implies, overwrites any existing translations in the dataset. Both, Import and Overwrite add a new culture to the dataset if you import a locale that does not yet exist in the dataset.
 
 The following command imports German translations from a .csv file called de-DE.csv into an AdventureWorks dataset hosted in Power BI, overwriting any existing German strings in the dataset:
 
@@ -141,6 +141,18 @@ The following command imports German translations from a .csv file called de-DE.
 > Note
 >
 > MTCmd.exe only imports one translation file at a time. To import multiple languages, run MTCmd.exe in a loop.
+
+### Fallback to the default locale
+
+By default, Metadata Translator leaves untranslated strings empty in the translated cultures. This is generally acceptable because Power BI can fall back to the default locale if a translated string cannot be found for a caption, description, or display folder. However, DAX measures using the USERCULTURE() function might require translated strings to be present. In order to accommodate these scenarios, you can set the --fallback-mode option to true so that the command line tool takes the string from the default locale and adds it to the translated culture if the translated string is missing or cannot be found. 
+
+The following command imports German translations from a .csv file called de-DE.csv into an AdventureWorks dataset hosted in Power BI, overwriting any existing German strings in the dataset and applying the strings from the default locale if any translations are missing:
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -if C:\Translations\de-DE.csv -m Overwrite -fm true` 
+
+> Note
+>
+> Only the command-line tool, MTCmd.exe, supports falling back to the strings of the default locale in import mode. The GUI tool, Metadata Translator.exe, does not provide an option to enable this operation.
 
 ### Working with resx files
 
@@ -181,6 +193,20 @@ For illustration, imagine the following scenario:
 > Note
 >
 > To avoid orphaned resx files, it is a good idea to always export all locales together. If you must export individual languages, make sure you export them into a separate (empty) folder to avoid possibly overwriting an existing resx file of the default locale.
+
+#### Generating static key names instead of random GUIDs
+
+If you find GUID-based resx files difficult to work with, you can switch to more statically generated key names based on the translated property types and the metadata object names in your dataset. In this case, use the --key-prefix option to specify an arbitrary prefix in ExportResx mode. With a key prefix specified, Metadata Translator generates key names following the format: <key prefix>#<metadata object name>#<translated property type>. 
+
+The following command  exports all translations from an AdventureWorks dataset hosted in Power BI into resx files in a folder called ExportedTranslations using static key names instead of random GUIDs in the resx files (see also the following screenshot for a generated resx):
+
+`MTCmd -cs "powerbi://api.powerbi.com/v1.0/myorg/AdventureWorksSource;initial catalog=AdventureWorks" -ef C:\ExportedTranslations -m ExportResx`
+
+![A resx with static key names instead of random GUIDs](https://github.com/microsoft/Analysis-Services/blob/master/MetadataTranslator/Metadata%20Translator/Documentation/Images/A%20resx%20with%20static%20key%20names%20instead%20of%20random%20GUIDs.png)
+
+> Note
+>
+> Because Metadata Translator generates the static key names based on the translated property types and the metadata object names in your dataset, be aware that the static key names change if you re-export your translations into resx files following a rename of metadata objects in the dataset. 
 
 #### Importing translations from resx files
 

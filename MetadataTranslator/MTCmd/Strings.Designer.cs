@@ -88,6 +88,15 @@ namespace MTCmd {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In Import mode, determines if the string from the default locale should be applied to the translated locale if the translated string is missing or cannot be found. The default setting is false, which leaves the translated string empty in the translated locale..
+        /// </summary>
+        internal static string fallbackDescription {
+            get {
+                return ResourceManager.GetString("fallbackDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The full path and name of the comma-separated values (csv) or resource (resx) translation file to import..
         /// </summary>
         internal static string ifDescription {
@@ -120,6 +129,15 @@ namespace MTCmd {
         internal static string invalidLocale {
             get {
                 return ResourceManager.GetString("invalidLocale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In ExportResx mode, influences how Metadata Translator generates the names of the key/value pairs. By default, a random GUID is generated as the name. If a key prefix is specified, then Metadata Translator generates keys based on the translated property types and the metadata object names..
+        /// </summary>
+        internal static string keyPrefixDescription {
+            get {
+                return ResourceManager.GetString("keyPrefixDescription", resourceCulture);
             }
         }
         
