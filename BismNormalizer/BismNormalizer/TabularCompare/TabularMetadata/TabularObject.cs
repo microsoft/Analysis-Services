@@ -16,16 +16,19 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
     {
         private string _objectDefinition;
         private string _name;
+        private TabularModel _parentTabularModel;
 
         /// <summary>
         /// Initializes a new instance of the TabularObject class.
         /// </summary>
         /// <param name="namedMetaDataObject">The Tabular Object Model supertype of the class being abstracted.</param>
-        public TabularObject(NamedMetadataObject namedMetaDataObject)
+        public TabularObject(NamedMetadataObject namedMetaDataObject, TabularModel parentTabularModel)
         {
             _name = namedMetaDataObject.Name;
             if (namedMetaDataObject is Tom.Model) return; //Model has custom JSON string
-            
+
+            _parentTabularModel = parentTabularModel;
+
             //Serialize json
             SerializeOptions options = new SerializeOptions();
             options.IgnoreInferredProperties = true;
@@ -38,6 +41,15 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 JToken token = JToken.Parse(_objectDefinition);
                 RemovePropertyFromObjectDefinition(token, "annotations");
+                _objectDefinition = token.ToString(Formatting.Indented);
+            }
+
+            //Remove lineageTag if required
+            if (_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
+                !_parentTabularModel.ComparisonInfo.OptionsInfo.OptionLineageTag)
+            {
+                JToken token = JToken.Parse(_objectDefinition);
+                RemovePropertyFromObjectDefinition(token, "lineageTag");
                 _objectDefinition = token.ToString(Formatting.Indented);
             }
 

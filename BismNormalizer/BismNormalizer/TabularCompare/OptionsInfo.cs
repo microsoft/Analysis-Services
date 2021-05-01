@@ -19,6 +19,7 @@ namespace BismNormalizer.TabularCompare
         private bool _optionRoles;
         private bool _optionActions;
         private bool _optionPartitions;
+        private bool _optionLineageTag;
         private bool _optionRetainPartitions;
         private bool _optionRetainPolicyPartitions;
         private bool _optionRetainStorageMode;
@@ -39,6 +40,7 @@ namespace BismNormalizer.TabularCompare
             _optionRoles = Settings.Default.OptionRoles;
             _optionActions = Settings.Default.OptionActions;
             _optionPartitions = Settings.Default.OptionPartitions;
+            _optionLineageTag = Settings.Default.OptionLineageTag;
             _optionRetainPartitions = Settings.Default.OptionRetainPartitions;
             _optionRetainPolicyPartitions = Settings.Default.OptionRetainPolicyPartitions;
             _optionRetainStorageMode = Settings.Default.OptionRetainStorageMode;
@@ -110,6 +112,15 @@ namespace BismNormalizer.TabularCompare
         {
             get { return _optionPartitions; }
             set { _optionPartitions = value; }
+        }
+
+        /// <summary>
+        /// A Boolean specifying whether to consider LineageTag when comparing objects.
+        /// </summary>
+        public bool OptionLineageTag
+        {
+            get { return _optionLineageTag; }
+            set { _optionLineageTag = value; }
         }
 
         /// <summary>
@@ -189,6 +200,7 @@ namespace BismNormalizer.TabularCompare
             Settings.Default.OptionRoles = _optionRoles;
             Settings.Default.OptionActions = _optionActions;
             Settings.Default.OptionPartitions = _optionPartitions;
+            Settings.Default.OptionLineageTag = _optionLineageTag;
             Settings.Default.OptionRetainPartitions = _optionRetainPartitions;
             Settings.Default.OptionRetainPolicyPartitions = _optionRetainPolicyPartitions;
             Settings.Default.OptionRetainStorageMode = _optionRetainStorageMode;

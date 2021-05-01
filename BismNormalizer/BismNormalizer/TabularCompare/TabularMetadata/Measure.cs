@@ -24,7 +24,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="parentTable">Table object that the measure belongs to.</param>
         /// <param name="tomMeasure">Tabular Object Model Measure object abtstracted by the Measure class.</param>
         /// <param name="isKpi">Indicates whether the measure is a KPI.</param>
-        public Measure(Table parentTable, Tom.Measure tomMeasure, bool isKpi) : base(tomMeasure)
+        public Measure(Table parentTable, Tom.Measure tomMeasure, bool isKpi) : base(tomMeasure, parentTable.ParentTabularModel)
         {
             _parentTable = parentTable;
             _tomMeasure = tomMeasure;

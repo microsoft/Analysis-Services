@@ -50,6 +50,7 @@ namespace BismNormalizer.TabularCompare.UI
             chkRoles.Checked = _comparisonInfo.OptionsInfo.OptionRoles;
             //chkActions.Checked = _comparisonInfo.OptionsInfo.OptionActions;
             chkPartitions.Checked = _comparisonInfo.OptionsInfo.OptionPartitions;
+            chkLineageTag.Checked = _comparisonInfo.OptionsInfo.OptionLineageTag;
             chkRetainPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPartitions;
             chkRetainPolicyPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions;
             chkRetainStorageMode.Checked = _comparisonInfo.OptionsInfo.OptionRetainStorageMode;
@@ -70,6 +71,7 @@ namespace BismNormalizer.TabularCompare.UI
             //_comparisonInfo.OptionsInfo.OptionActions = chkActions.Checked;
             _comparisonInfo.OptionsInfo.OptionActions = false;
             _comparisonInfo.OptionsInfo.OptionPartitions = chkPartitions.Checked;
+            _comparisonInfo.OptionsInfo.OptionLineageTag = chkLineageTag.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPartitions = chkRetainPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions = chkRetainPolicyPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainStorageMode = chkRetainStorageMode.Checked;

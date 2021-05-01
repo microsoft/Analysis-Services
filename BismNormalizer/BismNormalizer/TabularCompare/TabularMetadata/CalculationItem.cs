@@ -23,7 +23,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="parentTable">Table object that the calculationItem belongs to.</param>
         /// <param name="tomCalculationItem">Tabular Object Model CalculationItem object abtstracted by the CalculationItem class.</param>
         /// <param name="isKpi">Indicates whether the calculationItem is a KPI.</param>
-        public CalculationItem(Table parentTable, Tom.CalculationItem tomCalculationItem) : base(tomCalculationItem)
+        public CalculationItem(Table parentTable, Tom.CalculationItem tomCalculationItem) : base(tomCalculationItem, parentTable.ParentTabularModel)
         {
             _parentTable = parentTable;
             _tomCalculationItem = tomCalculationItem;

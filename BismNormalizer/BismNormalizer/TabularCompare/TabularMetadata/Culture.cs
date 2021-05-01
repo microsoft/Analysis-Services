@@ -22,7 +22,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="parentTabularModel">TabularModel object that the Culture object belongs to.</param>
         /// <param name="tomCulture">Tabular Object Model Culture object abtstracted by the Culture class.</param>
-        public Culture(TabularModel parentTabularModel, Tom.Culture tomCulture) : base(tomCulture)
+        public Culture(TabularModel parentTabularModel, Tom.Culture tomCulture) : base(tomCulture, parentTabularModel)
         {
             _parentTabularModel = parentTabularModel;
             _tomCulture = tomCulture;

@@ -18,7 +18,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="parentTabularModel">TabularModel object that the DataSource object belongs to.</param>
         /// <param name="datasource">Tabular Object Model ProviderDataSource object abtstracted by the DataSource class.</param>
-        public DataSource(TabularModel parentTabularModel, Microsoft.AnalysisServices.Tabular.DataSource dataSource) : base(dataSource)
+        public DataSource(TabularModel parentTabularModel, Microsoft.AnalysisServices.Tabular.DataSource dataSource) : base(dataSource, parentTabularModel)
         {
             _parentTabularModel = parentTabularModel;
             _tomDataSource = dataSource;

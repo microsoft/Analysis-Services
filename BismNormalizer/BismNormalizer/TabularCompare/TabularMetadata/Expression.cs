@@ -15,7 +15,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="parentTabularModel">TabularModel object that the Expression object belongs to.</param>
         /// <param name="expression">Tabular Object Model Expression object abtstracted by the Expression class.</param>
-        public Expression(TabularModel parentTabularModel, NamedExpression expression) : base(expression)
+        public Expression(TabularModel parentTabularModel, NamedExpression expression) : base(expression, parentTabularModel)
         {
             _parentTabularModel = parentTabularModel;
             _tomExpression = expression;

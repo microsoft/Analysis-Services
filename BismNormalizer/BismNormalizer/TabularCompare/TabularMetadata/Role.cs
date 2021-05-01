@@ -15,7 +15,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="parentTabularModel">TabularModel object that the Role object belongs to.</param>
         /// <param name="role">Tabular Object Model Role object abtstracted by the Role class.</param>
-        public Role(TabularModel parentTabularModel, ModelRole role) : base(role)
+        public Role(TabularModel parentTabularModel, ModelRole role) : base(role, parentTabularModel)
         {
             _parentTabularModel = parentTabularModel;
             _tomRole = role;

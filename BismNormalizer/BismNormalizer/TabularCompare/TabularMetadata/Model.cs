@@ -22,7 +22,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="parentTabularModel">TabularModel object that the Model object belongs to.</param>
         /// <param name="tomModel">Tabular Object Model Model object abtstracted by the Model class.</param>
-        public Model(TabularModel parentTabularModel, Tom.Model tomModel) : base(tomModel)
+        public Model(TabularModel parentTabularModel, Tom.Model tomModel) : base(tomModel, parentTabularModel)
         {
             _parentTabularModel = parentTabularModel;
             _tomModel = tomModel;

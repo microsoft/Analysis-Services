@@ -27,7 +27,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="modifiedInternalName">Boolean indicating whether the TOM Relationship object Name property was changed to avoid name conflict.</param>
         /// <param name="oldInternalName">If the TOM Relationship object Name property was changed, this parameter shows the old value.</param>
         public Relationship(Table table, SingleColumnRelationship tomRelationship, bool copiedFromSource = false, bool modifiedInternalName = false, string oldInternalName = "") 
-            : base(tomRelationship)
+            : base(tomRelationship, table.ParentTabularModel)
         {
             _table = table;
             _tomRelationship = tomRelationship;

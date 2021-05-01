@@ -33,6 +33,9 @@ namespace AlmToolkit
             }
             catch { }
 
+            // Default web requests like AAD Auth to use windows credentials for proxy auth
+            System.Net.WebRequest.DefaultWebProxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+
             if (args != null && args.Length > 0)
             {
                 if (args.Length > 1)
