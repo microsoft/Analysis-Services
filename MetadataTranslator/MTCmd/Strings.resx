@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="csDescription" xml:space="preserve">
+    <value>The connection string to connect to the Azure Analysis Services (Azure AS) or SQL Server Analysis Services (SSAS) data model, or Power BI Premium dataset</value>
+  </data>
+  <data name="efDescription" xml:space="preserve">
+    <value>The full path to the export folder.</value>
+  </data>
+  <data name="exportSuccess" xml:space="preserve">
+    <value>Existing translations exported to: {0}</value>
+  </data>
+  <data name="fallbackDescription" xml:space="preserve">
+    <value>In Import mode, determines if the string from the default locale should be applied to the translated locale if the translated string is missing or cannot be found. The default setting is false, which leaves the translated string empty in the translated locale.</value>
+  </data>
+  <data name="ifDescription" xml:space="preserve">
+    <value>The full path and name of the comma-separated values (csv) or resource (resx) translation file to import.</value>
+  </data>
+  <data name="importSuccess" xml:space="preserve">
+    <value>Translation file {0} imported successfully.</value>
+  </data>
+  <data name="invalidFileType" xml:space="preserve">
+    <value>Invalid translation file type. The file must be either a comma-separated values (csv) file or a resource (resx) file.</value>
+  </data>
+  <data name="invalidLocale" xml:space="preserve">
+    <value>Either the imported language matches the default locale, or the file name does not correspond to a supported locale identifier. The file name convention is &lt;lcid&gt;.csv or &lt;lcid&gt;.resx.</value>
+  </data>
+  <data name="keyPrefixDescription" xml:space="preserve">
+    <value>In ExportResx mode, influences how Metadata Translator generates the names of the key/value pairs. By default, a random GUID is generated as the name. If a key prefix is specified, then Metadata Translator generates keys based on the translated property types and the metadata object names.</value>
+  </data>
+  <data name="lcidDescription" xml:space="preserve">
+    <value>A valid Windows Language Code Identifier (LCID), aka language tag, such as en-US, af-NA, and zh-CN.</value>
+  </data>
+  <data name="modeDescription" xml:space="preserve">
+    <value>The mode of the command-line operation</value>
+  </data>
+  <data name="noExportableTranslations" xml:space="preserve">
+    <value>This dataset has no translations.</value>
+  </data>
+  <data name="noExportFolderSpecified" xml:space="preserve">
+    <value>Use the --export-folder option to specify an export folder for this operation.</value>
+  </data>
+  <data name="noImportFileSpecified" xml:space="preserve">
+    <value>Use the --import-file option to specify an import file for this operation.</value>
+  </data>
+  <data name="NoResxMatches" xml:space="preserve">
+    <value>No translated strings found! The keys of the reference resx '{0}' and the translation resx '{1}' don't seem to match.</value>
+  </data>
+  <data name="noResxReferenceFile" xml:space="preserve">
+    <value>Unable to import '{0}' because the reference resx file with the default language strings was not found. In addition to the import resx, make sure the following reference resx file also exists: {1}</value>
+  </data>
+  <data name="rootCmdDescription" xml:space="preserve">
+    <value>Metadata Translator command-line app</value>
+  </data>
+  <data name="singleLocalExportSuccess" xml:space="preserve">
+    <value>Translations for '{0}' exported to: {1}</value>
+  </data>
+</root>

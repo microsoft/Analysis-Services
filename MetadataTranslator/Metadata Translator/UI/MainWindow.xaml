@@ -1,0 +1,302 @@
+﻿<Window x:Class="Metadata_Translator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Metadata_Translator"
+        mc:Ignorable="d"
+        x:Name="main"
+        Title="Metadata Translator" Height="450" Width="800"
+        Closing="OnMainWindow_Closing">
+    <Window.Resources>
+        <local:TrueFalseVisibilityConverter x:Key="TrueFalseVisibilityConverter" />
+        <local:FalseTrueVisibilityConverter x:Key="FalseTrueVisibilityConverter" />
+        <local:CollectionEmptyTrueFalseConverter x:Key="CollectionEmptyTrueFalseConverter" />
+        <local:TranslationPropertyToolTipConverter x:Key="TranslationPropertyToolTipConverter" />
+    </Window.Resources>
+    <Grid Margin="0">
+        <local:ConnectionStringInput VerticalAlignment="Center" Margin="16" Visibility="{Binding DataModel, ElementName=main, Converter={StaticResource FalseTrueVisibilityConverter}}"/>
+        <Grid Margin="0" Visibility="{Binding DataModel, ElementName=main, Converter={StaticResource TrueFalseVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ToolBarPanel Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" Margin="0">
+                <ToolBar ToolBarTray.IsLocked="True" Loaded="ToolBar_Loaded">
+                    <RadioButton x:Name="LanguageToggle" GroupName="PanelButtons" Height="48" Width="48" 
+                             ToolTip="{StaticResource LanguagesToolTip}"
+                             Click="OnToggleButton_Click" Unchecked="OnToggleButton_Uncheck">
+                        <StackPanel>
+                            <Image Height="24" Width="32">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </DrawingGroup.Transform>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Geometry="M152.1 236.2c-3.5-12.1-7.8-33.2-7.8-33.2h-.5s-4.3 21.1-7.8 33.2l-11.1 37.5H163zM616 96H336v320h280c13.3 0 24-10.7 24-24V120c0-13.3-10.7-24-24-24zm-24 120c0 6.6-5.4 12-12 12h-11.4c-6.9 23.6-21.7 47.4-42.7 69.9 8.4 6.4 17.1 12.5 26.1 18 5.5 3.4 7.3 10.5 4.1 16.2l-7.9 13.9c-3.4 5.9-10.9 7.8-16.7 4.3-12.6-7.8-24.5-16.1-35.4-24.9-10.9 8.7-22.7 17.1-35.4 24.9-5.8 3.5-13.3 1.6-16.7-4.3l-7.9-13.9c-3.2-5.6-1.4-12.8 4.2-16.2 9.3-5.7 18-11.7 26.1-18-7.9-8.4-14.9-17-21-25.7-4-5.7-2.2-13.6 3.7-17.1l6.5-3.9 7.3-4.3c5.4-3.2 12.4-1.7 16 3.4 5 7 10.8 14 17.4 20.9 13.5-14.2 23.8-28.9 30-43.2H412c-6.6 0-12-5.4-12-12v-16c0-6.6 5.4-12 12-12h64v-16c0-6.6 5.4-12 12-12h16c6.6 0 12 5.4 12 12v16h64c6.6 0 12 5.4 12 12zM0 120v272c0 13.3 10.7 24 24 24h280V96H24c-13.3 0-24 10.7-24 24zm58.9 216.1L116.4 167c1.7-4.9 6.2-8.1 11.4-8.1h32.5c5.1 0 9.7 3.3 11.4 8.1l57.5 169.1c2.6 7.8-3.1 15.9-11.4 15.9h-22.9a12 12 0 0 1-11.5-8.6l-9.4-31.9h-60.2l-9.1 31.8c-1.5 5.1-6.2 8.7-11.5 8.7H70.3c-8.2 0-14-8.1-11.4-15.9z">
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Brush="Black" Thickness="10"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="#FF2F7C03"/>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource Languages}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton x:Name="SettingsToggle" GroupName="PanelButtons" Height="48" Width="48" 
+                             ToolTip="{StaticResource SettingsToolTip}"
+                             Click="OnToggleButton_Click" Unchecked="OnToggleButton_Uncheck">
+                        <StackPanel>
+                            <Image Height="24">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </DrawingGroup.Transform>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Geometry="M113.595,133.642l-5.932-13.169c5.655-4.151,10.512-9.315,14.307-15.209l13.507,5.118c2.583,0.979,5.469-0.322,6.447-2.904
+	    l4.964-13.103c0.47-1.24,0.428-2.616-0.117-3.825c-0.545-1.209-1.547-2.152-2.788-2.622l-13.507-5.118
+	    c1.064-6.93,0.848-14.014-0.637-20.871l13.169-5.932c1.209-0.545,2.152-1.547,2.622-2.788c0.47-1.24,0.428-2.616-0.117-3.825
+	    l-5.755-12.775c-1.134-2.518-4.096-3.638-6.612-2.505l-13.169,5.932c-4.151-5.655-9.315-10.512-15.209-14.307l5.118-13.507
+	    c0.978-2.582-0.322-5.469-2.904-6.447L93.88,0.82c-1.239-0.469-2.615-0.428-3.825,0.117c-1.209,0.545-2.152,1.547-2.622,2.788
+	    l-5.117,13.506c-6.937-1.07-14.033-0.849-20.872,0.636L55.513,4.699c-0.545-1.209-1.547-2.152-2.788-2.622
+	    c-1.239-0.469-2.616-0.428-3.825,0.117L36.124,7.949c-2.518,1.134-3.639,4.094-2.505,6.612l5.932,13.169
+	    c-5.655,4.151-10.512,9.315-14.307,15.209l-13.507-5.118c-1.239-0.469-2.615-0.427-3.825,0.117
+	    c-1.209,0.545-2.152,1.547-2.622,2.788L0.326,53.828c-0.978,2.582,0.322,5.469,2.904,6.447l13.507,5.118
+	    c-1.064,6.929-0.848,14.015,0.637,20.871L4.204,92.196c-1.209,0.545-2.152,1.547-2.622,2.788c-0.47,1.24-0.428,2.616,0.117,3.825
+	    l5.755,12.775c0.544,1.209,1.547,2.152,2.787,2.622c1.241,0.47,2.616,0.429,3.825-0.117l13.169-5.932
+	    c4.151,5.656,9.314,10.512,15.209,14.307l-5.118,13.507c-0.978,2.582,0.322,5.469,2.904,6.447l13.103,4.964
+	    c0.571,0.216,1.172,0.324,1.771,0.324c0.701,0,1.402-0.147,2.054-0.441c1.209-0.545,2.152-1.547,2.622-2.788l5.117-13.506
+	    c6.937,1.069,14.034,0.849,20.872-0.636l5.931,13.168c0.545,1.209,1.547,2.152,2.788,2.622c1.24,0.47,2.617,0.429,3.825-0.117
+	    l12.775-5.754C113.607,139.12,114.729,136.16,113.595,133.642z M105.309,86.113c-4.963,13.1-17.706,21.901-31.709,21.901
+	    c-4.096,0-8.135-0.744-12.005-2.21c-8.468-3.208-15.18-9.522-18.899-17.779c-3.719-8.256-4-17.467-0.792-25.935
+	    c4.963-13.1,17.706-21.901,31.709-21.901c4.096,0,8.135,0.744,12.005,2.21c8.468,3.208,15.18,9.522,18.899,17.778
+	    C108.237,68.434,108.518,77.645,105.309,86.113z M216.478,154.389c-0.896-0.977-2.145-1.558-3.469-1.615l-9.418-0.404
+	    c-0.867-4.445-2.433-8.736-4.633-12.697l6.945-6.374c2.035-1.867,2.17-5.03,0.303-7.064l-6.896-7.514
+	    c-0.896-0.977-2.145-1.558-3.47-1.615c-1.322-0.049-2.618,0.416-3.595,1.312l-6.944,6.374c-3.759-2.531-7.9-4.458-12.254-5.702
+	    l0.404-9.418c0.118-2.759-2.023-5.091-4.782-5.209l-10.189-0.437c-2.745-0.104-5.091,2.023-5.209,4.781l-0.404,9.418
+	    c-4.444,0.867-8.735,2.433-12.697,4.632l-6.374-6.945c-0.896-0.977-2.145-1.558-3.469-1.615c-1.324-0.054-2.618,0.416-3.595,1.312
+	    l-7.514,6.896c-2.035,1.867-2.17,5.03-0.303,7.064l6.374,6.945c-2.531,3.759-4.458,7.899-5.702,12.254l-9.417-0.404
+	    c-2.747-0.111-5.092,2.022-5.21,4.781l-0.437,10.189c-0.057,1.325,0.415,2.618,1.312,3.595c0.896,0.977,2.145,1.558,3.47,1.615
+	    l9.417,0.403c0.867,4.445,2.433,8.736,4.632,12.698l-6.944,6.374c-0.977,0.896-1.558,2.145-1.615,3.469
+	    c-0.057,1.325,0.415,2.618,1.312,3.595l6.896,7.514c0.896,0.977,2.145,1.558,3.47,1.615c1.319,0.053,2.618-0.416,3.595-1.312
+	    l6.944-6.374c3.759,2.531,7.9,4.458,12.254,5.702l-0.404,9.418c-0.118,2.759,2.022,5.091,4.781,5.209l10.189,0.437
+	    c0.072,0.003,0.143,0.004,0.214,0.004c1.25,0,2.457-0.468,3.381-1.316c0.977-0.896,1.558-2.145,1.615-3.469l0.404-9.418
+	    c4.444-0.867,8.735-2.433,12.697-4.632l6.374,6.945c0.896,0.977,2.145,1.558,3.469,1.615c1.33,0.058,2.619-0.416,3.595-1.312
+	    l7.514-6.896c2.035-1.867,2.17-5.03,0.303-7.064l-6.374-6.945c2.531-3.759,4.458-7.899,5.702-12.254l9.417,0.404
+	    c2.756,0.106,5.091-2.022,5.21-4.781l0.437-10.189C217.847,156.659,217.375,155.366,216.478,154.389z M160.157,183.953
+	    c-12.844-0.55-22.846-11.448-22.295-24.292c0.536-12.514,10.759-22.317,23.273-22.317c0.338,0,0.678,0.007,1.019,0.022
+	    c12.844,0.551,22.846,11.448,22.295,24.292C183.898,174.511,173.106,184.497,160.157,183.953z">
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Brush="Black" Thickness="10"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="#FFDEA210"/>
+                                                                <GradientStop Color="#DEA210" Offset="0.992"/>
+                                                                <GradientStop Color="#AADEA210" Offset="0.527"/>
+                                                                <GradientStop Color="#FFDEA210" Offset="0.644"/>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource Settings}"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <Separator/>
+                    <StackPanel>
+                        <TextBlock FontSize="9" Text="{StaticResource TranslatedProperty}" HorizontalAlignment="Center" Margin="0,4,0,-4"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <StackPanel ToolTip="{StaticResource CaptionToolTip}">
+                                <RadioButton GroupName="TranslationProperty" IsChecked="True" HorizontalAlignment="Center" Click="OnCaptionRadioButton_Click"/>
+                                <TextBlock FontSize="8" Text="{StaticResource Caption}" Padding="2,0"/>
+                            </StackPanel>
+                            <StackPanel ToolTip="{Binding DataModel.Descriptions, ElementName=main, Converter={StaticResource TranslationPropertyToolTipConverter}, ConverterParameter={StaticResource DescriptionToolTip}}">
+                                <RadioButton GroupName="TranslationProperty" HorizontalAlignment="Center" Click="OnDescriptionRadioButton_Click"      
+                                       IsEnabled="{Binding DataModel.Descriptions, ElementName=main, Converter={StaticResource CollectionEmptyTrueFalseConverter}}"/>
+                                <TextBlock FontSize="8" Text="{StaticResource Description}" Padding="2,0"/>
+                            </StackPanel>
+                            <StackPanel ToolTip="{Binding DataModel.DisplayFolders, ElementName=main, Converter={StaticResource TranslationPropertyToolTipConverter}, ConverterParameter={StaticResource DisplayFolderToolTip}}">
+                                <RadioButton GroupName="TranslationProperty" HorizontalAlignment="Center" Click="OnDisplayFolderRadioButton_Click" 
+                                         IsEnabled="{Binding DataModel.DisplayFolders, ElementName=main, Converter={StaticResource CollectionEmptyTrueFalseConverter}}"/>
+                                <TextBlock FontSize="8" Text="{StaticResource DisplayFolder}" Padding="2,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <Separator/>
+                    <Button Height="48" Width="48" Click="OnPrepareButton_Click" Visibility="Collapsed">
+                        <StackPanel>
+                            <Image Height="24" Width="32">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </DrawingGroup.Transform>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Geometry="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z">
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Brush="Black" Thickness="10"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="#FFAF800D"/>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource Prepare}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="48" Width="48" Click="OnTranslateButton_Click" ToolTip="{StaticResource TranslateToolTip}">
+                        <StackPanel>
+                            <Image Source="..\icon.ico" Height="24"/>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource Translate}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="48" Width="48" Click="OnApplyButton_Click" ToolTip="{StaticResource ApplyToolTip}">
+                        <StackPanel>
+                            <Image Height="24" Width="32">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </DrawingGroup.Transform>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Geometry="M400 480H48c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h352c26.51 0 48 21.49 48 48v352c0 26.51-21.49 48-48 48zm-204.686-98.059l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.248-16.379-6.249-22.628 0L184 302.745l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.25 16.379 6.25 22.628.001z">
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Brush="Black" Thickness="10"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="#FF2F7C03"/>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource Apply}"/>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+            </ToolBarPanel>
+            <ToolBarPanel Grid.Row="0"  Grid.Column="2" Margin="0">
+                <ToolBar ToolBarTray.IsLocked="True" Loaded="ToolBar_Loaded">
+                    <RadioButton x:Name="ImportExportToggle" GroupName="PanelButtons" Height="48" Width="68" 
+                             ToolTip="{StaticResource ImportExportToolTip}"
+                             Click="OnToggleButton_Click" Unchecked="OnToggleButton_Uncheck">
+                        <StackPanel>
+                            <Image Height="24">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup>
+                                                <DrawingGroup.Transform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform/>
+                                                    </TransformGroup>
+                                                </DrawingGroup.Transform>
+                                                <DrawingGroup.Children>
+                                                    <GeometryDrawing Geometry="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm-96 144c0 4.42-3.58 8-8 8h-8c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h8c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8h-8c-26.51 0-48-21.49-48-48v-32c0-26.51 21.49-48 48-48h8c4.42 0 8 3.58 8 8v16zm44.27 104H160c-4.42 0-8-3.58-8-8v-16c0-4.42 3.58-8 8-8h12.27c5.95 0 10.41-3.5 10.41-6.62 0-1.3-.75-2.66-2.12-3.84l-21.89-18.77c-8.47-7.22-13.33-17.48-13.33-28.14 0-21.3 19.02-38.62 42.41-38.62H200c4.42 0 8 3.58 8 8v16c0 4.42-3.58 8-8 8h-12.27c-5.95 0-10.41 3.5-10.41 6.62 0 1.3.75 2.66 2.12 3.84l21.89 18.77c8.47 7.22 13.33 17.48 13.33 28.14.01 21.29-19 38.62-42.39 38.62zM256 264v20.8c0 20.27 5.7 40.17 16 56.88 10.3-16.7 16-36.61 16-56.88V264c0-4.42 3.58-8 8-8h16c4.42 0 8 3.58 8 8v20.8c0 35.48-12.88 68.89-36.28 94.09-3.02 3.25-7.27 5.11-11.72 5.11s-8.7-1.86-11.72-5.11c-23.4-25.2-36.28-58.61-36.28-94.09V264c0-4.42 3.58-8 8-8h16c4.42 0 8 3.58 8 8zm121-159L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z">
+                                                        <GeometryDrawing.Pen>
+                                                            <Pen Brush="White" Thickness="8"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Brush>
+                                                            <RadialGradientBrush>
+                                                                <GradientStop Color="Black"/>
+                                                            </RadialGradientBrush>
+                                                        </GeometryDrawing.Brush>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup.Children>
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock FontSize="9" HorizontalAlignment="Center" Text="{StaticResource ImportExport}"/>
+                        </StackPanel>
+                    </RadioButton>
+                </ToolBar>
+            </ToolBarPanel>
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <local:SettingsPanel Grid.Row="0" Grid.ColumnSpan="3"
+                                 Visibility="{Binding IsChecked, ElementName=SettingsToggle, Converter={StaticResource FalseTrueVisibilityConverter}}"/>
+                <local:LanguagePanel Grid.Row="1" Visibility="{Binding IsChecked, ElementName=LanguageToggle, Converter={StaticResource FalseTrueVisibilityConverter}}"
+                                 Languages="{Binding Languages, ElementName=main}"/>
+                <ScrollViewer Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Auto">
+                    <DataGrid x:Name="dataGrid" AutoGenerateColumns="False" CanUserAddRows="False" BorderThickness="0"/>
+                </ScrollViewer>
+                <local:ImportExportPanel Grid.Row="1" Grid.Column="2" Visibility="{Binding IsChecked, ElementName=ImportExportToggle, Converter={StaticResource FalseTrueVisibilityConverter}}"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

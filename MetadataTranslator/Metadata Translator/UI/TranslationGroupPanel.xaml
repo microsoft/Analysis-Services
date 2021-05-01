@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Metadata_Translator.TranslationGroupPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:local="clr-namespace:Metadata_Translator"
+             mc:Ignorable="d" 
+             x:Name="tgPanel"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="FilteredLanguages"
+                              Source="{Binding Languages, ElementName=tgPanel}" 
+                              Filter="Languages_Filter">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="DisplayName"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    <Grid Margin="0,4,0,0">
+        <ItemsControl ItemsSource="{Binding Source={StaticResource FilteredLanguages}}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="1" VerticalAlignment="Center" IsEnabled="{Binding IsNotModelDefault}"/>
+                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="2,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>
