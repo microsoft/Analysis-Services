@@ -25,7 +25,7 @@ Sample U-SQL scripts that demonstrate how to process a TPC-DS data set in Azure 
 ## [ASJobGraph](https://github.com/Microsoft/Analysis-Services/tree/master/ASJobGraphEvents)
 Python script to reassemble job graph events from Analysis Services.
 
-## [BestPracticeRules](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules)
+## [Best Practice Rules](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules)
 A curated set of rules covering best practices for tabular model performance and design which can be run from [Tabular Editor's](https://tabulareditor.com/ "Tabular Editor") [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 ## [Metadata Translator](https://github.com/microsoft/Analysis-Services/tree/master/MetadataTranslator)
