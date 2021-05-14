@@ -1836,7 +1836,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Create role associated with the TabularModel object.
         /// </summary>
         /// <param name="tomRoleSource">Tabular Object Model ModelRole object from the source tabular model to be abstracted in the target.</param>
-        public void CreateRole(ModelRole tomRoleSource)
+        public ModelRole CreateRole(ModelRole tomRoleSource)
         {
             ModelRole tomRoleTarget = new ModelRole();
             tomRoleSource.CopyTo(tomRoleTarget);
@@ -1859,10 +1859,21 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 tomRoleTarget.TablePermissions.Remove(name);
             }
 
+            //Workaround for bug where can't specify role member ID, only UPN
+            tomRoleTarget.Members.Clear();
+            foreach (ModelRoleMember roleMemberOrig in tomRoleSource.Members)
+            {
+                ModelRoleMember roleMemberTarget = roleMemberOrig.Clone();
+                roleMemberTarget.MemberID = null;
+                tomRoleTarget.Members.Add(roleMemberTarget);
+            }
+
             _database.Model.Roles.Add(tomRoleTarget);
 
             // shell model
             _roles.Add(new Role(this, tomRoleTarget));
+
+            return tomRoleTarget;
         }
 
         /// <summary>
@@ -1872,8 +1883,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="roleTarget">Role object in the target tabular model to be updated.</param>
         public void UpdateRole(Role roleSource, Role roleTarget)
         {
-            DeleteRole(roleTarget.Name);
-            CreateRole(roleSource.TomRole);
+            if (_comparisonInfo.OptionsInfo.OptionRetainRoleMembers)
+            {
+                Tom.ModelRole tomModelRoleBackup = roleTarget.TomRole.Clone();
+                DeleteRole(roleTarget.Name);
+                Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole);
+                tomModelRoleNew.Members.Clear();
+                foreach (ModelRoleMember roleMemberOrig in tomModelRoleBackup.Members)
+                {
+                    ModelRoleMember roleMemberTarget = roleMemberOrig.Clone();
+                    tomModelRoleNew.Members.Add(roleMemberTarget);
+                }
+            }
+            else
+            {
+                DeleteRole(roleTarget.Name);
+                CreateRole(roleSource.TomRole);
+            }
         }
 
         /// <summary>

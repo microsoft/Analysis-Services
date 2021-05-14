@@ -358,5 +358,17 @@ namespace BismNormalizer {
                 this["OptionLineageTag"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptionRetainRoleMembers {
+            get {
+                return ((bool)(this["OptionRetainRoleMembers"]));
+            }
+            set {
+                this["OptionRetainRoleMembers"] = value;
+            }
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace BismNormalizer.TabularCompare.UI
             chkCultures.Checked = _comparisonInfo.OptionsInfo.OptionCultures;
             chkMergeCultures.Checked = _comparisonInfo.OptionsInfo.OptionMergeCultures;
             chkRoles.Checked = _comparisonInfo.OptionsInfo.OptionRoles;
-            //chkActions.Checked = _comparisonInfo.OptionsInfo.OptionActions;
+            chkRetainRoleMembers.Checked = _comparisonInfo.OptionsInfo.OptionRetainRoleMembers;
             chkPartitions.Checked = _comparisonInfo.OptionsInfo.OptionPartitions;
             chkLineageTag.Checked = _comparisonInfo.OptionsInfo.OptionLineageTag;
             chkRetainPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPartitions;
@@ -57,7 +57,6 @@ namespace BismNormalizer.TabularCompare.UI
             chkMeasureDependencies.Checked = _comparisonInfo.OptionsInfo.OptionMeasureDependencies;
             string processingOption = _comparisonInfo.OptionsInfo.OptionProcessingOption.ToString();
             cboProcessingOption.Text = processingOption == "DoNotProcess" ? "Do Not Process" : processingOption;
-            //chkTransaction.Checked = _comparisonInfo.OptionsInfo.OptionTransaction;
             chkAffectedTables.Checked = _comparisonInfo.OptionsInfo.OptionAffectedTables;
         }
 
@@ -68,7 +67,7 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionCultures = chkCultures.Checked;
             _comparisonInfo.OptionsInfo.OptionMergeCultures = chkMergeCultures.Checked;
             _comparisonInfo.OptionsInfo.OptionRoles = chkRoles.Checked;
-            //_comparisonInfo.OptionsInfo.OptionActions = chkActions.Checked;
+            _comparisonInfo.OptionsInfo.OptionRetainRoleMembers = chkRetainRoleMembers.Checked;
             _comparisonInfo.OptionsInfo.OptionActions = false;
             _comparisonInfo.OptionsInfo.OptionPartitions = chkPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionLineageTag = chkLineageTag.Checked;
@@ -77,7 +76,6 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionRetainStorageMode = chkRetainStorageMode.Checked;
             _comparisonInfo.OptionsInfo.OptionMeasureDependencies = chkMeasureDependencies.Checked;
             _comparisonInfo.OptionsInfo.OptionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), cboProcessingOption.Text.Replace(" ", ""));
-            //_comparisonInfo.OptionsInfo.OptionTransaction = chkTransaction.Checked;
             _comparisonInfo.OptionsInfo.OptionTransaction = false;
             _comparisonInfo.OptionsInfo.OptionAffectedTables = chkAffectedTables.Checked;
 
@@ -92,6 +90,11 @@ namespace BismNormalizer.TabularCompare.UI
         private void chkCultures_CheckedChanged(object sender, EventArgs e)
         {
             chkMergeCultures.Enabled = chkCultures.Checked;
+        }
+
+        private void chkRoles_CheckedChanged(object sender, EventArgs e)
+        {
+            chkRetainRoleMembers.Enabled = chkRoles.Checked;
         }
 
         private void ChkRetainPartitions_CheckedChanged(object sender, EventArgs e)

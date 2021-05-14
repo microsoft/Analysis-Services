@@ -17,6 +17,7 @@ namespace BismNormalizer.TabularCompare
         private bool _optionCultures;
         private bool _optionMergeCultures;
         private bool _optionRoles;
+        private bool _optionRetainRoleMembers;
         private bool _optionActions;
         private bool _optionPartitions;
         private bool _optionLineageTag;
@@ -38,6 +39,7 @@ namespace BismNormalizer.TabularCompare
             _optionCultures = Settings.Default.OptionCultures;
             _optionMergeCultures = Settings.Default.OptionMergeCultures;
             _optionRoles = Settings.Default.OptionRoles;
+            _optionRetainRoleMembers = Settings.Default.OptionRetainRoleMembers;
             _optionActions = Settings.Default.OptionActions;
             _optionPartitions = Settings.Default.OptionPartitions;
             _optionLineageTag = Settings.Default.OptionLineageTag;
@@ -92,6 +94,12 @@ namespace BismNormalizer.TabularCompare
         {
             get { return _optionRoles; }
             set { _optionRoles = value; }
+        }
+
+        public bool OptionRetainRoleMembers 
+        {
+            get { return _optionRetainRoleMembers; }
+            set { _optionRetainRoleMembers = value; }
         }
 
         /// <summary>
@@ -198,6 +206,7 @@ namespace BismNormalizer.TabularCompare
             Settings.Default.OptionCultures = _optionCultures;
             Settings.Default.OptionMergeCultures = _optionMergeCultures;
             Settings.Default.OptionRoles = _optionRoles;
+            Settings.Default.OptionRetainRoleMembers = _optionRetainRoleMembers;
             Settings.Default.OptionActions = _optionActions;
             Settings.Default.OptionPartitions = _optionPartitions;
             Settings.Default.OptionLineageTag = _optionLineageTag;

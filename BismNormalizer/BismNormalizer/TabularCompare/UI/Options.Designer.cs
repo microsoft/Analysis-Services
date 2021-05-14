@@ -35,6 +35,7 @@
             this.chkMeasureDependencies = new System.Windows.Forms.CheckBox();
             this.chkPerspectives = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkLineageTag = new System.Windows.Forms.CheckBox();
             this.chkRetainStorageMode = new System.Windows.Forms.CheckBox();
             this.chkRetainPolicyPartitions = new System.Windows.Forms.CheckBox();
             this.chkRetainPartitions = new System.Windows.Forms.CheckBox();
@@ -45,7 +46,7 @@
             this.chkAffectedTables = new System.Windows.Forms.CheckBox();
             this.cboProcessingOption = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.chkLineageTag = new System.Windows.Forms.CheckBox();
+            this.chkRetainRoleMembers = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +55,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(274, 477);
+            this.btnCancel.Location = new System.Drawing.Point(274, 489);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 21;
@@ -65,7 +66,7 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(194, 477);
+            this.btnOK.Location = new System.Drawing.Point(194, 489);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 20;
@@ -84,11 +85,12 @@
             this.chkRoles.TabIndex = 5;
             this.chkRoles.Text = "Include roles";
             this.chkRoles.UseVisualStyleBackColor = true;
+            this.chkRoles.CheckedChanged += new System.EventHandler(this.chkRoles_CheckedChanged);
             // 
             // chkPartitions
             // 
             this.chkPartitions.AutoSize = true;
-            this.chkPartitions.Location = new System.Drawing.Point(14, 151);
+            this.chkPartitions.Location = new System.Drawing.Point(14, 172);
             this.chkPartitions.Name = "chkPartitions";
             this.chkPartitions.Size = new System.Drawing.Size(224, 17);
             this.chkPartitions.TabIndex = 6;
@@ -102,7 +104,7 @@
             this.chkMeasureDependencies.AutoSize = true;
             this.chkMeasureDependencies.Checked = true;
             this.chkMeasureDependencies.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMeasureDependencies.Location = new System.Drawing.Point(14, 290);
+            this.chkMeasureDependencies.Location = new System.Drawing.Point(14, 311);
             this.chkMeasureDependencies.Name = "chkMeasureDependencies";
             this.chkMeasureDependencies.Size = new System.Drawing.Size(47, 17);
             this.chkMeasureDependencies.TabIndex = 7;
@@ -125,6 +127,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.chkRetainRoleMembers);
             this.groupBox1.Controls.Add(this.chkLineageTag);
             this.groupBox1.Controls.Add(this.chkRetainStorageMode);
             this.groupBox1.Controls.Add(this.chkRetainPolicyPartitions);
@@ -138,15 +141,25 @@
             this.groupBox1.Controls.Add(this.chkRoles);
             this.groupBox1.Location = new System.Drawing.Point(12, 11);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(338, 346);
+            this.groupBox1.Size = new System.Drawing.Size(338, 358);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Comparison Options";
             // 
+            // chkLineageTag
+            // 
+            this.chkLineageTag.AutoSize = true;
+            this.chkLineageTag.Location = new System.Drawing.Point(14, 203);
+            this.chkLineageTag.Name = "chkLineageTag";
+            this.chkLineageTag.Size = new System.Drawing.Size(208, 17);
+            this.chkLineageTag.TabIndex = 13;
+            this.chkLineageTag.Text = "Consider LineageTag when comparing";
+            this.chkLineageTag.UseVisualStyleBackColor = true;
+            // 
             // chkRetainStorageMode
             // 
             this.chkRetainStorageMode.AutoSize = true;
-            this.chkRetainStorageMode.Location = new System.Drawing.Point(14, 264);
+            this.chkRetainStorageMode.Location = new System.Drawing.Point(14, 285);
             this.chkRetainStorageMode.Name = "chkRetainStorageMode";
             this.chkRetainStorageMode.Size = new System.Drawing.Size(207, 17);
             this.chkRetainStorageMode.TabIndex = 12;
@@ -157,7 +170,7 @@
             // 
             this.chkRetainPolicyPartitions.AutoSize = true;
             this.chkRetainPolicyPartitions.Enabled = false;
-            this.chkRetainPolicyPartitions.Location = new System.Drawing.Point(34, 235);
+            this.chkRetainPolicyPartitions.Location = new System.Drawing.Point(34, 256);
             this.chkRetainPolicyPartitions.Name = "chkRetainPolicyPartitions";
             this.chkRetainPolicyPartitions.Size = new System.Drawing.Size(221, 17);
             this.chkRetainPolicyPartitions.TabIndex = 11;
@@ -167,7 +180,7 @@
             // chkRetainPartitions
             // 
             this.chkRetainPartitions.AutoSize = true;
-            this.chkRetainPartitions.Location = new System.Drawing.Point(14, 214);
+            this.chkRetainPartitions.Location = new System.Drawing.Point(14, 235);
             this.chkRetainPartitions.Name = "chkRetainPartitions";
             this.chkRetainPartitions.Size = new System.Drawing.Size(185, 17);
             this.chkRetainPartitions.TabIndex = 10;
@@ -215,7 +228,7 @@
             this.groupBox2.Controls.Add(this.chkAffectedTables);
             this.groupBox2.Controls.Add(this.cboProcessingOption);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(12, 364);
+            this.groupBox2.Location = new System.Drawing.Point(12, 376);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(338, 101);
             this.groupBox2.TabIndex = 23;
@@ -258,15 +271,17 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Processing Option:";
             // 
-            // chkLineageTag
+            // chkRetainRoleMembers
             // 
-            this.chkLineageTag.AutoSize = true;
-            this.chkLineageTag.Location = new System.Drawing.Point(14, 182);
-            this.chkLineageTag.Name = "chkLineageTag";
-            this.chkLineageTag.Size = new System.Drawing.Size(208, 17);
-            this.chkLineageTag.TabIndex = 13;
-            this.chkLineageTag.Text = "Consider LineageTag when comparing";
-            this.chkLineageTag.UseVisualStyleBackColor = true;
+            this.chkRetainRoleMembers.AutoSize = true;
+            this.chkRetainRoleMembers.Checked = true;
+            this.chkRetainRoleMembers.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkRetainRoleMembers.Location = new System.Drawing.Point(34, 144);
+            this.chkRetainRoleMembers.Name = "chkRetainRoleMembers";
+            this.chkRetainRoleMembers.Size = new System.Drawing.Size(179, 17);
+            this.chkRetainRoleMembers.TabIndex = 14;
+            this.chkRetainRoleMembers.Text = "For role updates, retain members";
+            this.chkRetainRoleMembers.UseVisualStyleBackColor = true;
             // 
             // Options
             // 
@@ -274,7 +289,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(362, 516);
+            this.ClientSize = new System.Drawing.Size(362, 528);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
@@ -316,5 +331,6 @@
         private System.Windows.Forms.CheckBox chkRetainPolicyPartitions;
         private System.Windows.Forms.CheckBox chkRetainStorageMode;
         private System.Windows.Forms.CheckBox chkLineageTag;
+        private System.Windows.Forms.CheckBox chkRetainRoleMembers;
     }
 }
