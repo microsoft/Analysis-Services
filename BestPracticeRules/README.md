@@ -22,13 +22,15 @@ Following these steps will automatically load the Best Practice Rules into your 
 2. Connect to a model.
 3. Run the following code in the Advanced Scripting window.
 
-        System.Net.WebClient w = new System.Net.WebClient(); 
-        
-        string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
-        string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
-        string downloadLoc = path+@"\TabularEditor\BPARules.json";
-        
-        w.DownloadFile(url, downloadLoc);
+```C#  
+System.Net.WebClient w = new System.Net.WebClient(); 
+
+string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
+string downloadLoc = path+@"\TabularEditor\BPARules.json";
+
+w.DownloadFile(url, downloadLoc);
+```
 
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 5. Connect to a model.
@@ -66,4 +68,4 @@ Following these steps will automatically load the Best Practice Rules into your 
   
 ## Requirements
 
-[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.12.1 or higher.
+[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
