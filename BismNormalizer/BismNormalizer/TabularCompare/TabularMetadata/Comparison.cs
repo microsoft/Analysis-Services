@@ -521,10 +521,21 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         Culture cultureTarget = _targetTabularModel.Cultures.FindByName(cultureSource.Name);
                         ComparisonObject comparisonObjectCulture;
 
+                        string sourceLinguisticMetadata = String.Empty;
+                        string targetLinguisticMetadata = String.Empty;
+                        if (cultureSource.TomCulture?.LinguisticMetadata?.Content != null)
+                            sourceLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureSource.TomCulture.LinguisticMetadata.Content).ToString();
+                        if (cultureTarget.TomCulture?.LinguisticMetadata?.Content != null)
+                            targetLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureTarget.TomCulture.LinguisticMetadata.Content).ToString();
+
                         // check if culture object definition is different
                         //if (cultureSource.ObjectDefinition != cultureTarget.ObjectDefinition)
-                        if ((_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource)) ||
-                             (!_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource) && cultureSource.ContainsOtherCultureTranslations(cultureTarget)))
+                        if ( (
+                                 (_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource)) ||
+                                 (!_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource) && cultureSource.ContainsOtherCultureTranslations(cultureTarget))
+                             ) &&
+                             (sourceLinguisticMetadata == targetLinguisticMetadata)
+                           )
                         {
                             // they are equal, ...
                             comparisonObjectCulture = new ComparisonObject(ComparisonObjectType.Culture, ComparisonObjectStatus.SameDefinition, cultureSource, cultureTarget, MergeAction.Skip);

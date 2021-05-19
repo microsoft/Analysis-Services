@@ -1808,6 +1808,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                 }
             }
+
+            if (tomCultureSource.LinguisticMetadata != null)
+            { 
+                LinguisticMetadata linguisticMetadata = tomCultureSource.LinguisticMetadata.Clone();
+                tomCultureTarget.LinguisticMetadata = linguisticMetadata;
+            }
+            else
+            {
+                tomCultureTarget.LinguisticMetadata = null;
+            }
         }
 
         #endregion
