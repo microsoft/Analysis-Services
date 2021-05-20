@@ -2,6 +2,8 @@
 
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
+And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
+
 Also, check out this [post](https://www.elegantbi.com/post/bestpracticerulesavings "Best Practice Rule Savings") for quantifying the savings of following specific Best Practice Rules.
 
 ## Purpose 
@@ -72,7 +74,7 @@ w.DownloadFile(url, downloadLoc);
 
 ## Versions
 
-* Version 1.1
+* Version 1.1 (make sure to read the [blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "blog post"))
     * New Rules
         * [DAX Expressions] Filter column values with proper syntax
         * [DAX Expressions] Fllter measure values by columns, not tables
