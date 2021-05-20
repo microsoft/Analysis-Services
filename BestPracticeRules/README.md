@@ -69,3 +69,22 @@ w.DownloadFile(url, downloadLoc);
 ## Requirements
 
 [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
+
+## Versions
+
+* Version 1.1
+    * New Rules
+        * [DAX Expressions] Filter column values with proper syntax
+        * [DAX Expressions] Fllter measure values by columns, not tables
+        * [DAX Expressions] Inactive relationships that are never activated
+        * [Maintenance] Perspectives with no objects
+        * [Maintenance] Calculation groups with no calculation items
+    * Modified Rules
+        * [Naming Conventions] Partition name should match table name for single partition tables
+            * Added Fix Expression (must use Tabular Editor 2.16.1 or higher)
+        * [Error Prevention] Calculated columns must have an expression
+            * New name: Expression-reliant objects must have an expression
+        * [Maintenance] Objects with no description
+            * New name: Visible objects with no description
+    * Removed Rules
+        * [DAX Expressions] No two measures should have the same definition
