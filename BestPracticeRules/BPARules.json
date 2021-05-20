@@ -265,7 +265,7 @@
     "Description": "The TREATAS function is more efficient and provides better performance than the INTERSECT function when used in virutal relationships.\r\nReference:  https://www.sqlbi.com/articles/propagate-filters-using-treatas-in-dax/",
     "Severity": 2,
     "Scope": "Measure, CalculationItem",
-    "Expression": "RegEx.IsMatch(Expression.Replace(\" \",\"\"),\"\\W+(?i)INTERSECT\\(\")\r\nor\r\nRegEx.IsMatch(Expression.Replace(\" \",\"\"),\"^(?i)INTERSECT\\(\")",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)INTERSECT\\s*\\(\")",
     "CompatibilityLevel": 1400
   },
   {
@@ -274,8 +274,8 @@
     "Category": "DAX Expressions",
     "Description": "Use the DIVIDE  function instead of using \"/\". The DIVIDE function resolves divide-by-zero cases. As such, it is recommended to use to avoid errors.  \r\nReference: https://docs.microsoft.com/en-us/power-bi/guidance/dax-divide-function-operator",
     "Severity": 2,
-    "Scope": "Measure, CalculatedColumn",
-    "Expression": "Expression.Replace(\" \",\"\").Contains(\"]/\")\n\r\nor\r\n\nExpression.Replace(\" \",\"\").Contains(\"])/\")\n",
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"\\]\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"\\)\\s*\\/\")",
     "CompatibilityLevel": 1200
   },
   {
@@ -285,7 +285,7 @@
     "Description": "Avoid using the IFERROR function as it may cause performance degradation. If you are concerned about a divide-by-zero error, use the DIVIDE function as it naturally resolves such errors as blank (or you can customize what should be shown in case of such an error).\r\nReference: https://www.elegantbi.com/post/top10bestpractices",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn",
-    "Expression": "RegEx.IsMatch(Expression.Replace(\" \",\"\"),\"\\W+(?i)IFERROR\\(\")\r\nor\r\nRegEx.IsMatch(Expression.Replace(\" \",\"\"),\"^(?i)IFERROR\\(\")",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)IFERROR\\s*\\(\")",
     "CompatibilityLevel": 1200
   },
   {
@@ -299,6 +299,36 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "FILTER_COLUMN_VALUES",
+    "Name": "[DAX Expressions] Filter column values with proper syntax",
+    "Category": "DAX Expressions",
+    "Description": "Instead of using this pattern FILTER('Table','Table'[Column]=\"Value\") for the filter parameters of a CALCULATE or CALCULATETABLE function, use one of the options below. As far as whether to use the KEEPFILTERS function, see the second reference link below.\r\n\r\nOption 1: KEEPFILTERS('Table'[Column]=\"Value\")\r\nOption 2: 'Table'[Column]=\"Value\"\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/dax-avoid-avoid-filter-as-filter-argument\r\nReference: https://www.sqlbi.com/articles/using-keepfilters-in-dax/",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+'*\\s*,\\s*\\'*[A-Za-z0-9 _]+\\'*\\[[A-Za-z0-9 _]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\'*[A-Za-z0-9 _]+\\'*\\[[A-Za-z0-9 _]+\\]\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FILTER_MEASURE_VALUES_BY_COLUMNS",
+    "Name": "[DAX Expressions] Filter measure values by columns, not tables",
+    "Category": "DAX Expressions",
+    "Description": "Instead of using this pattern FILTER('Table',[Measure]>Value) for the filter parameters of a CALCULATE or CALCULATETABLE function, use one of the options below (if possible). Filtering on a specific column will produce a smaller table for the engine to process, thereby enabling faster performance. Using the VALUES function or the ALL function depends on the desired measure result.\r\n\r\nOption 1: FILTER(VALUES('Table'[Column]),[Measure] > Value)\r\nOption 2: FILTER(ALL('Table'[Column]),[Measure] > Value)\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/dax-avoid-avoid-filter-as-filter-argument",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*,\\s*\\[[^\\]]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\[\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "INACTIVE_RELATIONSHIPS_THAT_ARE_NEVER_ACTIVATED",
+    "Name": "[DAX Expressions] Inactive relationships that are never activated",
+    "Category": "DAX Expressions",
+    "Description": "Inactive relationships are activated using the USERELATIONSHIP function. If an inactive relationship is not referenced in any measure via this function, the relationship will not be used. It should be determined whether the relationship is not necessary or to activate the relationship via this method.\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/relationships-active-inactive\r\nReference: https://dax.guide/userelationship/",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "IsActive == false\r\nand not\r\nModel.AllMeasures.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "DATA_COLUMNS_MUST_HAVE_A_SOURCE_COLUMN",
     "Name": "[Error Prevention] Data columns must have a source column",
     "Category": "Error Prevention",
@@ -309,12 +339,12 @@
     "CompatibilityLevel": 1200
   },
   {
-    "ID": "CALCULATED_COLUMNS_MUST_HAVE_AN_EXPRESSION",
-    "Name": "[Error Prevention] Calculated columns must have an expression",
+    "ID": "EXPRESSION_RELIANT_OBJECTS_MUST_HAVE_AN_EXPRESSION",
+    "Name": "[Error Prevention] Expression-reliant objects must have an expression",
     "Category": "Error Prevention",
-    "Description": "It is recommended not to use calculated columns. However, if you do, they must have a DAX expression.",
+    "Description": "Calculated columns, calculation items and measures must have an expression. Without an expression, these objects will not show any values.",
     "Severity": 3,
-    "Scope": "CalculatedColumn",
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "string.IsNullOrWhiteSpace(Expression)",
     "CompatibilityLevel": 1200
   },
@@ -374,12 +404,33 @@
   },
   {
     "ID": "OBJECTS_WITH_NO_DESCRIPTION",
-    "Name": "[Maintenance] Objects with no description",
+    "Name": "[Maintenance] Visible objects with no description",
     "Category": "Maintenance",
     "Description": "Add descriptions to objects. These descriptions are shown on hover within the Field List in Power BI Desktop. Additionally, you can leverage these descriptions to create an automated data dictionary (see link below).\r\nReference: https://www.elegantbi.com/post/datadictionary",
     "Severity": 1,
-    "Scope": "Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup, CalculationItem",
-    "Expression": "string.IsNullOrWhitespace(Description)",
+    "Scope": "Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup",
+    "Expression": "string.IsNullOrWhitespace(Description)\r\nand\r\nIsHidden == false",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PERSPECTIVES_WITH_NO_OBJECTS",
+    "Name": "[Maintenance] Perspectives with no objects",
+    "Category": "Maintenance",
+    "Description": "Perspectives that contain no objects (tables) are most likely not necessary. In this rule, it is only necessary to check tables as adding a column/measure/hierarchy to a perspective also adds the table to the perspective. Additionally, tables in general covers calculated tables and calculation groups as well.",
+    "Severity": 1,
+    "Scope": "Perspective",
+    "Expression": "Model.Tables.Any(InPerspective[current.Name]) == false",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CALCULATION_GROUPS_WITH_NO_CALCULATION_ITEMS",
+    "Name": "[Maintenance] Calculation groups with no calculation items",
+    "Category": "Maintenance",
+    "Description": "Calculation groups have no function unless they have calculation items.",
+    "Severity": 2,
+    "Scope": "CalculationGroup",
+    "Expression": "CalculationItems.Count == 0",
     "CompatibilityLevel": 1200
   },
   {
@@ -390,6 +441,7 @@
     "Severity": 1,
     "Scope": "Table",
     "Expression": "(Partitions.Count = 1 and Partitions[0].Name <> Name)",
+	"FixExpression": "Partitions[0].Name = it.Name",
     "CompatibilityLevel": 1200
   },
   {
@@ -399,7 +451,7 @@
     "Description": "Tabs, line breaks, etc.",
     "Severity": 2,
     "Scope": "Model, Table, Measure, Hierarchy, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup, CalculationItem",
-    "Expression": "Name.IndexOf(char(9)) > -1 or\nName.IndexOf(char(10)) > -1 or\nName.IndexOf(char(13)) > -1",
+    "Expression": "Name.IndexOf(char(9)) > -1\r\nor\r\n\nName.IndexOf(char(10)) > -1 \r\nor\r\n\nName.IndexOf(char(13)) > -1",
     "CompatibilityLevel": 1200
   },
   {
@@ -461,7 +513,7 @@
     "Description": "Numeric columns (integer, decimal, double) should have their SummarizeBy property set to \"None\" to avoid accidental summation in Power BI (create measures instead).",
     "Severity": 3,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(DataType = \"Int64\" or DataType=\"Decimal\" or DataType=\"Double\")\nand SummarizeBy <> \"None\"\nand not (IsHidden or Table.IsHidden)",
+    "Expression": "(\r\nDataType = \"Int64\"\r\nor \r\nDataType=\"Decimal\" \r\nor \r\nDataType=\"Double\"\r\n)\n\r\nand \r\nSummarizeBy <> \"None\"\r\n\nand not (IsHidden or Table.IsHidden)",
     "FixExpression": "SummarizeBy = AggregateFunction.None",
     "CompatibilityLevel": 1200
   },
@@ -512,7 +564,7 @@
     "Description": "Foreign keys should always be hidden.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "UsedInRelationships.Any(FromColumn.Name == current.Name and FromCardinality == \"Many\")\nand\r\n\nIsHidden == false",
+    "Expression": "UsedInRelationships.Any(FromColumn.Name == current.Name and FromCardinality == \"Many\")\n\r\nand\r\n\nIsHidden == false",
     "FixExpression": "IsHidden = true",
     "CompatibilityLevel": 1200
   },
@@ -556,5 +608,5 @@
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
     "CompatibilityLevel": 1200
-  }
+  }  
 ]
