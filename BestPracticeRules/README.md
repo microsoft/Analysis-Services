@@ -72,9 +72,9 @@ w.DownloadFile(url, downloadLoc);
 
 [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
 
-## Versions
+## Version History
 
-* Version 1.1 (make sure to read the [blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "blog post"))
+* 2021-05-20 Version 1.1 (make sure to read the [blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "blog post"))
     * New Rules
         * [DAX Expressions] Filter column values with proper syntax
         * [DAX Expressions] Fllter measure values by columns, not tables
@@ -90,3 +90,4 @@ w.DownloadFile(url, downloadLoc);
             * New name: Visible objects with no description
     * Removed Rules
         * [DAX Expressions] No two measures should have the same definition
+* 2021-02-03 Version 1.0
