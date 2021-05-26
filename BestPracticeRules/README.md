@@ -75,7 +75,7 @@ w.DownloadFile(url, downloadLoc);
 ## Version History
 
 * 2021-05-26 Version 1.1.1
-    * Modified rules
+    * Modified Rules
         * [DAX Expressions] Inactive relationships that are never activated
             * Expanded the scope to include Calculation Items ([#110](https://github.com/microsoft/Analysis-Services/issues/110)) 
 * 2021-05-20 Version 1.1 (make sure to read the [blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "blog post"))
