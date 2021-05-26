@@ -28,7 +28,7 @@
     "Description": "For best performance, it is recommended to avoid using bi-directional relationships against high-cardinality columns. In order to run this rule, you must first run the script shown here: https://www.elegantbi.com/post/vertipaqintabulareditor",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "UsedInRelationships.Any(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections)\n\nand\n\nConvert.ToInt32(GetAnnotation(\"Vertipaq_Cardinality\")) > 1000000",
+    "Expression": "UsedInRelationships.Any(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections)\n\nand\n\nConvert.ToInt64(GetAnnotation(\"Vertipaq_Cardinality\")) > 100000",
     "CompatibilityLevel": 1200
   },
   {
@@ -325,7 +325,7 @@
     "Description": "Inactive relationships are activated using the USERELATIONSHIP function. If an inactive relationship is not referenced in any measure via this function, the relationship will not be used. It should be determined whether the relationship is not necessary or to activate the relationship via this method.\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/relationships-active-inactive\r\nReference: https://dax.guide/userelationship/",
     "Severity": 2,
     "Scope": "Relationship",
-    "Expression": "IsActive == false\r\nand not\r\nModel.AllMeasures.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))",
+    "Expression": "IsActive == false\r\nand not\r\n(\r\nModel.AllMeasures.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))\r\nor\r\nModel.AllCalculationItems.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))\r\n)",
     "CompatibilityLevel": 1200
   },
   {
@@ -441,7 +441,7 @@
     "Severity": 1,
     "Scope": "Table",
     "Expression": "(Partitions.Count = 1 and Partitions[0].Name <> Name)",
-	"FixExpression": "Partitions[0].Name = it.Name",
+    "FixExpression": "Partitions[0].Name = it.Name",
     "CompatibilityLevel": 1200
   },
   {
@@ -608,5 +608,5 @@
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
     "CompatibilityLevel": 1200
-  }  
+  }
 ]
