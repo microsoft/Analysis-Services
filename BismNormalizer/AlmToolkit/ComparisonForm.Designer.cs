@@ -32,6 +32,7 @@
             this.StatusBarComparsion = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.NewVersionLink = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabHome = new System.Windows.Forms.RibbonTab();
             this.panelCompare = new System.Windows.Forms.RibbonPanel();
@@ -70,7 +71,6 @@
             this.txtSource = new System.Windows.Forms.TextBox();
             this.txtTarget = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusBarComparsion.SuspendLayout();
             this.pnlRibbon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maqSoftwareLogo)).BeginInit();
@@ -106,6 +106,12 @@
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             this.toolStripProgressBar1.Visible = false;
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(1161, 17);
+            this.toolStripStatusLabel2.Spring = true;
             // 
             // NewVersionLink
             // 
@@ -514,12 +520,6 @@
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 40;
             this.label2.Text = "Target";
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(956, 17);
-            this.toolStripStatusLabel2.Spring = true;
             // 
             // ComparisonForm
             // 
