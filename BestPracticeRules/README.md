@@ -2,6 +2,8 @@
 
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
+And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
+
 Also, check out this [post](https://www.elegantbi.com/post/bestpracticerulesavings "Best Practice Rule Savings") for quantifying the savings of following specific Best Practice Rules.
 
 ## Purpose 
@@ -22,13 +24,15 @@ Following these steps will automatically load the Best Practice Rules into your 
 2. Connect to a model.
 3. Run the following code in the Advanced Scripting window.
 
-        System.Net.WebClient w = new System.Net.WebClient(); 
-        
-        string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
-        string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
-        string downloadLoc = path+@"\TabularEditor\BPARules.json";
-        
-        w.DownloadFile(url, downloadLoc);
+```C#  
+System.Net.WebClient w = new System.Net.WebClient(); 
+
+string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
+string downloadLoc = path+@"\TabularEditor\BPARules.json";
+
+w.DownloadFile(url, downloadLoc);
+```
 
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 5. Connect to a model.
@@ -66,4 +70,28 @@ Following these steps will automatically load the Best Practice Rules into your 
   
 ## Requirements
 
-[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.12.1 or higher.
+[Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
+
+## Version History
+
+* 2021-05-26 Version 1.1.1
+    * Modified Rules
+        * [DAX Expressions] Inactive relationships that are never activated
+            * Expanded the scope to include Calculation Items ([#110](https://github.com/microsoft/Analysis-Services/issues/110)) 
+* 2021-05-20 Version 1.1 (make sure to read the [blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "blog post"))
+    * New Rules
+        * [DAX Expressions] Filter column values with proper syntax
+        * [DAX Expressions] Fllter measure values by columns, not tables
+        * [DAX Expressions] Inactive relationships that are never activated
+        * [Maintenance] Perspectives with no objects
+        * [Maintenance] Calculation groups with no calculation items
+    * Modified Rules
+        * [Naming Conventions] Partition name should match table name for single partition tables
+            * Added Fix Expression (must use Tabular Editor 2.16.1 or higher)
+        * [Error Prevention] Calculated columns must have an expression
+            * New name: Expression-reliant objects must have an expression
+        * [Maintenance] Objects with no description
+            * New name: Visible objects with no description
+    * Removed Rules
+        * [DAX Expressions] No two measures should have the same definition
+* 2021-02-03 Version 1.0
