@@ -74,6 +74,10 @@ w.DownloadFile(url, downloadLoc);
 
 ## Version History
 
+* 2021-06-13 Version 1.1.2
+    * Modified Rules
+        * [DAX Expressions] Use the DIVIDE function for division
+            * Updated the rule logic to not mistake comments for division
 * 2021-05-26 Version 1.1.1
     * Modified Rules
         * [DAX Expressions] Inactive relationships that are never activated
