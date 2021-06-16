@@ -6,7 +6,7 @@ And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft
 
 Also, check out this [post](https://www.elegantbi.com/post/bestpracticerulesavings "Best Practice Rule Savings") for quantifying the savings of following specific Best Practice Rules.
 
-Lastly, check out this video for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+Lastly, check out this [video](https://www.youtube.com/watch?v=5pu9FoTUpys "video") for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 ## Purpose 
 
