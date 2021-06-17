@@ -52,8 +52,8 @@ w.DownloadFile(url, downloadLoc);
 
 1. Download the BPARules.json file from GitHub (in this repository).
 2. Within the Start Menu, type %localappdata% and click Enter.
-3. Navigate to the 'TabularEditor' folder.
-4. Copy the rules file (.json) and paste it into the TabularEditor folder.*
+3. Navigate to the 'TabularEditor' folder (if using Tabular Editor 3, navigate to the TabularEditor3 folder).
+4. Copy the rules file (.json) and paste it into the folder from Step 3.*
 5. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") and connect to your model.
 6. Select 'Tools' from the File menu and select 'Best Practice Analyzer'.
 7. Click the Refresh icon (in blue).
