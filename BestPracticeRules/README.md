@@ -27,11 +27,18 @@ Following these steps will automatically load the Best Practice Rules into your 
 3. Run the following code in the Advanced Scripting window.
 
 ```C#  
+using System.Windows.Forms;
 System.Net.WebClient w = new System.Net.WebClient(); 
 
 string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
+string version = Application.ProductVersion.Substring(0,1);
 string downloadLoc = path+@"\TabularEditor\BPARules.json";
+
+if (version == "3")
+{
+    downloadLoc = path+@"\TabularEditor3\BPARules.json";
+}
 
 w.DownloadFile(url, downloadLoc);
 ```
