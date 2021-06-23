@@ -24,7 +24,7 @@ Following these steps will automatically load the Best Practice Rules into your 
 
 1. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 2. Connect to a model.
-3. Run the following code in the Advanced Scripting window.
+3. Run the following code in the [Advanced Scripting](https://docs.tabulareditor.com/Advanced-Scripting.html "Advanced Scripting") window.
 
 ```C#  
 System.Net.WebClient w = new System.Net.WebClient(); 
