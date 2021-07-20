@@ -6,6 +6,8 @@ And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft
 
 Also, check out this [post](https://www.elegantbi.com/post/bestpracticerulesavings "Best Practice Rule Savings") for quantifying the savings of following specific Best Practice Rules.
 
+Lastly, check out this [video](https://www.youtube.com/watch?v=5pu9FoTUpys) for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+
 ## Purpose 
 
 Running this collection of rules inside [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer") will inform you of potential issues to fix or improvements to be made with regard to performance optimization and model design.
@@ -22,14 +24,20 @@ Following these steps will automatically load the Best Practice Rules into your 
 
 1. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 2. Connect to a model.
-3. Run the following code in the Advanced Scripting window.
+3. Run the following code in the [Advanced Scripting](https://docs.tabulareditor.com/Advanced-Scripting.html "Advanced Scripting") window.
 
 ```C#  
 System.Net.WebClient w = new System.Net.WebClient(); 
 
 string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json";
+string version = System.Windows.Forms.Application.ProductVersion.Substring(0,1);
 string downloadLoc = path+@"\TabularEditor\BPARules.json";
+
+if (version == "3")
+{
+    downloadLoc = path+@"\TabularEditor3\BPARules.json";
+}
 
 w.DownloadFile(url, downloadLoc);
 ```
@@ -43,8 +51,8 @@ w.DownloadFile(url, downloadLoc);
 
 1. Download the BPARules.json file from GitHub (in this repository).
 2. Within the Start Menu, type %localappdata% and click Enter.
-3. Navigate to the 'TabularEditor' folder.
-4. Copy the rules file (.json) and paste it into the TabularEditor folder.*
+3. Navigate to the 'TabularEditor' folder (if using Tabular Editor 3, navigate to the TabularEditor3 folder).
+4. Copy the rules file (.json) and paste it into the folder from Step 3.*
 5. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") and connect to your model.
 6. Select 'Tools' from the File menu and select 'Best Practice Analyzer'.
 7. Click the Refresh icon (in blue).
