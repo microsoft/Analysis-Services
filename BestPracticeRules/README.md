@@ -82,6 +82,29 @@ w.DownloadFile(url, downloadLoc);
 
 ## Version History
 
+* 2021-07-26 Version 1.2
+    * New Rules
+        * [Error Prevention] Avoid structured data sources with provider partitions
+    * Modified Rules
+        * [DAX Expressions] Column references should be fully qualified
+			* Scope: Added 'Table Permissions'
+        *  [Formatting] Hide fact table columns
+			* Simplified rule logic
+		* [Performance] Check if dynamic row level security (RLS) is necessary
+			* Simplified rule logic
+		* [Performance] Limit row level security (RLS) logic
+			* Simplified rule logic
+		* [Formatting] Add data category for columns
+			* Fixed rule logic
+		* [Performance] Measures using time intelligence and model is using Direct Query
+			* Simplified rule logic
+		* [Performance] Reduce usage of calculated columns that use the RELATED function
+			* Simplified rule logic
+		* [Performance] Reduce usage of long-length columns with high cardinality
+		    * Updated rule logic to use Int64
+
+![image](https://user-images.githubusercontent.com/29556918/126995487-981282dd-e3e1-4b3b-b825-ecf008535cb7.png)
+
 * 2021-06-13 Version 1.1.2
     * Modified Rules
         * [DAX Expressions] Use the DIVIDE function for division
