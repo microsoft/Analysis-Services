@@ -103,8 +103,6 @@ w.DownloadFile(url, downloadLoc);
 		* [Performance] Reduce usage of long-length columns with high cardinality
 		    * Updated rule logic to use Int64
 
-![image](https://user-images.githubusercontent.com/29556918/126995487-981282dd-e3e1-4b3b-b825-ecf008535cb7.png)
-
 * 2021-06-13 Version 1.1.2
     * Modified Rules
         * [DAX Expressions] Use the DIVIDE function for division
