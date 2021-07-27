@@ -26,7 +26,7 @@ Sample U-SQL scripts that demonstrate how to process a TPC-DS data set in Azure 
 Python script to reassemble job graph events from Analysis Services.
 
 ## [Best Practice Rules](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules)
-A curated set of rules covering best practices for tabular model performance and design which can be run from [Tabular Editor's](https://tabulareditor.com/ "Tabular Editor") [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+A curated set of rules covering best practices for tabular model performance and design which can be run from [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 ## [Metadata Translator](https://github.com/microsoft/Analysis-Services/tree/master/MetadataTranslator)
 Metadata Translator can translate the names, descriptions, and display folders of the metadata objects in a semantic model by using Azure Cognitive Services.
