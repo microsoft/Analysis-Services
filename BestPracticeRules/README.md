@@ -84,7 +84,7 @@ w.DownloadFile(url, downloadLoc);
 
 * 2021-07-26 Version 1.2
     * New Rules
-        * [Error Prevention] Avoid structured data sources with provider partitions
+        * [Error Prevention] Avoid structured data sources with provider partitions ([blog post](https://www.elegantbi.com/post/convertdatasources))
     * Modified Rules
         * [DAX Expressions] Column references should be fully qualified
 			* Scope: Added 'Table Permissions'
