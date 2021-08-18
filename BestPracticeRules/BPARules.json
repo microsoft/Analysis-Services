@@ -17,7 +17,7 @@
     "Description": "To speed up processing time and conserve memory after processing, attribute hierarchies should not be built for columns that are never used for slicing by MDX clients. In other words, all hidden columns that are not used as a Sort By Column or referenced in user hierarchies should have their IsAvailableInMdx property set to false.\r\nReference: https://blog.crossjoin.co.uk/2018/07/02/isavailableinmdx-ssas-tabular/",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()",
+    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()",
     "FixExpression": "IsAvailableInMDX = false",
     "CompatibilityLevel": 1200
   },
@@ -365,7 +365,7 @@
     "Description": "Hidden columns that are not referenced by any DAX expressions, relationships, hierarchy levels or Sort By-properties should be removed.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(IsHidden or Table.IsHidden)\n\nand ReferencedBy.Count = 0 \n\nand (not UsedInRelationships.Any())\n\nand (not UsedInSortBy.Any())\n\nand (not UsedInHierarchies.Any())\n\nand (not Table.RowLevelSecurity.Any(\n    it <> null and \n    it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\nand (not Model.Roles.Any(RowLevelSecurity.Any(\n    it <> null and \n    (\n        it.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n        it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n    )\n)))",
+    "Expression": "(IsHidden or Table.IsHidden)\n\n\r\nand ReferencedBy.Count = 0\r\n\n\nand (not UsedInRelationships.Any())\n\n\r\nand (not UsedInSortBy.Any())\n\n\r\nand (not UsedInHierarchies.Any())\n\n\r\nand (not Table.RowLevelSecurity.Any(\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\n and (not Model.Roles.Any(RowLevelSecurity.Any(\nit <> null and \n(\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n )\n)))",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
@@ -376,8 +376,18 @@
     "Description": "Hidden measures that are not referenced by any DAX expressions should be removed for maintainability",
     "Severity": 2,
     "Scope": "Measure",
-    "Expression": "(Table.IsHidden or IsHidden) and ReferencedBy.Count = 0",
+    "Expression": "(Table.IsHidden or IsHidden) \r\nand ReferencedBy.Count = 0",
     "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FIX_REFERENTIAL_INTEGRITY_VIOLATIONS",
+    "Name": "[Maintenance] Fix referential integrity violations",
+    "Category": "Maintenance",
+    "Description": "This rule highlights relationships which have referential integrity violations. This indicates that there are values in the table on the 'from' side of the relationship which do not exist in the table on the 'to' side of the relationship. Referential integrity violations will also produce the 'blank' member value in slicers. It is recommended to fix these issues by ensuring that the 'to' table's primary key column has all the values in the 'from' table's foreign key column.\r\n\r\nReference: https://blog.enterprisedna.co/vertipaq-analyzer-tutorial-relationships-referential-integrity/",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "Convert.ToInt64(GetAnnotation(\"Vertipaq_RIViolationInvalidRows\")) > 0",
     "CompatibilityLevel": 1200
   },
   {
