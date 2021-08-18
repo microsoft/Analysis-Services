@@ -65,6 +65,7 @@ w.DownloadFile(url, downloadLoc);
   * Large tables should be partitioned *
   * Reduce usage of long-length columns with high cardinality *^
   * Split date and time ***
+  * Fix referential integrity violations *
   
   *These rules use [Vertipaq Analyzer](https://www.sqlbi.com/tools/vertipaq-analyzer/) data. There are 2 methods to load this data into Tabular Editor:
  
@@ -82,6 +83,9 @@ w.DownloadFile(url, downloadLoc);
 
 ## Version History
 
+* 2021-08-18 Version 1.2.1
+    * New Rules
+        * [Maintenance] Fix referential integrity violations ([blog post](https://www.elegantbi.com/post/findblankrows)) 
 * 2021-07-26 Version 1.2
     * New Rules
         * [Error Prevention] Avoid structured data sources with provider partitions ([blog post](https://www.elegantbi.com/post/convertdatasources))
