@@ -4,7 +4,7 @@ Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsof
 
 And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
 
-Also, check out this post for quantifying the savings of following specific Best Practice Rules.
+Also, check out this to learn how to quantify the savings of following specific Best Practice Rules.
 
 [![image](https://user-images.githubusercontent.com/29556918/131373174-19f31ecb-67b3-4515-83be-f6687d442053.jpg)](https://www.elegantbi.com/post/bestpracticerulesavings)
 
