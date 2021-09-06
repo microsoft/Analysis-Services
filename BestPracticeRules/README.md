@@ -27,7 +27,7 @@ If you find any issues or have any requests for new rules, please [submit an iss
 
 ## Setup (automated)
 
-Following these steps will automatically load the Best Practice Rules into your local Tabular Editor. Note that this will overwrite the existing BPARules.json file (if you are already have one).
+Following these steps will automatically load the Best Practice Rules into your local Tabular Editor. Note that this will overwrite the existing BPARules.json file (if you are already have one) so be sure to back up your existing rules file.
 
 1. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 2. Connect to a model.
