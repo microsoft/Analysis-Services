@@ -8,7 +8,6 @@ Also, check out this blog post to learn how to quantify the savings of following
 
 [![image](https://user-images.githubusercontent.com/29556918/131373174-19f31ecb-67b3-4515-83be-f6687d442053.jpg)](https://www.elegantbi.com/post/bestpracticerulesavings)
 
-
 Lastly, check out the video below for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 <a href="https://www.youtube.com/watch?v=5pu9FoTUpys
@@ -24,6 +23,12 @@ Running this collection of rules inside [Tabular Editor](https://tabulareditor.c
 We would love to hear feedback on how this tool has helped your organization. Please email feedback to: pbibestpractice@microsoft.com.
 
 If you find any issues or have any requests for new rules, please [submit an issue](https://github.com/microsoft/Analysis-Services/issues "submit an issue") within this repository. Just prefix the issue with "BPARules" to make it easier to track.
+
+## Rule Details
+
+The rules are divided into categories (i.e. Performance, DAX Expressions, Error Prevention, Formatting, Maintenance etc.) for easier viewing. Additionally, each rule has a description and many of the rules also have a reference article/video. Reading the rule description and article will provide context as to why the rule is important and why one should follow it. The rule descriptions are accessible by navigating to 'Tools' -> 'Manage BPA Rules...' -> 'Rules for the local user' -> Click on a rule -> Click 'Edit rule...'.
+
+<img width="400" alt="RuleDescription35" src="https://user-images.githubusercontent.com/29556918/132206247-b2f73948-b976-4351-9830-a62f4145f263.png">
 
 ## Setup (automated)
 
