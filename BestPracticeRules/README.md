@@ -58,6 +58,11 @@ if (version == "3")
 w.DownloadFile(url, downloadLoc);
 ```
 
+*Note: If you want to load the rules in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian), replace the url parameter in the code above with the code below*
+```C#
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Italian/BPARules.json";
+```
+
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 5. Connect to a model.
 6. Select 'Tools' from the File menu and select 'Best Practice Analyzer'.
@@ -100,7 +105,7 @@ w.DownloadFile(url, downloadLoc);
 ## Languages
 
 * English
-* Italian
+* [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)
 
 *Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com.*
 
