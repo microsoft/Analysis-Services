@@ -97,6 +97,13 @@ w.DownloadFile(url, downloadLoc);
 
 [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
 
+## Languages
+
+* English
+* Italian
+
+*Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com*
+
 ## Version History
 
 * 2021-08-18 Version 1.2.1
@@ -123,6 +130,7 @@ w.DownloadFile(url, downloadLoc);
 		* [Performance] Reduce usage of long-length columns with high cardinality
 		    * Updated rule logic to use Int64
 
+* 2021-10-21 Best Practice Rules now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-06-13 Version 1.1.2
     * Modified Rules
         * [DAX Expressions] Use the DIVIDE function for division
