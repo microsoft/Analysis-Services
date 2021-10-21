@@ -58,7 +58,7 @@ if (version == "3")
 w.DownloadFile(url, downloadLoc);
 ```
 
-*Note: If you want to load the rules in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian), replace the url parameter in the code above with the code below*
+*Note: If you want to load the rules in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian), replace the url parameter in the code above with the code below.*
 ```C#
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Italian/BPARules.json";
 ```
