@@ -106,6 +106,7 @@ w.DownloadFile(url, downloadLoc);
 
 ## Version History
 
+* 2021-10-21 The Best Practice Rules are now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-08-18 Version 1.2.1
     * New Rules
         * [Maintenance] Fix referential integrity violations ([blog post](https://www.elegantbi.com/post/findblankrows)) 
