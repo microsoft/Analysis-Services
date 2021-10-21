@@ -102,7 +102,7 @@ w.DownloadFile(url, downloadLoc);
 * English
 * Italian
 
-*Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com*
+*Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com.*
 
 ## Version History
 
