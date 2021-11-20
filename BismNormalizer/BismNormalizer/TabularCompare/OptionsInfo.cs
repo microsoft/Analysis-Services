@@ -23,6 +23,7 @@ namespace BismNormalizer.TabularCompare
         private bool _optionLineageTag;
         private bool _optionRetainPartitions;
         private bool _optionRetainPolicyPartitions;
+        private bool _optionRetainRefreshPolicy;
         private bool _optionRetainStorageMode;
         private bool _optionMeasureDependencies;
         private ProcessingOption _optionProcessingOption;
@@ -45,6 +46,7 @@ namespace BismNormalizer.TabularCompare
             _optionLineageTag = Settings.Default.OptionLineageTag;
             _optionRetainPartitions = Settings.Default.OptionRetainPartitions;
             _optionRetainPolicyPartitions = Settings.Default.OptionRetainPolicyPartitions;
+            _optionRetainRefreshPolicy = Settings.Default.OptionRetainRefreshPolicy;
             _optionRetainStorageMode = Settings.Default.OptionRetainStorageMode;
             _optionMeasureDependencies = Settings.Default.OptionMeasureDependencies;
             _optionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), Settings.Default.OptionProcessingOption);
@@ -150,6 +152,15 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
+        /// A Boolean specifying whether to retain incremental refresh policy.
+        /// </summary>
+        public bool OptionRetainRefreshPolicy
+        {
+            get { return _optionRetainRefreshPolicy; }
+            set { _optionRetainRefreshPolicy = value; }
+        }
+
+        /// <summary>
         /// A Boolean specifying whether to retain storage for table updates on composite models.
         /// </summary>
         public bool OptionRetainStorageMode
@@ -212,6 +223,7 @@ namespace BismNormalizer.TabularCompare
             Settings.Default.OptionLineageTag = _optionLineageTag;
             Settings.Default.OptionRetainPartitions = _optionRetainPartitions;
             Settings.Default.OptionRetainPolicyPartitions = _optionRetainPolicyPartitions;
+            Settings.Default.OptionRetainRefreshPolicy = _optionRetainRefreshPolicy;
             Settings.Default.OptionRetainStorageMode = _optionRetainStorageMode;
             Settings.Default.OptionMeasureDependencies = _optionMeasureDependencies;
             Settings.Default.OptionProcessingOption = _optionProcessingOption.ToString();

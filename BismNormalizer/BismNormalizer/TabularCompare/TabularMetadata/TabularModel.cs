@@ -639,7 +639,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <param name="tableTarget">Table object in the target tabular model to be updated.</param>
         public void UpdateTable(Table tableSource, Table tableTarget, out string retainPartitionsMessage)
         {
-            bool canRetainPartitions = CanRetainPartitions(tableSource, tableTarget, out retainPartitionsMessage);
+            bool canRetainPartitions = CanRetainPartitions(
+                tableSource, 
+                tableTarget, 
+                out retainPartitionsMessage,
+                out PartitionSourceType partitionSourceTypeSource,
+                out PartitionSourceType partitionSourceTypeTarget);
             Tom.Table tomTableTargetOrig = tableTarget.TomTable.Clone();
             ModeType tableTargetModeType = tableTarget.TableModeType;
             List<SingleColumnRelationship> tomRelationshipsToAddBack = DeleteTable(tableTarget.Name);
@@ -690,48 +695,61 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 {
                     tableTarget.ResetStorageMode(tableTargetModeType);
                 }
+
+                //add back refresh policy if option selected
+                if (_comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy)
+                {
+                    if (tomTableTargetOrig.RefreshPolicy == null)
+                    {
+                        tableTarget.TomTable.RefreshPolicy = null;
+                    }
+                    else
+                    {
+                        tableTarget.TomTable.RefreshPolicy = tomTableTargetOrig.RefreshPolicy.Clone();
+                    }
+                }
             }
         }
 
-        public bool CanRetainPartitions(Table tableSource, Table tableTarget, out string retainPartitionsMessage)
+        public bool CanRetainPartitions(Table tableSource, Table tableTarget, out string retainPartitionsMessage, out PartitionSourceType partitionSourceTypeSource, out PartitionSourceType partitionSourceTypeTarget)
         {
             //Initialize variables
             retainPartitionsMessage = "";
-            PartitionSourceType sourceTypeSource = PartitionSourceType.None;
+            partitionSourceTypeSource = PartitionSourceType.None;
             foreach (Partition partition in tableSource.TomTable.Partitions)
             {
-                sourceTypeSource = partition.SourceType;
+                partitionSourceTypeSource = partition.SourceType;
                 break;
             }
-            PartitionSourceType sourceTypeTarget = PartitionSourceType.None;
+            partitionSourceTypeTarget = PartitionSourceType.None;
             foreach (Partition partitionTarget in tableTarget.TomTable.Partitions)
             {
-                sourceTypeTarget = partitionTarget.SourceType;
+                partitionSourceTypeTarget = partitionTarget.SourceType;
                 break;
             }
 
             //Verify necessary options are checked
             if (!_comparisonInfo.OptionsInfo.OptionRetainPartitions)
                 return false;
-            if (_comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions && sourceTypeTarget != PartitionSourceType.PolicyRange)
+            if (_comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions && partitionSourceTypeTarget != PartitionSourceType.PolicyRange)
                 return false;
 
             //both tables need to have M or query partitions, or target can be policy partitions. Also type needs to match (won't copy query partition to M table). If a table has no partitions, do nothing.
-            if (!(sourceTypeSource == PartitionSourceType.M || sourceTypeSource == PartitionSourceType.Query || sourceTypeSource == PartitionSourceType.PolicyRange))
+            if (!(partitionSourceTypeSource == PartitionSourceType.M || partitionSourceTypeSource == PartitionSourceType.Query || partitionSourceTypeSource == PartitionSourceType.PolicyRange))
             {
                 retainPartitionsMessage = $"Retain partitions not applicable to partition types.";
                 return false;
             }
 
-            if (!(sourceTypeTarget == PartitionSourceType.M || sourceTypeTarget == PartitionSourceType.Query || sourceTypeTarget == PartitionSourceType.PolicyRange))
+            if (!(partitionSourceTypeTarget == PartitionSourceType.M || partitionSourceTypeTarget == PartitionSourceType.Query || partitionSourceTypeTarget == PartitionSourceType.PolicyRange))
             {
                 retainPartitionsMessage = $"Retain partitions not applicable to partition types.";
                 return false;
             }
 
-            if ((sourceTypeTarget != sourceTypeSource) && sourceTypeTarget != PartitionSourceType.PolicyRange)
+            if (partitionSourceTypeTarget != partitionSourceTypeSource && !(partitionSourceTypeTarget == PartitionSourceType.M && partitionSourceTypeSource == PartitionSourceType.PolicyRange) && partitionSourceTypeTarget != PartitionSourceType.PolicyRange)
             {
-                retainPartitionsMessage = $"Retain partitions not applied because source partition type is {sourceTypeSource.ToString()} and target partition type is {sourceTypeTarget.ToString()}.";
+                retainPartitionsMessage = $"Retain partitions not applied because source partition type is {partitionSourceTypeSource.ToString()} and target partition type is {partitionSourceTypeTarget.ToString()}.";
                 return false;
             }
 

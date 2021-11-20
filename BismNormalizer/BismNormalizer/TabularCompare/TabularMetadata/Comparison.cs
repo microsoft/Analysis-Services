@@ -1052,7 +1052,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                                             _targetTabularModel.CanRetainPartitions(                 //But also check if doing retain partitions on this table (if so, dependency will remain).
                                                 _sourceTabularModel.Tables.FindByName(comparisonObjectToCheck.TargetObjectName),
                                                 _targetTabularModel.Tables.FindByName(comparisonObjectToCheck.TargetObjectName),
-                                                out string retainPartitionsMessage)
+                                                out string retainPartitionsMessage,
+                                                out PartitionSourceType partitionSourceTypeSource,
+                                                out PartitionSourceType partitionSourceTypeTarget)
                                         )
                                     )                                                                //Create table is not possible to have a dependency on this object about to be deleted. Delete table is fine.
                                 )
@@ -1627,9 +1629,15 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 List<string> warningObjectList = new List<string>();
                 bool fromDependencies = false;
                 bool nonStructuredDataSourceLocal = false;
+                bool canRetainPartitions = 
+                    _targetTabularModel.CanRetainPartitions(
+                    tableSource, tableTarget, 
+                    out string retainPartitionsMessageTemp,
+                    out PartitionSourceType partitionSourceTypeSource,
+                    out PartitionSourceType partitionSourceTypeTarget);
 
                 //Will this table retain partitions? If yes, don't need to bother with source dependency (target dependency checking will cover for deletes).
-                if (!_targetTabularModel.CanRetainPartitions(tableSource, tableTarget, out string retainPartitionsMessageTemp))
+                if (!canRetainPartitions)
                 {
                     //Check any objects in source that this table depends on are also going to be created/updated if not already in target
                     foreach (Partition partition in tableSource.TomTable.Partitions)
@@ -1661,8 +1669,20 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         {
                             return;
                         };
-                        _targetTabularModel.UpdateTable(tableSource, tableTarget, out string retainPartitionsMessage);
-                        OnValidationMessage(new ValidationMessageEventArgs($"Update {(tableSource.IsCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'. {retainPartitionsMessage}", ValidationMessageType.Table, ValidationMessageStatus.Informational));
+
+                        //Check if, based on options selected, check if target table would contain policy based partitions with no refresh policy
+                        if (
+                            (canRetainPartitions && !_comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy && partitionSourceTypeTarget == PartitionSourceType.PolicyRange && tableSource.TomTable.RefreshPolicy == null) ||
+                            (!canRetainPartitions && _comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy && partitionSourceTypeSource == PartitionSourceType.PolicyRange && tableTarget.TomTable.RefreshPolicy == null)
+                           )
+                        {
+                            OnValidationMessage(new ValidationMessageEventArgs($"Unable to update table {comparisonObject.TargetObjectName} because, based on options selected, the resulting table would contain policy based partitions with no refresh policy, which is not allowed.", (tableSource.IsCalculationGroup ? ValidationMessageType.CalculationGroup : ValidationMessageType.Table), ValidationMessageStatus.Warning));
+                        }
+                        else
+                        {
+                            _targetTabularModel.UpdateTable(tableSource, tableTarget, out string retainPartitionsMessage);
+                            OnValidationMessage(new ValidationMessageEventArgs($"Update {(tableSource.IsCalculationGroup ? "calculation group" : "table")} '{comparisonObject.TargetObjectName}'. {retainPartitionsMessage}", ValidationMessageType.Table, ValidationMessageStatus.Informational));
+                        }
                     }
                 }
                 else

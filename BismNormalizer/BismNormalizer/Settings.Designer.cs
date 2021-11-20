@@ -370,5 +370,17 @@ namespace BismNormalizer {
                 this["OptionRetainRoleMembers"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptionRetainRefreshPolicy {
+            get {
+                return ((bool)(this["OptionRetainRefreshPolicy"]));
+            }
+            set {
+                this["OptionRetainRefreshPolicy"] = value;
+            }
+        }
     }
 }

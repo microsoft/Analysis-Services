@@ -53,6 +53,7 @@ namespace BismNormalizer.TabularCompare.UI
             chkLineageTag.Checked = _comparisonInfo.OptionsInfo.OptionLineageTag;
             chkRetainPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPartitions;
             chkRetainPolicyPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions;
+            chkRetainRefreshPolicy.Checked = _comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy;
             chkRetainStorageMode.Checked = _comparisonInfo.OptionsInfo.OptionRetainStorageMode;
             chkMeasureDependencies.Checked = _comparisonInfo.OptionsInfo.OptionMeasureDependencies;
             string processingOption = _comparisonInfo.OptionsInfo.OptionProcessingOption.ToString();
@@ -73,6 +74,7 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionLineageTag = chkLineageTag.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPartitions = chkRetainPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions = chkRetainPolicyPartitions.Checked;
+            _comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy = chkRetainRefreshPolicy.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainStorageMode = chkRetainStorageMode.Checked;
             _comparisonInfo.OptionsInfo.OptionMeasureDependencies = chkMeasureDependencies.Checked;
             _comparisonInfo.OptionsInfo.OptionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), cboProcessingOption.Text.Replace(" ", ""));
