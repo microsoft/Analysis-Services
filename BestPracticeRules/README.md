@@ -2,11 +2,21 @@
 
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
-And, check out the new [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
+Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
 
-Also, check out this [post](https://www.elegantbi.com/post/bestpracticerulesavings "Best Practice Rule Savings") for quantifying the savings of following specific Best Practice Rules.
+Check out this blog post to learn how to quantify the savings of following specific Best Practice Rules.
 
-Lastly, check out this [video](https://www.youtube.com/watch?v=5pu9FoTUpys) for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+[![image](https://user-images.githubusercontent.com/29556918/131373174-19f31ecb-67b3-4515-83be-f6687d442053.jpg)](https://www.elegantbi.com/post/bestpracticerulesavings)
+
+Check out this blog post to learn how to export the Best Practice Analyzer results into Excel.
+
+[![image](https://user-images.githubusercontent.com/29556918/136688637-f638405e-0bda-462d-8d95-00a0037000c6.jpg)](https://www.elegantbi.com/post/exportbparesults)
+
+Lastly, check out the video below for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+
+<a href="https://www.youtube.com/watch?v=5pu9FoTUpys
+" target="_blank"><img src="http://i3.ytimg.com/vi/5pu9FoTUpys/hqdefault.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 ## Purpose 
 
@@ -18,9 +28,15 @@ We would love to hear feedback on how this tool has helped your organization. Pl
 
 If you find any issues or have any requests for new rules, please [submit an issue](https://github.com/microsoft/Analysis-Services/issues "submit an issue") within this repository. Just prefix the issue with "BPARules" to make it easier to track.
 
+## Rule Details
+
+The rules are divided into categories (i.e. Performance, DAX Expressions, Error Prevention, Formatting, Maintenance etc.) for easier viewing. Additionally, each rule has a description and many of the rules also have a reference article/video. Reading the rule description and article will provide context as to why the rule is important and why one should follow it. The rule descriptions are accessible by navigating to 'Tools' -> 'Manage BPA Rules...' -> 'Rules for the local user' -> Click on a rule -> Click 'Edit rule...'.
+
+<img width="400" alt="RuleDescription35" src="https://user-images.githubusercontent.com/29556918/132206247-b2f73948-b976-4351-9830-a62f4145f263.png">
+
 ## Setup (automated)
 
-Following these steps will automatically load the Best Practice Rules into your local Tabular Editor. Note that this will overwrite the existing BPARules.json file (if you are already have one).
+Following these steps will automatically load the Best Practice Rules into your local Tabular Editor. Note that this will overwrite the existing BPARules.json file (if you are already have one) so be sure to back up your existing rules file.
 
 1. Open [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
 2. Connect to a model.
@@ -40,6 +56,11 @@ if (version == "3")
 }
 
 w.DownloadFile(url, downloadLoc);
+```
+
+*Note: If you want to load the rules in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian), replace the url parameter in the code above with the code below.*
+```C#
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Italian/BPARules.json";
 ```
 
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
@@ -65,6 +86,7 @@ w.DownloadFile(url, downloadLoc);
   * Large tables should be partitioned *
   * Reduce usage of long-length columns with high cardinality *^
   * Split date and time ***
+  * Fix referential integrity violations *
   
   *These rules use [Vertipaq Analyzer](https://www.sqlbi.com/tools/vertipaq-analyzer/) data. There are 2 methods to load this data into Tabular Editor:
  
@@ -80,8 +102,41 @@ w.DownloadFile(url, downloadLoc);
 
 [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") version 2.16.1 or higher.
 
+## Languages
+
+* English
+* [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)
+
+*Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com.*
+
 ## Version History
 
+* 2021-10-21 The Best Practice Rules are now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
+* 2021-08-18 Version 1.2.1
+    * New Rules
+        * [Maintenance] Fix referential integrity violations ([blog post](https://www.elegantbi.com/post/findblankrows)) 
+* 2021-07-26 Version 1.2
+    * New Rules
+        * [Error Prevention] Avoid structured data sources with provider partitions ([blog post](https://www.elegantbi.com/post/convertdatasources))
+    * Modified Rules
+        * [DAX Expressions] Column references should be fully qualified
+			* Scope: Added 'Table Permissions'
+        *  [Formatting] Hide fact table columns
+			* Simplified rule logic
+		* [Performance] Check if dynamic row level security (RLS) is necessary
+			* Simplified rule logic
+		* [Performance] Limit row level security (RLS) logic
+			* Simplified rule logic
+		* [Formatting] Add data category for columns
+			* Fixed rule logic
+		* [Performance] Measures using time intelligence and model is using Direct Query
+			* Simplified rule logic
+		* [Performance] Reduce usage of calculated columns that use the RELATED function
+			* Simplified rule logic
+		* [Performance] Reduce usage of long-length columns with high cardinality
+		    * Updated rule logic to use Int64
+
+* 2021-10-21 Best Practice Rules now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-06-13 Version 1.1.2
     * Modified Rules
         * [DAX Expressions] Use the DIVIDE function for division
