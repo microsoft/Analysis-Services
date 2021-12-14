@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -22,8 +18,11 @@ namespace RestApiSample
         private static async void CallRefreshAsync()
         {
             HttpClient client = new HttpClient();
+            //AAS template
             //client.BaseAddress = new Uri("https://<rollout>.asazure.windows.net/servers/<serverName>/models/<resource>/");
-            client.BaseAddress = new Uri("https://southcentralus.asazure.windows.net/servers/chwade003/models/AdventureWorks0/");
+
+            //PBI template
+            client.BaseAddress = new Uri("https://api.powerbi.com/v1.0/myorg/groups/<workspaceID>/datasets/<datasetID>/");
 
             // Send refresh request
             client.DefaultRequestHeaders.Accept.Clear();
@@ -37,6 +36,7 @@ namespace RestApiSample
             };
 
             HttpResponseMessage response = await client.PostAsJsonAsync("refreshes", refreshRequest);
+            string content = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
             Uri location = response.Headers.Location;
             Console.WriteLine(response.Headers.Location);
@@ -64,25 +64,41 @@ namespace RestApiSample
 
         private static async Task<string> UpdateToken()
         {
-            string resourceURI = "https://*.asazure.windows.net";
 
-            string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
-            AuthenticationContext ac = new AuthenticationContext(authority);
+            // AAS REST API Inputs:
+            // string resourceURI = "https://*.asazure.windows.net";
+            // string authority = "https://login.windows.net/<TenantID>/oauth2/authorize";
+            // AuthenticationContext ac = new AuthenticationContext(authority);
 
-            #region Interactive or username/password
+            // PBI REST API Inputs:
+            string resourceURI = "https://analysis.windows.net/powerbi/api";
+            string authority = "https://login.microsoftonline.com/<TenantID>";
+            string[] scopes = new string[] { $"{resourceURI}/.default" };
+
+
+
+            #region Use Interactive or username/password
 
             //string clientID = "<App ID>"; // Native app with necessary API permissions
 
             //Interactive login if not cached:
-            //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto));
+            //AuthenticationContext ac = new AuthenticationContext(authority);
+            //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.SelectAccount));
 
-            //Username/password:
-            //UserPasswordCredential cred = new UserPasswordCredential("<User ID (UPN e-mail format)>", "<Password>");
-            //AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, cred);
+            // Username/password:
+            // AuthenticationContext ac = new AuthenticationContext(authority);
+            // UserPasswordCredential cred = new UserPasswordCredential("<User ID (UPN e-mail format)>", "<Password>");
+            // AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, clientID, cred);
 
             #endregion
 
-            //Service principal:
+            // AAS Service Principal:
+            // ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
+            // AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
+
+
+            // PBI Service Principal: 
+            AuthenticationContext ac = new AuthenticationContext(authority);
             ClientCredential cred = new ClientCredential("<App ID>", "<App Key>");
             AuthenticationResult ar = await ac.AcquireTokenAsync(resourceURI, cred);
 
