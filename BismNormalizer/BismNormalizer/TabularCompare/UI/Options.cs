@@ -22,6 +22,10 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void Options_Load(object sender, EventArgs e)
         {
+            this.Height = Convert.ToInt32(groupBox1.Height + groupBox2.Height + panel2.Height*2.1);
+            //MessageBox.Show($"Scale factor: {_dpiScaleFactor}\nSecondary scale factor: {Utils.SecondaryFudgeFactor}\n\n" +
+            //    $"Groupbox1 height: {groupBox1.Height}\nGroupbox2 height: {groupBox2.Height}\nPanel2 height:{panel2.Height}\n\nForm height: {this.Height}");
+
             if (_dpiScaleFactor > 1)
             {
                 float dpiScaleFactorFudged = _dpiScaleFactor * Utils.PrimaryFudgeFactor;
@@ -38,6 +42,8 @@ namespace BismNormalizer.TabularCompare.UI
                     }
                 }
                 this.cboProcessingOption.Left = label1.Right + Convert.ToInt32(12 * dpiScaleFactorFudged);
+                
+                //this.Height = Convert.ToInt32(this.Height * _dpiScaleFactor * Utils.SecondaryFudgeFactor);
             }
 
             this.KeyPreview = true;
@@ -133,6 +139,5 @@ namespace BismNormalizer.TabularCompare.UI
             get { return _dpiScaleFactor; }
             set { _dpiScaleFactor = value; }
         }
-
     }
 }

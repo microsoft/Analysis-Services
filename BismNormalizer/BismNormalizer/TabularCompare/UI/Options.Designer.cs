@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
             this.chkRoles = new System.Windows.Forms.CheckBox();
             this.chkPartitions = new System.Windows.Forms.CheckBox();
             this.chkMeasureDependencies = new System.Windows.Forms.CheckBox();
@@ -48,45 +46,24 @@
             this.chkAffectedTables = new System.Windows.Forms.CheckBox();
             this.cboProcessingOption = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOK = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(548, 991);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(6);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(150, 44);
-            this.btnCancel.TabIndex = 21;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(388, 991);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(6);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(150, 44);
-            this.btnOK.TabIndex = 20;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // chkRoles
             // 
             this.chkRoles.AutoSize = true;
             this.chkRoles.Checked = true;
             this.chkRoles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRoles.Location = new System.Drawing.Point(28, 233);
+            this.chkRoles.Location = new System.Drawing.Point(38, 233);
             this.chkRoles.Margin = new System.Windows.Forms.Padding(6);
             this.chkRoles.Name = "chkRoles";
             this.chkRoles.Size = new System.Drawing.Size(166, 29);
-            this.chkRoles.TabIndex = 5;
+            this.chkRoles.TabIndex = 7;
             this.chkRoles.Text = "Include roles";
             this.chkRoles.UseVisualStyleBackColor = true;
             this.chkRoles.CheckedChanged += new System.EventHandler(this.chkRoles_CheckedChanged);
@@ -94,11 +71,11 @@
             // chkPartitions
             // 
             this.chkPartitions.AutoSize = true;
-            this.chkPartitions.Location = new System.Drawing.Point(28, 331);
+            this.chkPartitions.Location = new System.Drawing.Point(38, 331);
             this.chkPartitions.Margin = new System.Windows.Forms.Padding(6);
             this.chkPartitions.Name = "chkPartitions";
             this.chkPartitions.Size = new System.Drawing.Size(451, 29);
-            this.chkPartitions.TabIndex = 6;
+            this.chkPartitions.TabIndex = 9;
             this.chkPartitions.Text = "Consider partitions when comparing tables";
             this.chkPartitions.UseVisualStyleBackColor = true;
             // 
@@ -109,18 +86,18 @@
             this.chkMeasureDependencies.AutoSize = true;
             this.chkMeasureDependencies.Checked = true;
             this.chkMeasureDependencies.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMeasureDependencies.Location = new System.Drawing.Point(28, 655);
+            this.chkMeasureDependencies.Location = new System.Drawing.Point(38, 655);
             this.chkMeasureDependencies.Margin = new System.Windows.Forms.Padding(6);
             this.chkMeasureDependencies.Name = "chkMeasureDependencies";
             this.chkMeasureDependencies.Size = new System.Drawing.Size(86, 29);
-            this.chkMeasureDependencies.TabIndex = 7;
+            this.chkMeasureDependencies.TabIndex = 15;
             this.chkMeasureDependencies.Text = "XXX";
             this.chkMeasureDependencies.UseVisualStyleBackColor = true;
             // 
             // chkPerspectives
             // 
             this.chkPerspectives.AutoSize = true;
-            this.chkPerspectives.Location = new System.Drawing.Point(28, 46);
+            this.chkPerspectives.Location = new System.Drawing.Point(38, 46);
             this.chkPerspectives.Margin = new System.Windows.Forms.Padding(6);
             this.chkPerspectives.Name = "chkPerspectives";
             this.chkPerspectives.Size = new System.Drawing.Size(241, 29);
@@ -131,9 +108,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.chkRetainRefreshPolicy);
             this.groupBox1.Controls.Add(this.chkRetainRoleMembers);
             this.groupBox1.Controls.Add(this.chkLineageTag);
@@ -147,11 +121,12 @@
             this.groupBox1.Controls.Add(this.chkMeasureDependencies);
             this.groupBox1.Controls.Add(this.chkPartitions);
             this.groupBox1.Controls.Add(this.chkRoles);
-            this.groupBox1.Location = new System.Drawing.Point(24, 21);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(676, 739);
+            this.groupBox1.Size = new System.Drawing.Size(822, 756);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Comparison Options";
@@ -159,11 +134,11 @@
             // chkRetainRefreshPolicy
             // 
             this.chkRetainRefreshPolicy.AutoSize = true;
-            this.chkRetainRefreshPolicy.Location = new System.Drawing.Point(28, 552);
+            this.chkRetainRefreshPolicy.Location = new System.Drawing.Point(38, 552);
             this.chkRetainRefreshPolicy.Margin = new System.Windows.Forms.Padding(6);
             this.chkRetainRefreshPolicy.Name = "chkRetainRefreshPolicy";
             this.chkRetainRefreshPolicy.Size = new System.Drawing.Size(413, 29);
-            this.chkRetainRefreshPolicy.TabIndex = 15;
+            this.chkRetainRefreshPolicy.TabIndex = 13;
             this.chkRetainRefreshPolicy.Text = "For table updates, retain refresh policy";
             this.chkRetainRefreshPolicy.UseVisualStyleBackColor = true;
             // 
@@ -172,33 +147,33 @@
             this.chkRetainRoleMembers.AutoSize = true;
             this.chkRetainRoleMembers.Checked = true;
             this.chkRetainRoleMembers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRetainRoleMembers.Location = new System.Drawing.Point(68, 277);
+            this.chkRetainRoleMembers.Location = new System.Drawing.Point(78, 277);
             this.chkRetainRoleMembers.Margin = new System.Windows.Forms.Padding(6);
             this.chkRetainRoleMembers.Name = "chkRetainRoleMembers";
             this.chkRetainRoleMembers.Size = new System.Drawing.Size(361, 29);
-            this.chkRetainRoleMembers.TabIndex = 14;
+            this.chkRetainRoleMembers.TabIndex = 8;
             this.chkRetainRoleMembers.Text = "For role updates, retain members";
             this.chkRetainRoleMembers.UseVisualStyleBackColor = true;
             // 
             // chkLineageTag
             // 
             this.chkLineageTag.AutoSize = true;
-            this.chkLineageTag.Location = new System.Drawing.Point(28, 390);
+            this.chkLineageTag.Location = new System.Drawing.Point(38, 390);
             this.chkLineageTag.Margin = new System.Windows.Forms.Padding(6);
             this.chkLineageTag.Name = "chkLineageTag";
             this.chkLineageTag.Size = new System.Drawing.Size(413, 29);
-            this.chkLineageTag.TabIndex = 13;
+            this.chkLineageTag.TabIndex = 10;
             this.chkLineageTag.Text = "Consider LineageTag when comparing";
             this.chkLineageTag.UseVisualStyleBackColor = true;
             // 
             // chkRetainStorageMode
             // 
             this.chkRetainStorageMode.AutoSize = true;
-            this.chkRetainStorageMode.Location = new System.Drawing.Point(28, 605);
+            this.chkRetainStorageMode.Location = new System.Drawing.Point(38, 605);
             this.chkRetainStorageMode.Margin = new System.Windows.Forms.Padding(6);
             this.chkRetainStorageMode.Name = "chkRetainStorageMode";
             this.chkRetainStorageMode.Size = new System.Drawing.Size(415, 29);
-            this.chkRetainStorageMode.TabIndex = 12;
+            this.chkRetainStorageMode.TabIndex = 14;
             this.chkRetainStorageMode.Text = "For table updates, retain storage mode";
             this.chkRetainStorageMode.UseVisualStyleBackColor = true;
             // 
@@ -206,22 +181,22 @@
             // 
             this.chkRetainPolicyPartitions.AutoSize = true;
             this.chkRetainPolicyPartitions.Enabled = false;
-            this.chkRetainPolicyPartitions.Location = new System.Drawing.Point(68, 492);
+            this.chkRetainPolicyPartitions.Location = new System.Drawing.Point(78, 492);
             this.chkRetainPolicyPartitions.Margin = new System.Windows.Forms.Padding(6);
             this.chkRetainPolicyPartitions.Name = "chkRetainPolicyPartitions";
             this.chkRetainPolicyPartitions.Size = new System.Drawing.Size(447, 29);
-            this.chkRetainPolicyPartitions.TabIndex = 11;
+            this.chkRetainPolicyPartitions.TabIndex = 12;
             this.chkRetainPolicyPartitions.Text = "Retain only refresh-policy based partitions";
             this.chkRetainPolicyPartitions.UseVisualStyleBackColor = true;
             // 
             // chkRetainPartitions
             // 
             this.chkRetainPartitions.AutoSize = true;
-            this.chkRetainPartitions.Location = new System.Drawing.Point(28, 452);
+            this.chkRetainPartitions.Location = new System.Drawing.Point(38, 452);
             this.chkRetainPartitions.Margin = new System.Windows.Forms.Padding(6);
             this.chkRetainPartitions.Name = "chkRetainPartitions";
             this.chkRetainPartitions.Size = new System.Drawing.Size(372, 29);
-            this.chkRetainPartitions.TabIndex = 10;
+            this.chkRetainPartitions.TabIndex = 11;
             this.chkRetainPartitions.Text = "For table updates, retain partitions";
             this.chkRetainPartitions.UseVisualStyleBackColor = true;
             this.chkRetainPartitions.CheckedChanged += new System.EventHandler(this.ChkRetainPartitions_CheckedChanged);
@@ -230,22 +205,22 @@
             // 
             this.chkMergeCultures.AutoSize = true;
             this.chkMergeCultures.Enabled = false;
-            this.chkMergeCultures.Location = new System.Drawing.Point(68, 185);
+            this.chkMergeCultures.Location = new System.Drawing.Point(78, 185);
             this.chkMergeCultures.Margin = new System.Windows.Forms.Padding(6);
             this.chkMergeCultures.Name = "chkMergeCultures";
             this.chkMergeCultures.Size = new System.Drawing.Size(546, 29);
-            this.chkMergeCultures.TabIndex = 9;
+            this.chkMergeCultures.TabIndex = 6;
             this.chkMergeCultures.Text = "For culture updates, merge translations (not replace)";
             this.chkMergeCultures.UseVisualStyleBackColor = true;
             // 
             // chkCultures
             // 
             this.chkCultures.AutoSize = true;
-            this.chkCultures.Location = new System.Drawing.Point(28, 144);
+            this.chkCultures.Location = new System.Drawing.Point(38, 144);
             this.chkCultures.Margin = new System.Windows.Forms.Padding(6);
             this.chkCultures.Name = "chkCultures";
             this.chkCultures.Size = new System.Drawing.Size(195, 29);
-            this.chkCultures.TabIndex = 8;
+            this.chkCultures.TabIndex = 5;
             this.chkCultures.Text = "Include cultures";
             this.chkCultures.UseVisualStyleBackColor = true;
             this.chkCultures.CheckedChanged += new System.EventHandler(this.chkCultures_CheckedChanged);
@@ -254,7 +229,7 @@
             // 
             this.chkMergePerspectives.AutoSize = true;
             this.chkMergePerspectives.Enabled = false;
-            this.chkMergePerspectives.Location = new System.Drawing.Point(68, 88);
+            this.chkMergePerspectives.Location = new System.Drawing.Point(78, 88);
             this.chkMergePerspectives.Margin = new System.Windows.Forms.Padding(6);
             this.chkMergePerspectives.Name = "chkMergePerspectives";
             this.chkMergePerspectives.Size = new System.Drawing.Size(578, 29);
@@ -264,16 +239,15 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.chkAffectedTables);
             this.groupBox2.Controls.Add(this.cboProcessingOption);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(24, 774);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox2.Location = new System.Drawing.Point(0, 756);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(676, 194);
+            this.groupBox2.Size = new System.Drawing.Size(822, 194);
             this.groupBox2.TabIndex = 23;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Database Deployment";
@@ -283,11 +257,11 @@
             this.chkAffectedTables.AutoSize = true;
             this.chkAffectedTables.Checked = true;
             this.chkAffectedTables.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAffectedTables.Location = new System.Drawing.Point(28, 121);
+            this.chkAffectedTables.Location = new System.Drawing.Point(38, 121);
             this.chkAffectedTables.Margin = new System.Windows.Forms.Padding(6);
             this.chkAffectedTables.Name = "chkAffectedTables";
             this.chkAffectedTables.Size = new System.Drawing.Size(315, 29);
-            this.chkAffectedTables.TabIndex = 9;
+            this.chkAffectedTables.TabIndex = 31;
             this.chkAffectedTables.Text = "Process only affected tables";
             this.chkAffectedTables.UseVisualStyleBackColor = true;
             // 
@@ -301,21 +275,57 @@
             "Default",
             "Do Not Process",
             "Full"});
-            this.cboProcessingOption.Location = new System.Drawing.Point(228, 46);
+            this.cboProcessingOption.Location = new System.Drawing.Point(238, 46);
             this.cboProcessingOption.Margin = new System.Windows.Forms.Padding(6);
             this.cboProcessingOption.Name = "cboProcessingOption";
-            this.cboProcessingOption.Size = new System.Drawing.Size(258, 33);
-            this.cboProcessingOption.TabIndex = 8;
+            this.cboProcessingOption.Size = new System.Drawing.Size(404, 33);
+            this.cboProcessingOption.TabIndex = 30;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 54);
+            this.label1.Location = new System.Drawing.Point(34, 54);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(194, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "Processing Option:";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.btnCancel);
+            this.panel2.Controls.Add(this.btnOK);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 972);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(822, 86);
+            this.panel2.TabIndex = 24;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(652, 19);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(6);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(142, 44);
+            this.btnCancel.TabIndex = 36;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOK.Location = new System.Drawing.Point(502, 19);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(6);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(138, 44);
+            this.btnOK.TabIndex = 35;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // Options
             // 
@@ -323,11 +333,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(724, 1066);
+            this.ClientSize = new System.Drawing.Size(822, 1058);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(6);
             this.MaximizeBox = false;
@@ -342,14 +351,12 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.CheckBox chkRoles;
         private System.Windows.Forms.CheckBox chkPartitions;
         private System.Windows.Forms.CheckBox chkMeasureDependencies;
@@ -368,5 +375,8 @@
         private System.Windows.Forms.CheckBox chkLineageTag;
         private System.Windows.Forms.CheckBox chkRetainRoleMembers;
         private System.Windows.Forms.CheckBox chkRetainRefreshPolicy;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOK;
     }
 }
