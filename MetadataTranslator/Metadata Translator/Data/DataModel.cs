@@ -187,6 +187,14 @@ namespace Metadata_Translator
                         Descriptions.Add(CreateRow(new MetadataObjectContainer(hierarchy, TranslatedProperty.Description), hierarchy.Description, DefaultCulture, cultures));
                     if (!string.IsNullOrEmpty(hierarchy.DisplayFolder))
                         DisplayFolders.AddDisplayFolder(hierarchy, hierarchy.DisplayFolder, DefaultCulture, cultures);
+
+                    foreach(Level level in hierarchy.Levels)
+                    {
+                        Captions.Add(CreateRow(new MetadataObjectContainer(level, TranslatedProperty.Caption), level.Name, DefaultCulture, cultures));
+
+                        if (!string.IsNullOrEmpty(level.Description))
+                            Descriptions.Add(CreateRow(new MetadataObjectContainer(level, TranslatedProperty.Description), level.Description, DefaultCulture, cultures));
+                    }
                 }
             }
         }
