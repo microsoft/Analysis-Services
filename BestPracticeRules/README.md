@@ -22,6 +22,10 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 Running this collection of rules inside [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer") will inform you of potential issues to fix or improvements to be made with regard to performance optimization and model design.
 
+## Compatibility
+
+These best practice rules are compatible with any incarnation of tabular models - be it a model in Power BI Desktop, Power BI Dataset, Power BI Premium, SQL Server Analysis Services, or Azure Analysis Services. The only [requirement](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules#requirements) is using [Tabular Editor](https://tabulareditor.com/ "Tabular Editor") (version 2 or 3).
+
 ## Feedback
 
 We would love to hear feedback on how this tool has helped your organization. Please email feedback to: pbibestpractice@microsoft.com.
