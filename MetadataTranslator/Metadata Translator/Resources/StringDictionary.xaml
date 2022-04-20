@@ -32,6 +32,8 @@
     <system:String x:Key="TranslatorLocationPrompt">This is typically the Global region, but could also be a single Azure region.</system:String>
     <system:String x:Key="NothingToTranslate">Please select at least one language before you translate the metadata.</system:String>
     <system:String x:Key="UnableToTranslate">Microsoft Translator was unable to translate the metadata strings into {0}. Please try again later or remove this language from the translation.</system:String>
+    <system:String x:Key="UnableToAccessTranslatorEndpoint">Microsoft Translator was unable to translate the metadata strings because of a Web request error. Make sure the Microsoft Translator configuration settings are correct and check your network connection.</system:String>
+    <system:String x:Key="WebRequestError">Web Request Error</system:String>
     <system:String x:Key="ExportHeading">Export .csv files</system:String>
     <system:String x:Key="ExportDescription">You can export the metadata captions, descriptions, and display folder strings into .csv files based on the locale identifiers (LCIDs) of the selected languages. Metadata Translator creates a separate .csv file for each LCID.</system:String>
     <system:String x:Key="ExportFolderDescription">Select the folder where you want to store your .csv files. Note that Metadata Translator might overwrite any existing files in this folder.</system:String>

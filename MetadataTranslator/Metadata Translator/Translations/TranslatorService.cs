@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using System.Windows;
 
 namespace Metadata_Translator
 {
@@ -111,15 +112,18 @@ namespace Metadata_Translator
             /// Translate the batch and assign the translated strings to the target languages.
             /// 
             var translatedStrings = TranslateBatch(translationBatch, translationId);
-            for (int i = 0; i < maxBatchSize; i++)
+            if (translatedStrings.Count > 0)
             {
-                foreach (Language language in targetLanguages)
+                for (int i = 0; i < maxBatchSize; i++)
                 {
-                    dataRows[batchStart + i].SetValue(language.LanguageTag, translatedStrings[i], replaceExistingTranslations);
+                    foreach (Language language in targetLanguages)
+                    {
+                        dataRows[batchStart + i].SetValue(language.LanguageTag, translatedStrings[i], replaceExistingTranslations);
+                    }
                 }
-            }
 
-            Translate(dataRows, targetLanguages, translationId, replaceExistingTranslations, ++iterationId);
+                Translate(dataRows, targetLanguages, translationId, replaceExistingTranslations, ++iterationId);
+            }
         }
 
         private List<string> TranslateBatch(List<object> sourceObjects, string targetLanguage)
@@ -143,16 +147,29 @@ namespace Metadata_Translator
                 HttpResponseMessage response = client.SendAsync(request).Result;
                 string result = response.Content.ReadAsStringAsync().Result;
 
-                /// Parse the results and add the strings to the translated phrases if there was no error,
-                /// i.e. the target language was returned together with the translated string, which is 
-                /// not the case if the service gives back an error message.
+                /// Display an error message if the Web request was not successful.
                 /// 
-                List<TranslationResult> parsedResults = new JavaScriptSerializer().Deserialize<List<TranslationResult>>(result);
-                if (parsedResults != null)
+                if (!response.IsSuccessStatusCode)
                 {
-                    for (int n = 0; n < parsedResults.Count; n++)
+                    MessageBox.Show(
+                        Application.Current.FindResource("UnableToAccessTranslatorEndpoint") as string, 
+                        Application.Current.FindResource("WebRequestError") as string, 
+                        MessageBoxButton.OK);
+                }
+                else
+                {
+
+                    /// Parse the results and add the strings to the translated phrases if there was no error,
+                    /// i.e. the target language was returned together with the translated string, which is 
+                    /// not the case if the service gives back an error message.
+                    /// 
+                    List<TranslationResult> parsedResults = new JavaScriptSerializer().Deserialize<List<TranslationResult>>(result);
+                    if (parsedResults != null)
                     {
-                        translatedPhrases.Add((string.IsNullOrEmpty(parsedResults[n].translations[0].to))? "" : parsedResults[n].translations[0].text);
+                        for (int n = 0; n < parsedResults.Count; n++)
+                        {
+                            translatedPhrases.Add((string.IsNullOrEmpty(parsedResults[n].translations[0].to)) ? "" : parsedResults[n].translations[0].text);
+                        }
                     }
                 }
             }
