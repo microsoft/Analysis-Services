@@ -272,7 +272,7 @@
     "ID": "USE_THE_DIVIDE_FUNCTION_FOR_DIVISION",
     "Name": "[DAX Expressions] Use the DIVIDE function for division",
     "Category": "DAX Expressions",
-    "Description": "Use the DIVIDE  function instead of using \"/\". The DIVIDE function resolves divide-by-zero cases. As such, it is recommended to use to avoid errors.  \r\nReference: https://docs.microsoft.com/en-us/power-bi/guidance/dax-divide-function-operator",
+    "Description": "Use the DIVIDE  function instead of using \"/\". The DIVIDE function resolves divide-by-zero cases. As such, it is recommended to use to avoid errors.\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/dax-divide-function-operator",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"\\]\\s*\\/(?!\\/)(?!\\*)\")\r\nor\r\nRegEx.IsMatch(Expression,\"\\)\\s*\\/(?!\\/)(?!\\*)\")",
@@ -329,6 +329,16 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
+    "Name": "[DAX Expressions] Avoid using '1-(x/y)' syntax",
+    "Category": "DAX Expressions",
+    "Description": "Instead of using the '1-(x/y)' or '1+(x/y)' syntax to achieve a percentage calculation, use the basic DAX functions (as shown below). Using the improved syntax will generally improve the performance. The '1+/-...' syntax always returns a value whereas the solution without the '1+/-...' does not (as the value may be 'blank'). Therefore the '1+/-...' syntax may return more rows/columns which may result in a slower query speed.\r\n\r\nLet's clarify with an example:\r\n\r\nAvoid this: 1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] )\r\nBetter: SUM ( 'Sales'[SalesAmount] ) - DIVIDE ( SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )\r\nBest: VAR x = SUM ( 'Sales'[SalesAmount] ) RETURN x - DIVIDE ( SUM ( 'Sales'[CostAmount] ), x )",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "DATA_COLUMNS_MUST_HAVE_A_SOURCE_COLUMN",
     "Name": "[Error Prevention] Data columns must have a source column",
     "Category": "Error Prevention",
@@ -356,6 +366,26 @@
     "Severity": 2,
     "Scope": "Partition",
     "Expression": "SourceType == \"Query\"\r\nand\r\nDataSource.Type == \"Structured\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_THE_USERELATIONSHIP_FUNCTION_AND_RLS_AGAINST_THE_SAME_TABLE",
+    "Name": "[Error Prevention] Avoid the USERELATIONSHIP function and RLS against the same table",
+    "Category": "Error Prevention",
+    "Description": "The USERELATIONSHIP function may not be used against a table which also leverages row-level security (RLS). This will generate an error when using the particular measure in a visual. This rule will highlight the table which is used in a measure's USERELATIONSHIP function as well as RLS.\r\n\r\nReference: https://blog.crossjoin.co.uk/2013/05/10/userelationship-and-tabular-row-security/",
+    "Severity": 3,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "Model.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)USERELATIONSHIP\\s*\\(\\s*.+?(?=])\\]\\s*,\\s*'*\" + current.Name + \"'*\\[\"))\r\nand\r\nRowLevelSecurity.Any(it <> null)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "RELATIONSHIP_COLUMNS_SAME_DATA_TYPE",
+    "Name": "[Error Prevention] Relationship columns should be of the same data type",
+    "Category": "Error Prevention",
+    "Description": "Columns used in a relationship should be of the same data type. Ideally, they will be of integer data type (see the related rule '[Formatting] Relationship columns should be of integer data type'). Having columns within a relationship which are of different data types may lead to various issues.",
+    "Severity": 3,
+    "Scope": "Relationship",
+    "Expression": "FromColumn.DataType != ToColumn.DataType",
     "CompatibilityLevel": 1200
   },
   {
@@ -501,7 +531,7 @@
     "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"mm/dd/yyyy\".",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"mm/dd/yyyy\"",
+    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 \r\nand \r\nDataType = \"DateTime\" \r\nand \r\nFormatString <> \"mm/dd/yyyy\"",
     "FixExpression": "FormatString = \"mm/dd/yyyy\"",
     "CompatibilityLevel": 1200
   },
@@ -544,7 +574,7 @@
     "Severity": 2,
     "Scope": "Measure",
     "Expression": "FormatString.Contains(\"%\") and FormatString <> \"#,0.0%;-#,0.0%;#,0.0%\"",
-    "FixExpression": "FormatString = \"#,0.0%;-#,0.0%;#,0.0%\"",
+    "FixExpression": "FormatString = \"#,0.0%\\u003B-#,0.0%\\u003B#,0.0%\"",
     "CompatibilityLevel": 1200
   },
   {
