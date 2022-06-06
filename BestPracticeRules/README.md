@@ -115,6 +115,14 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Version History
 
+* 2022-06-06 Version 1.2.2
+    * New Rules
+        * [DAX Expressions] Avoid using the '1-(x/y)' syntax
+        * [Error Prevention] Avoid the USERELATIONSHIP function and RLS against the same table
+        * [Error Prevention] Relationship columns should be of the same data type
+    * Updated Rules
+        * [Formatting] Percentage formatting
+            * Fixed a bug within the fix expression   
 * 2021-10-21 The Best Practice Rules are now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-08-18 Version 1.2.1
     * New Rules
