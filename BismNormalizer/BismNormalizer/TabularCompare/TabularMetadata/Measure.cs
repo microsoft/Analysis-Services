@@ -75,12 +75,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         //Todo2: still need to parse for /* blah */ type comments.  Currently can show missing dependency that doesn't apply if within a comment
 
                         string whatsRemainingOfLine = line;
+                        int openSquareBracketPosition = 0;
+                        int closeSquareBracketPosition = 0;
 
-                        while (whatsRemainingOfLine.Contains('[') && whatsRemainingOfLine.Contains(']'))
+                        while (whatsRemainingOfLine.Contains('[') && whatsRemainingOfLine.Contains(']') && openSquareBracketPosition != -1 && closeSquareBracketPosition != -1)
                         {
-                            int openSquareBracketPosition = whatsRemainingOfLine.IndexOf('[', 0);
+                            openSquareBracketPosition = whatsRemainingOfLine.IndexOf('[', 0);
                             //someone has ]] instead of ]
-                            int closeSquareBracketPosition = whatsRemainingOfLine.Replace("]]", "  ").IndexOf(']', openSquareBracketPosition + 1);
+                            closeSquareBracketPosition = whatsRemainingOfLine.Replace("]]", "  ").IndexOf(']', openSquareBracketPosition + 1);
 
                             if (openSquareBracketPosition < closeSquareBracketPosition - 1)
                             {
