@@ -20,7 +20,7 @@ Output goes to bin\ReleaseObfusc
 
 ### Set Up New Development Machine
 
-Built in VS 2017. Workloads installed must include .NET desktop development and VS extension development.
+VS Workloads installed must include .NET desktop development and VS extension development.
 
 May need to temporarily comment out following at bottom of BismNormalizer.csproj to load project into VS for 1st time. After 1st successful load, add it back.
 
@@ -28,9 +28,13 @@ May need to temporarily comment out following at bottom of BismNormalizer.csproj
 
 Update: 4/23/2018: AMO libraries are now accessed through NuGet references, so no longer necessary to install AMO client libraries from the [MSI](https://docs.microsoft.com/en-us/azure/analysis-services/analysis-services-data-providers).
 
-Do a Release build from the command-line to set up cross project references for the 1st time (see command above). The automated tests refer to a localhost SSAS tabular server.
+Do a Release build from the command-line to set up cross project references for the 1st time (see command above) - and then close and reopen VS.
 
-Set BismNormalizer as startup project, and in project properities > Debug tab, set
+The automated tests refer to a localhost SSAS tabular server.
+
+Set AlmToolkit or BismNormalizer as startup project
+
+In BismNormalizer project properities > Debug tab, set
 * Start External Program (assuming Enterprise edition): C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe
 
 * Command Line Arguments: /rootsuffix Exp
