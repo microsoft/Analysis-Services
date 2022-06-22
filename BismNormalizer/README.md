@@ -30,11 +30,11 @@ Update: 4/23/2018: AMO libraries are now accessed through NuGet references, so n
 
 Do a Release build from the command-line to set up cross project references for the 1st time (see command above) - and then close and reopen VS.
 
-The automated tests refer to a localhost SSAS tabular server.
-
 Set AlmToolkit or BismNormalizer as startup project
 
 In BismNormalizer project properities > Debug tab, set
 * Start External Program (assuming Enterprise edition): C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe
 
 * Command Line Arguments: /rootsuffix Exp
+
+The automated tests refer to a localhost SSAS tabular server.
