@@ -22,6 +22,8 @@ Output goes to bin\ReleaseObfusc
 
 VS Workloads installed must include .NET desktop development and VS extension development.
 
+Requires VS Installer Projects [extension](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects).
+
 May need to temporarily comment out following at bottom of BismNormalizer.csproj to load project into VS for 1st time. After 1st successful load, add it back.
 
 `Import Project="..\packages\MSBuild.Extension.Pack.1.8.0\build\net40\MSBuild.Extension.Pack.targets"`
