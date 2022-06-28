@@ -20,7 +20,7 @@ Output goes to bin\ReleaseObfusc
 
 ### Set Up New Development Machine
 
-VS Workloads installed must include .NET desktop development and VS extension development.
+VS 2019 Workloads installed must include .NET desktop development and VS extension development.
 
 Requires VS Installer Projects [extension](https://marketplace.visualstudio.com/items?itemName=VisualStudioClient.MicrosoftVisualStudio2017InstallerProjects).
 
