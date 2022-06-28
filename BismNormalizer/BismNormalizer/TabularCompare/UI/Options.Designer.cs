@@ -49,6 +49,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.lblProcessingWarning = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -126,7 +127,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(822, 756);
+            this.groupBox1.Size = new System.Drawing.Size(794, 756);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Comparison Options";
@@ -239,6 +240,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.AutoSize = true;
+            this.groupBox2.Controls.Add(this.lblProcessingWarning);
             this.groupBox2.Controls.Add(this.chkAffectedTables);
             this.groupBox2.Controls.Add(this.cboProcessingOption);
             this.groupBox2.Controls.Add(this.label1);
@@ -247,7 +250,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox2.Size = new System.Drawing.Size(822, 194);
+            this.groupBox2.Size = new System.Drawing.Size(794, 255);
             this.groupBox2.TabIndex = 23;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Database Deployment";
@@ -257,7 +260,7 @@
             this.chkAffectedTables.AutoSize = true;
             this.chkAffectedTables.Checked = true;
             this.chkAffectedTables.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAffectedTables.Location = new System.Drawing.Point(38, 121);
+            this.chkAffectedTables.Location = new System.Drawing.Point(38, 103);
             this.chkAffectedTables.Margin = new System.Windows.Forms.Padding(6);
             this.chkAffectedTables.Name = "chkAffectedTables";
             this.chkAffectedTables.Size = new System.Drawing.Size(315, 29);
@@ -278,8 +281,9 @@
             this.cboProcessingOption.Location = new System.Drawing.Point(238, 46);
             this.cboProcessingOption.Margin = new System.Windows.Forms.Padding(6);
             this.cboProcessingOption.Name = "cboProcessingOption";
-            this.cboProcessingOption.Size = new System.Drawing.Size(404, 33);
+            this.cboProcessingOption.Size = new System.Drawing.Size(376, 33);
             this.cboProcessingOption.TabIndex = 30;
+            this.cboProcessingOption.SelectedIndexChanged += new System.EventHandler(this.cboProcessingOption_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -296,17 +300,17 @@
             this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 972);
+            this.panel2.Location = new System.Drawing.Point(0, 1015);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(822, 86);
+            this.panel2.Size = new System.Drawing.Size(794, 86);
             this.panel2.TabIndex = 24;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(652, 19);
+            this.btnCancel.Location = new System.Drawing.Point(624, 19);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(6);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(142, 44);
@@ -318,7 +322,7 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(502, 19);
+            this.btnOK.Location = new System.Drawing.Point(474, 19);
             this.btnOK.Margin = new System.Windows.Forms.Padding(6);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(138, 44);
@@ -327,13 +331,26 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // lblProcessingWarning
+            // 
+            this.lblProcessingWarning.AutoSize = true;
+            this.lblProcessingWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProcessingWarning.Location = new System.Drawing.Point(73, 150);
+            this.lblProcessingWarning.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lblProcessingWarning.Name = "lblProcessingWarning";
+            this.lblProcessingWarning.Size = new System.Drawing.Size(612, 75);
+            this.lblProcessingWarning.TabIndex = 32;
+            this.lblProcessingWarning.Text = "⚠️ Warning: if your dataset requires long-running refreshes, it\'s\r\nrecommended to" +
+    " select Recalc or Do Not Process and refresh\r\nfrom SSMS after deployment for bet" +
+    "ter visibility of progress.";
+            // 
             // Options
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(822, 1058);
+            this.ClientSize = new System.Drawing.Size(794, 1101);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -353,6 +370,7 @@
             this.groupBox2.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -378,5 +396,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label lblProcessingWarning;
     }
 }

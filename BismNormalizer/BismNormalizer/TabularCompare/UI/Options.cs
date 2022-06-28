@@ -139,5 +139,10 @@ namespace BismNormalizer.TabularCompare.UI
             get { return _dpiScaleFactor; }
             set { _dpiScaleFactor = value; }
         }
+
+        private void cboProcessingOption_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lblProcessingWarning.Visible = (cboProcessingOption.Text != "Recalc" && cboProcessingOption.Text != "Do Not Process");
+        }
     }
 }
