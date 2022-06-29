@@ -332,6 +332,16 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
+    "Name": "[Espressioni DAX] Evita di usare la sintassi '1-(x/y)'",
+    "Category": "Espressioni DAX",
+    "Description": "Invece di utilizzare la sintassi '1-(x/y)' per ottenere un calcolo percentuale, utilizzare le funzioni DAX di base (come mostrato di seguito). L'utilizzo della sintassi migliorata generalmente migliorerà le prestazioni. La sintassi '1-...' restituisce sempre un valore, mentre la soluzione senza '1-...' no (poiché il valore potrebbe essere 'vuoto'). Pertanto la sintassi '1-...' può restituire più righe/colonne che possono comportare una velocità di query più lenta. Chiariamo con un esempio: 1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] )  Better: SUM ( 'Sales'[SalesAmount] ) - DIVIDE ( SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )  Meglio: VAR x = SUM ( 'Sales'[SalesAmount] ) RETURN x - DIVIDE ( SUM ( 'Sales'[CostAmount] ), x )",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "DATA_COLUMNS_MUST_HAVE_A_SOURCE_COLUMN",
     "Name": "[Prevenzione Errori] Le colonne di dati devono avere una colonna di origine",
     "Category": "[Prevenzione errori]",
@@ -359,6 +369,26 @@
     "Severity": 2,
     "Scope": "Partition",
     "Expression": "SourceType == \"Query\"\r\nand\r\nDataSource.Type == \"Structured\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_THE_USERELATIONSHIP_FUNCTION_AND_RLS_AGAINST_THE_SAME_TABLE",
+    "Name": "[Prevenzione errori] Evita la funzione USERELATIONSHIP e RLS sulla stessa tabella",
+    "Category": "[Prevenzione errori]",
+    "Description": "La funzione USERELATIONSHIP non può essere utilizzata su una tabella che sfrutta anche la sicurezza a livello di riga (RLS). Questo genererà un errore quando si utilizza la misura particolare in un oggetto visivo. Questa regola evidenzierà la tabella utilizzata nella funzione USERELATIONSHIP di una misura così come RLS. Riferimento: https://blog.crossjoin.co.uk/2013/05/10/userelationship-and-tabular-row-security/",
+    "Severity": 3,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "Model.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)USERELATIONSHIP\\s*\\(\\s*.+?(?=])\\]\\s*,\\s*'*\" + current.Name + \"'*\\[\"))\r\nand\r\nRowLevelSecurity.Any(it <> null)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "RELATIONSHIP_COLUMNS_SAME_DATA_TYPE",
+    "Name": "[Prevenzione errori] Le colonne usate nelle relazioni devono essere dello stesso tipo di dati",
+    "Category": "Error Prevention",
+    "Description": "Le colonne utilizzate in una relazione devono essere dello stesso tipo di dati. Idealmente, saranno di tipo di dati intero (consultare la regola correlata \"[Formattazione] Le colonne di relazione dovrebbero essere di tipo di dati intero\"). Avere colonne all'interno di una relazione che sono di tipi di dati diversi può portare a vari problemi.",
+    "Severity": 3,
+    "Scope": "Relationship",
+    "Expression": "FromColumn.DataType != ToColumn.DataType",
     "CompatibilityLevel": 1200
   },
   {
@@ -504,7 +534,7 @@
     "Description": "Le colonne di tipo \"DateTime\" che hanno \"Mese\" nel nome devono essere formattate come \"mm/gg/aaaa\".",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"mm/dd/yyyy\"",
+    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 \r\nand \r\nDataType = \"DateTime\" \r\nand \r\nFormatString <> \"mm/dd/yyyy\"",
     "FixExpression": "FormatString = \"mm/dd/yyyy\"",
     "CompatibilityLevel": 1200
   },
@@ -547,7 +577,7 @@
     "Severity": 2,
     "Scope": "Measure",
     "Expression": "FormatString.Contains(\"%\") and FormatString <> \"#,0.0%;-#,0.0%;#,0.0%\"",
-    "FixExpression": "FormatString = \"#,0.0%;-#,0.0%;#,0.0%\"",
+    "FixExpression": "FormatString = \"#,0.0%\\u003B-#,0.0%\\u003B#,0.0%\"",
     "CompatibilityLevel": 1200,
     "Description": ""
   },
