@@ -4,8 +4,12 @@
   clear: both;
 }
 
+html, body {
+    height: 100%
+}
+
 #main-container {
-  height: 750px;
+  height: 100%;
 }
 
 #comparison-table-container {
