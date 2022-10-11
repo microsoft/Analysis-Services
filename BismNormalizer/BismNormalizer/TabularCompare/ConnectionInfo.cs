@@ -276,6 +276,11 @@ namespace BismNormalizer.TabularCompare
             set { _workspaceServer = value; }
         }
 
+        public bool IsPbit()
+        {
+            return (!String.IsNullOrEmpty(_bimFile) && _bimFile.ToUpper().EndsWith(".PBIT"));
+        }
+
         private void ReadSettingsFile()
         {
             FileInfo[] files = _projectDirectoryInfo.GetFiles("*.settings", SearchOption.TopDirectoryOnly);
@@ -709,16 +714,17 @@ $@"{{
         {
             TOM.Database tomDatabase;
             string modelJson;
-            if (_bimFile.ToUpper().EndsWith(".PBIT"))
+            if (this.IsPbit())
             {
                 PowerBiTemplate pbit = new PowerBiTemplate(_bimFile);
                 modelJson = pbit.ModelJson;
+                tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson, null, CompatibilityMode.PowerBI);
             }
             else
             {
                 modelJson = File.ReadAllText(_bimFile);
+                tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson);
             }
-            tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson);
             return tomDatabase;
         }
 

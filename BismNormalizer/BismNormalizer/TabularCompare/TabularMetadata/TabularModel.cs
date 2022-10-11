@@ -2031,7 +2031,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             //serialize db to json
             SerializeOptions options = new SerializeOptions();
-            bool isPbit = (_connectionInfo.UseBimFile && _connectionInfo.BimFile.ToUpper().EndsWith(".PBIT"));
+            bool isPbit = (_connectionInfo.UseBimFile && _connectionInfo.IsPbit());
 
             if (isPbit)
             {
