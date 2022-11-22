@@ -185,11 +185,11 @@
     "ID": "REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES",
     "Name": "[Prestazioni] Rimuovi le colonne ridondanti nelle tabelle relazionate",
     "Category": "Prestazioni",
+    "Description": "La rimozione delle colonne non necessarie riduce le dimensioni del modello e velocizza il caricamento dei dati.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "UsedInRelationships.Any() == false \r\nand\r\nModel.AllColumns.Any(Name == current.Name and Table.Name != current.Table.Name and Table.UsedInRelationships.Any(FromTable.Name == current.Table.Name))",
-    "CompatibilityLevel": 1200,
-    "Description": ""
+    "CompatibilityLevel": 1200
   },
   {
     "ID": "MEASURES_USING_TIME_INTELLIGENCE_AND_MODEL_IS_USING_DIRECT_QUERY",
@@ -255,11 +255,11 @@
     "ID": "AVOID_DUPLICATE_MEASURES",
     "Name": "[Espressioni DAX] Due misure non dovrebbero avere la stessa definizione",
     "Category": "Espressioni DAX",
+    "Description": "Per ridurre la ridondanza, si dovrebbero evitare due misure con nomi diversi e definite dalla stessa espressione DAX.",
     "Severity": 2,
     "Scope": "Measure",
     "Expression": "Model.AllMeasures.Any(Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") = outerIt.Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") and it <> outerIt)",
-    "CompatibilityLevel": 1200,
-    "Description": ""
+    "CompatibilityLevel": 1200
   },
   {
     "ID": "USE_THE_TREATAS_FUNCTION_INSTEAD_OF_INTERSECT",
@@ -342,10 +342,20 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "EVALUATEANDLOG_SHOULD_NOT_BE_USED_IN_PRODUCTION_MODELS",
+    "Name": "[Espressioni DAX] La funzione EVALUATEANDLOG non deve essere utilizzata nei modelli di produzione.",
+    "Category": "Espressioni DAX",
+    "Description": "La funzione EVALUATEANDLOG deve essere usata solo in ambienti di sviluppo/test e non deve essere usata in modelli di produzione.    Riferimento: https://pbidax.wordpress.com/2022/08/16/introduce-the-dax-evaluateandlog-function/",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)EVALUATEANDLOG\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "DATA_COLUMNS_MUST_HAVE_A_SOURCE_COLUMN",
     "Name": "[Prevenzione Errori] Le colonne di dati devono avere una colonna di origine",
     "Category": "[Prevenzione errori]",
-    "Description": "Le colonne di dati devono avere una colonna di origine. Una colonna di dati senza una colonna di origine causerà un errore durante l'elaborazione del modello.",
+    "Description": "Le colonne di dati devono avere una colonna di origine (cioè una colonna del database). Una colonna di dati senza colonna di origine causerà un errore durante l'elaborazione del modello.",
     "Severity": 3,
     "Scope": "DataColumn",
     "Expression": "string.IsNullOrWhitespace(SourceColumn)",
