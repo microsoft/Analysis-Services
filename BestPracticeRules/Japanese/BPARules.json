@@ -1,0 +1,678 @@
+[
+  {
+    "ID": "AVOID_FLOATING_POINT_DATA_TYPES",
+    "Name": "[パフォーマンス]浮動小数点データ型を使用しない",
+    "Category": "パフォーマンス",
+    "Description": "浮動小数点データ型の「10進数」は、予測できない丸めの誤差が発生したり、特定のシナリオでパフォーマンスが低下したりする可能性があるため、避けたほうがよいでしょう。可能な場合は、「整数」または「固定小数点」を使用してください（「固定小数点」は10進記号の後の4桁に制限されています）",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "DataType = \"Double\"",
+    "FixExpression": "DataType = DataType.Decimal",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "ISAVAILABLEINMDX_FALSE_NONATTRIBUTE_COLUMNS",
+    "Name": "[パフォーマンス]属性以外の列（例：非表示列や階層に使用しない列（数値列）等）でIsAvailableInMdxをfalseに設定",
+    "Category": "パフォーマンス",
+    "Description": "処理時間を短縮し、処理後のメモリを節約するために、MDX クライアントでフィルターとして使用されることのない列に対しては、属性階層を構築しないようにします。つまり、「列で並べ替え」として使用されない、またはユーザ階層で参照されないすべての非表示列は、その IsAvailableInMdx プロパティを false に設定しておくと良い。参考: https://blog.crossjoin.co.uk/2018/07/02/isavailableinmdx-ssas-tabular/",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()",
+    "FixExpression": "IsAvailableInMDX = false",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_BI-DIRECTIONAL_RELATIONSHIPS_AGAINST_HIGH-CARDINALITY_COLUMNS",
+    "Name": "[パフォーマンス]カーディナリティの高い列に対する双方向のリレーションシップを避ける",
+    "Category": "パフォーマンス",
+    "Description": "最高のパフォーマンスを得るためには、高カーディナリティの列に対して双方向のリレーションシップを使用しないことをお勧めします。このルールを実行するには、まずここに示すスクリプトを実行する必要があります。https://www.elegantbi.com/post/vertipaqintabulareditor",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections)\n\nand\n\nConvert.ToInt64(GetAnnotation(\"Vertipaq_Cardinality\")) > 100000",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REDUCE_USAGE_OF_LONG-LENGTH_COLUMNS_WITH_HIGH_CARDINALITY",
+    "Name": "[パフォーマンス]カーディナリティの高い長文列の使用を減らす",
+    "Category": "パフォーマンス",
+    "Description": "長文のテキスト列は避けた方が良いでしょう。特に、ユニークな値が多い列の場合には注意が必要です。このようなタイプの列は、処理時間が長くなったり、モデルサイズが肥大化したり、ユーザーのクエリが遅くなったりする原因となります。長文とは、100文字以上と定義されます",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "Convert.ToInt64(GetAnnotation(\"LongLengthRowCount\")) > 500000",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "SPLIT_DATE_AND_TIME",
+    "Name": "[パフォーマンス]日付と時刻を分割する",
+    "Category": "パフォーマンス",
+    "Description": "このルールは、midnight表示（例：2022/11/01 0:00:00）ではない値を持つdatetime列を検索します。パフォーマンスを最大化するためには、time要素をdate要素から分離する必要があります（または、列のカーディナリティを減らすために、time要素をmidnight表示に丸める必要があります）。参考: https://www.sqlbi.com/articles/separate-date-and-time-in-powerpivot-and-bism-tabular/",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "Convert.ToInt32(GetAnnotation(\"DateTimeWithHourMinSec\")) > 0",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "LARGE_TABLES_SHOULD_BE_PARTITIONED",
+    "Name": "[パフォーマンス]大きなテーブルはパーティションを行う",
+    "Category": "パフォーマンス",
+    "Description": "大きなテーブルは、処理を最適化するためにパーティショニングする必要があります。このルールを正しく実行するためには、ここに示すスクリプトを実行する必要があります。https://www.elegantbi.com/post/vertipaqintabulareditor",
+    "Severity": 2,
+    "Scope": "Table",
+    "Expression": "Convert.ToInt64(GetAnnotation(\"Vertipaq_RowCount\")) > 25000000\r\nand\r\nPartitions.Count = 1",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REDUCE_USAGE_OF_CALCULATED_COLUMNS_THAT_USE_THE_RELATED_FUNCTION",
+    "Name": "[パフォーマンス] RELATED関数を使用する計算列の使用を減らす",
+    "Category": "パフォーマンス",
+    "Description": "計算列は、Power Queryから読み込まれた状態のデータ列ほど圧縮されないため、処理時間が長くなる可能性があります。そのため、計算列は必要に応じて使用し、不必要に増やさないことが肝要です。RELATED関数を使用している場合は、避けた方が良いかもしれません。参照: https://www.sqlbi.com/articles/storage-differences-between-calculated-columns-and-calculated-tables/",
+    "Severity": 2,
+    "Scope": "CalculatedColumn",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)RELATED\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "SNOWFLAKE_SCHEMA_ARCHITECTURE",
+    "Name": "[パフォーマンス]スノーフレークの代わりにスタースキーマを検討",
+    "Category": "パフォーマンス",
+    "Description": "一般的に、Tabular Model（Power BIやAnalysis Services等のデータモデル）にはスタースキーマが最適なアーキテクチャです。とはいえ、スノーフレーク・アプローチを使用する有効なケースもあります。お使いのモデルをチェックして、スタースキーマ・アーキテクチャへの移行をご検討ください。参考: https://docs.microsoft.com/en-us/power-bi/guidance/star-schema",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "UsedInRelationships.Any(current.Name == FromTable.Name)\r\nand\r\nUsedInRelationships.Any(current.Name == ToTable.Name)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MODEL_SHOULD_HAVE_A_DATE_TABLE",
+    "Name": "[パフォーマンス]データモデルには日付テーブルが必要",
+    "Category": "パフォーマンス",
+    "Description": "一般的に、モデルは日付テーブルを持つべきです。日付テーブルを持たないモデルは、タイムインテリジェンス関数などの機能を利用していないか、適切な構造のアーキテクチャを持っていない可能性があります",
+    "Severity": 2,
+    "Scope": "Model",
+    "Expression": "Tables.Any(DataCategory == \"Time\" && Columns.Any(IsKey == true && DataType == \"DateTime\")) == false",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DATE/CALENDAR_TABLES_SHOULD_BE_MARKED_AS_A_DATE_TABLE",
+    "Name": "[パフォーマンス]日​​付/カレンダーテーブルは「日付テーブルとしてマーク」を行う",
+    "Category": "パフォーマンス",
+    "Description": "このルールでは、「date」または「calendar」という言葉を含むテーブルを探し、日付テーブルとしてマークされる可能性が高いと考えられます（※テーブル名が英語の場合に限る）。参考: https://docs.microsoft.com/power-bi/transform-model/desktop-date-tables",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "(Name.ToUpper().Contains(\"DATE\") or Name.ToUpper().Contains(\"CALENDAR\"))\n\nand\n\n(\nDataCategory <> \"Time\"\n\nor\n\nColumns.Any(IsKey == true && DataType == \"DateTime\") == false\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_AUTO-DATE_TABLE",
+    "Name": "[パフォーマンス]自動の日付/時刻テーブルを削除",
+    "Category": "パフォーマンス",
+    "Description": "自動日付表示のテーブルを使用しないようにします。Power BI Desktopの設定で、自動日付表示のテーブルを必ずオフにしてください（Power BIにて日付テーブルを使う際のベストプラクティス）。これにより、メモリリソースが節約できます。参考： https://www.youtube.com/watch?v=xu3uDEHtCrg",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "ObjectTypeName == \"Calculated Table\"\n\r\nand\r\n\n(\nName.StartsWith(\"DateTableTemplate_\") \n\nor \n\nName.StartsWith(\"LocalDateTable_\")\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_EXCESSIVE_BI-DIRECTIONAL_OR_MANY-TO-MANY_RELATIONSHIPS",
+    "Name": "[パフォーマンス]過度の双方向リレーションシップや多対多リレーションシップを回避",
+    "Category": "パフォーマンス",
+    "Description": "双方向および多対多のリレーションシップの使用を制限することを推奨します。本ルールは、リレーションシップの30%以上が双方向または多対多である場合、フラグが立てられます。参考： https://www.sqlbi.com/articles/bidirectional-relationships-and-ambiguity-in-dax/",
+    "Severity": 2,
+    "Scope": "Model",
+    "Expression": "(\r\n\nRelationships.Where(CrossFilteringBehavior == CrossFilteringBehavior.BothDirections).Count()\r\n\n+\r\n\nRelationships.Where(FromCardinality.ToString() == \"Many\" && ToCardinality.ToString() == \"Many\").Count()\r\n\n)\r\n\n\n/\r\n\n\nMath.Max(Convert.ToDecimal(Relationships.Count)\n\n,1)> 0.3",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "LIMIT_ROW_LEVEL_SECURITY_(RLS)_LOGIC",
+    "Name": "[パフォーマンス]行レベルのセキュリティ（RLS）ロジックを制限",
+    "Category": "パフォーマンス",
+    "Description": "行レベルのセキュリティに使用するDAX式をシンプルにすることを心掛ける。これにより、上流システム（データウェアハウス）にオフロード（処理）される可能性が高い",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "RowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)RIGHT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LEFT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)UPPER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LOWER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)FIND\\s*\\(\"))\r\n",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MODEL_USING_DIRECT_QUERY_AND_NO_AGGREGATIONS",
+    "Name": "[パフォーマンス] Power BIでDirectQueryを使用する場合は、「ユーザー定義集計」の使用を検討する。",
+    "Category": "パフォーマンス",
+    "Description": "Power BI Premium で DirectQuery を使用する場合、パフォーマンスを向上させるために「集計」の利用を検討することをお勧めします。 参考：https://docs.microsoft.com/power-bi/transform-model/desktop-aggregations",
+    "Severity": 1,
+    "Scope": "Model",
+    "Expression": "Tables.Any(ObjectTypeName == \"Table (DirectQuery)\")\r\nand\r\n\n\nAllColumns.Any(AlternateOf != null) == false\r\nand \r\nDefaultPowerBIDataSourceVersion.ToString() == \"PowerBI_V3\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MINIMIZE_POWER_QUERY_TRANSFORMATIONS",
+    "Name": "[パフォーマンス] PowerQueryによる変換を最小限に抑える",
+    "Category": "パフォーマンス",
+    "Description": "モデル処理のパフォーマンスを向上させるために、Power Query の変換を最小限に抑えます。可能であれば、これらの変換をデータウェアハウスにオフロード（処理）することがベストプラクティスとなります。また、モデル内でクエリフォールディングが行われているかどうかを確認してください。クエリフォルディングの詳細については、以下の記事を参照してください。 参考：https://docs.microsoft.com/power-query/power-query-folding",
+    "Severity": 2,
+    "Scope": "Partition",
+    "Expression": "\nSourceType.ToString() = \"M\"\r\nand\r\n(\r\nQuery.Contains(\"Table.Combine(\")\r\nor\r\n\nQuery.Contains(\"Table.Join(\")\r\nor\r\n\nQuery.Contains(\"Table.NestedJoin(\")\r\nor\r\nQuery.Contains(\"Table.AddColumn(\")\r\nor\r\nQuery.Contains(\"Table.Group(\")\r\nor\r\nQuery.Contains(\"Table.Sort(\")\r\nor\r\nQuery.Contains(\"Table.Pivot(\")\r\nor\r\nQuery.Contains(\"Table.Unpivot(\")\r\nor\r\nQuery.Contains(\"Table.UnpivotOtherColumns(\")\r\nor\r\nQuery.Contains(\"Table.Distinct(\")\r\nor\r\nQuery.Contains(\"[Query=\"\"SELECT\")\r\nor\r\nQuery.Contains(\"Value.NativeQuery\")\r\nor\r\nQuery.Contains(\"OleDb.Query\")\r\nor\r\nQuery.Contains(\"Odbc.Query\")\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "UNPIVOT_PIVOTED_(MONTH)_DATA",
+    "Name": "[パフォーマンス]クロス集計された（月の）データのピボット解除を行う",
+    "Category": "パフォーマンス",
+    "Description": "テーブルにピボット形式のデータ（クロス集計書式のデータ）を使用しないようにします。このルールは、特に月ごとのピボットデータをチェックします。参考： https://www.elegantbi.com/post/top10bestpractices",
+    "Severity": 2,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "Columns.Any(Name.ToUpper().Contains(\"JAN\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))\nand\nColumns.Any(Name.ToUpper().Contains(\"FEB\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))\nand\nColumns.Any(Name.ToUpper().Contains(\"MAR\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))\nand\nColumns.Any(Name.ToUpper().Contains(\"APR\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))\nand\nColumns.Any(Name.ToUpper().Contains(\"MAY\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))\nand\nColumns.Any(Name.ToUpper().Contains(\"JUN\") && (DataType == DataType.Int64 || DataType == DataType.Decimal || DataType == DataType.Double))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MANY-TO-MANY_RELATIONSHIPS_SHOULD_BE_SINGLE-DIRECTION",
+    "Name": "[パフォーマンス]多対多のリレーションシップは単一方向にする",
+    "Category": "パフォーマンス",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "FromCardinality == \"Many\"\nand\nToCardinality == \"Many\"\nand\nCrossFilteringBehavior == \"BothDirections\"",
+    "CompatibilityLevel": 1200,
+    "Description": ""
+  },
+  {
+    "ID": "REDUCE_USAGE_OF_CALCULATED_TABLES",
+    "Name": "[パフォーマンス]計算テーブルの使用を減らす",
+    "Category": "パフォーマンス",
+    "Description": "計算テーブルのロジックをデータウェアハウス（DWH）に移行する（=DWHで処理させる）。計算テーブルに依存していると、技術的負債が発生し、プラットフォーム上に複数のモデルがある場合には、潜在的な不整合（ズレ）につながります",
+    "Severity": 2,
+    "Scope": "CalculatedTable",
+    "Expression": "1=1",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES",
+    "Name": "[パフォーマンス]関連テーブルの冗長な列を削除",
+    "Category": "パフォーマンス",
+    "Description": "不要な列を削除することでモデルサイズを軽減したり、データの読み込み速度が早くなります",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any() == false \r\nand\r\nModel.AllColumns.Any(Name == current.Name and Table.Name != current.Table.Name and Table.UsedInRelationships.Any(FromTable.Name == current.Table.Name))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MEASURES_USING_TIME_INTELLIGENCE_AND_MODEL_IS_USING_DIRECT_QUERY",
+    "Name": "[パフォーマンス]メジャーはタイムインテリジェンス関数使用、モデルはDirectQueryを使用している",
+    "Category": "パフォーマンス",
+    "Description": "現在、DirectQueryを使用した場合、タイムインテリジェンス関数ではパフォーマンスの低下が知られています。パフォーマンスの問題がある場合は、ファクト・テーブルに前年または前月のデータを示す列を追加するなど、別の解決策を試すとよいでしょう",
+    "Severity": 2,
+    "Scope": "Measure, CalculationItem",
+    "Expression": "Model.Tables.Any(ObjectTypeName == \"Table (DirectQuery)\")\r\nand\r\n(\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATEADD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESBETWEEN\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESINPERIOD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESMTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESQTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESYTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTDATE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTNONBLANK\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTNONBLANKVALUE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTDATE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTNONBLANK\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTNONBLANKVALUE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTDAY\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PARALLELPERIOD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSDAY\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"SAMEPERIODLASTYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALMTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALQTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALYTD\\s*\\(\")\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REDUCE_NUMBER_OF_CALCULATED_COLUMNS",
+    "Name": "[パフォーマンス]計算列の数を減らす",
+    "Category": "パフォーマンス",
+    "Description": "計算列は、データ列（Power Queryから読み込まれた状態の列）のように圧縮されないため、より多くのメモリを消費します。また、テーブルとプロセスの再計算の両方で処理時間が長くなります。計算列のロジックをデータウェアハウスにオフロードして、計算列をデータ列に変えましょう。参考: https://www.elegantbi.com/post/top10bestpractices",
+    "Severity": 2,
+    "Scope": "Model",
+    "Expression": "AllColumns.Where(Type.ToString() == \"Calculated\").Count() > 5",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CHECK_IF_BI-DIRECTIONAL_AND_MANY-TO-MANY_RELATIONSHIPS_ARE_VALID",
+    "Name": "[パフォーマンス]双方向および多対多のリレーションシップが有効かどうかを確認",
+    "Category": "パフォーマンス",
+    "Description": "双方向や多対多のリレーションシップは、パフォーマンスを低下させたり、意図しない結果をもたらすことがあります。これらの特定のリレーションシップが設計通りに機能しているか、実際に必要かどうかを必ず確認してください。\n参考： https://www.sqlbi.com/articles/bidirectional-relationships-and-ambiguity-in-dax/",
+    "Severity": 1,
+    "Scope": "Relationship",
+    "Expression": "FromCardinality.ToString() = \"Many\" and ToCardinality.ToString() = \"Many\"\r\nor\r\nCrossFilteringBehavior == CrossFilteringBehavior.BothDirections",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CHECK_IF_DYNAMIC_ROW_LEVEL_SECURITY_(RLS)_IS_NECESSARY",
+    "Name": "[パフォーマンス]動的行レベルセキュリティ（RLS）が必要かどうかを確認",
+    "Category": "パフォーマンス",
+    "Description": "動的な行レベルのセキュリティ（RLS）を使用すると、メモリやパフォーマンスのオーバーヘッドが増える可能性があります。使用する際には、そのメリット・デメリットをよく調べてください。参考： https://docs.microsoft.com/power-bi/admin/service-admin-rls",
+    "Severity": 1,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)USERNAME\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)USERPRINCIPALNAME\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DAX_COLUMNS_FULLY_QUALIFIED",
+    "Name": "[DAX式]列の参照はテーブル名[列名]になっていること",
+    "Category": "DAX式",
+    "Description": "完全修飾列参照を使用すると、列参照とメジャー参照の区別が容易になり、特定のエラーを回避することができます。DAX で列を参照する場合は、まずテーブル名を指定し、次に角括弧で列名を指定します（テーブル名[列名]）。参考: https://www.elegantbi.com/post/top10bestpractices",
+    "Severity": 3,
+    "Scope": "Measure, KPI, TablePermission, CalculationItem",
+    "Expression": "DependsOn.Any(Key.ObjectType = \"Column\" and Value.Any(not FullyQualified))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DAX_MEASURES_UNQUALIFIED",
+    "Name": "[DAX式]メジャー参照はテーブル名を前に入れない",
+    "Category": "DAX式",
+    "Description": "非修飾メジャー参照を使用すると、列参照とメジャー参照の区別が容易になり、特定のエラーを回避することができます。DAX を使用してメジャーを参照する場合は、テーブル名を指定しないでください。メジャー参照の場合、[メジャー名]のみで参照を行います。参考: https://www.elegantbi.com/post/top10bestpractices",
+    "Severity": 3,
+    "Scope": "Measure, CalculatedColumn, CalculatedTable, KPI, CalculationItem",
+    "Expression": "DependsOn.Any(Key.ObjectType = \"Measure\" and Value.Any(FullyQualified))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_DUPLICATE_MEASURES",
+    "Name": "[DAX式] 2つのメジャーで同じ定義を持たせないこと",
+    "Category": "DAX式",
+    "Description": "異なる名前の2つのメジャーで、同じDAX式で定義したメジャーは避けるべきです",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "Model.AllMeasures.Any(Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") = outerIt.Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") and it <> outerIt)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "USE_THE_TREATAS_FUNCTION_INSTEAD_OF_INTERSECT",
+    "Name": "[DAX式]仮想リレーションシップにINTERSECTの代わりにTREATAS関数を使用する",
+    "Category": "DAX式",
+    "Description": "TREATAS関数は、仮想リレーションシップで使用した場合、INTERSECT関数よりも効率的で優れた性能を発揮します。参考： https://www.sqlbi.com/articles/propagate-filters-using-treatas-in-dax/",
+    "Severity": 2,
+    "Scope": "Measure, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)INTERSECT\\s*\\(\")",
+    "CompatibilityLevel": 1400
+  },
+  {
+    "ID": "USE_THE_DIVIDE_FUNCTION_FOR_DIVISION",
+    "Name": "[DAX式]割り算にはDIVIDE関数を使用する",
+    "Category": "DAX式",
+    "Description": "除算演算子「/」を使用する代わりに、DIVIDE関数を使用してください。DIVIDE関数は、ゼロ除算のケース（エラー値の発生を防ぐ）を解決してくれます。そのため、エラーを避けるためにも使用することをお勧めします。 \n参考： https://docs.microsoft.com/power-bi/guidance/dax-divide-function-operator",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"\\]\\s*\\/(?!\\/)(?!\\*)\")\r\nor\r\nRegEx.IsMatch(Expression,\"\\)\\s*\\/(?!\\/)(?!\\*)\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_USING_THE_IFERROR_FUNCTION",
+    "Name": "[DAX式]IFERROR関数の使用を避ける",
+    "Category": "DAX式",
+    "Description": "IFERROR関数は、パフォーマンスの低下を招く可能性があるため、使用しないでください。ゼロ除算のエラーが気になる場合は、DIVIDE関数を使用してください。DIVIDE関数は、このようなエラーを空白として自然に解決します（または、このようなエラーが発生した場合に何を表示するかをカスタマイズできます）。参考： https://www.elegantbi.com/post/top10bestpractices",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)IFERROR\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MEASURES_SHOULD_NOT_BE_DIRECT_REFERENCES_OF_OTHER_MEASURES",
+    "Name": "[DAX式]1つのメジャーが他のメジャーを直接参照しない",
+    "Category": "DAX式",
+    "Description": "このルールでは、別のメジャーを単に参照しているメジャーを識別します。例として、2 つのメジャーを持つモデルを考えてみましょう。[MeasureA]と[MeasureB]があります。MeasureB の DAX が MeasureB:=[MeasureA] である場合、このルールは MeasureB に対してトリガされます。このような重複したメジャーは削除する必要があります",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "Model.AllMeasures.Any(DaxObjectName == current.Expression)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FILTER_COLUMN_VALUES",
+    "Name": "[DAX式]適切な構文で列値をフィルタリングする",
+    "Category": "DAX式",
+    "Description": "CALCULATEまたはCALCULATETABLE関数のフィルター・パラメータに、このパターンFILTER('Table','Table'[Column]=\"Value\")を使用する代わりに、以下のオプションのいずれかを使用してください。KEEPFILTERS関数を使用するかどうかについては、以下の2番目の参考リンクを参照してください。\nオプション1： KEEPFILTERS('Table'[Column]=\"Value\")\nオプション2： 'Table'[Column]=\"Value\"\n参考： https://docs.microsoft.com/power-bi/guidance/dax-avoid-avoid-filter-as-filter-argument\n参考： https://www.sqlbi.com/articles/using-keepfilters-in-dax/",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+'*\\s*,\\s*\\'*[A-Za-z0-9 _]+\\'*\\[[A-Za-z0-9 _]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\'*[A-Za-z0-9 _]+\\'*\\[[A-Za-z0-9 _]+\\]\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FILTER_MEASURE_VALUES_BY_COLUMNS",
+    "Name": "[DAX式]メジャー値をテーブルではなく列でフィルタリングする",
+    "Category": "DAX式",
+    "Description": "CALCULATEまたはCALCULATETABLE関数のフィルター・パラメータに、このパターンFILTER('Table',[Measure]>Value)を使用する代わりに、（可能であれば）以下のオプションのいずれかを使用してください。特定の列でフィルタリングすると、エンジンが処理するテーブルのサイズが小さくなるため、パフォーマンスが速くなります。VALUES関数とALL関数のどちらを使用するかは、必要な測定結果によって異なります。\nオプション 1: FILTER(VALUES('Table'[Column]),[Measure] > Value)\nオプション 2: FILTER(ALL('Table'[Column]),[Measure] > Value)\n参考: https://docs.microsoft.com/power-bi/guidance/dax-avoid-avoid-filter-as-filter-argument",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*,\\s*\\[[^\\]]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\[\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "INACTIVE_RELATIONSHIPS_THAT_ARE_NEVER_ACTIVATED",
+    "Name": "[DAX式]アクティブされることのない非アクティブなリレーションシップ",
+    "Category": "DAX式",
+    "Description": "非アクティブなリレーションシップは、USERELATIONSHIP関数を使用してアクティブにします。非アクティブなリレーションシップがこの関数を介してどのメジャーでも参照されていない場合、そのリレーションシップは使用されません。リレーションシップが必要ないのか、この方法でリレーションシップをアクティブにするのかを判断する必要があります。\n参考： https://docs.microsoft.com/power-bi/guidance/relationships-active-inactive\n参考： https://dax.guide/userelationship/",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "IsActive == false\r\nand not\r\n(\r\nModel.AllMeasures.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))\r\nor\r\nModel.AllCalculationItems.Any(RegEx.IsMatch(Expression,\r\n\"(?i)USERELATIONSHIP\\s*\\(\\s*\\'*\" +\r\ncurrent.FromTable.Name + \"\\'*\\[\" + \r\ncurrent.FromColumn.Name + \"\\]\\s*,\\s*\\'*\" +\r\ncurrent.ToTable.Name + \"\\'*\\[\" +\r\ncurrent.ToColumn.Name + \"\\]\"))\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
+    "Name": "[DAX式］「1-(x/y)」構文の使用を避ける",
+    "Category": "DAX式",
+    "Description": "パーセント計算を実現するために「1-(x/y)」または「1+(x/y)」構文を使用する代わりに、基本的なDAX関数（後述）を使用してください。\n正しい構文を使用すると、一般的にパフォーマンスが向上します。「1+/-...」の構文は常に値を返しますが、「1+/-...」構文を使用しない解答は値を返しません（値が「空白」になる可能性があるため）。したがって、「1+/-...」構文は、より多くの行/列を返し、結果としてクエリーの速度が遅くなる可能性があります。   \n例を挙げて説明しましょう。\n避けるべき： 1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] ) \nベターな方法： SUM ( 'Sales'[SalesAmount] ) - DIVIDE ( SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )\nベストな方法： VAR x = SUM ( 'Sales'[SalesAmount] ) RETURN x - DIVIDE ( SUM ( 'Sales'[CostAmount] ), x )",
+    "Severity": 2,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "EVALUATEANDLOG_SHOULD_NOT_BE_USED_IN_PRODUCTION_MODELS",
+    "Name": "[DAX式］EVALUATEANDLOG 関数を本番運用のモデルで使用しない",
+    "Category": "DAX式",
+    "Description": "EVALUATEANDLOG関数は、開発/テスト環境でのみ使用することを想定しており、本番モデルでは使用しないでください。参考：https://pbidax.wordpress.com/2022/08/16/introduce-the-dax-evaluateandlog-function/",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)EVALUATEANDLOG\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DATA_COLUMNS_MUST_HAVE_A_SOURCE_COLUMN",
+    "Name": "[エラー防止]データ列にはソース列が必要",
+    "Category": "エラー防止",
+    "Description": "データ列にはソース列（例：データベースからの列）が必要です。ソース列のないデータ列は、モデルを処理する際にエラーになります",
+    "Severity": 3,
+    "Scope": "DataColumn",
+    "Expression": "string.IsNullOrWhitespace(SourceColumn)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "EXPRESSION_RELIANT_OBJECTS_MUST_HAVE_AN_EXPRESSION",
+    "Name": "[エラー防止]式に依存するオブジェクトには式が必要",
+    "Category": "エラー防止",
+    "Description": "計算列、計算項目(Calculation Items)、およびメジャーには、式が必要です。式がない場合、これらのオブジェクトには値が表示されません",
+    "Severity": 3,
+    "Scope": "Measure, CalculatedColumn, CalculationItem",
+    "Expression": "string.IsNullOrWhiteSpace(Expression)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_STRUCTURED_DATA_SOURCES_WITH_PROVIDER_PARTITIONS",
+    "Name": "[エラー防止]プロバイダーパーティションのある構造化データソースを避ける",
+    "Category": "エラー防止",
+    "Description": "Power BIは、構造化データソースを参照するプロバイダ（別名「レガシー」）パーティションをサポートしません。構造化データソースを参照するパーティションは、M言語を使用する必要があります。それ以外の場合、「プロバイダー」パーティションは「プロバイダー」データソースを参照する必要があります。この問題は、構造化データソースをプロバイダデータソースに変換することで解決できます （以下の 2 番目の参照リンクを参照）。\n参考1： https://docs.microsoft.com/power-bi/admin/service-premium-connect-tools#data-source-declaration\n参考2： https://learn.microsoft.com/azure/analysis-services/analysis-services-datasource#understanding-providers \n参考資料： https://www.elegantbi.com/post/convertdatasources",
+    "Severity": 2,
+    "Scope": "Partition",
+    "Expression": "SourceType == \"Query\"\r\nand\r\nDataSource.Type == \"Structured\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_THE_USERELATIONSHIP_FUNCTION_AND_RLS_AGAINST_THE_SAME_TABLE",
+    "Name": "[エラー防止]USERELATIONSHIP関数とRLSを同じテーブルに対して行うのを避ける",
+    "Category": "エラー防止",
+    "Description": "USERELATIONSHIP関数は、行レベルのセキュリティ (RLS) を利用しているテーブルに対して使用できません。この場合、ビジュアルで特定のメジャーを使用する際にエラーが発生します。このルールにより、メジャーのUSERELATIONSHIP関数で使用されているテーブルと RLS がハイライト表示されます。参照: https://blog.crossjoin.co.uk/2013/05/10/userelationship-and-tabular-row-security/",
+    "Severity": 3,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "Model.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)USERELATIONSHIP\\s*\\(\\s*.+?(?=])\\]\\s*,\\s*'*\" + current.Name + \"'*\\[\"))\r\nand\r\nRowLevelSecurity.Any(it <> null)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "RELATIONSHIP_COLUMNS_SAME_DATA_TYPE",
+    "Name": "[エラー防止] リレーションシップで使用される列は同じデータ型を設定すること",
+    "Category": "エラー防止",
+    "Description": "リレーションシップで使用される列は、同じデータ型にすべきであり、理想的には、整数データ型にしておくことです。リレーションシップ内に異なるデータ型の列があると、さまざまな問題が発生する可能性があります。\n※関連規則の「[フォーマット]リレーションシップ用の列は整数型を使用する」を参照",
+    "Severity": 3,
+    "Scope": "Relationship",
+    "Expression": "FromColumn.DataType != ToColumn.DataType",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "UNNECESSARY_COLUMNS",
+    "Name": "[メンテナンス]不要な列を削除する",
+    "Category": "メンテナンス",
+    "Description": "DAX式、リレーションシップ、階層レベル、「列で並び替え」で参照されていない非表示列は削除しておくべきです",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "(IsHidden or Table.IsHidden)\n\n\r\nand ReferencedBy.Count = 0\r\n\n\nand (not UsedInRelationships.Any())\n\n\r\nand (not UsedInSortBy.Any())\n\n\r\nand (not UsedInHierarchies.Any())\n\n\r\nand (not Table.RowLevelSecurity.Any(\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\n and (not Model.Roles.Any(RowLevelSecurity.Any(\nit <> null and \n(\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n )\n)))",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "UNNECESSARY_MEASURES",
+    "Name": "[メンテナンス]不要なメジャーを削除",
+    "Category": "メンテナンス",
+    "Description": "DAX式で参照されていない非表示メジャーは、メンテナンスの観点から削除しておくべきです",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "(Table.IsHidden or IsHidden) \r\nand ReferencedBy.Count = 0",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FIX_REFERENTIAL_INTEGRITY_VIOLATIONS",
+    "Name": "[メンテナンス]参照整合性の違反を修正",
+    "Category": "メンテナンス",
+    "Description": "このルールは、参照整合性に違反するリレーションシップを強調表示しています。これは、リレーションシップの 'from' 側のテーブル（many側）に、リレーションシップの 'to' 側のテーブル（one側）に存在しない値があることを示します。参照整合性の違反は、スライサーで '空白' のメンバ値も生成します。これらの問題を解決するには、'to' テーブルの主キー列（one側）が 'from' テーブルの外部キー列（many側）のすべての値を持っていることを確認することが推奨されます。   参考: https://blog.enterprisedna.co/vertipaq-analyzer-tutorial-relationships-referential-integrity/",
+    "Severity": 2,
+    "Scope": "Relationship",
+    "Expression": "Convert.ToInt64(GetAnnotation(\"Vertipaq_RIViolationInvalidRows\")) > 0",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_DATA_SOURCES_NOT_REFERENCED_BY_ANY_PARTITIONS",
+    "Name": "[メンテナンス]どのパーティションからも参照されていないデータソースを削除する",
+    "Category": "メンテナンス",
+    "Description": "どのパーティションからも参照されていないデータソースは削除しても良い",
+    "Severity": 1,
+    "Scope": "ProviderDataSource, StructuredDataSource",
+    "Expression": "UsedByPartitions.Count() == 0",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "REMOVE_ROLES_WITH_NO_MEMBERS",
+    "Name": "[メンテナンス]メンバーのいないロールを削除する",
+    "Category": "メンテナンス",
+    "Description": "メンバーのいないロールを削除しても良い",
+    "Severity": 1,
+    "Scope": "ModelRole",
+    "Expression": "Members.Count() == 0",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "ENSURE_TABLES_HAVE_RELATIONSHIPS",
+    "Name": "[メンテナンス]テーブルにリレーションシップがあることを確認",
+    "Category": "メンテナンス",
+    "Description": "このルールでは、データモデル内の他のテーブルにリレーションシップで接続されていないテーブル（Disconnected Tables）がハイライトされます",
+    "Severity": 1,
+    "Scope": "Table, CalculatedTable",
+    "Expression": "UsedInRelationships.Count() == 0",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "OBJECTS_WITH_NO_DESCRIPTION",
+    "Name": "[メンテナンス]説明なき表示されたオブジェクト",
+    "Category": "メンテナンス",
+    "Description": "オブジェクト（テーブル）に説明を追加します。これらの説明は、Power BI Desktopのフィールドリスト内でカーソルを置くと表示されます。さらに、これらの説明文を活用して、自動化されたデータ辞書を作成することができます（下記リンク参照）。\n参考： https://www.elegantbi.com/post/datadictionary",
+    "Severity": 1,
+    "Scope": "Table, Measure, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup",
+    "Expression": "string.IsNullOrWhitespace(Description)\r\nand\r\nIsHidden == false",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PERSPECTIVES_WITH_NO_OBJECTS",
+    "Name": "[メンテナンス]オブジェクトのないパースペクティブ",
+    "Category": "メンテナンス",
+    "Description": "オブジェクト（テーブル）を含まないパースペクティブは、ほとんどの場合必要ありません。このルールでは、列/メジャー/階層をパースペクティブに追加すると、テーブルもパースペクティブに追加されるため、テーブルのみを確認する必要があります。さらに、一般的なテーブルには、計算テーブル（Calculated Tables）や計算グループ（Calculation Groups）も含まれます",
+    "Severity": 1,
+    "Scope": "Perspective",
+    "Expression": "Model.Tables.Any(InPerspective[current.Name]) == false",
+    "FixExpression": "Delete()",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "CALCULATION_GROUPS_WITH_NO_CALCULATION_ITEMS",
+    "Name": "[メンテナンス]計算項目（Calculation Items）が入っていない計算グループ（Calculation Groups）",
+    "Category": "メンテナンス",
+    "Description": "計算グループ（Calculation Groups）は、計算アイテム（Calculation Items）がないと機能しません",
+    "Severity": 2,
+    "Scope": "CalculationGroup",
+    "Expression": "CalculationItems.Count == 0",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PARTITION_NAME_SHOULD_MATCH_TABLE_NAME_FOR_SINGLE_PARTITION_TABLES",
+    "Name": "[命名規則]パーティション名は、単一パーティションテーブルのテーブル名と一致する必要がある",
+    "Category": "命名規則",
+    "Description": "1つのパーティションを持つテーブルは、テーブル名とパーティション名を一致させる必要があります。2つ以上のパーティションを持つテーブルは、それぞれのパーティション名がテーブル名で始まる必要があります",
+    "Severity": 1,
+    "Scope": "Table",
+    "Expression": "(Partitions.Count = 1 and Partitions[0].Name <> Name)",
+    "FixExpression": "Partitions[0].Name = it.Name",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "SPECIAL_CHARS_IN_OBJECT_NAMES",
+    "Name": "[命名規則]オブジェクト名に特殊文字を含めてはいけない",
+    "Category": "命名規則",
+    "Description": "タブ、改行などを含んではいけません",
+    "Severity": 2,
+    "Scope": "Model, Table, Measure, Hierarchy, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup, CalculationItem",
+    "Expression": "Name.IndexOf(char(9)) > -1\r\nor\r\n\nName.IndexOf(char(10)) > -1 \r\nor\r\n\nName.IndexOf(char(13)) > -1",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FORMAT_FLAG_COLUMNS_AS_YES/NO_VALUE_STRINGS",
+    "Name": "[書式設定]フラグ列をYes / Noの文字列として書式設定する",
+    "Category": "書式設定",
+    "Description": "フラグは、0/1の整数値を使用するよりも読みやすいように、Yes/Noとして適切にフォーマットされなければなりません",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "(\nName.StartsWith(\"Is\") and \nDataType = \"Int64\" and \nnot (IsHidden or Table.IsHidden)\n) \r\nor\r\n\n(\nName.EndsWith(\" Flag\") and \nDataType <> \"String\" and \nnot (IsHidden or Table.IsHidden)\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "OBJECTS_SHOULD_NOT_START_OR_END_WITH_A_SPACE",
+    "Name": "[書式設定]オブジェクトはスペースで開始または終了してはいけない",
+    "Category": "書式設定",
+    "Description": "オブジェクトはスペースで始まったり、終わったりしてはいけません",
+    "Severity": 3,
+    "Scope": "Model, Table, Measure, Hierarchy, Perspective, Partition, DataColumn, CalculatedColumn",
+    "Expression": "Name.StartsWith(\" \") or Name.EndsWith(\" \")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "DATECOLUMN_FORMATSTRING",
+    "Name": "[書式設定]「日付」列の書式設定文字列（Format String）を指定する",
+    "Category": "書式設定",
+    "Description": "DateTime型の列で、名前に \"Month \"を含むものは、\"yyyy/mm/dd\"としてフォーマットすること",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 \r\nand \r\nDataType = \"DateTime\" \r\nand \r\nFormatString <> \"yyyy/mm/dd\"",
+    "FixExpression": "FormatString = \"yyyy/mm/dd\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MONTHCOLUMN_FORMATSTRING",
+    "Name": "[書式設定]「月」列の書式設定文字列（Format String）を指定する",
+    "Category": "書式設定",
+    "Description": "DateTime型の列で、名前に \"Month \"（もしくは月）を含むものは、\"yyyy-MM\"としてフォーマットすること",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "Name.IndexOf(\"Month\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"MMMM yyyy\"",
+    "FixExpression": "FormatString = \"MMMM yyyy\"",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PROVIDE_FORMAT_STRING_FOR_MEASURES",
+    "Name": "[書式設定]メジャーの書式設定文字列（Format String）を指定する",
+    "Category": "書式設定",
+    "Description": "表示されている（=使用されている）メジャーには、その書式設定文字列（Format String）プロパティを割り当てる必要があります",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "not IsHidden \r\nand not Table.IsHidden \r\nand string.IsNullOrWhitespace(FormatString)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "NUMERIC_COLUMN_SUMMARIZE_BY",
+    "Name": "[書式設定]数値列を集約しない",
+    "Category": "書式設定",
+    "Description": "数値列（整数型、固定小数点、浮動小数点）は、Power BIで誤って合計されるのを防ぐために、SummarizeByプロパティを「None」に設定する必要があります（代わりにメジャーを作成します）",
+    "Severity": 3,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "(\r\nDataType = \"Int64\"\r\nor \r\nDataType=\"Decimal\" \r\nor \r\nDataType=\"Double\"\r\n)\n\r\nand \r\nSummarizeBy <> \"None\"\r\n\nand not (IsHidden or Table.IsHidden)",
+    "FixExpression": "SummarizeBy = AggregateFunction.None",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PERCENTAGE_FORMATTING",
+    "Name": "[書式設定]パーセンテージは、千単位の区切り記号と小数点以下1桁で書式設定する",
+    "Category": "書式設定",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "FormatString.Contains(\"%\") and FormatString <> \"#,0.0%;-#,0.0%;#,0.0%\"",
+    "FixExpression": "FormatString = \"#,0.0%\\u003B-#,0.0%\\u003B#,0.0%\"",
+    "CompatibilityLevel": 1200,
+    "Description": ""
+  },
+  {
+    "ID": "INTEGER_FORMATTING",
+    "Name": "[書式設定]整数は小数点なし、千単位で書式設定する",
+    "Category": "書式設定",
+    "Severity": 2,
+    "Scope": "Measure",
+    "Expression": "not FormatString.Contains(\"$\") and not FormatString.Contains(\"%\") and not (FormatString = \"#,0\" or FormatString = \"#,0.0\")",
+    "FixExpression": "FormatString = \"#,0\"",
+    "CompatibilityLevel": 1200,
+    "Description": ""
+  },
+  {
+    "ID": "RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE",
+    "Name": "[書式設定]リレーションシップ用の列は整数型を使用する",
+    "Category": "書式設定",
+    "Description": "リレーションシップの列は整数のデータ型であることがベスト・プラクティスです。これは、データウェアハウスだけでなく、データモデリングにも当てはまります",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any()\n\nand \n\nDataType != DataType.Int64",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "ADD_DATA_CATEGORY_FOR_COLUMNS",
+    "Name": "[書式設定]列のデータ分類を追加",
+    "Category": "書式設定",
+    "Description": "適切に列へデータカテゴリのプロパティを追加する\n参考： https://docs.microsoft.com/power-bi/transform-model/desktop-data-categorization",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "string.IsNullOrWhitespace(DataCategory)\r\nand\r\n(\r\n(\r\nName.ToLower().Contains(\"country\")\r\nor \r\n\nName.ToLower().Contains(\"continent\"\n)\r\nor\r\nName.ToLower().Contains(\"city\")\r\n)\r\nand DataType == \"String\"\r\n)\r\nor \r\n(\r\n(\nName.ToLower() == \"latitude\" \n or \nName.ToLower() == \"longitude\")\r\nand (DataType == DataType.Decimal or DataType == DataType.Double)\r\n)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "HIDE_FOREIGN_KEYS",
+    "Name": "[書式設定]外部キー（FK）を非表示にする",
+    "Category": "書式設定",
+    "Description": "外部キーは常に非表示にします",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any(FromColumn.Name == current.Name and FromCardinality == \"Many\")\n\r\nand\r\n\nIsHidden == false",
+    "FixExpression": "IsHidden = true",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "MARK_PRIMARY_KEYS",
+    "Name": "[書式設定]主キー（PK）をマークする",
+    "Category": "書式設定",
+    "Description": "列のプロパティで、主キー列の「Key」プロパティを「True」に設定します。",
+    "Severity": 1,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "UsedInRelationships.Any(ToTable.Name == current.Table.Name and ToColumn.Name == current.Name and ToCardinality == \"One\")\r\n\nand\r\n\nIsKey == false\r\nand\r\ncurrent.Table.DataCategory != \"Time\"",
+    "FixExpression": "IsKey = true",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "HIDE_FACT_TABLE_COLUMNS",
+    "Name": "[書式設定]ファクトテーブルの列を非表示にする",
+    "Category": "書式設定",
+    "Description": "メジャーで集計に使用されるファクト・テーブルの列は非表示にするのがベスト・プラクティスです",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "(\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNTBLANK\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)SUM\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)AVERAGE\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)VALUES\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)DISTINCT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)DISTINCTCOUNT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\n\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MIN\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\n\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MAX\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNTA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\n\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)AVERAGEA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MAXA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MINA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n)\r\n\nand IsHidden == false\r\n\nand (DataType == \"Int64\" || DataType == \"Decimal\" || DataType == \"Double\")",
+    "FixExpression": "IsHidden = true",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "FIRST_LETTER_OF_OBJECTS_MUST_BE_CAPITALIZED",
+    "Name": "[書式設定]英語の場合、オブジェクトの最初の文字は大文字にする",
+    "Category": "書式設定",
+    "Severity": 1,
+    "Scope": "Table, Measure, Hierarchy, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup",
+    "Expression": "Name.Substring(0,1).ToUpper() != Name.Substring(0,1)",
+    "CompatibilityLevel": 1200,
+    "Description": ""
+  },
+  {
+    "ID": "MONTH_(AS_A_STRING)_MUST_BE_SORTED",
+    "Name": "[書式設定]文字列ベースの月は「列で並び替え」を行う",
+    "Category": "書式設定",
+    "Description": "このルールは、文字列であり、ソートされていない月列をハイライトしています。「列で並べ替え」をしなかった場合、英語ではアルファベット順（例：April、August...）にソートされます。このような列に対して、並び替え用の数字列で適切にソートされるようにしてください（1月、2月、3月...）",
+    "Severity": 2,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
+    "CompatibilityLevel": 1200
+  }
+]
