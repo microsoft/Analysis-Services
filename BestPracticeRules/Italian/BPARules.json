@@ -227,7 +227,7 @@
     "Category": "Prestazioni",
     "Description": "L'utilizzo della sicurezza dinamica a livello di riga (RLS) può aggiungere memoria e sovraccarico delle prestazioni. Si prega di ricercare i pro/contro del suo utilizzo. Riferimento: https://docs.microsoft.com/en-us/power-bi/admin/service-admin-rls",
     "Severity": 1,
-    "Scope": "Table, CalculatedTable",
+    "Scope": "TablePermission",
     "Expression": "RegEx.IsMatch(Expression,\"(?i)USERNAME\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)USERPRINCIPALNAME\\(\")",
     "CompatibilityLevel": 1200
   },
