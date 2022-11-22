@@ -145,7 +145,7 @@
     "ID": "MINIMIZE_POWER_QUERY_TRANSFORMATIONS",
     "Name": "[Performance] Minimize Power Query transformations",
     "Category": "Performance",
-    "Description": "Minimize Power Query transformations in order to improve model processing performance. It is a best practice to offload these transformations to the data warehouse if possible. Also, please check whether query folding is occurring within your model. Please reference the article below for more information on query folding.\r\nReference: https://docs.microsoft.com/en-us/power-query/power-query-folding",
+    "Description": "Minimize Power Query transformations in order to improve model processing performance. It is a best practice to offload these transformations to the data warehouse if possible. Also, please check whether query folding is occurring within your model. Please reference the article below for more information on query folding.\r\nReference: https://docs.microsoft.com/power-query/power-query-folding",
     "Severity": 2,
     "Scope": "Partition",
     "Expression": "\nSourceType.ToString() = \"M\"\r\nand\r\n(\r\nQuery.Contains(\"Table.Combine(\")\r\nor\r\n\nQuery.Contains(\"Table.Join(\")\r\nor\r\n\nQuery.Contains(\"Table.NestedJoin(\")\r\nor\r\nQuery.Contains(\"Table.AddColumn(\")\r\nor\r\nQuery.Contains(\"Table.Group(\")\r\nor\r\nQuery.Contains(\"Table.Sort(\")\r\nor\r\nQuery.Contains(\"Table.Pivot(\")\r\nor\r\nQuery.Contains(\"Table.Unpivot(\")\r\nor\r\nQuery.Contains(\"Table.UnpivotOtherColumns(\")\r\nor\r\nQuery.Contains(\"Table.Distinct(\")\r\nor\r\nQuery.Contains(\"[Query=\"\"SELECT\")\r\nor\r\nQuery.Contains(\"Value.NativeQuery\")\r\nor\r\nQuery.Contains(\"OleDb.Query\")\r\nor\r\nQuery.Contains(\"Odbc.Query\")\r\n)",
@@ -184,6 +184,7 @@
     "ID": "REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES",
     "Name": "[Performance] Remove redundant columns in related tables",
     "Category": "Performance",
+    "Description": "Removing unnecessary columns reduces model size and speeds up data loading.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "UsedInRelationships.Any() == false \r\nand\r\nModel.AllColumns.Any(Name == current.Name and Table.Name != current.Table.Name and Table.UsedInRelationships.Any(FromTable.Name == current.Table.Name))",
@@ -253,6 +254,7 @@
     "ID": "AVOID_DUPLICATE_MEASURES",
     "Name": "[DAX Expressions] No two measures should have the same definition",
     "Category": "DAX Expressions",
+    "Description": "Two measures with different names and defined by the same DAX expression should be avoided to reduce redundancy.",
     "Severity": 2,
     "Scope": "Measure",
     "Expression": "Model.AllMeasures.Any(Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") = outerIt.Expression.Replace(\" \",\"\").Replace(\"\\n\",\"\").Replace(\"\\r\",\"\").Replace(\"\\t\",\"\") and it <> outerIt)",
@@ -336,6 +338,16 @@
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "EVALUATEANDLOG_SHOULD_NOT_BE_USED_IN_PRODUCTION_MODELS",
+    "Name": "[DAX Expressions] The EVALUATEANDLOG function should not be used in production models",
+    "Category": "DAX Expressions",
+    "Description": "The EVALUATEANDLOG function is meant to be used only in development/test environments and should not be used in production models.\r\n\r\nReference: https://pbidax.wordpress.com/2022/08/16/introduce-the-dax-evaluateandlog-function/",
+    "Severity": 1,
+    "Scope": "Measure",
+    "Expression": "RegEx.IsMatch(Expression,\"(?i)EVALUATEANDLOG\\s*\\(\")",
     "CompatibilityLevel": 1200
   },
   {
