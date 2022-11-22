@@ -123,8 +123,10 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 * 2022-11-22 Version 1.2.3
     * The Best Practice Rules are now available in [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)!
     * New Rules
-        * [DAX Expressions] The EVALUATEANDLOG function should not be used in production models [#163](https://github.com/microsoft/Analysis-Services/issues/163)
+        * [DAX Expressions] The EVALUATEANDLOG function should not be used in production models ([#163](https://github.com/microsoft/Analysis-Services/issues/163))
     * Updated Rules
+        * [Performance] Check if dynamic row level security (RLS) is necessary
+	    * Updated the scope of the rule to Table Permissions ([#178](https://github.com/microsoft/Analysis-Services/issues/178))
         * [Performance] Minimize Power Query transformations
 	    * Removed 'select' from the Native.Query function portion of the rule
 	* [Performance] Remove redundant columns in related tables
