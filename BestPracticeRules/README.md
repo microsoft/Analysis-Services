@@ -62,9 +62,13 @@ if (version == "3")
 w.DownloadFile(url, downloadLoc);
 ```
 
-*Note: If you want to load the rules in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian), replace the url parameter in the code above with the code below.*
+*Note: If you want to load the rules in Italian or Japanese, replace the url parameter in the code above with the appropriate code below.*
 ```C#
+// Italian
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Italian/BPARules.json";
+
+// Japanese
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Japanese/BPARules.json";
 ```
 
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
@@ -110,11 +114,27 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 * English
 * [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)
+* [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)
 
 *Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com.*
 
 ## Version History
 
+* 2022-11-22 Version 1.2.3
+    * The Best Practice Rules are now available in [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)!
+    * New Rules
+        * [DAX Expressions] The EVALUATEANDLOG function should not be used in production models [#163](https://github.com/microsoft/Analysis-Services/issues/163)
+    * Updated Rules
+        * [Performance] Minimize Power Query transformations
+	    * Removed 'select' from the Native.Query function portion of the rule
+	* [Performance] Remove redundant columns in related tables
+	    * Added description
+	* [Formatting] Provide format string for "Date" columns
+	    * Updated description
+	* [DAX Expressions] No two measures should have the same definition
+	    * Added description
+	* [Error Prevention] Data columns must have a source column
+	    * Updated description
 * 2022-06-06 Version 1.2.2
     * New Rules
         * [DAX Expressions] Avoid using the '1-(x/y)' syntax
