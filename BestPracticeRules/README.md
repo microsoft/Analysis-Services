@@ -124,7 +124,8 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Version History
 
-* 2023-01-09 The Best Practice Rules are now available in [Spanish](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Spanish)!
+* 2023-01-09 
+    * The Best Practice Rules are now available in [Spanish](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Spanish)!
 * 2022-11-22 Version 1.2.3
     * The Best Practice Rules are now available in [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)!
     * New Rules
@@ -150,7 +151,8 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
     * Updated Rules
         * [Formatting] Percentage formatting
                * Fixed a bug within the fix expression   
-* 2021-10-21 The Best Practice Rules are now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
+* 2021-10-21 
+    * The Best Practice Rules are now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-08-18 Version 1.2.1
     * New Rules
         * [Maintenance] Fix referential integrity violations ([blog post](https://www.elegantbi.com/post/findblankrows)) 
