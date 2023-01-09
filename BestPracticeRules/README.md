@@ -62,13 +62,16 @@ if (version == "3")
 w.DownloadFile(url, downloadLoc);
 ```
 
-*Note: If you want to load the rules in Italian or Japanese, replace the url parameter in the code above with the appropriate code below.*
+*Note: If you want to load the rules in Italian, Japanese or Spanish, replace the url parameter in the code above with the appropriate code below.*
 ```C#
 // Italian
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Italian/BPARules.json";
 
 // Japanese
 string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Japanese/BPARules.json";
+
+// Spanish
+string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/Spanish/BPARules.json";
 ```
 
 4. Close and reopen [Tabular Editor](https://tabulareditor.com/ "Tabular Editor").
@@ -115,11 +118,13 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 * English
 * [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)
 * [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)
+* [Spanish](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Spanish)
 
 *Note: If you would like to volunteer to translate the Best Practice Rules into another language, please contact us at pbibestpractice@microsoft.com.*
 
 ## Version History
 
+* 2023-01-09 The Best Practice Rules are now available in [Spanish](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Spanish)!
 * 2022-11-22 Version 1.2.3
     * The Best Practice Rules are now available in [Japanese](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Japanese)!
     * New Rules
@@ -169,8 +174,6 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 			* Simplified rule logic
 		* [Performance] Reduce usage of long-length columns with high cardinality
 		    * Updated rule logic to use Int64
-
-* 2021-10-21 Best Practice Rules now available in [Italian](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Italian)!
 * 2021-06-13 Version 1.1.2
     * Modified Rules
         * [DAX Expressions] Use the DIVIDE function for division
