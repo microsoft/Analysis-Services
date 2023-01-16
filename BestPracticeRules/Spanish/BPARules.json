@@ -17,7 +17,7 @@
     "Description": "Para acelerar el tiempo de procesamiento y conservar memoria después del procesamiento, las jerarquías de atributos no deben construirse para columnas que los clientes MDX nunca usen para analizar. En otras palabras, todas las columnas ocultas que no se usen para orderar ni se usen en jerarquías de usuarios deben tener su propiedad IsAvailableInMdx establecida en falso.\n\nReferencia: https://blog.crossjoin.co.uk/2018/07/02/isavailableinmdx-ssas-tabular/",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()",
+    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()\r\nand\r\nSortByColumn = null",
     "FixExpression": "IsAvailableInMDX = false",
     "CompatibilityLevel": 1200
   },
@@ -315,7 +315,7 @@
     "ID": "FILTER_MEASURE_VALUES_BY_COLUMNS",
     "Name": "[Expresiones DAX] Filtrar los valores de medida por columnas, no tablas",
     "Category": "Expresiones DAX",
-    "Description": "En lugar de usar este filtro de patrón ('Tabla', [Medida]> Valor) para los parámetros de filtro de una función CALCULATE o CALCULATETABLE, use una de las opciones a continuación (si es posible). El filtrado en una columna específica producirá una tabla más pequeña para que el motor procese, lo que permite un rendimiento más rápido. El uso de la función de VALUES o la función ALL depende del resultado de la medida deseada.\n\nOpción 1: FILTER (VALUES ('Tabla' [columna]), [Medida]> Valor)\nOpción 2: FILTER (ALL ('Tabla' [Columna]), [Medida]> Valor)\n\nReferencia: https://learn.microsoft.com/en-us/power-bi/guidance/",
+    "Description": "En lugar de usar este filtro de patrón ('Tabla', [Medida]> Valor) para los parámetros de filtro de una función CALCULATE o CALCULATETABLE, use una de las opciones a continuación (si es posible). El filtrado en una columna específica producirá una tabla más pequeña para que el motor procese, lo que permite un rendimiento más rápido. El uso de la función de VALUES o la función ALL depende del resultado de la medida deseada.\n\nOpción 1: FILTER (VALUES ('Tabla' [columna]), [Medida]> Valor)\nOpción 2: FILTER (ALL ('Tabla' [Columna]), [Medida]> Valor)\n\nReferencia: https://learn.microsoft.com/power-bi/guidance/",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*,\\s*\\[[^\\]]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\[\")",
