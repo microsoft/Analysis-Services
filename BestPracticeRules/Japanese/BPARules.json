@@ -17,7 +17,7 @@
     "Description": "処理時間を短縮し、処理後のメモリを節約するために、MDX クライアントでフィルターとして使用されることのない列に対しては、属性階層を構築しないようにします。つまり、「列で並べ替え」として使用されない、またはユーザ階層で参照されないすべての非表示列は、その IsAvailableInMdx プロパティを false に設定しておくと良い。参考: https://blog.crossjoin.co.uk/2018/07/02/isavailableinmdx-ssas-tabular/",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()",
+    "Expression": "IsAvailableInMDX\r\nand\r\n\n(IsHidden or Table.IsHidden)\r\nand\r\n\nnot UsedInSortBy.Any() \r\nand\r\n\nnot UsedInHierarchies.Any()\r\nand\r\nnot UsedInVariations.Any()\r\nand\r\nSortByColumn = null",
     "FixExpression": "IsAvailableInMDX = false",
     "CompatibilityLevel": 1200
   },
@@ -75,7 +75,7 @@
     "ID": "SNOWFLAKE_SCHEMA_ARCHITECTURE",
     "Name": "[パフォーマンス]スノーフレークの代わりにスタースキーマを検討",
     "Category": "パフォーマンス",
-    "Description": "一般的に、Tabular Model（Power BIやAnalysis Services等のデータモデル）にはスタースキーマが最適なアーキテクチャです。とはいえ、スノーフレーク・アプローチを使用する有効なケースもあります。お使いのモデルをチェックして、スタースキーマ・アーキテクチャへの移行をご検討ください。参考: https://docs.microsoft.com/en-us/power-bi/guidance/star-schema",
+    "Description": "一般的に、Tabular Model（Power BIやAnalysis Services等のデータモデル）にはスタースキーマが最適なアーキテクチャです。とはいえ、スノーフレーク・アプローチを使用する有効なケースもあります。お使いのモデルをチェックして、スタースキーマ・アーキテクチャへの移行をご検討ください。参考: https://docs.microsoft.com/power-bi/guidance/star-schema",
     "Severity": 2,
     "Scope": "Table, CalculatedTable",
     "Expression": "UsedInRelationships.Any(current.Name == FromTable.Name)\r\nand\r\nUsedInRelationships.Any(current.Name == ToTable.Name)",
