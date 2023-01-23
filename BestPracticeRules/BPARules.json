@@ -670,5 +670,15 @@
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
     "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "TRIM_OBJECT_NAMES",
+    "Name": "[Naming Conventions] Trim object names",
+    "Category": "Naming Conventions",
+    "Description": "Unintentionally leaving a trailing space in an object name is a common occurrence when copying/duplicating objects in Tabular Editor.",
+    "Severity": 1,
+    "Scope": "Model, Table, Measure, Hierarchy, Level, Perspective, Partition, ProviderDataSource, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, StructuredDataSource, NamedExpression, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Name.StartsWith(\" \") or Name.EndsWith(\" \")",
+    "CompatibilityLevel": 1200
   }
 ]
