@@ -124,7 +124,7 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Version History
 
-* 2023-01-16
+* 2023-01-16 Version 1.2.4
     * Fixed a bug in the Set IsAvailableInMdx Rule [#190](https://github.com/microsoft/Analysis-Services/issues/190)
 * 2023-01-09 
     * The Best Practice Rules are now available in [Spanish](https://github.com/microsoft/Analysis-Services/tree/master/BestPracticeRules/Spanish)!
