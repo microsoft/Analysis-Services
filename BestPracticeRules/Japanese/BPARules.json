@@ -75,7 +75,7 @@
     "ID": "SNOWFLAKE_SCHEMA_ARCHITECTURE",
     "Name": "[パフォーマンス]スノーフレークの代わりにスタースキーマを検討",
     "Category": "パフォーマンス",
-    "Description": "一般的に、Tabular Model（Power BIやAnalysis Services等のデータモデル）にはスタースキーマが最適なアーキテクチャです。とはいえ、スノーフレーク・アプローチを使用する有効なケースもあります。お使いのモデルをチェックして、スタースキーマ・アーキテクチャへの移行をご検討ください。参考: https://docs.microsoft.com/power-bi/guidance/star-schema",
+    "Description": "一般的に、Tabular Model（Power BIやAnalysis Services等のデータモデル）にはスタースキーマが最適なアーキテクチャです。とはいえ、スノーフレーク・アプローチを使用する有効なケースもあります。お使いのモデルをチェックして、スタースキーマ・アーキテクチャへの移行をご検討ください。参考: https://docs.microsoft.com/en-us/power-bi/guidance/star-schema",
     "Severity": 2,
     "Scope": "Table, CalculatedTable",
     "Expression": "UsedInRelationships.Any(current.Name == FromTable.Name)\r\nand\r\nUsedInRelationships.Any(current.Name == ToTable.Name)",
@@ -335,7 +335,7 @@
     "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
     "Name": "[DAX式］「1-(x/y)」構文の使用を避ける",
     "Category": "DAX式",
-    "Description": "パーセント計算を実現するために「1-(x/y)」または「1+(x/y)」構文を使用する代わりに、基本的なDAX関数（後述）を使用してください。\n正しい構文を使用すると、一般的にパフォーマンスが向上します。「1+/-...」の構文は常に値を返しますが、「1+/-...」構文を使用しない解答は値を返しません（値が「空白」になる可能性があるため）。したがって、「1+/-...」構文は、より多くの行/列を返し、結果としてクエリーの速度が遅くなる可能性があります。   \n例を挙げて説明しましょう。\n避けるべき： 1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] ) \nベターな方法： SUM ( 'Sales'[SalesAmount] ) - DIVIDE ( SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )\nベストな方法： VAR x = SUM ( 'Sales'[SalesAmount] ) RETURN x - DIVIDE ( SUM ( 'Sales'[CostAmount] ), x )",
+    "Description": "パーセント計算を実現するために「1-(x/y)」または「1+(x/y)」構文を使用する代わりに、基本的なDAX関数（後述）を使用してください。\n正しい構文を使用すると、一般的にパフォーマンスが向上します。「1+/-...」の構文は常に値を返しますが、「1+/-...」構文を使用しない解答は値を返しません（値が「空白」になる可能性があるため）。したがって、「1+/-...」構文は、より多くの行/列を返し、結果としてクエリーの速度が遅くなる可能性があります。   \n例を挙げて説明しましょう。\n避けるべき： 1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] ) \nベターな方法： DIVIDE ( SUM ( 'Sales'[SalesAmount] ) - SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )\nベストな方法： VAR x = SUM ( 'Sales'[SalesAmount] ) RETURN DIVIDE ( x - SUM ( 'Sales'[CostAmount] ), x )",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
@@ -402,6 +402,28 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "AVOID_INVALID_NAME_CHARACTERS",
+    "Name": "[エラー防止] 名前に無効な文字が含まれないようにする",
+    "Category": "エラー防止",
+    "Description": "このルールは、モデル内の任意のオブジェクトの名前 (テーブル/列/メジャーなど) に無効な文字が含まれているかどうかを識別します。無効な文字は、モデルのデプロイ時にエラーとなります (デプロイに失敗することもあります)。このルールには、問題を解決するために無効な文字をスペースに変換する修正式があります。",
+    "Severity": 3,
+    "Scope": "Table, Measure, Hierarchy, Level, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, KPI, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Name.ToCharArray().Any(char.IsControl(it) and !char.IsWhiteSpace(it))",
+    "FixExpression": "Name = string.Concat( it.Name.ToCharArray().Select( c => (char.IsControl(c) && !char.IsWhiteSpace(c)) ? ' ': c ))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_INVALID_DESCRIPTION_CHARACTERS",
+    "Name": "[エラー防止] 説明文に無効な文字が含まれないようにする",
+    "Category": "エラー防止",
+    "Description": "このルールは、モデル内の任意のオブジェクト（テーブル/列/メジャーなど）の記述に無効な文字が含まれているかどうかを識別します。無効な文字は、モデルのデプロイ時にエラーとなります (デプロイに失敗することもあります)。このルールには、問題を解決するために無効な文字をスペースに変換する修正式があります。",
+    "Severity": 3,
+    "Scope": "Table, Measure, Hierarchy, Level, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, KPI, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Description.ToCharArray().Any(char.IsControl(it) and !char.IsWhiteSpace(it))",
+    "FixExpression": "Description = string.Concat( it.Description.ToCharArray().Select( c => (char.IsControl(c) && !char.IsWhiteSpace(c)) ? ' ': c ))",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "UNNECESSARY_COLUMNS",
     "Name": "[メンテナンス]不要な列を削除する",
     "Category": "メンテナンス",
@@ -440,7 +462,7 @@
     "Description": "どのパーティションからも参照されていないデータソースは削除しても良い",
     "Severity": 1,
     "Scope": "ProviderDataSource, StructuredDataSource",
-    "Expression": "UsedByPartitions.Count() == 0",
+    "Expression": "UsedByPartitions.Count() == 0\r\nand not Model.Tables.Any(SourceExpression.Contains(OuterIt.Name))\r\nand not Model.AllPartitions.Any(Query.Contains(OuterIt.Name))",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
@@ -515,6 +537,16 @@
     "Severity": 2,
     "Scope": "Model, Table, Measure, Hierarchy, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup, CalculationItem",
     "Expression": "Name.IndexOf(char(9)) > -1\r\nor\r\n\nName.IndexOf(char(10)) > -1 \r\nor\r\n\nName.IndexOf(char(13)) > -1",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "TRIM_OBJECT_NAMES",
+    "Name": "[命名規則]オブジェクト名のトリミング",
+    "Category": "命名規則",
+    "Description": "Tabular Editorでオブジェクトをコピー/複製する際に、意図せずオブジェクト名の末尾にスペースが残ってしまうことがよくあります",
+    "Severity": 1,
+    "Scope": "Model, Table, Measure, Hierarchy, Level, Perspective, Partition, ProviderDataSource, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, StructuredDataSource, NamedExpression, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Name.StartsWith(\" \") or Name.EndsWith(\" \")",
     "CompatibilityLevel": 1200
   },
   {
