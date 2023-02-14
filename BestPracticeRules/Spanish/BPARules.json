@@ -83,7 +83,7 @@
   },
   {
     "ID": "MODEL_SHOULD_HAVE_A_DATE_TABLE",
-    "Name": "[Rendimiento] El modelo debe tener una tabla de fechas",
+    "Name": "[rendimiento] El modelo debe tener una tabla de fechas",
     "Category": "Rendimiento",
     "Description": "En términos generales, los modelos generalmente deben tener una tabla de fechas. Los modelos que no tienen una tabla de fechas generalmente no aprovechan características como la inteligencia del tiempo o pueden no tener una arquitectura estructurada adecuadamente.",
     "Severity": 2,
@@ -283,7 +283,7 @@
   },
   {
     "ID": "AVOID_USING_THE_IFERROR_FUNCTION",
-    "Name": "[Expresiones DAX] Evite usar la función IFERROR",
+    "Name": "[Expresiones DAX] evite usar la función IFERROR",
     "Category": "Expresiones DAX",
     "Description": "Evite usar la función IFERROR , ya que puede causar la degradación del rendimiento. Si le preocupa un error divido por cero, use la función DIVIDE, ya que naturalmente resuelve tales errores como en blanco (o puede personalizar lo que debe mostrarse en caso de dicho error).\n\nReferencia: https://www.elegantbi.com/post/top10bestpractices",
     "Severity": 2,
@@ -315,7 +315,7 @@
     "ID": "FILTER_MEASURE_VALUES_BY_COLUMNS",
     "Name": "[Expresiones DAX] Filtrar los valores de medida por columnas, no tablas",
     "Category": "Expresiones DAX",
-    "Description": "En lugar de usar este filtro de patrón ('Tabla', [Medida]> Valor) para los parámetros de filtro de una función CALCULATE o CALCULATETABLE, use una de las opciones a continuación (si es posible). El filtrado en una columna específica producirá una tabla más pequeña para que el motor procese, lo que permite un rendimiento más rápido. El uso de la función de VALUES o la función ALL depende del resultado de la medida deseada.\n\nOpción 1: FILTER (VALUES ('Tabla' [columna]), [Medida]> Valor)\nOpción 2: FILTER (ALL ('Tabla' [Columna]), [Medida]> Valor)\n\nReferencia: https://learn.microsoft.com/power-bi/guidance/",
+    "Description": "En lugar de usar este filtro de patrón ('Tabla', [Medida]> Valor) para los parámetros de filtro de una función CALCULATE o CALCULATETABLE, use una de las opciones a continuación (si es posible). El filtrado en una columna específica producirá una tabla más pequeña para que el motor procese, lo que permite un rendimiento más rápido. El uso de la función de VALUES o la función ALL depende del resultado de la medida deseada.\n\nOpción 1: FILTER (VALUES ('Tabla' [columna]), [Medida]> Valor)\nOpción 2: FILTER (ALL ('Tabla' [Columna]), [Medida]> Valor)\n\nReferencia: https://learn.microsoft.com/en-us/power-bi/guidance/",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"(?i)CALCULATE\\s*\\(\\s*[^,]+,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*,\\s*\\[[^\\]]+\\]\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)CALCULATETABLE\\s*\\([^,]*,\\s*(?i)FILTER\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*,\\s*\\[\")",
@@ -335,7 +335,7 @@
     "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
     "Name": "[Expresiones DAX] Evite usar la sintaxis '1- (x/y)'",
     "Category": "Expresiones DAX",
-    "Description": "En lugar de usar la sintaxis '1- (x/y)' o '1+ (x/y)' para lograr un cálculo porcentual, use las funciones Basicas de DAX (como se muestra a continuación). El uso de la sintaxis mejorada generalmente mejorará el rendimiento. La '1+/-...' Sintaxis siempre devuelve un valor, mientras que la solución sin el '1+/-...' no (como el valor puede estar 'en blanco'). Por lo tanto, la sintaxis '1+/-...' puede devolver más filas/columnas que pueden dar como resultado una velocidad de consulta más lenta.\n\nAclaremos con un ejemplo:\n\nEvite esto:  1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] )\nBetter: SUM ( 'Sales'[SalesAmount] ) - DIVIDE ( SUM ( 'Sales'[CostAmount] ), SUM ( 'Sales'[SalesAmount] ) )\n\nLo mejor: \nVAR x = SUM ( 'Sales'[SalesAmount] ) \nRETURN \nx - DIVIDE ( SUM ( 'Sales'[CostAmount] ), x )",
+    "Description": "En lugar de usar la sintaxis '1- (x/y)' o '1+ (x/y)' para lograr un cálculo porcentual, use las funciones Basicas de DAX (como se muestra a continuación). El uso de la sintaxis mejorada generalmente mejorará el rendimiento. La '1+/-...' Sintaxis siempre devuelve un valor, mientras que la solución sin el '1+/-...' no (como el valor puede estar 'en blanco'). Por lo tanto, la sintaxis '1+/-...' puede devolver más filas/columnas que pueden dar como resultado una velocidad de consulta más lenta.\n\nAclaremos con un ejemplo:\n\nEvite esto:  1 - SUM ( 'Sales'[CostAmount] ) / SUM( 'Sales'[SalesAmount] )\nBetter: DIVIDE ( SUM ( 'Sales'[SalesAmount] ) -SUM ( 'Sales'[CostAmount] ),SUM ( 'Sales'[SalesAmount] ) )\n\nLo mejor: \nVAR x = SUM ( 'Sales'[SalesAmount] ) \nRETURN \nDIVIDE ( x - SUM ( 'Sales'[CostAmount] ), x )",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
     "Expression": "RegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*[\\(]*\\s*(?i)SUM\\s*\\(\\s*\\'*[A-Za-z0-9 _]+\\'*\\s*\\[[A-Za-z0-9 _]+\\]\\s*\\)\\s*\\/\")\r\nor\r\nRegEx.IsMatch(Expression,\"[0-9]+\\s*[-+]\\s*(?i)DIVIDE\\s*\\(\")",
@@ -402,6 +402,28 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "AVOID_INVALID_NAME_CHARACTERS",
+    "Name": "[Prevención de Errores] Evite carácteres invalidos en nombres",
+    "Category": "Prevención de Errores",
+    "Description": "Esta regla identifica si un nombre de objeto del modelo (es decir, tabla/columna/medida) contiene un carácter no válido. Los caracteres no válidos causarán un error al implementar el modelo (y no se implementará). Esta regla tiene una expresión que convierte el carácter no válido en un espacio, resolviendo el problema.",
+    "Severity": 3,
+    "Scope": "Table, Measure, Hierarchy, Level, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, KPI, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Name.ToCharArray().Any(char.IsControl(it) and !char.IsWhiteSpace(it))",
+    "FixExpression": "Name = string.Concat( it.Name.ToCharArray().Select( c => (char.IsControl(c) && !char.IsWhiteSpace(c)) ? ' ': c ))",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "AVOID_INVALID_DESCRIPTION_CHARACTERS",
+    "Name": "[Prevención de Errores] Evite carácteres invalidos en descripciones",
+    "Category": "Prevención de Errores",
+    "Description": "Esta regla identifica si una descripción de un objeto del modelo (es decir, tabla/columna/medida) que contiene un carácter no válido. Los caracteres no válidos causarán un error al implementar el modelo (y no se implementará). Esta regla tiene una expresión que convierte el carácter no válido en un espacio, resolviendo el problema.",
+    "Severity": 3,
+    "Scope": "Table, Measure, Hierarchy, Level, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, KPI, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Description.ToCharArray().Any(char.IsControl(it) and !char.IsWhiteSpace(it))",
+    "FixExpression": "Description = string.Concat( it.Description.ToCharArray().Select( c => (char.IsControl(c) && !char.IsWhiteSpace(c)) ? ' ': c ))",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "UNNECESSARY_COLUMNS",
     "Name": "[Mantenimiento] Eliminar columnas innecesarias",
     "Category": "Mantenimiento",
@@ -440,7 +462,7 @@
     "Description": "Las fuentes de datos a las que no hace referencia ninguna partición pueden eliminarse.",
     "Severity": 1,
     "Scope": "ProviderDataSource, StructuredDataSource",
-    "Expression": "UsedByPartitions.Count() == 0",
+    "Expression": "UsedByPartitions.Count() == 0\r\nand not Model.Tables.Any(SourceExpression.Contains(OuterIt.Name))\r\nand not Model.AllPartitions.Any(Query.Contains(OuterIt.Name))",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
@@ -515,6 +537,16 @@
     "Severity": 2,
     "Scope": "Model, Table, Measure, Hierarchy, Perspective, Partition, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, CalculationGroup, CalculationItem",
     "Expression": "Name.IndexOf(char(9)) > -1\r\nor\r\n\nName.IndexOf(char(10)) > -1 \r\nor\r\n\nName.IndexOf(char(13)) > -1",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "TRIM_OBJECT_NAMES",
+    "Name": "[Convenciones de Nombres] Quite los espacios al inicio o al final de nombres",
+    "Category": "Convenciones de Nombres",
+    "Description": "Al copiar/duplicar objetos en Tabular Editor puede que involuntariamente quede un espacio final en el nombre de objeto.",
+    "Severity": 1,
+    "Scope": "Model, Table, Measure, Hierarchy, Level, Perspective, Partition, ProviderDataSource, DataColumn, CalculatedColumn, CalculatedTable, CalculatedTableColumn, StructuredDataSource, NamedExpression, ModelRole, CalculationGroup, CalculationItem",
+    "Expression": "Name.StartsWith(\" \") or Name.EndsWith(\" \")",
     "CompatibilityLevel": 1200
   },
   {
