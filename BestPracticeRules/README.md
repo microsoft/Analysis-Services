@@ -124,6 +124,16 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Version History
 
+* 2023-02-14 Version 1.2.5
+    * New Rules
+        * [Error Prevention] Avoid invalid characters in names
+	  * [Error Prevention] Avoid invalid characters in descriptions
+	  * [Naming Conventions] Trim object names ([#193](https://github.com/microsoft/Analysis-Services/pull/193))
+    * Updated Rules
+        * [DAX Expressions] Avoid using '1-x/y)' syntax
+	     * Updated recommendation to use accurate calculation ([#192](https://github.com/microsoft/Analysis-Services/issues/192))
+	* [Maintenance] Remove data sources not referenced by any partitions
+	     * Updated rule logic to account for M source expressions and M queries ([#197](https://github.com/microsoft/Analysis-Services/issues/197))
 * 2023-01-16 Version 1.2.4
     * Fixed a bug in the Set IsAvailableInMdx Rule [#190](https://github.com/microsoft/Analysis-Services/issues/190)
 * 2023-01-09 
