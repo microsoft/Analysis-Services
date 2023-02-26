@@ -2031,7 +2031,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             //serialize db to json
             SerializeOptions options = new SerializeOptions();
-            bool isPbit = (_connectionInfo.UseBimFile && _connectionInfo.IsPbit());
+            bool isPbit = (_connectionInfo.UseBimFile && _connectionInfo.IsPbit);
 
             if (isPbit)
             {
@@ -2046,6 +2046,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 options.IgnoreTimestamps = true;
             }
             options.SplitMultilineStrings = true;
+            _database.CompatibilityMode = _connectionInfo.CompatibilityMode;
             string json = JsonSerializer.SerializeDatabase(_database, options);
 
             //replace db name with "SemanticModel"

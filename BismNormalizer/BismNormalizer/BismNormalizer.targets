@@ -197,14 +197,20 @@
     </ItemGroup>
 
     <Message Text=" " Importance="high" />
-    <Message Text="- About to point ALMT setup project at signed version of BismNormalizer.dll" Importance="high" />
+    <Message Text="- About to point ALMT setup project at signed version of BismNormalizer.dll and BismNormalizer.exe" Importance="high" />
 
-    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace" 
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace"
       TextEncoding="ASCII"
-      RegexPattern='"SourcePath" = "8:BismNormalizer.dll"' 
-      Replacement='"SourcePath" = "8:..\\BismNormalizer\\bin\\ReleaseObfusc\\BismNormalizer.dll"' 
+      RegexPattern='"SourcePath" = "8:BismNormalizer.dll"'
+      Replacement='"SourcePath" = "8:..\\BismNormalizer\\bin\\ReleaseObfusc\\BismNormalizer.dll"'
       Files="@(SetupProjFile)"/>
-    
+
+    <MSBuild.ExtensionPack.FileSystem.File TaskAction="Replace"
+      TextEncoding="ASCII"
+      RegexPattern='"SourcePath" = "8:BismNormalizer.exe"'
+      Replacement='"SourcePath" = "8:..\\BismNormalizer\\bin\\ReleaseObfusc\\BismNormalizer.exe"'
+      Files="@(SetupProjFile)"/>
+
     <!--12/10/2019: building setup project from DevEnv can take forever and doesn't support build from MSBuild
     <PropertyGroup>
       <DevEnvExePath>$(ProgramFiles)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com</DevEnvExePath>

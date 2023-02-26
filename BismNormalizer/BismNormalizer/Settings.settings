@@ -48,7 +48,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptionProcessingOption" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Default</Value>
+      <Value Profile="(Default)">Recalc</Value>
     </Setting>
     <Setting Name="OptionTransaction" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

@@ -36,14 +36,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             options.IgnoreTimestamps = true;
             options.SplitMultilineStrings = true;
 
-            if (parentTabularModel.ConnectionInfo.IsPbit())
-            {
-                _objectDefinition = Tom.JsonSerializer.SerializeObject(namedMetaDataObject, options, parentTabularModel.ConnectionInfo.CompatibilityLevel, Microsoft.AnalysisServices.CompatibilityMode.PowerBI);
-            }
-            else
-            {
-                _objectDefinition = Tom.JsonSerializer.SerializeObject(namedMetaDataObject, options);
-            }
+            _objectDefinition = Tom.JsonSerializer.SerializeObject(namedMetaDataObject, options, parentTabularModel.ConnectionInfo.CompatibilityLevel, parentTabularModel.ConnectionInfo.CompatibilityMode);
 
             //Remove annotations
             {

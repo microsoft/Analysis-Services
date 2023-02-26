@@ -205,7 +205,7 @@ namespace BismNormalizer {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Default")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Recalc")]
         public string OptionProcessingOption {
             get {
                 return ((string)(this["OptionProcessingOption"]));

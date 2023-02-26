@@ -9,6 +9,7 @@ using EnvDTE;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BismNormalizer.TabularCompare
 {
@@ -29,6 +30,8 @@ namespace BismNormalizer.TabularCompare
         private string _projectName;
         private string _projectFile;
         private int _compatibilityLevel;
+        private CompatibilityMode _compatibilityMode = CompatibilityMode.AnalysisServices;
+        private bool _isPbit = false;
         private string _dataSourceVersion;
         private ServerMode _serverMode;
         private bool _directQuery;
@@ -181,6 +184,18 @@ namespace BismNormalizer.TabularCompare
         public int CompatibilityLevel => _compatibilityLevel;
 
         /// <summary>
+        /// Compatibility mode for the connection.
+        /// </summary>
+        [XmlIgnore()]
+        public CompatibilityMode CompatibilityMode => _compatibilityMode;
+
+        /// <summary>
+        /// Compatibility mode for the connection.
+        /// </summary>
+        [XmlIgnore()]
+        public bool IsPbit => _isPbit;
+
+        /// <summary>
         /// Default data source version for the connection.
         /// </summary>
         [XmlIgnore()]
@@ -274,11 +289,6 @@ namespace BismNormalizer.TabularCompare
         {
             get { return _workspaceServer; }
             set { _workspaceServer = value; }
-        }
-
-        public bool IsPbit()
-        {
-            return (!String.IsNullOrEmpty(_bimFile) && _bimFile.ToUpper().EndsWith(".PBIT"));
         }
 
         private void ReadSettingsFile()
@@ -706,25 +716,84 @@ $@"{{
                              amoDatabase.DirectQueryMode == DirectQueryMode.DirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.InMemoryWithDirectQuery || amoDatabase.DirectQueryMode == DirectQueryMode.DirectQueryWithInMemory);
         }
 
+        #region From Daniel: https://github.com/microsoft/Analysis-Services/issues/167#issuecomment-1443733384
+
+        public static readonly HashSet<string> PbiOnlyProperties = new string[] {
+            "Sets",                                    // Pbi: 1400, Box: Unsupported
+            "RelatedColumnDetails",                    // Pbi: 1400, Box: Unsupported
+            "PerspectiveSets",                         // Pbi: 1400, Box: Unsupported
+        }.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        private static readonly int[] analysisServicesStandardCompatLevels = new[]
+        {
+            1200,
+            1400,
+            1500,
+            1600
+        };
+        private bool IsPbiCompatibilityMode(string tomJson)
+        {
+            // Use PBI CompatibilityMode when model is one of the non-standard CL's, or if V3 metadata is enabled,
+            // or if the model is using any PBI-specific TOM properties:
+            using (var reader = new JsonTextReader(new StringReader(tomJson)))
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonToken.PropertyName)
+                    {
+                        switch ((string)reader.Value)
+                        {
+                            case "compatibilityLevel":
+                                reader.Read();
+                                if (!analysisServicesStandardCompatLevels.Contains((int)((long)reader.Value))) return true;
+                                break;
+                            case "defaultPowerBIDataSourceVersion":
+                                reader.Read();
+                                if ((string)reader.Value == "powerBI_V3") return true;
+                                break;
+                            default:
+                                if (PbiOnlyProperties.Contains((string)reader.Value)) return true;
+                                break;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        #endregion
+
+
         /// <summary>
         /// Check if file is PBIT and return instantiated TOM database.
         /// </summary>
         /// <returns></returns>
         public TOM.Database OpenDatabaseFromFile()
         {
+            _isPbit = false;
+            _compatibilityMode = CompatibilityMode.AnalysisServices;
+
             TOM.Database tomDatabase;
             string modelJson;
-            if (this.IsPbit())
+            if (!String.IsNullOrEmpty(_bimFile) && _bimFile.ToUpper().EndsWith(".PBIT"))
+            {
+                _isPbit = true;
+                _compatibilityMode = CompatibilityMode.PowerBI;
+            }
+
+            if (this.IsPbit)
             {
                 PowerBiTemplate pbit = new PowerBiTemplate(_bimFile);
                 modelJson = pbit.ModelJson;
-                tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson, null, CompatibilityMode.PowerBI);
             }
             else
             {
                 modelJson = File.ReadAllText(_bimFile);
-                tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson);
+                // User can be saving PBI contents to bim file
+                _compatibilityMode = IsPbiCompatibilityMode(modelJson)
+                   ? CompatibilityMode.PowerBI
+                   : CompatibilityMode.AnalysisServices;
             }
+            tomDatabase = TOM.JsonSerializer.DeserializeDatabase(modelJson, null, _compatibilityMode);
             return tomDatabase;
         }
 
