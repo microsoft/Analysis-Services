@@ -15,7 +15,7 @@ namespace BismNormalizer.TabularCompare
         // Factory pattern: https://msdn.microsoft.com/en-us/library/orm-9780596527730-01-05.aspx 
 
         private static int _minCompatibilityLevel = 1100;
-        private static int _maxCompatibilityLevel = 1600;
+        private static int _maxCompatibilityLevel = 2000;
         private static List<string> _supportedDataSourceVersions = new List<string> { "PowerBI_V3" };
 
         /// <summary>

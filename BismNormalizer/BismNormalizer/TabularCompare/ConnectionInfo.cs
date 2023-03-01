@@ -70,6 +70,7 @@ namespace BismNormalizer.TabularCompare
                     _useBimFile = false;
                     _useDesktop = false;
                     _bimFile = null;
+                    _compatibilityMode = CompatibilityMode.AnalysisServices;
                 }
                 _useProject = value;
             }
@@ -89,6 +90,7 @@ namespace BismNormalizer.TabularCompare
                     _useProject = false;
                     _useBimFile = false;
                     _bimFile = null;
+                    _compatibilityMode = CompatibilityMode.PowerBI;
                 }
                 _useDesktop = value;
             }
@@ -559,6 +561,11 @@ namespace BismNormalizer.TabularCompare
             if (amoServer.ServerMode != ServerMode.Tabular && amoServer.ServerMode != ServerMode.SharePoint) //SharePoint is what Power BI Desktop runs as
             {
                 throw new ConnectionException($"Analysis Server {this.ServerName} is not running in Tabular mode");
+            }
+
+            if (this.ServerName.ToUpper().StartsWith("powerbi:".ToUpper()))
+            {
+                _compatibilityMode = CompatibilityMode.PowerBI;
             }
 
             Microsoft.AnalysisServices.Database amoDatabase = null;
