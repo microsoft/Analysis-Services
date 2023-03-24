@@ -583,11 +583,11 @@
     "ID": "MONTHCOLUMN_FORMATSTRING",
     "Name": "[Formatting] Provide format string for \"Month\" columns",
     "Category": "Formatting",
-    "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"MMMM yyyy\".",
+    "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"mmmm yyyy\".",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "Name.IndexOf(\"Month\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"MMMM yyyy\"",
-    "FixExpression": "FormatString = \"MMMM yyyy\"",
+    "Expression": "Name.IndexOf(\"Month\", \"OrdinalIgnoreCase\") >= 0 and DataType = \"DateTime\" and FormatString <> \"mmmm yyyy\"",
+    "FixExpression": "FormatString = \"mmmm yyyy\"",
     "CompatibilityLevel": 1200
   },
   {
