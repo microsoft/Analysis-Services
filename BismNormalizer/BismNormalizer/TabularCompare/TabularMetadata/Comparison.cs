@@ -903,33 +903,24 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Delete)
                 {
-                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
-                    {
-                        _targetTabularModel.DeleteRole(comparisonObject.TargetObjectInternalName);
-                        OnValidationMessage(new ValidationMessageEventArgs($"Delete role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
-                    }
+                    _targetTabularModel.DeleteRole(comparisonObject.TargetObjectInternalName);
+                    OnValidationMessage(new ValidationMessageEventArgs($"Delete role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
                 }
             }
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Create)
                 {
-                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
-                    {
-                        _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
-                        OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
-                    }
+                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
+                    OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
                 }
             }
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Update)
                 {
-                    if (DesktopHardened(comparisonObject, ValidationMessageType.Role))
-                    {
-                        _targetTabularModel.UpdateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName), _targetTabularModel.Roles.FindById(comparisonObject.TargetObjectInternalName));
-                        OnValidationMessage(new ValidationMessageEventArgs($"Update role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
-                    }
+                    _targetTabularModel.UpdateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName), _targetTabularModel.Roles.FindById(comparisonObject.TargetObjectInternalName));
+                    OnValidationMessage(new ValidationMessageEventArgs($"Update role [{comparisonObject.TargetObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
                 }
             }
 
@@ -1707,10 +1698,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Delete)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
-                {
-                    return;
-                };
                 foreach (Table tableTarget in _targetTabularModel.Tables)
                 {
                     Relationship relationshipTarget = tableTarget.Relationships.FindByName(comparisonObject.TargetObjectName.Trim());
@@ -1731,10 +1718,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Create)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
-                {
-                    return;
-                };
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
                 Relationship relationshipSource = tableSource.Relationships.FindByInternalName(comparisonObject.SourceObjectInternalName);
@@ -1756,10 +1739,6 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Relationship && comparisonObject.MergeAction == MergeAction.Update)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Relationship))
-                {
-                    return;
-                };
                 Table tableSource = _sourceTabularModel.Tables.FindByName(tableName);
                 Table tableTarget = _targetTabularModel.Tables.FindByName(tableName);
                 Relationship relationshipSource = tableSource.Relationships.FindByInternalName(comparisonObject.SourceObjectInternalName);
