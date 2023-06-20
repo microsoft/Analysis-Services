@@ -1,5 +1,3 @@
-![image](https://github.com/microsoft/Analysis-Services/assets/29556918/d89a21a7-e532-4e45-95cf-9cb814f12879)# Best Practice Rules
-
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
 Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
