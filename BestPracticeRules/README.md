@@ -1,4 +1,4 @@
-# Best Practice Rules
+![image](https://github.com/microsoft/Analysis-Services/assets/29556918/d89a21a7-e532-4e45-95cf-9cb814f12879)# Best Practice Rules
 
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
@@ -124,6 +124,13 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Version History
 
+* 2023-06-20 Version 1.2.6
+    * New Rules
+        *  [Error Prevention] Set IsAvailableInMdx to true on necessary columns
+        *  [Performance] Avoid using many-to-many relationships on tables used for dynamic row level security
+    * Updated Rules
+        * [Maintenance] Remove unnecessary columns
+          * Rule now accounts for columns/tables used in Object Level Security (OLS)  
 * 2023-02-14 Version 1.2.5
     * New Rules
         * [Error Prevention] Avoid invalid characters in names
