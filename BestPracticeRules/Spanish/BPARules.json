@@ -152,6 +152,16 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "AVOID_USING_MANY-TO-MANY_RELATIONSHIPS_ON_TABLES_USED_FOR_DYNAMIC_ROW_LEVEL_SECURITY",
+    "Name": "[Rendimiento] Evite el uso de relaciones de muchos a muchos en tablas utilizadas para seguridad dinámica de fila",
+    "Category": "Rendimiento",
+    "Description": "El uso de relaciones de muchos a muchos en tablas que usan seguridad dinámica de nivel de fila puede causar empeorar sustancialmente el rendimiento de las consultas. Los problemas de rendimiento de este patrón se agravan cuando se combinan varias relaciones de muchos a muchos en una tabla que contiene seguridad de fila. En su lugar, utilice uno de los patrones que se muestran en el artículo a continuación, donde una tabla de una sola dimensión se relaciona muchos a uno con una tabla de seguridad. Referencia: https://www.elegantbi.com/post/dynamicrlspatterns",
+    "Severity": 3,
+    "Scope": "Table",
+    "Expression": "UsedInRelationships.Any(FromCardinality == \"Many\" and ToCardinality== \"Many\")\r\nand\r\nRowLevelSecurity.Any(it.Length > 0)",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "UNPIVOT_PIVOTED_(MONTH)_DATA",
     "Name": "[Rendimiento] Datos (mensuales) no pivotados",
     "Category": "Rendimiento",
@@ -167,7 +177,7 @@
     "Category": "Rendimiento",
     "Severity": 2,
     "Scope": "Relationship",
-    "Expression": "FromCardinality == \"Many\"\nand\nToCardinality == \"Many\"\nand\nCrossFilteringBehavior == \"BothDirections\"",
+    "Expression": "FromCardinality == \"Many\"\n\r\nand\r\n\nToCardinality == \"Many\"\r\n\nand\r\n\nCrossFilteringBehavior == \"BothDirections\"",
     "CompatibilityLevel": 1200,
     "Description": ""
   },
@@ -424,13 +434,24 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "SET_ISAVAILABLEINMDX_TO_TRUE_ON_NECESSARY_COLUMNS",
+    "Name": "[Prevención de errores] Establezca IsAvailableInMdx a verdadero en las columnas necesarias",
+    "Category": "Prevención de Errores",
+    "Description": "Para evitar errores, asegúrese de que las jerarquías de atributos estén habilitadas si una columna se usa para ordenar otra columna, se usa en una jerarquía, se usa en variaciones o se ordena por otra columna.",
+    "Severity": 3,
+    "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
+    "Expression": "IsAvailableInMDX = false\r\n\r\nand\r\n(\r\nUsedInSortBy.Any()\r\nor\r\nUsedInHierarchies.Any()\r\nor\r\nUsedInVariations.Any()\r\nor\r\nSortByColumn != null\r\n)",
+	"FixExpression": "IsAvailableInMDX = true",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "UNNECESSARY_COLUMNS",
     "Name": "[Mantenimiento] Eliminar columnas innecesarias",
     "Category": "Mantenimiento",
     "Description": "Las columnas ocultas a las que no se hace referencia mediante Expresiones DAX, relaciones, niveles jerárquicos o propiedades Ordenar-por deben eliminarse.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(IsHidden or Table.IsHidden)\n\n\r\nand ReferencedBy.Count = 0\r\n\n\nand (not UsedInRelationships.Any())\n\n\r\nand (not UsedInSortBy.Any())\n\n\r\nand (not UsedInHierarchies.Any())\n\n\r\nand (not Table.RowLevelSecurity.Any(\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\n and (not Model.Roles.Any(RowLevelSecurity.Any(\nit <> null and \n(\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n )\n)))",
+    "Expression": "(IsHidden or Table.IsHidden)\n\n\r\nand ReferencedBy.Count = 0\r\n\n\nand (not UsedInRelationships.Any())\n\n\r\nand (not UsedInSortBy.Any())\n\n\r\nand (not UsedInHierarchies.Any())\n\n\r\nand (not Table.RowLevelSecurity.Any(\nit <> null and it.IndexOf(\"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n))\n\n and (not Model.Roles.Any(RowLevelSecurity.Any(\nit <> null and \n(\nit.IndexOf(current.Table.Name + \"[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0 or\n it.IndexOf(\"'\" + current.Table.Name + \"'[\" + current.Name + \"]\", \"OrdinalIgnoreCase\") >= 0\n )\n)))\r\nand not (\r\nObjectLevelSecurity.Any(it.ToString() == \"None\"))\r\nand not (\r\nTable.ObjectLevelSecurity.Any(it.ToString() == \"None\"))",
     "FixExpression": "Delete()",
     "CompatibilityLevel": 1200
   },
