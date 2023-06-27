@@ -87,7 +87,7 @@ namespace BismNormalizer.TabularCompare.UI
             _powerBIInstances.Clear();
             try
             {
-                _powerBIInstances = PowerBIHelper.GetLocalInstances();
+                _powerBIInstances = PowerBIHelper.GetLocalInstances(includePBIRS:false);
             }
             catch { }
 
