@@ -25,11 +25,15 @@
     - Run following command from BismNormalizer project root:
           msbuild BismNormalizer.csproj /verbosity:m /target:Rebuild /property:Configuration=Release
 
+    - NEW SECTION FOR BINARY SIGNING
+
     - Reload changed files in VS
           Change configuration to Release
           Build ALMT setup project (not Rebuild)
           Change configuration back to Debug
     
+    - NEW SECTION FOR MSI SIGNING (IGNORE VSIX)
+
     - Take VSIX and AlmToolkitSetup.msi from \ReleaseObfusc folder
           Test installer locally
 
