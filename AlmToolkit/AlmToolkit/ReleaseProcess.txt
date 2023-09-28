@@ -3,12 +3,14 @@
 
 * In setup project properties window, increment version number
 
-* Set configuration to Setup
+* Set configuration to Release
 	Rebuild Setup project
     Set configurtaion back to Debug
 
+* Get MSI from \AlmToolkit\AlmToolkitSetup\Release
 
 
+---notes:
 
 * Upload the following assembies to https://portal.esrp.microsoft.com/ & get them signed
           \BismNormalizer\AlmToolkit\bin\Release\AlmToolkit.exe
@@ -36,7 +38,6 @@
 
 
 
-* Get MSI from \AlmToolkit\AlmToolkit\bin\Msi
 
 
 
