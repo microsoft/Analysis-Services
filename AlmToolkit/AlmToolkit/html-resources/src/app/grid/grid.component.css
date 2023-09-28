@@ -1,0 +1,149 @@
+.clearfix:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+html, body {
+    height: 100%
+}
+
+#main-container {
+  height: 100%;
+}
+
+#comparison-table-container {
+  display: flex;
+  height: 72.22%;
+  overflow-y: auto;
+  background-color: #F2F2F2;
+  min-height: 100px;
+}
+
+#draggable-bar {
+  background-color: transparent;
+  height: 5px;
+  width: 100%;
+  cursor: row-resize;
+}
+
+#comparison-grid {
+  border: 1px solid rgba(112, 112, 112, 0.64);
+  margin: 10px;
+  border-collapse: collapse;
+  background-color: #FFF;
+  min-width: 99%;
+  max-width: 99%;
+}
+
+.grid-column, .grid-header-column {
+  padding: 1px 1px 1px 4px;
+  border: 1px solid rgba(112, 112, 112, 0.64);
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+  .grid-column:focus {
+    outline: 1px dotted #000;
+  }
+
+  .grid-column.action-icon-column {
+    text-align: center;
+    padding-right: 4px;
+    vertical-align: middle;
+  }
+
+  .grid-column.status-column {
+    width: 130px;
+  }
+
+.grid-data-row, .grid-row {
+  font-weight: 400;
+  font-size: 12px;
+  font-family: 'Segoe UI';
+  color: #323232;
+  height: 10px;
+}
+
+.grid-row {
+  font-weight: 600;
+}
+
+.hide-row {
+  display: none;
+}
+
+.greyed-out-cell {
+  background-color: #E6E6E6;
+}
+
+.action-options {
+  width: 75px;
+}
+
+.action-dropdown {
+  width: 85px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: 'Segoe UI';
+  color: #323232;
+}
+
+.action-options select {
+  border: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url(../../assets/dropdown.png);
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  background-position: center right;
+}
+
+  .action-options select:focus {
+    outline: none;
+  }
+
+.action-options .action-dropdown option:hover {
+  background-color: #0078d7;
+}
+
+.action-dropdown:disabled {
+  color: #9E9E9E;
+}
+
+.selected-row .action-dropdown {
+  color: #FFF;
+}
+
+  .selected-row .action-dropdown option {
+    color: #000;
+  }
+
+.node-images {
+  height: 15px;
+  width: 15px;
+}
+
+.node-type {
+  position: relative;
+  top: -3px;
+}
+
+.selected-row {
+  background-color: #0078d7;
+  color: #FFF;
+}
+
+.transparent-cell {
+  background-color: transparent;
+}
+
+#code-editor-resizable {
+  height: 27.78%;
+  width: 100%;
+  min-height: 50px;
+}

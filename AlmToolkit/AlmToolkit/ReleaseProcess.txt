@@ -1,0 +1,46 @@
+﻿* In the Solution > VersionInfo.cs file:
+    Increment AssemblyVersion & AssemblyFileVersion
+
+* In setup project properties window, increment version number
+
+* Set configuration to Setup
+	Rebuild Setup project
+    Set configurtaion back to Debug
+
+
+
+
+* Upload the following assembies to https://portal.esrp.microsoft.com/ & get them signed
+          \BismNormalizer\AlmToolkit\bin\Release\AlmToolkit.exe
+          \BismNormalizer\BismNormalizer.CommandLine\bin\Release\BismNormalizer.exe
+          \BismNormalizer\BismNormalizer\bin\ReleaseObfusc\BismNormalizer.dll
+    - Copy signed assemblies to:
+          \BismNormalizer\BismNormalizer\bin\ReleaseObfusc (BismNormalizer.dll only)
+          \BismNormalizer\AlmToolkit\obj\Setup
+          \BismNormalizer\BismNormalizer.CommandLine\obj\Setup
+
+
+
+
+     - Change configuration to Setup
+          Build ALMT setup project (not Rebuild)
+          Change configuration back to Debug
+    
+    - NEW SECTION FOR MSI SIGNING (IGNORE VSIX)?
+
+    - Take VSIX and AlmToolkitSetup.msi from following folder
+          \BismNormalizer\AlmToolkitSetup\Setup
+          Test installer locally
+
+
+
+
+
+* Get MSI from \AlmToolkit\AlmToolkit\bin\Msi
+
+
+
+=============
+Note: if ever increment .NET Framework version number, need to:
+    1. In Setup project properties (dialog, not properties window) > Prerequisites > Change .NET Framework version
+    2. In the Solution Explorer, expand the setup project > Detected Dependencies > Microsoft .NET Framework > double click > Change .NET Framework version
