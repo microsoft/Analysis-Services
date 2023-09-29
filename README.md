@@ -4,6 +4,9 @@ Git repo for Analysis Services samples and community projects
 ## [AASAutoScale](https://github.com/Microsoft/Analysis-Services/tree/master/AASAutoScale)
 A customizeable QPU AutoScale solution for AAS that supports scale up/down as well as in/out
 
+## [AlmToolkit](https://github.com/Microsoft/Analysis-Services/tree/master/AlmToolkit)
+ALM Toolkit is a schema diff tool for tabular models
+
 ## [AsPartitionProcessing](https://github.com/Microsoft/Analysis-Services/tree/master/AsPartitionProcessing)
 Automated partition management of Analysis Services tabular models
 
@@ -15,9 +18,6 @@ The ASTrace tool captures a Profiler trace and writes it to a SQL Server table w
 
 ## [AsXEventSample](https://github.com/Microsoft/Analysis-Services/tree/master/AsXEventSample)
 The AsXEventSample sample shows how to collect streaming xEvents
-
-## [BismNormalizer](https://github.com/Microsoft/Analysis-Services/tree/master/BismNormalizer)
-BISM Normalizer is a schema diff tool for tabular models
 
 ## [UsqlScripts](https://github.com/Microsoft/Analysis-Services/tree/master/UsqlScripts)
 Sample U-SQL scripts that demonstrate how to process a TPC-DS data set in Azure Data Lake.
