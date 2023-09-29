@@ -1,43 +1,44 @@
-﻿* In the Solution > VersionInfo.cs file:
+﻿* Run as Admin
+
+* In the Solution > VersionInfo.cs file:
     Increment AssemblyVersion & AssemblyFileVersion
 
-* In setup project properties window, increment version number
+* In the Setup project properties window, increment version number
 
 * Set configuration to Release
-	Rebuild Setup project
-    Set configurtaion back to Debug
-
-* Get MSI from \AlmToolkit\AlmToolkitSetup\Release
-
-
----notes:
+    Rebuild Solution
 
 * Upload the following assembies to https://portal.esrp.microsoft.com/ & get them signed
           \BismNormalizer\AlmToolkit\bin\Release\AlmToolkit.exe
-          \BismNormalizer\BismNormalizer.CommandLine\bin\Release\BismNormalizer.exe
-          \BismNormalizer\BismNormalizer\bin\ReleaseObfusc\BismNormalizer.dll
-    - Copy signed assemblies to:
-          \BismNormalizer\BismNormalizer\bin\ReleaseObfusc (BismNormalizer.dll only)
-          \BismNormalizer\AlmToolkit\obj\Setup
-          \BismNormalizer\BismNormalizer.CommandLine\obj\Setup
+          \BismNormalizer\BismNormalizer\bin\Release\BismNormalizer.dll
+          \BismNormalizer\BismNormalizer.CommandLine\bin\Release\BismNormalizer.CommandLine.exe
 
+          https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
+          ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
+          Operation Key Code: CP-230012
 
+* Copy signed assemblies to:
+          \BismNormalizer\AlmToolkit\obj\Release
+          \BismNormalizer\BismNormalizer\obj\Release
+          \BismNormalizer\BismNormalizer.CommandLine\obj\Release
 
+* In Configuration Manager:
+    AlmToolkit                  -
+    AlmToolkitSetup             X
+    BismNormalizer              -
+    BismNormalizer.CommandLine  -
 
-     - Change configuration to Setup
-          Build ALMT setup project (not Rebuild)
-          Change configuration back to Debug
-    
-    - NEW SECTION FOR MSI SIGNING (IGNORE VSIX)?
+* Build (not Rebuild) Setup project
 
-    - Take VSIX and AlmToolkitSetup.msi from following folder
-          \BismNormalizer\AlmToolkitSetup\Setup
-          Test installer locally
+* In Configuration Manager:
+    AlmToolkit                  X
+    AlmToolkitSetup             -
+    BismNormalizer              X
+    BismNormalizer.CommandLine  X
 
+* Set configurtaion back to Debug
 
-
-
-
+* Get MSI from \AlmToolkit\AlmToolkitSetup\Release
 
 
 
