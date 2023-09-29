@@ -8,19 +8,22 @@
 * Set configuration to Release
     Rebuild Solution
 
-* Upload the following assembies to https://portal.esrp.microsoft.com/ & get them signed
-          \BismNormalizer\AlmToolkit\bin\Release\AlmToolkit.exe
-          \BismNormalizer\BismNormalizer\bin\Release\BismNormalizer.dll
-          \BismNormalizer\BismNormalizer.CommandLine\bin\Release\BismNormalizer.CommandLine.exe
+* Submit a manual sign request for the following files at https://portal.esrp.microsoft.com/ & get them signed
+        \BismNormalizer\AlmToolkit\bin\Release\AlmToolkit.exe
+        \BismNormalizer\BismNormalizer\bin\Release\BismNormalizer.dll
+        \BismNormalizer\BismNormalizer.CommandLine\bin\Release\BismNormalizer.CommandLine.exe
 
-          https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
-          ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
-          Operation Key Code: CP-230012
+        https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
+        ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
+        Operation Key Code: CP-230012
+
+        => Download to working directory:
+            C:\Users\chwade\Source\ALMT Deployment Working Directory
 
 * Copy signed assemblies to:
-          \BismNormalizer\AlmToolkit\obj\Release
-          \BismNormalizer\BismNormalizer\obj\Release
-          \BismNormalizer\BismNormalizer.CommandLine\obj\Release
+        \BismNormalizer\AlmToolkit\obj\Release
+        \BismNormalizer\BismNormalizer\obj\Release
+        \BismNormalizer\BismNormalizer.CommandLine\obj\Release
 
 * In Configuration Manager:
     AlmToolkit                  -
@@ -38,11 +41,16 @@
 
 * Set configurtaion back to Debug
 
-* Get MSI from \AlmToolkit\AlmToolkitSetup\Release
+* Submit a manual sign request for AlmToolkitSetup.msi at https://portal.esrp.microsoft.com/ & get it signed
+        \AlmToolkit\AlmToolkitSetup\Release
 
+        => Download to working directory:
+            C:\Users\chwade\Source\ALMT Deployment Working Directory
+
+* Deploy to github at https://github.com/microsoft/Analysis-Services/releases
 
 
 =============
-Note: if ever increment .NET Framework version number, need to:
+Note: if ever increment .NET Framework version, need to:
     1. In Setup project properties (dialog, not properties window) > Prerequisites > Change .NET Framework version
-    2. In the Solution Explorer, expand the setup project > Detected Dependencies > Microsoft .NET Framework > double click > Change .NET Framework version
+    2. In the Solution Explorer, expand the Setup project > Detected Dependencies > Microsoft .NET Framework > double click > Change .NET Framework version
