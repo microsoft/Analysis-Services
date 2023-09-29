@@ -13,7 +13,7 @@ For a detailed list of features and use cases, see the ALM Toolkit and BISM Norm
 
 The ALM Toolkit codebase started out as the BISM Normalizer Visual Studio extension. ALM Toolkit is decoupled from Visual Studio.
 
-This video covers BISM Normalizer 3 use cases and demo. The use cases still apply to ALM Toolkit.
+This video covers BISM Normalizer 3 use cases and demo. Most of this still applies to ALM Toolkit.
 
 [![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/LZdOwfJqFrM/0.jpg)](http://www.youtube.com/watch?v=LZdOwfJqFrM)
 
