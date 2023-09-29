@@ -1,6 +1,15 @@
-For a detailed list of features, see the ALM Toolkit and BISM Normalizer  [documentation](https://github.com/microsoft/Analysis-Services/blob/master/AlmToolkit/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf).
+### Use cases
 
-### History & use cases
+Here are a few, but you can use your imagination 😀
+
+* Merge branched models. Manage production branches for bug fixes.
+* Deploy bug fixes and partial releases.
+* Reuse definitions between tabular models for alignment with common business definitions.
+* Reuse definitions from self-service models to IT-owned semantic models.
+
+For a detailed list of features and use cases, see the ALM Toolkit and BISM Normalizer  [documentation](https://github.com/microsoft/Analysis-Services/blob/master/AlmToolkit/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf).
+
+### History
 
 The ALM Toolkit codebase started out as the BISM Normalizer Visual Studio extension. ALM Toolkit is decoupled from Visual Studio.
 
