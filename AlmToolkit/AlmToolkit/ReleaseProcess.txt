@@ -48,6 +48,8 @@
 
 * Download signed MSI to \ReleaseItems\SignedFiles
 
+* Install and test locally
+
 * Deploy AlmToolkitSetup.msi github at https://github.com/microsoft/Analysis-Services/releases
 
 
