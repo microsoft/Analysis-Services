@@ -382,5 +382,29 @@ namespace BismNormalizer {
                 this["OptionRetainRefreshPolicy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptionTmsl {
+            get {
+                return ((bool)(this["OptionTmsl"]));
+            }
+            set {
+                this["OptionTmsl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptionAnnotations {
+            get {
+                return ((bool)(this["OptionAnnotations"]));
+            }
+            set {
+                this["OptionAnnotations"] = value;
+            }
+        }
     }
 }

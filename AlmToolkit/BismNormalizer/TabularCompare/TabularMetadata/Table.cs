@@ -81,8 +81,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void PopulateProperties()
         {
-            base.RemovePropertyFromObjectDefinition("measures");
-
+            base.RemoveMeasuresFromObjectDefinition();
+            
             _isCalculationGroup = (_tomTable.CalculationGroup != null);
             _partitionsDefinition = "";
             _dataSourceName = "";
@@ -138,12 +138,17 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             if (hasMQueryOrPolicyPartition || _isCalculationGroup)
             {
-                _partitionsDefinition = base.RetrievePropertyFromObjectDefinition("partitions");
+                _partitionsDefinition = base.RetrievePartitionsFromObjectDefinition();
 
                 //Option to hide partitions only applies to M, query and policy partitions (calculated tables hold dax defintitions in their partitions)
                 if (!_parentTabularModel.ComparisonInfo.OptionsInfo.OptionPartitions)
                 {
-                    base.RemovePropertyFromObjectDefinition("partitions");
+                    base.RemovePartitionsFromObjectDefinition();
+                }
+
+                if (_isCalculationGroup)
+                {
+                    base.RemoveCalcItemsFromTmdlObjectDefinition();
                 }
             }
 

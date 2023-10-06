@@ -84,7 +84,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     _comparisonObjects.Add(comparisonObjectModel);
                     _comparisonObjectCount += 1;
                 }
-                else
+                else if (_comparisonInfo.OptionsInfo.OptionTmsl || !String.IsNullOrEmpty(_sourceTabularModel.Model.ObjectDefinition)) //For TMDL, if no difference - and no definition either - don't bother showing blank model objects
                 {
                     // they are equal, ...
                     comparisonObjectModel = new ComparisonObject(ComparisonObjectType.Model, ComparisonObjectStatus.SameDefinition, _sourceTabularModel.Model, _targetTabularModel.Model, MergeAction.Skip);

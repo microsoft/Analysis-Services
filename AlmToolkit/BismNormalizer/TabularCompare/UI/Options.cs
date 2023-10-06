@@ -22,7 +22,7 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void Options_Load(object sender, EventArgs e)
         {
-            this.Height = Convert.ToInt32(groupBox1.Height + groupBox2.Height + panel2.Height*2.1);
+            this.Height = Convert.ToInt32(groupBox1.Height + groupBox2.Height + panel2.Height*2);
             //MessageBox.Show($"Scale factor: {_dpiScaleFactor}\nSecondary scale factor: {Utils.SecondaryFudgeFactor}\n\n" +
             //    $"Groupbox1 height: {groupBox1.Height}\nGroupbox2 height: {groupBox2.Height}\nPanel2 height:{panel2.Height}\n\nForm height: {this.Height}");
 
@@ -55,7 +55,9 @@ namespace BismNormalizer.TabularCompare.UI
             chkMergeCultures.Checked = _comparisonInfo.OptionsInfo.OptionMergeCultures;
             chkRoles.Checked = _comparisonInfo.OptionsInfo.OptionRoles;
             chkRetainRoleMembers.Checked = _comparisonInfo.OptionsInfo.OptionRetainRoleMembers;
+            chkTmsl.Checked = _comparisonInfo.OptionsInfo.OptionTmsl;
             chkPartitions.Checked = _comparisonInfo.OptionsInfo.OptionPartitions;
+            chkAnnotations.Checked = _comparisonInfo.OptionsInfo.OptionAnnotations;
             chkLineageTag.Checked = _comparisonInfo.OptionsInfo.OptionLineageTag;
             chkRetainPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPartitions;
             chkRetainPolicyPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions;
@@ -76,7 +78,9 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionRoles = chkRoles.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainRoleMembers = chkRetainRoleMembers.Checked;
             _comparisonInfo.OptionsInfo.OptionActions = false;
+            _comparisonInfo.OptionsInfo.OptionTmsl = chkTmsl.Checked;
             _comparisonInfo.OptionsInfo.OptionPartitions = chkPartitions.Checked;
+            _comparisonInfo.OptionsInfo.OptionAnnotations = chkAnnotations.Checked;
             _comparisonInfo.OptionsInfo.OptionLineageTag = chkLineageTag.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPartitions = chkRetainPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions = chkRetainPolicyPartitions.Checked;

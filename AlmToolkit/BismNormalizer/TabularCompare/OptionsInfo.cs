@@ -19,7 +19,9 @@ namespace BismNormalizer.TabularCompare
         private bool _optionRoles;
         private bool _optionRetainRoleMembers;
         private bool _optionActions;
+        private bool _optionTmsl;
         private bool _optionPartitions;
+        private bool _optionAnnotations;
         private bool _optionLineageTag;
         private bool _optionRetainPartitions;
         private bool _optionRetainPolicyPartitions;
@@ -42,7 +44,9 @@ namespace BismNormalizer.TabularCompare
             _optionRoles = Settings.Default.OptionRoles;
             _optionRetainRoleMembers = Settings.Default.OptionRetainRoleMembers;
             _optionActions = Settings.Default.OptionActions;
+            _optionTmsl = Settings.Default.OptionTmsl;
             _optionPartitions = Settings.Default.OptionPartitions;
+            _optionAnnotations = Settings.Default.OptionAnnotations;
             _optionLineageTag = Settings.Default.OptionLineageTag;
             _optionRetainPartitions = Settings.Default.OptionRetainPartitions;
             _optionRetainPolicyPartitions = Settings.Default.OptionRetainPolicyPartitions;
@@ -116,12 +120,30 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
+        /// A Boolean specifying whether to use TMSL for comparison.
+        /// </summary>
+        public bool OptionTmsl
+        {
+            get { return _optionTmsl; }
+            set { _optionTmsl = value; }
+        }
+
+        /// <summary>
         /// A Boolean specifying whether to consider partitions when comparing tables.
         /// </summary>
         public bool OptionPartitions
         {
             get { return _optionPartitions; }
             set { _optionPartitions = value; }
+        }
+
+        /// <summary>
+        /// A Boolean specifying whether to consider annotations when comparing tables.
+        /// </summary>
+        public bool OptionAnnotations
+        {
+            get { return _optionAnnotations; }
+            set { _optionAnnotations = value; }
         }
 
         /// <summary>
@@ -219,7 +241,9 @@ namespace BismNormalizer.TabularCompare
             Settings.Default.OptionRoles = _optionRoles;
             Settings.Default.OptionRetainRoleMembers = _optionRetainRoleMembers;
             Settings.Default.OptionActions = _optionActions;
+            Settings.Default.OptionTmsl = _optionTmsl;
             Settings.Default.OptionPartitions = _optionPartitions;
+            Settings.Default.OptionAnnotations = _optionAnnotations;
             Settings.Default.OptionLineageTag = _optionLineageTag;
             Settings.Default.OptionRetainPartitions = _optionRetainPartitions;
             Settings.Default.OptionRetainPolicyPartitions = _optionRetainPolicyPartitions;
