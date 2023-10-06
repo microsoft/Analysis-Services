@@ -33,8 +33,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 Tom.Model model = (Tom.Model)namedMetaDataObject;
 
-                if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                    _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+                if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
                 {
                     string customObjectDefinition = "{ ";
                     if (!string.IsNullOrEmpty(model.Description))
@@ -61,8 +60,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             options.SplitMultilineStrings = true;
 
             //Use TMSL or TMDL
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 _objectDefinition = Tom.JsonSerializer.SerializeObject(namedMetaDataObject, options, parentTabularModel.ConnectionInfo.CompatibilityLevel, parentTabularModel.ConnectionInfo.CompatibilityMode);
             }
@@ -72,8 +70,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             //Remove annotations if required
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                !_parentTabularModel.ComparisonInfo.OptionsInfo.OptionAnnotations)
+            if (!_parentTabularModel.ComparisonInfo.OptionsInfo.OptionAnnotations)
             {
                 if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
                 { 
@@ -88,8 +85,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             //Remove lineageTag if required
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                !_parentTabularModel.ComparisonInfo.OptionsInfo.OptionLineageTag)
+            if (!_parentTabularModel.ComparisonInfo.OptionsInfo.OptionLineageTag)
             {
                 if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
                 {
@@ -104,8 +100,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
 
             //Ordering of table columns/role members and hide privacy settings on structured data sources
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 //Order table columns
                 if (namedMetaDataObject is Tom.Table)
@@ -137,7 +132,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             }
             else
             {
-                //TODOTMDL: TMDL version of ordering of table columns/role members and hide privacy settings on structured data sources
+                //TODOTMDL: TMDL version of ordering of table columns/role members
             }
         }
 
@@ -274,8 +269,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         public void RemovePartitionsFromObjectDefinition()
         {
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 JObject jObj = JObject.Parse(_objectDefinition);
                 jObj.Remove("partitions");
@@ -292,8 +286,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         public void RemoveMeasuresFromObjectDefinition()
         {
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 JObject jObj = JObject.Parse(_objectDefinition);
                 jObj.Remove("measures");
@@ -310,8 +303,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         public void RemoveCalcItemsFromTmdlObjectDefinition()
         {
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                !_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (!_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 RemoveTmdlLines("calculationItem ");
             }
@@ -322,8 +314,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         public void SetCustomObjectDefinition(string customObjectDefinition)
         {
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 _objectDefinition = JToken.Parse(customObjectDefinition).ToString();
             }
@@ -340,8 +331,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// <returns>Property definition retrieved.</returns>
         public string RetrievePartitionsFromObjectDefinition()
         {
-            if ( //_parentTabularModel != null && _parentTabularModel.ComparisonInfo != null &&
-                _parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
+            if (_parentTabularModel.ComparisonInfo.OptionsInfo.OptionTmsl)
             {
                 JObject jObj = JObject.Parse(_objectDefinition);
                 JProperty property = jObj.Property("partitions");
