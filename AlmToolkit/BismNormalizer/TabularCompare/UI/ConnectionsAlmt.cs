@@ -6,6 +6,7 @@ using Tom=Microsoft.AnalysisServices.Tabular;
 using System.Drawing;
 using BismNormalizer.TabularCompare.UI.DesktopInstances;
 using System.Linq.Expressions;
+using Ookii.Dialogs.WinForms;
 
 namespace BismNormalizer.TabularCompare.UI
 {
@@ -28,13 +29,6 @@ namespace BismNormalizer.TabularCompare.UI
 
         private void Connections_Load(object sender, EventArgs e)
         {
-            //Settings.Default.SourceServerAutoCompleteEntries = "localhost|";
-            //Settings.Default.TargetServerAutoCompleteEntries = "localhost|";
-            //Settings.Default.SourceCatalog = "";
-            //Settings.Default.TargetCatalog = "";
-            //Settings.Default.Save();
-
-
             //this.Width = Convert.ToInt32(this.Width * 1.3);
             this.Height = Convert.ToInt32(grpSource.Height * 2.6);
 
@@ -125,12 +119,26 @@ namespace BismNormalizer.TabularCompare.UI
 
             if (_comparisonInfo?.ConnectionInfoSource != null)
             {
-                if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
+                if (_comparisonInfo.ConnectionInfoSource.UseTmdlFolder)
+                {
+                    rdoSourceFolder.Checked = true;
+
+                    pnlSourceDataset.Enabled = false;
+                    pnlSourceDesktop.Enabled = false;
+                    pnlSourceFolder.Enabled = true;
+                    pnlSourceFile.Enabled = false;
+
+                    txtSourceFolder.Text = _comparisonInfo.ConnectionInfoSource.TmdlFolder;
+
+                    boundSuccessfully = true;
+                }
+                else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
                 {
                     rdoSourceFile.Checked = true;
 
                     pnlSourceDataset.Enabled = false;
                     pnlSourceDesktop.Enabled = false;
+                    pnlSourceFolder.Enabled = false;
                     pnlSourceFile.Enabled = true;
 
                     txtSourceFile.Text = _comparisonInfo.ConnectionInfoSource.BimFile;
@@ -145,6 +153,7 @@ namespace BismNormalizer.TabularCompare.UI
 
                         pnlSourceDataset.Enabled = false;
                         pnlSourceDesktop.Enabled = true;
+                        pnlSourceFolder.Enabled = false;
                         pnlSourceFile.Enabled = false;
 
                         int portFromConnectionInfo = -1;
@@ -182,6 +191,7 @@ namespace BismNormalizer.TabularCompare.UI
 
                     pnlSourceDataset.Enabled = true;
                     pnlSourceDesktop.Enabled = false;
+                    pnlSourceFolder.Enabled = false;
                     pnlSourceFile.Enabled = false;
 
                     cboSourceServer.Text = _comparisonInfo.ConnectionInfoSource.ServerName;
@@ -200,12 +210,28 @@ namespace BismNormalizer.TabularCompare.UI
 
             if (_comparisonInfo?.ConnectionInfoTarget != null)
             {
-                if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+                if (_comparisonInfo.ConnectionInfoTarget.UseTmdlFolder)
                 {
+                    rdoTargetFolder.Checked = true;
+
                     pnlTargetDataset.Enabled = false;
                     pnlTargetDesktop.Enabled = false;
+                    pnlTargetFolder.Enabled = true;
+                    pnlTargetFile.Enabled = false;
+
+                    txtTargetFolder.Text = _comparisonInfo.ConnectionInfoTarget.TmdlFolder;
+
+                    boundSuccessfully = true;
+                }
+                else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+                {
                     rdoTargetFile.Checked = true;
+
+                    pnlTargetDataset.Enabled = false;
+                    pnlTargetDesktop.Enabled = false;
+                    pnlTargetFolder.Enabled = false;
                     pnlTargetFile.Enabled = true;
+
                     txtTargetFile.Text = _comparisonInfo.ConnectionInfoTarget.BimFile;
 
                     boundSuccessfully = true;
@@ -219,6 +245,7 @@ namespace BismNormalizer.TabularCompare.UI
 
                         pnlTargetDataset.Enabled = false;
                         pnlTargetDesktop.Enabled = true;
+                        pnlTargetFolder.Enabled = false;
                         pnlTargetFile.Enabled = false;
 
                         int portFromConnectionInfo = -1;
@@ -255,6 +282,7 @@ namespace BismNormalizer.TabularCompare.UI
                     rdoTargetDataset.Checked = true;
                     pnlTargetDataset.Enabled = true;
                     pnlTargetDesktop.Enabled = false;
+                    pnlTargetFolder.Enabled = false;
                     pnlTargetFile.Enabled = false;
 
                     cboTargetServer.Text = _comparisonInfo.ConnectionInfoTarget.ServerName;
@@ -283,6 +311,7 @@ namespace BismNormalizer.TabularCompare.UI
         {
             pnlSourceDataset.Enabled = true;
             pnlSourceDesktop.Enabled = false;
+            pnlSourceFolder.Enabled = false;
             pnlSourceFile.Enabled = false;
             cboSourceServer.Focus();
         }
@@ -290,13 +319,23 @@ namespace BismNormalizer.TabularCompare.UI
         {
             pnlSourceDataset.Enabled = false;
             pnlSourceDesktop.Enabled = true;
+            pnlSourceFolder.Enabled = false;
             pnlSourceFile.Enabled = false;
             cboSourceDesktop.Focus();
+        }
+        private void rdoSourceFolder_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlSourceDataset.Enabled = false;
+            pnlSourceDesktop.Enabled = false;
+            pnlSourceFolder.Enabled = true;
+            pnlSourceFile.Enabled = false;
+            btnSourceFolderOpen.Focus();
         }
         private void rdoSourceFile_CheckedChanged(object sender, EventArgs e)
         {
             pnlSourceDataset.Enabled = false;
             pnlSourceDesktop.Enabled = false;
+            pnlSourceFolder.Enabled = false;
             pnlSourceFile.Enabled = true;
             btnSourceFileOpen.Focus();
         }
@@ -304,6 +343,7 @@ namespace BismNormalizer.TabularCompare.UI
         {
             pnlTargetDataset.Enabled = true;
             pnlTargetDesktop.Enabled = false;
+            pnlTargetFolder.Enabled = false;
             pnlTargetFile.Enabled = false;
             cboTargetServer.Focus();
         }
@@ -311,13 +351,23 @@ namespace BismNormalizer.TabularCompare.UI
         {
             pnlTargetDataset.Enabled = false;
             pnlTargetDesktop.Enabled = true;
+            pnlTargetFolder.Enabled = false;
             pnlTargetFile.Enabled = false;
             cboTargetDesktop.Focus();
+        }
+        private void rdoTargetFolder_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlTargetDataset.Enabled = false;
+            pnlTargetDesktop.Enabled = false;
+            pnlTargetFolder.Enabled = true;
+            pnlTargetFile.Enabled = false;
+            btnTargetFolderOpen.Focus();
         }
         private void rdoTargetFile_CheckedChanged(object sender, EventArgs e)
         {
             pnlTargetDataset.Enabled = false;
             pnlTargetDesktop.Enabled = false;
+            pnlTargetFolder.Enabled = false;
             pnlTargetFile.Enabled = true;
             btnTargetFileOpen.Focus();
         }
@@ -327,6 +377,7 @@ namespace BismNormalizer.TabularCompare.UI
             if (rdoSourceDesktop.Checked)
             {
                 _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoSource.UseDesktop = true;
                 _comparisonInfo.ConnectionInfoSource.ServerName = "localhost:" + cboSourceDesktop.SelectedValue.ToString();
@@ -334,13 +385,28 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoSource.DesktopName = cboSourceDesktop.Text;
                 _comparisonInfo.ConnectionInfoSource.ProjectName = null;
                 _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoSource.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoSource.BimFile = null;
+            }
+            else if (rdoSourceFolder.Checked)
+            {
+                _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseTmdlFolder = true;
+                _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoSource.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoSource.TmdlFolder = txtSourceFolder.Text;
+                _comparisonInfo.ConnectionInfoSource.BimFile = null;
+                _comparisonInfo.ConnectionInfoSource.DesktopName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectName = null;
+                _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
             }
             else if (rdoSourceFile.Checked)
             {
                 _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoSource.UseBimFile = true;
                 _comparisonInfo.ConnectionInfoSource.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoSource.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoSource.BimFile = txtSourceFile.Text;
                 _comparisonInfo.ConnectionInfoSource.DesktopName = null;
                 _comparisonInfo.ConnectionInfoSource.ProjectName = null;
@@ -349,6 +415,7 @@ namespace BismNormalizer.TabularCompare.UI
             else
             {
                 _comparisonInfo.ConnectionInfoSource.UseProject = false;
+                _comparisonInfo.ConnectionInfoSource.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoSource.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoSource.UseDesktop = false;
                 _comparisonInfo.ConnectionInfoSource.ServerName = cboSourceServer.Text;
@@ -356,12 +423,14 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoSource.DesktopName = null;
                 _comparisonInfo.ConnectionInfoSource.ProjectName = null;
                 _comparisonInfo.ConnectionInfoSource.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoSource.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoSource.BimFile = null;
             }
 
             if (rdoTargetDesktop.Checked)
             {
                 _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoTarget.UseDesktop = true;
                 _comparisonInfo.ConnectionInfoTarget.ServerName = "localhost:" + cboTargetDesktop.SelectedValue.ToString();
@@ -369,13 +438,28 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoTarget.DesktopName = cboTargetDesktop.Text;
                 _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
                 _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoTarget.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoTarget.BimFile = null;
+            }
+            else if (rdoTargetFolder.Checked)
+            {
+                _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseTmdlFolder = true;
+                _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
+                _comparisonInfo.ConnectionInfoTarget.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoTarget.TmdlFolder = txtTargetFolder.Text;
+                _comparisonInfo.ConnectionInfoTarget.BimFile = null;
+                _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
+                _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
             }
             else if (rdoTargetFile.Checked)
             {
                 _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoTarget.UseBimFile = true;
                 _comparisonInfo.ConnectionInfoTarget.UseDesktop = false;
+                _comparisonInfo.ConnectionInfoTarget.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoTarget.BimFile = txtTargetFile.Text;
                 _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
                 _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
@@ -384,6 +468,7 @@ namespace BismNormalizer.TabularCompare.UI
             else
             {
                 _comparisonInfo.ConnectionInfoTarget.UseProject = false;
+                _comparisonInfo.ConnectionInfoTarget.UseTmdlFolder = false;
                 _comparisonInfo.ConnectionInfoTarget.UseBimFile = false;
                 _comparisonInfo.ConnectionInfoTarget.UseDesktop = false;
                 _comparisonInfo.ConnectionInfoTarget.ServerName = cboTargetServer.Text;
@@ -391,6 +476,7 @@ namespace BismNormalizer.TabularCompare.UI
                 _comparisonInfo.ConnectionInfoTarget.DesktopName = null;
                 _comparisonInfo.ConnectionInfoTarget.ProjectName = null;
                 _comparisonInfo.ConnectionInfoTarget.ProjectFile = null;
+                _comparisonInfo.ConnectionInfoTarget.TmdlFolder = null;
                 _comparisonInfo.ConnectionInfoTarget.BimFile = null;
             }
         }
@@ -399,6 +485,7 @@ namespace BismNormalizer.TabularCompare.UI
         {
             ConnectionInfo infoSourceTemp = new ConnectionInfo();
             infoSourceTemp.UseProject = rdoSourceDesktop.Checked;
+            infoSourceTemp.UseTmdlFolder = rdoSourceFolder.Checked;
             infoSourceTemp.UseBimFile = rdoSourceFile.Checked;
             infoSourceTemp.ProjectName = cboSourceDesktop.Text;
 
@@ -412,20 +499,24 @@ namespace BismNormalizer.TabularCompare.UI
 
             infoSourceTemp.ServerName = cboSourceServer.Text;
             infoSourceTemp.DatabaseName = cboSourceDatabase.Text;
+            infoSourceTemp.TmdlFolder = txtSourceFolder.Text;
             infoSourceTemp.BimFile = txtSourceFile.Text;
 
             rdoSourceDesktop.Checked = rdoTargetDesktop.Checked;
             rdoSourceFile.Checked = rdoTargetFile.Checked;
+            rdoSourceFolder.Checked = rdoTargetFolder.Checked;
             rdoSourceDataset.Checked = rdoTargetDataset.Checked;
             cboSourceDesktop.Text = cboTargetDesktop.Text;
             cboSourceDesktop.SelectedValue = cboTargetDesktop.SelectedValue;
             cboSourceServer.Text = cboTargetServer.Text;
             cboSourceDatabase.Text = cboTargetDatabase.Text;
+            txtSourceFolder.Text = txtTargetFolder.Text;
             txtSourceFile.Text = txtTargetFile.Text;
 
             rdoTargetDesktop.Checked = infoSourceTemp.UseProject;
+            rdoTargetFolder.Checked = infoSourceTemp.UseTmdlFolder;
             rdoTargetFile.Checked = infoSourceTemp.UseBimFile;
-            rdoTargetDataset.Checked = (!infoSourceTemp.UseProject && !infoSourceTemp.UseBimFile);
+            rdoTargetDataset.Checked = (!infoSourceTemp.UseProject && !infoSourceTemp.UseTmdlFolder && !infoSourceTemp.UseBimFile);
             cboTargetDesktop.Text = infoSourceTemp.ProjectName;
 
             //cboTargetDesktop.SelectedValue = infoSourceTemp.Project;
@@ -437,6 +528,7 @@ namespace BismNormalizer.TabularCompare.UI
 
             cboTargetServer.Text = infoSourceTemp.ServerName;
             cboTargetDatabase.Text = infoSourceTemp.DatabaseName;
+            txtTargetFolder.Text = infoSourceTemp.TmdlFolder;
             txtTargetFile.Text = infoSourceTemp.BimFile;
         }
 
@@ -468,6 +560,26 @@ namespace BismNormalizer.TabularCompare.UI
             }
         }
 
+        private void btnSourceFolderOpen_Click(object sender, EventArgs e)
+        {
+            VistaFolderBrowserDialog dlg = OpenTmdFolderDialog();
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtSourceFolder.Text = dlg.SelectedPath;
+                Settings.Default.LastTmdlFolderLocation = dlg.SelectedPath;
+            }
+        }
+
+        private void btnTargetFolderOpen_Click(object sender, EventArgs e)
+        {
+            VistaFolderBrowserDialog dlg = OpenTmdFolderDialog();
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtTargetFolder.Text = dlg.SelectedPath;
+                Settings.Default.LastTmdlFolderLocation = dlg.SelectedPath;
+            }
+        }
+
         private void btnSourceFileOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = OpenBimFileDialog();
@@ -486,6 +598,14 @@ namespace BismNormalizer.TabularCompare.UI
                 txtTargetFile.Text = ofd.FileName;
                 Settings.Default.LastBimFileLocation = ofd.FileName;
             }
+        }
+
+        private VistaFolderBrowserDialog OpenTmdFolderDialog()
+        {
+            VistaFolderBrowserDialog dlg = new VistaFolderBrowserDialog();
+            dlg.SelectedPath = (String.IsNullOrEmpty(Settings.Default.LastTmdlFolderLocation) ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : Settings.Default.LastTmdlFolderLocation);
+            dlg.ShowNewFolderButton = true;
+            return dlg;
         }
 
         private OpenFileDialog OpenBimFileDialog()
@@ -522,6 +642,5 @@ namespace BismNormalizer.TabularCompare.UI
                 cboCatalog.DataSource = null;
             }
         }
-
     }
 }

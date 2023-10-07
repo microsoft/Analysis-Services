@@ -646,8 +646,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             bool reconnect = false;
             try
             {
-                if (!_sourceTabularModel.ConnectionInfo.UseBimFile) _sourceTabularModel.TomDatabase.Refresh();
-                if (!_targetTabularModel.ConnectionInfo.UseBimFile) _targetTabularModel.TomDatabase.Refresh();
+                if (!_sourceTabularModel.ConnectionInfo.UseBimFile && !_sourceTabularModel.ConnectionInfo.UseTmdlFolder) _sourceTabularModel.TomDatabase.Refresh();
+                if (!_targetTabularModel.ConnectionInfo.UseBimFile && !_targetTabularModel.ConnectionInfo.UseTmdlFolder) _targetTabularModel.TomDatabase.Refresh();
             }
             catch (Exception)
             {
@@ -726,7 +726,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             #endregion
 
-            #region Model1
+            #region Model
 
             //Doing before tables in case need to set DiscourageImplicitMeasures=true to create calc groups downstream
             bool updatedModel = false;

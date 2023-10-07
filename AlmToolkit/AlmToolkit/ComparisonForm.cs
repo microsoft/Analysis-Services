@@ -394,7 +394,7 @@ namespace AlmToolkit
 
         private void SetAutoComplete()
         {
-            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseDesktop && !_comparisonInfo.ConnectionInfoSource.UseBimFile)
+            if (!_comparisonInfo.ConnectionInfoSource.UseProject && !_comparisonInfo.ConnectionInfoSource.UseDesktop && !_comparisonInfo.ConnectionInfoSource.UseBimFile && !_comparisonInfo.ConnectionInfoSource.UseTmdlFolder)
             {
                 if (Settings.Default.SourceServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoSource.ServerName + "|") > -1)
                 {
@@ -410,7 +410,7 @@ namespace AlmToolkit
                 //GetFromAutoCompleteSource();
             }
 
-            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseDesktop && !_comparisonInfo.ConnectionInfoTarget.UseBimFile)
+            if (!_comparisonInfo.ConnectionInfoTarget.UseProject && !_comparisonInfo.ConnectionInfoTarget.UseDesktop && !_comparisonInfo.ConnectionInfoTarget.UseBimFile && !_comparisonInfo.ConnectionInfoTarget.UseTmdlFolder)
             {
                 if (Settings.Default.TargetServerAutoCompleteEntries.IndexOf(_comparisonInfo.ConnectionInfoTarget.ServerName + "|") > -1)
                 {
@@ -437,6 +437,10 @@ namespace AlmToolkit
             {
                 txtSource.Text = "PBI Desktop: " + _comparisonInfo.ConnectionInfoSource.ServerName + ";" + _comparisonInfo.ConnectionInfoSource.DesktopName;
             }
+            else if (_comparisonInfo.ConnectionInfoSource.UseTmdlFolder)
+            {
+                txtSource.Text = "Folder: " + _comparisonInfo.ConnectionInfoSource.TmdlFolder;
+            }
             else if (_comparisonInfo.ConnectionInfoSource.UseBimFile)
             {
                 txtSource.Text = "File: " + _comparisonInfo.ConnectionInfoSource.BimFile;
@@ -449,6 +453,10 @@ namespace AlmToolkit
             if (_comparisonInfo.ConnectionInfoTarget.UseDesktop)
             {
                 txtTarget.Text = "PBI Desktop: " + _comparisonInfo.ConnectionInfoTarget.ServerName + ";" + _comparisonInfo.ConnectionInfoTarget.DesktopName;
+            }
+            else if (_comparisonInfo.ConnectionInfoTarget.UseTmdlFolder)
+            {
+                txtTarget.Text = "Folder: " + _comparisonInfo.ConnectionInfoTarget.TmdlFolder;
             }
             else if (_comparisonInfo.ConnectionInfoTarget.UseBimFile)
             {

@@ -63,6 +63,14 @@
             this.pnlTargetDataset = new System.Windows.Forms.Panel();
             this.cboTargetServer = new System.Windows.Forms.ComboBox();
             this.cboTargetDatabase = new System.Windows.Forms.ComboBox();
+            this.pnlSourceFolder = new System.Windows.Forms.Panel();
+            this.btnSourceFolderOpen = new System.Windows.Forms.Button();
+            this.txtSourceFolder = new System.Windows.Forms.TextBox();
+            this.rdoSourceFolder = new System.Windows.Forms.RadioButton();
+            this.pnlTargetFolder = new System.Windows.Forms.Panel();
+            this.btnTargetFolderOpen = new System.Windows.Forms.Button();
+            this.txtTargetFolder = new System.Windows.Forms.TextBox();
+            this.rdoTargetFolder = new System.Windows.Forms.RadioButton();
             this.pnlSourceDataset.SuspendLayout();
             this.grpSource.SuspendLayout();
             this.pnlSourceFile.SuspendLayout();
@@ -73,6 +81,8 @@
             this.pnlTargetFile.SuspendLayout();
             this.pnlTargetDesktop.SuspendLayout();
             this.pnlTargetDataset.SuspendLayout();
+            this.pnlSourceFolder.SuspendLayout();
+            this.pnlTargetFolder.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboSourceDatabase
@@ -137,6 +147,8 @@
             // 
             // grpSource
             // 
+            this.grpSource.Controls.Add(this.pnlSourceFolder);
+            this.grpSource.Controls.Add(this.rdoSourceFolder);
             this.grpSource.Controls.Add(this.pnlSourceFile);
             this.grpSource.Controls.Add(this.pnlSourceDesktop);
             this.grpSource.Controls.Add(this.rdoSourceFile);
@@ -152,7 +164,7 @@
             this.grpSource.Margin = new System.Windows.Forms.Padding(6);
             this.grpSource.Name = "grpSource";
             this.grpSource.Padding = new System.Windows.Forms.Padding(6);
-            this.grpSource.Size = new System.Drawing.Size(1064, 406);
+            this.grpSource.Size = new System.Drawing.Size(1064, 467);
             this.grpSource.TabIndex = 16;
             this.grpSource.TabStop = false;
             // 
@@ -163,7 +175,7 @@
             this.pnlSourceFile.Controls.Add(this.btnSourceFileOpen);
             this.pnlSourceFile.Controls.Add(this.txtSourceFile);
             this.pnlSourceFile.Enabled = false;
-            this.pnlSourceFile.Location = new System.Drawing.Point(200, 319);
+            this.pnlSourceFile.Location = new System.Drawing.Point(200, 390);
             this.pnlSourceFile.Margin = new System.Windows.Forms.Padding(6);
             this.pnlSourceFile.Name = "pnlSourceFile";
             this.pnlSourceFile.Size = new System.Drawing.Size(852, 59);
@@ -223,7 +235,7 @@
             // rdoSourceFile
             // 
             this.rdoSourceFile.AutoSize = true;
-            this.rdoSourceFile.Location = new System.Drawing.Point(30, 334);
+            this.rdoSourceFile.Location = new System.Drawing.Point(30, 405);
             this.rdoSourceFile.Margin = new System.Windows.Forms.Padding(6);
             this.rdoSourceFile.Name = "rdoSourceFile";
             this.rdoSourceFile.Size = new System.Drawing.Size(78, 30);
@@ -311,7 +323,7 @@
             this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 923);
+            this.panel2.Location = new System.Drawing.Point(0, 1031);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1064, 86);
@@ -321,7 +333,7 @@
             // 
             this.panel1.Controls.Add(this.btnSwitch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 406);
+            this.panel1.Location = new System.Drawing.Point(0, 467);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1064, 73);
@@ -329,6 +341,8 @@
             // 
             // grpTarget
             // 
+            this.grpTarget.Controls.Add(this.pnlTargetFolder);
+            this.grpTarget.Controls.Add(this.rdoTargetFolder);
             this.grpTarget.Controls.Add(this.pnlTargetFile);
             this.grpTarget.Controls.Add(this.rdoTargetFile);
             this.grpTarget.Controls.Add(this.pnlTargetDesktop);
@@ -339,11 +353,11 @@
             this.grpTarget.Controls.Add(this.label4);
             this.grpTarget.Controls.Add(this.pnlTargetDataset);
             this.grpTarget.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpTarget.Location = new System.Drawing.Point(0, 479);
+            this.grpTarget.Location = new System.Drawing.Point(0, 540);
             this.grpTarget.Margin = new System.Windows.Forms.Padding(6);
             this.grpTarget.Name = "grpTarget";
             this.grpTarget.Padding = new System.Windows.Forms.Padding(6);
-            this.grpTarget.Size = new System.Drawing.Size(1064, 419);
+            this.grpTarget.Size = new System.Drawing.Size(1064, 475);
             this.grpTarget.TabIndex = 26;
             this.grpTarget.TabStop = false;
             // 
@@ -354,7 +368,7 @@
             this.pnlTargetFile.Controls.Add(this.btnTargetFileOpen);
             this.pnlTargetFile.Controls.Add(this.txtTargetFile);
             this.pnlTargetFile.Enabled = false;
-            this.pnlTargetFile.Location = new System.Drawing.Point(200, 333);
+            this.pnlTargetFile.Location = new System.Drawing.Point(200, 404);
             this.pnlTargetFile.Margin = new System.Windows.Forms.Padding(6);
             this.pnlTargetFile.Name = "pnlTargetFile";
             this.pnlTargetFile.Size = new System.Drawing.Size(852, 59);
@@ -364,7 +378,7 @@
             // 
             this.btnTargetFileOpen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTargetFileOpen.Location = new System.Drawing.Point(780, 6);
+            this.btnTargetFileOpen.Location = new System.Drawing.Point(780, 15);
             this.btnTargetFileOpen.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnTargetFileOpen.Name = "btnTargetFileOpen";
             this.btnTargetFileOpen.Size = new System.Drawing.Size(54, 39);
@@ -378,7 +392,7 @@
             this.txtTargetFile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTargetFile.Location = new System.Drawing.Point(22, 6);
+            this.txtTargetFile.Location = new System.Drawing.Point(22, 15);
             this.txtTargetFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.txtTargetFile.Name = "txtTargetFile";
             this.txtTargetFile.Size = new System.Drawing.Size(745, 31);
@@ -387,7 +401,7 @@
             // rdoTargetFile
             // 
             this.rdoTargetFile.AutoSize = true;
-            this.rdoTargetFile.Location = new System.Drawing.Point(30, 342);
+            this.rdoTargetFile.Location = new System.Drawing.Point(30, 419);
             this.rdoTargetFile.Margin = new System.Windows.Forms.Padding(6);
             this.rdoTargetFile.Name = "rdoTargetFile";
             this.rdoTargetFile.Size = new System.Drawing.Size(78, 29);
@@ -520,13 +534,111 @@
             this.cboTargetDatabase.TabIndex = 11;
             this.cboTargetDatabase.Enter += new System.EventHandler(this.cboTargetDatabase_Enter);
             // 
+            // pnlSourceFolder
+            // 
+            this.pnlSourceFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlSourceFolder.Controls.Add(this.btnSourceFolderOpen);
+            this.pnlSourceFolder.Controls.Add(this.txtSourceFolder);
+            this.pnlSourceFolder.Enabled = false;
+            this.pnlSourceFolder.Location = new System.Drawing.Point(200, 319);
+            this.pnlSourceFolder.Margin = new System.Windows.Forms.Padding(6);
+            this.pnlSourceFolder.Name = "pnlSourceFolder";
+            this.pnlSourceFolder.Size = new System.Drawing.Size(852, 59);
+            this.pnlSourceFolder.TabIndex = 23;
+            // 
+            // btnSourceFolderOpen
+            // 
+            this.btnSourceFolderOpen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSourceFolderOpen.Location = new System.Drawing.Point(780, 14);
+            this.btnSourceFolderOpen.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnSourceFolderOpen.Name = "btnSourceFolderOpen";
+            this.btnSourceFolderOpen.Size = new System.Drawing.Size(54, 39);
+            this.btnSourceFolderOpen.TabIndex = 7;
+            this.btnSourceFolderOpen.Text = "...";
+            this.btnSourceFolderOpen.UseVisualStyleBackColor = true;
+            this.btnSourceFolderOpen.Click += new System.EventHandler(this.btnSourceFolderOpen_Click);
+            // 
+            // txtSourceFolder
+            // 
+            this.txtSourceFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSourceFolder.Location = new System.Drawing.Point(22, 14);
+            this.txtSourceFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtSourceFolder.Name = "txtSourceFolder";
+            this.txtSourceFolder.Size = new System.Drawing.Size(745, 32);
+            this.txtSourceFolder.TabIndex = 6;
+            // 
+            // rdoSourceFolder
+            // 
+            this.rdoSourceFolder.AutoSize = true;
+            this.rdoSourceFolder.Location = new System.Drawing.Point(30, 334);
+            this.rdoSourceFolder.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoSourceFolder.Name = "rdoSourceFolder";
+            this.rdoSourceFolder.Size = new System.Drawing.Size(104, 30);
+            this.rdoSourceFolder.TabIndex = 22;
+            this.rdoSourceFolder.Text = "Folder";
+            this.rdoSourceFolder.UseVisualStyleBackColor = true;
+            this.rdoSourceFolder.CheckedChanged += new System.EventHandler(this.rdoSourceFolder_CheckedChanged);
+            // 
+            // pnlTargetFolder
+            // 
+            this.pnlTargetFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlTargetFolder.Controls.Add(this.btnTargetFolderOpen);
+            this.pnlTargetFolder.Controls.Add(this.txtTargetFolder);
+            this.pnlTargetFolder.Enabled = false;
+            this.pnlTargetFolder.Location = new System.Drawing.Point(200, 324);
+            this.pnlTargetFolder.Margin = new System.Windows.Forms.Padding(6);
+            this.pnlTargetFolder.Name = "pnlTargetFolder";
+            this.pnlTargetFolder.Size = new System.Drawing.Size(852, 59);
+            this.pnlTargetFolder.TabIndex = 23;
+            // 
+            // btnTargetFolderOpen
+            // 
+            this.btnTargetFolderOpen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTargetFolderOpen.Location = new System.Drawing.Point(780, 15);
+            this.btnTargetFolderOpen.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnTargetFolderOpen.Name = "btnTargetFolderOpen";
+            this.btnTargetFolderOpen.Size = new System.Drawing.Size(54, 39);
+            this.btnTargetFolderOpen.TabIndex = 16;
+            this.btnTargetFolderOpen.Text = "...";
+            this.btnTargetFolderOpen.UseVisualStyleBackColor = true;
+            this.btnTargetFolderOpen.Click += new System.EventHandler(this.btnTargetFolderOpen_Click);
+            // 
+            // txtTargetFolder
+            // 
+            this.txtTargetFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTargetFolder.Location = new System.Drawing.Point(22, 15);
+            this.txtTargetFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtTargetFolder.Name = "txtTargetFolder";
+            this.txtTargetFolder.Size = new System.Drawing.Size(745, 31);
+            this.txtTargetFolder.TabIndex = 15;
+            // 
+            // rdoTargetFolder
+            // 
+            this.rdoTargetFolder.AutoSize = true;
+            this.rdoTargetFolder.Location = new System.Drawing.Point(30, 344);
+            this.rdoTargetFolder.Margin = new System.Windows.Forms.Padding(6);
+            this.rdoTargetFolder.Name = "rdoTargetFolder";
+            this.rdoTargetFolder.Size = new System.Drawing.Size(104, 29);
+            this.rdoTargetFolder.TabIndex = 22;
+            this.rdoTargetFolder.Text = "Folder";
+            this.rdoTargetFolder.UseVisualStyleBackColor = true;
+            this.rdoTargetFolder.CheckedChanged += new System.EventHandler(this.rdoTargetFolder_CheckedChanged);
+            // 
             // ConnectionsAlmt
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(1064, 1009);
+            this.ClientSize = new System.Drawing.Size(1064, 1117);
             this.Controls.Add(this.grpTarget);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
@@ -554,6 +666,10 @@
             this.pnlTargetFile.PerformLayout();
             this.pnlTargetDesktop.ResumeLayout(false);
             this.pnlTargetDataset.ResumeLayout(false);
+            this.pnlSourceFolder.ResumeLayout(false);
+            this.pnlSourceFolder.PerformLayout();
+            this.pnlTargetFolder.ResumeLayout(false);
+            this.pnlTargetFolder.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -595,5 +711,13 @@
         private System.Windows.Forms.Panel pnlSourceFile;
         private System.Windows.Forms.Button btnSourceFileOpen;
         private System.Windows.Forms.TextBox txtSourceFile;
+        private System.Windows.Forms.Panel pnlSourceFolder;
+        private System.Windows.Forms.Button btnSourceFolderOpen;
+        private System.Windows.Forms.TextBox txtSourceFolder;
+        private System.Windows.Forms.RadioButton rdoSourceFolder;
+        private System.Windows.Forms.Panel pnlTargetFolder;
+        private System.Windows.Forms.Button btnTargetFolderOpen;
+        private System.Windows.Forms.TextBox txtTargetFolder;
+        private System.Windows.Forms.RadioButton rdoTargetFolder;
     }
 }

@@ -59,7 +59,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             this.Disconnect();
 
-            if (_connectionInfo.UseBimFile)
+            if (_connectionInfo.UseTmdlFolder)
+            {
+                _database = _connectionInfo.OpenDatabaseFromFolder();
+            }
+            else if (_connectionInfo.UseBimFile)
             {
                 _database = _connectionInfo.OpenDatabaseFromFile();
             }
@@ -151,7 +155,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 _cultures.Add(new Culture(this, culture));
             }
 
-            if (_connectionInfo.UseBimFile)
+            if (_connectionInfo.UseBimFile || _connectionInfo.UseTmdlFolder)
             {
                 InitializeCalcDependenciesFromM();
             }
@@ -1965,6 +1969,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             SetBNormAnnotation();
 
+            if (_connectionInfo.UseTmdlFolder)
+            {
+                SaveToTmdlFolder();
+                return true;
+            }
+
             if (_connectionInfo.UseBimFile)
             {
                 SaveBimFile();
@@ -2023,6 +2033,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             //}
 
             SaveBimFile();
+        }
+
+        private void SaveToTmdlFolder()
+        {
+            TmdlSerializer.SerializeModelToFolder(_database.Model, _connectionInfo.TmdlFolder);
         }
 
         private void SaveBimFile()
@@ -2493,6 +2508,16 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     ((JObject)createOrReplace["object"])["database"] = _connectionInfo.DeploymentServerDatabase;
                     ((JObject)createOrReplace["database"])["name"] = _connectionInfo.DeploymentServerDatabase;
                     ((JObject)createOrReplace["database"])["id"] = _connectionInfo.DeploymentServerDatabase;
+                }
+                else if (_connectionInfo.UseTmdlFolder)
+                {
+                    try
+                    {
+                        string folderName = Path.GetDirectoryName(_connectionInfo.TmdlFolder);
+                        ((JObject)createOrReplace["object"])["database"] = folderName;
+                        ((JObject)createOrReplace["database"])["name"] = folderName;
+                    }
+                    catch { }
                 }
                 else if (_connectionInfo.UseBimFile)
                 {

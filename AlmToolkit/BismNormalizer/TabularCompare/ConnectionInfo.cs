@@ -21,8 +21,10 @@ namespace BismNormalizer.TabularCompare
         #region Private Variables
 
         private bool _useProject = false; //Missed the boat to have an enum would break backwards compat with .bism file
+        private bool _useTmdlFolder = false;
         private bool _useBimFile = false;
         private bool _useDesktop = false;
+        private string _tmdlFolder;
         private string _bimFile;
         private string _desktopName;
         private string _serverName;
@@ -67,8 +69,10 @@ namespace BismNormalizer.TabularCompare
                 if (value)
                 {
                     //To late to do an enum would break backwards compat
+                    _useTmdlFolder = false;
                     _useBimFile = false;
                     _useDesktop = false;
+                    _tmdlFolder = null;
                     _bimFile = null;
                     _compatibilityMode = CompatibilityMode.AnalysisServices;
                 }
@@ -88,11 +92,33 @@ namespace BismNormalizer.TabularCompare
                 {
                     //To late to do an enum would break backwards compat
                     _useProject = false;
+                    _useTmdlFolder = false;
                     _useBimFile = false;
+                    _tmdlFolder = null;
                     _bimFile = null;
                     _compatibilityMode = CompatibilityMode.PowerBI;
                 }
                 _useDesktop = value;
+            }
+        }
+
+        /// <summary>
+        /// A Boolean specifying whether the connection represents a TMDL folder.
+        /// </summary>
+        public bool UseTmdlFolder
+        {
+            get { return _useTmdlFolder; }
+            set
+            {
+                if (value)
+                {
+                    //To late to do an enum would break backwards compat
+                    _useProject = false;
+                    _serverName = null;
+                    _databaseName = null;
+                    _bimFile = null;
+                }
+                _useTmdlFolder = value;
             }
         }
 
@@ -110,6 +136,7 @@ namespace BismNormalizer.TabularCompare
                     _useProject = false;
                     _serverName = null;
                     _databaseName = null;
+                    _tmdlFolder = null;
                 }
                 _useBimFile = value;
             }
@@ -158,6 +185,15 @@ namespace BismNormalizer.TabularCompare
         {
             get { return _projectFile; }
             set { _projectFile = value; }
+        }
+
+        /// <summary>
+        /// Full path to the slected TMDL folder (offline).
+        /// </summary>
+        public string TmdlFolder
+        {
+            get { return _tmdlFolder; }
+            set { _tmdlFolder = value; }
         }
 
         /// <summary>
@@ -462,6 +498,30 @@ namespace BismNormalizer.TabularCompare
         /// <param name="closedBimFile">A Boolean specifying if the user cancelled the comparison. For the case where running in Visual Studio, the user has the option of cancelling if the project BIM file is open.</param>
         public void InitializeCompatibilityLevel(bool closedBimFile = false)
         {
+            if (UseTmdlFolder)
+            {
+                TOM.Database tomDatabase = null;
+                bool exceptionLoadingFolder = false;
+                try
+                {
+                    tomDatabase = OpenDatabaseFromFolder();
+                }
+                catch
+                {
+                    exceptionLoadingFolder = true;
+                }
+                if (exceptionLoadingFolder || tomDatabase == null)
+                {
+                    throw new ConnectionException($"Can't load from folder \"{_tmdlFolder}\".");
+                }
+
+                _compatibilityLevel = tomDatabase.CompatibilityLevel;
+                _dataSourceVersion = tomDatabase.Model.DefaultPowerBIDataSourceVersion.ToString();
+                _directQuery = (tomDatabase.Model != null && tomDatabase.Model.DefaultMode == Microsoft.AnalysisServices.Tabular.ModeType.DirectQuery);
+
+                return;
+            }
+
             if (UseBimFile)
             {
                 TOM.Database tomDatabase = null;
@@ -769,6 +829,28 @@ $@"{{
 
         #endregion
 
+
+        /// <summary>
+        /// Return instantiated TOM database from TMDL folder
+        /// </summary>
+        /// <returns></returns>
+        public TOM.Database OpenDatabaseFromFolder()
+        {
+            TOM.Model modelFromTmdl = TOM.TmdlSerializer.DeserializeModelFromFolder(_tmdlFolder);
+            string modelJson = TOM.JsonSerializer.SerializeObject(modelFromTmdl);
+            
+            _compatibilityMode = CompatibilityMode.AnalysisServices;
+            _compatibilityMode = IsPbiCompatibilityMode(modelJson)
+                ? CompatibilityMode.PowerBI
+                : CompatibilityMode.AnalysisServices;
+            
+            //TODOTMDL: compat level is in the model.tmdl file, but it's a Database property, so not being read???
+            //also how get db name?
+
+            TOM.Database tomDatabase = new TOM.Database(modelFromTmdl.Name);
+            tomDatabase.Model = modelFromTmdl.Clone();
+            return tomDatabase;
+        }
 
         /// <summary>
         /// Check if file is PBIT and return instantiated TOM database.

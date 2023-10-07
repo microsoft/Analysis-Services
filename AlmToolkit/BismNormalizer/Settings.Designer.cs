@@ -406,5 +406,17 @@ namespace BismNormalizer {
                 this["OptionAnnotations"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastTmdlFolderLocation {
+            get {
+                return ((string)(this["LastTmdlFolderLocation"]));
+            }
+            set {
+                this["LastTmdlFolderLocation"] = value;
+            }
+        }
     }
 }
