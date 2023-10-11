@@ -30,6 +30,7 @@
     AlmToolkitSetup             X
     BismNormalizer              -
     BismNormalizer.CommandLine  -
+    BismNormalizer.Tests        -
 
 * Build (not Rebuild) Setup project
 
@@ -38,6 +39,7 @@
     AlmToolkitSetup             -
     BismNormalizer              X
     BismNormalizer.CommandLine  X
+    BismNormalizer.Tests        -
 
 * Set configurtaion back to Debug
 

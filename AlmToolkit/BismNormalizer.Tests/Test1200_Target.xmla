@@ -1,0 +1,2013 @@
+{
+  "createOrReplace": {
+    "object": {
+      "database": "Test1200_Target"
+    },
+    "database": {
+      "name": "Test1200_Target",
+      "id": "Test1200_Target",
+      "compatibilityLevel": 1200,
+      "model": {
+        "culture": "en-US",
+        "dataSources": [
+          {
+            "name": "SqlServer localhost AdventureWorksDW2014",
+            "connectionString": "Provider=SQLNCLI11;Data Source=.;Initial Catalog=AdventureWorksDW2014;Integrated Security=SSPI;Persist Security Info=false",
+            "impersonationMode": "impersonateAccount",
+            "account": "wadecb",
+            "annotations": [
+              {
+                "name": "ConnectionEditUISource",
+                "value": "SqlServer"
+              }
+            ]
+          }
+        ],
+        "tables": [
+          {
+            "name": "DimCustomer",
+            "columns": [
+              {
+                "name": "CustomerKey",
+                "dataType": "int64",
+                "sourceColumn": "CustomerKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "GeographyKey",
+                "dataType": "int64",
+                "sourceColumn": "GeographyKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CustomerAlternateKey",
+                "dataType": "string",
+                "sourceColumn": "CustomerAlternateKey",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Title",
+                "dataType": "string",
+                "sourceColumn": "Title",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FirstName",
+                "dataType": "string",
+                "sourceColumn": "FirstName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "MiddleName",
+                "dataType": "string",
+                "sourceColumn": "MiddleName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "LastName",
+                "dataType": "string",
+                "sourceColumn": "LastName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "NameStyle",
+                "dataType": "boolean",
+                "sourceColumn": "NameStyle",
+                "formatString": "\"TRUE\";\"TRUE\";\"FALSE\"",
+                "sourceProviderType": "Boolean",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Boolean\" />"
+                  }
+                ]
+              },
+              {
+                "name": "BirthDate",
+                "dataType": "dateTime",
+                "sourceColumn": "BirthDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBDate",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "MaritalStatus",
+                "dataType": "string",
+                "sourceColumn": "MaritalStatus",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Suffix",
+                "dataType": "string",
+                "sourceColumn": "Suffix",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Gender",
+                "dataType": "string",
+                "sourceColumn": "Gender",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EmailAddress",
+                "dataType": "string",
+                "sourceColumn": "EmailAddress",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "YearlyIncome",
+                "dataType": "decimal",
+                "sourceColumn": "YearlyIncome",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "TotalChildren",
+                "dataType": "int64",
+                "sourceColumn": "TotalChildren",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "NumberChildrenAtHome",
+                "dataType": "int64",
+                "sourceColumn": "NumberChildrenAtHome",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishEducation",
+                "dataType": "string",
+                "sourceColumn": "EnglishEducation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishEducation",
+                "dataType": "string",
+                "sourceColumn": "SpanishEducation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchEducation",
+                "dataType": "string",
+                "sourceColumn": "FrenchEducation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishOccupation",
+                "dataType": "string",
+                "sourceColumn": "EnglishOccupation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishOccupation",
+                "dataType": "string",
+                "sourceColumn": "SpanishOccupation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchOccupation",
+                "dataType": "string",
+                "sourceColumn": "FrenchOccupation",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "HouseOwnerFlag",
+                "dataType": "string",
+                "sourceColumn": "HouseOwnerFlag",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "NumberCarsOwned",
+                "dataType": "int64",
+                "sourceColumn": "NumberCarsOwned",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "AddressLine1",
+                "dataType": "string",
+                "sourceColumn": "AddressLine1",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "AddressLine2",
+                "dataType": "string",
+                "sourceColumn": "AddressLine2",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Phone",
+                "dataType": "string",
+                "sourceColumn": "Phone",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DateFirstPurchase",
+                "dataType": "dateTime",
+                "sourceColumn": "DateFirstPurchase",
+                "formatString": "General Date",
+                "sourceProviderType": "DBDate",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CommuteDistance",
+                "dataType": "string",
+                "sourceColumn": "CommuteDistance",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimCustomer",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimCustomer].* FROM [dbo].[DimCustomer] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimCustomer].* FROM [dbo].[DimCustomer] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimCustomer"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "DimProduct",
+            "columns": [
+              {
+                "name": "ProductKey",
+                "dataType": "int64",
+                "sourceColumn": "ProductKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ProductAlternateKey",
+                "dataType": "string",
+                "sourceColumn": "ProductAlternateKey",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ProductSubcategoryKey",
+                "dataType": "int64",
+                "sourceColumn": "ProductSubcategoryKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "WeightUnitMeasureCode",
+                "dataType": "string",
+                "sourceColumn": "WeightUnitMeasureCode",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SizeUnitMeasureCode",
+                "dataType": "string",
+                "sourceColumn": "SizeUnitMeasureCode",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishProductName",
+                "dataType": "string",
+                "sourceColumn": "EnglishProductName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishProductName",
+                "dataType": "string",
+                "sourceColumn": "SpanishProductName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchProductName",
+                "dataType": "string",
+                "sourceColumn": "FrenchProductName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "StandardCost",
+                "dataType": "decimal",
+                "sourceColumn": "StandardCost",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "FinishedGoodsFlag",
+                "dataType": "boolean",
+                "sourceColumn": "FinishedGoodsFlag",
+                "formatString": "\"TRUE\";\"TRUE\";\"FALSE\"",
+                "sourceProviderType": "Boolean",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Boolean\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Color",
+                "dataType": "string",
+                "sourceColumn": "Color",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SafetyStockLevel",
+                "dataType": "int64",
+                "sourceColumn": "SafetyStockLevel",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ReorderPoint",
+                "dataType": "int64",
+                "sourceColumn": "ReorderPoint",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ListPrice",
+                "dataType": "decimal",
+                "sourceColumn": "ListPrice",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "Size",
+                "dataType": "string",
+                "sourceColumn": "Size",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SizeRange",
+                "dataType": "string",
+                "sourceColumn": "SizeRange",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Weight",
+                "dataType": "double",
+                "sourceColumn": "Weight",
+                "sourceProviderType": "Double",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DaysToManufacture",
+                "dataType": "int64",
+                "sourceColumn": "DaysToManufacture",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ProductLine",
+                "dataType": "string",
+                "sourceColumn": "ProductLine",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DealerPrice",
+                "dataType": "decimal",
+                "sourceColumn": "DealerPrice",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "Class",
+                "dataType": "string",
+                "sourceColumn": "Class",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Style",
+                "dataType": "string",
+                "sourceColumn": "Style",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ModelName",
+                "dataType": "string",
+                "sourceColumn": "ModelName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishDescription",
+                "dataType": "string",
+                "sourceColumn": "EnglishDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchDescription",
+                "dataType": "string",
+                "sourceColumn": "FrenchDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ChineseDescription",
+                "dataType": "string",
+                "sourceColumn": "ChineseDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ArabicDescription",
+                "dataType": "string",
+                "sourceColumn": "ArabicDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "HebrewDescription",
+                "dataType": "string",
+                "sourceColumn": "HebrewDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ThaiDescription",
+                "dataType": "string",
+                "sourceColumn": "ThaiDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "GermanDescription",
+                "dataType": "string",
+                "sourceColumn": "GermanDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "JapaneseDescription",
+                "dataType": "string",
+                "sourceColumn": "JapaneseDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "TurkishDescription",
+                "dataType": "string",
+                "sourceColumn": "TurkishDescription",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "StartDate",
+                "dataType": "dateTime",
+                "sourceColumn": "StartDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EndDate",
+                "dataType": "dateTime",
+                "sourceColumn": "EndDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "Status",
+                "dataType": "string",
+                "sourceColumn": "Status",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimProduct",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimProduct].* FROM [dbo].[DimProduct] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimProduct].* FROM [dbo].[DimProduct] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimProduct"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "DimSalesTerritory",
+            "columns": [
+              {
+                "name": "SalesTerritoryKey",
+                "dataType": "int64",
+                "sourceColumn": "SalesTerritoryKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesTerritoryAlternateKey",
+                "dataType": "int64",
+                "sourceColumn": "SalesTerritoryAlternateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesTerritoryRegion",
+                "dataType": "string",
+                "sourceColumn": "SalesTerritoryRegion",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesTerritoryCountry",
+                "dataType": "string",
+                "sourceColumn": "SalesTerritoryCountry",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesTerritoryGroup",
+                "dataType": "string",
+                "sourceColumn": "SalesTerritoryGroup",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimSalesTerritory",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimSalesTerritory].* FROM [dbo].[DimSalesTerritory] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimSalesTerritory].* FROM [dbo].[DimSalesTerritory] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimSalesTerritory"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "FactInternetSales",
+            "columns": [
+              {
+                "name": "ProductKey",
+                "dataType": "int64",
+                "sourceColumn": "ProductKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "OrderDateKey",
+                "dataType": "int64",
+                "sourceColumn": "OrderDateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DueDateKey",
+                "dataType": "int64",
+                "sourceColumn": "DueDateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ShipDateKey",
+                "dataType": "int64",
+                "sourceColumn": "ShipDateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CustomerKey",
+                "dataType": "int64",
+                "sourceColumn": "CustomerKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "PromotionKey",
+                "dataType": "int64",
+                "sourceColumn": "PromotionKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CurrencyKey",
+                "dataType": "int64",
+                "sourceColumn": "CurrencyKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesTerritoryKey",
+                "dataType": "int64",
+                "sourceColumn": "SalesTerritoryKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesOrderNumber",
+                "dataType": "string",
+                "sourceColumn": "SalesOrderNumber",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SalesOrderLineNumber",
+                "dataType": "int64",
+                "sourceColumn": "SalesOrderLineNumber",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "RevisionNumber",
+                "dataType": "int64",
+                "sourceColumn": "RevisionNumber",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "OrderQuantity",
+                "dataType": "int64",
+                "sourceColumn": "OrderQuantity",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "UnitPrice",
+                "dataType": "decimal",
+                "sourceColumn": "UnitPrice",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "ExtendedAmount",
+                "dataType": "decimal",
+                "sourceColumn": "ExtendedAmount",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "UnitPriceDiscountPct",
+                "dataType": "double",
+                "sourceColumn": "UnitPriceDiscountPct",
+                "sourceProviderType": "Double",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DiscountAmount",
+                "dataType": "double",
+                "sourceColumn": "DiscountAmount",
+                "sourceProviderType": "Double",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ProductStandardCost",
+                "dataType": "decimal",
+                "sourceColumn": "ProductStandardCost",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "TotalProductCost",
+                "dataType": "decimal",
+                "sourceColumn": "TotalProductCost",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "SalesAmount",
+                "dataType": "decimal",
+                "sourceColumn": "SalesAmount",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "TaxAmt",
+                "dataType": "decimal",
+                "sourceColumn": "TaxAmt",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "Freight",
+                "dataType": "decimal",
+                "sourceColumn": "Freight",
+                "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+                "sourceProviderType": "Currency",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Currency\" Accuracy=\"2\" ThousandSeparator=\"True\"><Currency LCID=\"1033\" DisplayName=\"$ English (United States)\" Symbol=\"$\" PositivePattern=\"0\" NegativePattern=\"0\" /></Format>"
+                  }
+                ]
+              },
+              {
+                "name": "CarrierTrackingNumber",
+                "dataType": "string",
+                "sourceColumn": "CarrierTrackingNumber",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CustomerPONumber",
+                "dataType": "string",
+                "sourceColumn": "CustomerPONumber",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "OrderDate",
+                "dataType": "dateTime",
+                "sourceColumn": "OrderDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DueDate",
+                "dataType": "dateTime",
+                "sourceColumn": "DueDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "ShipDate",
+                "dataType": "dateTime",
+                "sourceColumn": "ShipDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "FactInternetSales",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[FactInternetSales].* FROM [dbo].[FactInternetSales] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[FactInternetSales].* FROM [dbo].[FactInternetSales] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "FactInternetSales"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "DimCurrency",
+            "columns": [
+              {
+                "name": "CurrencyKey",
+                "dataType": "int64",
+                "sourceColumn": "CurrencyKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CurrencyAlternateKey",
+                "dataType": "string",
+                "sourceColumn": "CurrencyAlternateKey",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CurrencyName",
+                "dataType": "string",
+                "sourceColumn": "CurrencyName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimCurrency",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimCurrency].* FROM [dbo].[DimCurrency] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimCurrency].* FROM [dbo].[DimCurrency] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimCurrency"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "DimPromotion",
+            "columns": [
+              {
+                "name": "PromotionKey",
+                "dataType": "int64",
+                "sourceColumn": "PromotionKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "PromotionAlternateKey",
+                "dataType": "int64",
+                "sourceColumn": "PromotionAlternateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishPromotionName",
+                "dataType": "string",
+                "sourceColumn": "EnglishPromotionName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishPromotionName",
+                "dataType": "string",
+                "sourceColumn": "SpanishPromotionName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchPromotionName",
+                "dataType": "string",
+                "sourceColumn": "FrenchPromotionName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DiscountPct",
+                "dataType": "double",
+                "sourceColumn": "DiscountPct",
+                "sourceProviderType": "Double",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishPromotionType",
+                "dataType": "string",
+                "sourceColumn": "EnglishPromotionType",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishPromotionType",
+                "dataType": "string",
+                "sourceColumn": "SpanishPromotionType",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchPromotionType",
+                "dataType": "string",
+                "sourceColumn": "FrenchPromotionType",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishPromotionCategory",
+                "dataType": "string",
+                "sourceColumn": "EnglishPromotionCategory",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishPromotionCategory",
+                "dataType": "string",
+                "sourceColumn": "SpanishPromotionCategory",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchPromotionCategory",
+                "dataType": "string",
+                "sourceColumn": "FrenchPromotionCategory",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "StartDate",
+                "dataType": "dateTime",
+                "sourceColumn": "StartDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EndDate",
+                "dataType": "dateTime",
+                "sourceColumn": "EndDate",
+                "formatString": "General Date",
+                "sourceProviderType": "DBTimeStamp",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "MinQty",
+                "dataType": "int64",
+                "sourceColumn": "MinQty",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "MaxQty",
+                "dataType": "int64",
+                "sourceColumn": "MaxQty",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimPromotion",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimPromotion].* FROM [dbo].[DimPromotion] "
+                }
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimPromotion].* FROM [dbo].[DimPromotion] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimPromotion"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          },
+          {
+            "name": "DimDate",
+            "columns": [
+              {
+                "name": "DateKey",
+                "dataType": "int64",
+                "sourceColumn": "DateKey",
+                "sourceProviderType": "Integer",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FullDateAlternateKey",
+                "dataType": "dateTime",
+                "sourceColumn": "FullDateAlternateKey",
+                "formatString": "General Date",
+                "sourceProviderType": "DBDate",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"DateTimeGeneral\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DayNumberOfWeek",
+                "dataType": "int64",
+                "sourceColumn": "DayNumberOfWeek",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishDayNameOfWeek",
+                "dataType": "string",
+                "sourceColumn": "EnglishDayNameOfWeek",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishDayNameOfWeek",
+                "dataType": "string",
+                "sourceColumn": "SpanishDayNameOfWeek",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchDayNameOfWeek",
+                "dataType": "string",
+                "sourceColumn": "FrenchDayNameOfWeek",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DayNumberOfMonth",
+                "dataType": "int64",
+                "sourceColumn": "DayNumberOfMonth",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "DayNumberOfYear",
+                "dataType": "int64",
+                "sourceColumn": "DayNumberOfYear",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "WeekNumberOfYear",
+                "dataType": "int64",
+                "sourceColumn": "WeekNumberOfYear",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "EnglishMonthName",
+                "dataType": "string",
+                "sourceColumn": "EnglishMonthName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "SpanishMonthName",
+                "dataType": "string",
+                "sourceColumn": "SpanishMonthName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FrenchMonthName",
+                "dataType": "string",
+                "sourceColumn": "FrenchMonthName",
+                "sourceProviderType": "WChar",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"Text\" />"
+                  }
+                ]
+              },
+              {
+                "name": "MonthNumberOfYear",
+                "dataType": "int64",
+                "sourceColumn": "MonthNumberOfYear",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CalendarQuarter",
+                "dataType": "int64",
+                "sourceColumn": "CalendarQuarter",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CalendarYear",
+                "dataType": "int64",
+                "sourceColumn": "CalendarYear",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "CalendarSemester",
+                "dataType": "int64",
+                "sourceColumn": "CalendarSemester",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FiscalQuarter",
+                "dataType": "int64",
+                "sourceColumn": "FiscalQuarter",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FiscalYear",
+                "dataType": "int64",
+                "sourceColumn": "FiscalYear",
+                "sourceProviderType": "SmallInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              },
+              {
+                "name": "FiscalSemester",
+                "dataType": "int64",
+                "sourceColumn": "FiscalSemester",
+                "sourceProviderType": "UnsignedTinyInt",
+                "annotations": [
+                  {
+                    "name": "Format",
+                    "value": "<Format Format=\"General\" />"
+                  }
+                ]
+              }
+            ],
+            "partitions": [
+              {
+                "name": "DimDate",
+                "dataView": "full",
+                "source": {
+                  "dataSource": "SqlServer localhost AdventureWorksDW2014",
+                  "query": " SELECT [dbo].[DimDate].* FROM [dbo].[DimDate] "
+                }
+              }
+            ],
+            "hierarchies": [
+              {
+                "name": "Calendar",
+                "levels": [
+                  {
+                    "name": "CalendarYear",
+                    "ordinal": 0,
+                    "column": "CalendarYear"
+                  },
+                  {
+                    "name": "EnglishMonthName",
+                    "ordinal": 1,
+                    "column": "EnglishMonthName"
+                  },
+                  {
+                    "name": "DateKey",
+                    "ordinal": 2,
+                    "column": "DateKey"
+                  }
+                ]
+              }
+            ],
+            "annotations": [
+              {
+                "name": "_TM_ExtProp_QueryDefinition",
+                "value": " SELECT [dbo].[DimDate].* FROM [dbo].[DimDate] "
+              },
+              {
+                "name": "_TM_ExtProp_DbTableName",
+                "value": "DimDate"
+              },
+              {
+                "name": "_TM_ExtProp_DbSchemaName",
+                "value": "dbo"
+              }
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "name": "e8247ff5-7756-4439-9b14-b840782b2991",
+            "toTable": "DimCustomer",
+            "toColumn": "CustomerKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "CustomerKey"
+          },
+          {
+            "name": "efaeafff-93c4-42fd-8682-b2fe1f9b68f1",
+            "toTable": "DimProduct",
+            "toColumn": "ProductKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "ProductKey"
+          },
+          {
+            "name": "b91c8435-2504-460c-8c8e-dccf07f7afcf",
+            "toTable": "DimDate",
+            "toColumn": "DateKey",
+            "fromColumn": "DueDateKey",
+            "fromTable": "FactInternetSales",
+            "isActive": false
+          },
+          {
+            "name": "f66d522a-17f1-42b6-83c6-1e0736511d97",
+            "toTable": "DimCurrency",
+            "toColumn": "CurrencyKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "CurrencyKey"
+          },
+          {
+            "name": "2036eea3-2630-464a-9272-bea5c306d2bf",
+            "toTable": "DimPromotion",
+            "toColumn": "PromotionKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "PromotionKey"
+          },
+          {
+            "name": "7a9b0a33-4b7a-47b9-b418-d00e7d2c9db3",
+            "toTable": "DimSalesTerritory",
+            "toColumn": "SalesTerritoryKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "SalesTerritoryKey"
+          },
+          {
+            "name": "479c958b-8d46-497f-9ec8-52925832633c",
+            "toTable": "DimDate",
+            "toColumn": "DateKey",
+            "fromTable": "FactInternetSales",
+            "fromColumn": "ShipDateKey"
+          },
+          {
+            "name": "9dc6d42e-d1dd-47ee-99bb-66e6415b9853",
+            "toTable": "DimDate",
+            "toColumn": "DateKey",
+            "fromColumn": "OrderDateKey",
+            "fromTable": "FactInternetSales",
+            "isActive": false
+          }
+        ],
+        "cultures": [
+          {
+            "name": "pt-BR",
+            "translations": {
+              "model": {
+                "name": "Model",
+                "tables": [
+                  {
+                    "name": "DimPromotion",
+                    "translatedDescription": "MuitoBom",
+                    "translatedCaption": "MuitoBom",
+                    "columns": [
+                      {
+                        "name": "PromotionKey",
+                        "translatedCaption": "MuitoBom"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "DimDate",
+                    "hierarchies": [
+                      {
+                        "name": "Calendar",
+                        "translatedCaption": "MuitoBom"
+                      }
+                    ]
+                  }
+                ],
+                "perspectives": [
+                  {
+                    "name": "Sales Perspective",
+                    "translatedDescription": "MuitoBom",
+                    "translatedCaption": "MuitoBom"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "perspectives": [
+          {
+            "name": "Sales Perspective",
+            "tables": [
+              {
+                "name": "DimDate",
+                "hierarchies": [
+                  {
+                    "name": "Calendar"
+                  }
+                ]
+              },
+              {
+                "name": "DimSalesTerritory",
+                "columns": [
+                  {
+                    "name": "SalesTerritoryAlternateKey"
+                  },
+                  {
+                    "name": "SalesTerritoryCountry"
+                  },
+                  {
+                    "name": "SalesTerritoryGroup"
+                  },
+                  {
+                    "name": "SalesTerritoryKey"
+                  },
+                  {
+                    "name": "SalesTerritoryRegion"
+                  }
+                ]
+              },
+              {
+                "name": "FactInternetSales"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+
