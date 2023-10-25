@@ -539,6 +539,16 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "REDUCE_NUMBER_OF_MEASURES",
+    "Name": "[Maintenance] Reduce number of measures",
+    "Category": "Maintenance",
+    "Description": "If you have an excessive number of measures, you should attempt to reduce the number of measures by utilizing calculation groups or reviewing your model design.\r\nIf this is not possible, you should disable all BPA rules that iterate over the AllMeasures collection to avoid Tabular Editor freezing and becoming unresponsive.",
+    "Severity": 1,
+    "Scope": "Model",
+    "Expression": "Model.AllMeasures.Count() > 500",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "PARTITION_NAME_SHOULD_MATCH_TABLE_NAME_FOR_SINGLE_PARTITION_TABLES",
     "Name": "[Naming Conventions] Partition name should match table name for single partition tables",
     "Category": "Naming Conventions",
@@ -722,16 +732,6 @@
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
-    "CompatibilityLevel": 1200
-  },
-  {
-    "ID": "REDUCE_NUMBER_OF_MEASURES",
-    "Name": "[Maintenance] Reduce number of measures",
-    "Category": "Maintenance",
-    "Description": "If you have an excessive number of measures, you should attempt to reduce the number of measures by utilizing calculation groups or reviewing your model design.\r\nIf this is not possible, you should disable all BPA rules that iterate over the AllMeasures collection to avoid Tabular Editor freezing and becoming unresponsive.",
-    "Severity": 1,
-    "Scope": "Model",
-    "Expression": "Model.AllMeasures.Count() > 500",
     "CompatibilityLevel": 1200
   }
 ]
