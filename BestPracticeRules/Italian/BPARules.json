@@ -540,6 +540,16 @@
     "CompatibilityLevel": 1200
   },
   {
+    "ID": "REDUCE_NUMBER_OF_MEASURES",
+    "Name": "[Manutenzione] Ridurre il numero di misure",
+    "Category": "Manutenzione",
+    "Description": "Se disponi di un numero eccessivo di misure, dovresti tentare di ridurre il numero di misure utilizzando gruppi di calcolo o rivedendo la progettazione del modello.\r\nSe ciò non è possibile, dovresti disabilitare tutte le regole BPA che eseguono l'iterazione sulla raccolta AllMeasures per evitare che l'editor tabulare si blocchi e non risponda.",
+    "Severity": 1,
+    "Scope": "Model",
+    "Expression": "Model.AllMeasures.Count() > 500",
+    "CompatibilityLevel": 1200
+  },
+  {
     "ID": "PARTITION_NAME_SHOULD_MATCH_TABLE_NAME_FOR_SINGLE_PARTITION_TABLES",
     "Name": "[Naming Conventions] Il nome della partizione deve corrispondere al nome della tabella per le singole tabelle delle partizioni",
     "Category": "Naming Conventions",
