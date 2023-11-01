@@ -357,7 +357,7 @@
     "Description": "The EVALUATEANDLOG function is meant to be used only in development/test environments and should not be used in production models.\r\n\r\nReference: https://pbidax.wordpress.com/2022/08/16/introduce-the-dax-evaluateandlog-function/",
     "Severity": 1,
     "Scope": "Measure",
-    "Expression": "RegEx.IsMatch(Expression,\"(?i)EVALUATEANDLOG\\s*\\(\")",
+    "Expression": "Tokenize().Any(Type = EVALUATEANDLOG)",
     "CompatibilityLevel": 1200
   },
   {
