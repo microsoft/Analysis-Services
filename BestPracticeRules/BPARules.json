@@ -127,8 +127,8 @@
     "Category": "Performance",
     "Description": "Try to simplify the DAX used for row level security. Usage of the functions within this rule can likely be offloaded to the upstream systems (data warehouse).",
     "Severity": 2,
-    "Scope": "Table, CalculatedTable",
-    "Expression": "RowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)RIGHT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LEFT\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)UPPER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)LOWER\\s*\\(\"))\r\nor\r\nRowLevelSecurity.Any(RegEx.IsMatch(it.Replace(\" \",\"\"),\"(?i)FIND\\s*\\(\"))\r\n",
+    "Scope": "TablePermission",
+    "Expression": "Tokenize().Any(\r\n    Type = RIGHT or\r\n    Type = LEFT or\r\n    Type = UPPER or\r\n    Type = LOWER or\r\n    Type = FIND or\r\n    Type = MID\r\n)",
     "CompatibilityLevel": 1200
   },
   {
