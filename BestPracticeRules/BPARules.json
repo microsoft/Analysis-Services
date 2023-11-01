@@ -68,7 +68,7 @@
     "Description": "Calculated columns do not compress as well as data columns and may cause longer processing times. As such, calculated columns should be avoided if possible. One scenario where they may be easier to avoid is if they use the RELATED function.\r\nReference: https://www.sqlbi.com/articles/storage-differences-between-calculated-columns-and-calculated-tables/",
     "Severity": 2,
     "Scope": "CalculatedColumn",
-    "Expression": "RegEx.IsMatch(Expression,\"(?i)RELATED\\s*\\(\")",
+    "Expression": "Tokenize().Any(Type = RELATED)",
     "CompatibilityLevel": 1200
   },
   {
@@ -207,7 +207,7 @@
     "Description": "At present, time intelligence functions are known to not perform as well when using Direct Query. If you are having performance issues, you may want to try alternative solutions such as adding columns in the fact table that show previous year or previous month data.",
     "Severity": 2,
     "Scope": "Measure, CalculationItem",
-    "Expression": "Model.Tables.Any(ObjectTypeName == \"Table (DirectQuery)\")\r\nand\r\n(\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"CLOSINGBALANCEYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATEADD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESBETWEEN\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESINPERIOD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESMTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESQTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"DATESYTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"ENDOFYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTDATE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTNONBLANK\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"FIRSTNONBLANKVALUE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTDATE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTNONBLANK\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"LASTNONBLANKVALUE\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTDAY\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"NEXTYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"OPENINGBALANCEYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PARALLELPERIOD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSDAY\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"PREVIOUSYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"SAMEPERIODLASTYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFMONTH\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFQUARTER\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"STARTOFYEAR\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALMTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALQTD\\s*\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"TOTALYTD\\s*\\(\")\r\n)",
+    "Expression": "Model.AllPartitions.Any(Mode = \"DirectQuery\")\r\nand\r\n(\r\n    Tokenize().Any(\r\n        Type == CLOSINGBALANCEMONTH ||\r\n        Type == CLOSINGBALANCEQUARTER ||\r\n        Type == CLOSINGBALANCEYEAR ||\r\n        Type == DATEADD ||\r\n        Type == DATESBETWEEN ||\r\n        Type == DATESINPERIOD ||\r\n        Type == DATESMTD ||\r\n        Type == DATESQTD ||\r\n        Type == DATESYTD ||\r\n        Type == ENDOFMONTH ||\r\n        Type == ENDOFQUARTER ||\r\n        Type == ENDOFYEAR ||\r\n        Type == FIRSTDATE ||\r\n        Type == FIRSTNONBLANK ||\r\n        Type == FIRSTNONBLANKVALUE ||\r\n        Type == LASTDATE ||\r\n        Type == LASTNONBLANK ||\r\n        Type == LASTNONBLANKVALUE ||\r\n        Type == NEXTDAY ||\r\n        Type == NEXTMONTH ||\r\n        Type == NEXTQUARTER ||\r\n        Type == NEXTYEAR ||\r\n        Type == OPENINGBALANCEMONTH ||\r\n        Type == OPENINGBALANCEQUARTER ||\r\n        Type == OPENINGBALANCEYEAR ||\r\n        Type == PARALLELPERIOD ||\r\n        Type == PREVIOUSDAY ||\r\n        Type == PREVIOUSMONTH ||\r\n        Type == PREVIOUSQUARTER ||\r\n        Type == PREVIOUSYEAR ||\r\n        Type == SAMEPERIODLASTYEAR ||\r\n        Type == STARTOFMONTH ||\r\n        Type == STARTOFQUARTER ||\r\n        Type == STARTOFYEAR ||\r\n        Type == TOTALMTD ||\r\n        Type == TOTALQTD ||\r\n        Type == TOTALYTD\r\n    )\r\n)",
     "CompatibilityLevel": 1200
   },
   {
@@ -237,7 +237,7 @@
     "Description": "Usage of dynamic row level security (RLS) can add memory and performance overhead. Please research the pros/cons of using it.\r\nReference: https://docs.microsoft.com/power-bi/admin/service-admin-rls",
     "Severity": 1,
     "Scope": "TablePermission",
-    "Expression": "RegEx.IsMatch(Expression,\"(?i)USERNAME\\(\")\r\nor\r\nRegEx.IsMatch(Expression,\"(?i)USERPRINCIPALNAME\\(\")",
+    "Expression": "Tokenize().Any(Type = USERNAME or Type = USERPRINCIPALNAME)",
     "CompatibilityLevel": 1200
   },
   {
@@ -277,7 +277,7 @@
     "Description": "The TREATAS function is more efficient and provides better performance than the INTERSECT function when used in virutal relationships.\r\nReference:  https://www.sqlbi.com/articles/propagate-filters-using-treatas-in-dax/",
     "Severity": 2,
     "Scope": "Measure, CalculationItem",
-    "Expression": "RegEx.IsMatch(Expression,\"(?i)INTERSECT\\s*\\(\")",
+    "Expression": "Tokenize().Any(Type = INTERSECT)",
     "CompatibilityLevel": 1400
   },
   {
@@ -287,7 +287,7 @@
     "Description": "Use the DIVIDE  function instead of using \"/\". The DIVIDE function resolves divide-by-zero cases. As such, it is recommended to use to avoid errors.\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/dax-divide-function-operator",
     "Severity": 2,
     "Scope": "Measure, CalculatedColumn, CalculationItem",
-    "Expression": "RegEx.IsMatch(Expression,\"\\]\\s*\\/(?!\\/)(?!\\*)\")\r\nor\r\nRegEx.IsMatch(Expression,\"\\)\\s*\\/(?!\\/)(?!\\*)\")",
+    "Expression": "Tokenize().Any(Type = DIV)",
     "CompatibilityLevel": 1200
   },
   {
@@ -701,7 +701,7 @@
     "Description": "It is a best practice to hide fact table columns that are used for aggregation in measures.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNTBLANK\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)SUM\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)AVERAGE\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)VALUES\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)DISTINCT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)DISTINCTCOUNT\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\n\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MIN\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\n\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MAX\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)COUNTA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\n\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)AVERAGEA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MAXA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n\nor\r\nReferencedBy.AllMeasures.Any(RegEx.IsMatch(Expression,\"(?i)MINA\\s*\\(\\s*\\'*\" + outerit.Table.Name + \"\\'*\\[\" + outerit.Name + \"\\]\\s*\\)\"))\r\n)\r\n\nand IsHidden == false\r\n\nand (DataType == \"Int64\" || DataType == \"Decimal\" || DataType == \"Double\")",
+    "Expression": "ReferencedBy.AllMeasures.Any(\r\n    Tokenize().Count(not CommentOrWhitespace) <= 5 and\r\n    Tokenize().Any(\r\n        Type = COUNT or\r\n        Type = COUNTBLANK or\r\n        Type = SUM or\r\n        Type = AVERAGE or\r\n        Type = VALUES or\r\n        Type = DISTINCT or\r\n        Type = DISTINCTCOUNT or\r\n        Type = MIN or\r\n        Type = MAX or\r\n        Type = COUNTA or\r\n        Type = AVERAGEA or\r\n        Type = MAXA or\r\n        Type = MINA\r\n    )\r\n)\r\nand IsHidden == false\r\nand (DataType == \"Int64\" || DataType == \"Decimal\" || DataType == \"Double\")",
     "FixExpression": "IsHidden = true",
     "CompatibilityLevel": 1200
   },
