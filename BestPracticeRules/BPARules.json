@@ -545,7 +545,7 @@
     "Description": "If you have an excessive number of measures, you should attempt to reduce the number of measures by utilizing calculation groups or reviewing your model design.\r\nIf this is not possible, you should disable all BPA rules that iterate over the AllMeasures collection to avoid Tabular Editor freezing and becoming unresponsive.",
     "Severity": 1,
     "Scope": "Model",
-    "Expression": "Model.AllMeasures.Count() > 500",
+    "Expression": "Model.AllMeasures.Count() > 1500",
     "CompatibilityLevel": 1200
   },
   {

@@ -546,7 +546,7 @@
     "Description": "Se disponi di un numero eccessivo di misure, dovresti tentare di ridurre il numero di misure utilizzando gruppi di calcolo o rivedendo la progettazione del modello.\r\nSe ciò non è possibile, dovresti disabilitare tutte le regole BPA che eseguono l'iterazione sulla raccolta AllMeasures per evitare che l'editor tabulare si blocchi e non risponda.",
     "Severity": 1,
     "Scope": "Model",
-    "Expression": "Model.AllMeasures.Count() > 500",
+    "Expression": "Model.AllMeasures.Count() > 1500",
     "CompatibilityLevel": 1200
   },
   {

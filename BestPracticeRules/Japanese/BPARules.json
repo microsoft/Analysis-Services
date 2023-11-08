@@ -546,7 +546,7 @@
     "Description": "メジャーの数が多すぎる場合は、計算グループを利用するか、モデル設計を見直してメジャーの数を減らすようにしてください。\r\nそれが不可能な場合は、AllMeasures コレクションを反復処理するすべての BPA ルールを無効にする必要があります。 表形式エディタがフリーズして応答しなくなることを回避します。",
     "Severity": 1,
     "Scope": "Model",
-    "Expression": "Model.AllMeasures.Count() > 500",
+    "Expression": "Model.AllMeasures.Count() > 1500",
     "CompatibilityLevel": 1200
   },
   {

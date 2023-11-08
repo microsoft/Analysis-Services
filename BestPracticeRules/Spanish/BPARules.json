@@ -546,7 +546,7 @@
     "Description": "Si tiene una cantidad excesiva de medidas, debe intentar reducir la cantidad de medidas utilizando grupos de cálculo o revisando el diseño de su modelo.\r\nSi esto no es posible, debe desactivar todas las reglas de BPA que se repiten sobre la colección Todas las medidas para Evite que Tabular Editor se congele y deje de responder.",
     "Severity": 1,
     "Scope": "Model",
-    "Expression": "Model.AllMeasures.Count() > 500",
+    "Expression": "Model.AllMeasures.Count() > 1500",
     "CompatibilityLevel": 1200
   },
   {
