@@ -1,0 +1,15 @@
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+**/output*/*
+**/export*/*
+
+Theme*.json
+
+*.url
+
+LocalTest*
+
+_temp/*
+
+_tools/*
