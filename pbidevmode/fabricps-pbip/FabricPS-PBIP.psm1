@@ -2,38 +2,6 @@ $script:apiUrl = "https://api.fabric.microsoft.com/v1"
 $script:resourceUrl = "https://api.fabric.microsoft.com" 
 $script:fabricToken = $null
 
-Write-Host "Getting AnalysisServices API"
-
-$currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
-
-$nugets = @(
-    @{
-        name = "Microsoft.AnalysisServices.NetCore.retail.amd64"
-        ;
-        version = "19.72.0"
-        ;
-        path = @("lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
-        , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
-        )
-    }
-)
-
-foreach ($nuget in $nugets)
-{
-    Write-Host "Installing nuget: $($nuget.name)"
-
-    if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
-        Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
-    }
-    
-    foreach ($nugetPath in $nuget.path)
-    {
-        $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
-        Add-Type -Path $path -Verbose | Out-Null
-    }
-   
-}
-
 function Get-FabricAuthToken {
     <#
     .SYNOPSIS
