@@ -2,7 +2,7 @@ $script:apiUrl = "https://api.fabric.microsoft.com/v1"
 $script:resourceUrl = "https://api.fabric.microsoft.com" 
 $script:fabricToken = $null
 
-Write-Host "Getting AnalysisServices API"
+# Load TOM Assembly, required to manipulate the TMSL/TMDL of semantic models
 
 $currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
 
@@ -22,7 +22,7 @@ $nugets = @(
 
 foreach ($nuget in $nugets)
 {
-    Write-Host "Installing nuget: $($nuget.name)"
+    Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
     if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
         Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
@@ -30,7 +30,10 @@ foreach ($nuget in $nugets)
     
     foreach ($nugetPath in $nuget.path)
     {
+        Write-Debug "Loading assemblies of: '$($nuget.name)'"
+        
         $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
+        
         Add-Type -Path $path -Verbose | Out-Null
     }
    
@@ -751,9 +754,14 @@ Function Set-SemanticModelParameters {
         [hashtable]$parameters = $null 
     )
 
-    # TODO: Update to support TMDL
+    # TODO: Add support to TMDL
 
     $modelPath = "$path\model.bim"
+
+    if (!(Test-Path $modelPath))
+    {
+        throw "Cannot find semantic model definition: '$modelPath'"
+    }
 
     $modelText = Get-Content $modelPath
 
@@ -761,6 +769,9 @@ Function Set-SemanticModelParameters {
 
     $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
     $database.CompatibilityMode = $compatibilityMode
+
+    # Set expression parameters
+
     $parameters.GetEnumerator() |? {
 
         $parameterName = $_.Name
@@ -778,7 +789,12 @@ Function Set-SemanticModelParameters {
 
     $serializeOptions = New-Object Microsoft.AnalysisServices.Tabular.SerializeOptions
     
-    $database.Name = "Temp"
+    if ([string]::IsNullOrEmpty($database.Name))
+    {
+        # If serialized without name an error is thrown later on deserialize
+
+        $database.Name = "Unknown"
+    }
 
     $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
 

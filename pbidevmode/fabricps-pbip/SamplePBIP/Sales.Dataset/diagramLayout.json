@@ -10,51 +10,55 @@
       "nodes": [
         {
           "location": {
-            "x": 326.31359098587973,
-            "y": 3.6666666666666856
+            "x": 1378.3135909858797,
+            "y": 504.66666666666669
           },
           "nodeIndex": "Calendar",
+          "nodeLineageTag": "bfa0074c-0a44-4a9c-8bba-c87af778b3d7",
           "size": {
             "height": 187,
             "width": 254
           },
-          "zIndex": 7
+          "zIndex": 9
         },
         {
           "location": {
-            "x": 664.04633538628775,
-            "y": 322.16666666666669
+            "x": 699.04633538628775,
+            "y": 124.16666666666669
           },
           "nodeIndex": "Sales",
+          "nodeLineageTag": "97143e5b-7736-4fcb-8042-26b92b1f5684",
           "size": {
             "height": 481,
             "width": 276
-          },
-          "zIndex": 3
-        },
-        {
-          "location": {
-            "x": 967.4,
-            "y": 50
-          },
-          "nodeIndex": "Customer",
-          "size": {
-            "height": 200,
-            "width": 234
           },
           "zIndex": 6
         },
         {
           "location": {
-            "x": 1145.8,
-            "y": 368
+            "x": 1022.4,
+            "y": 867
+          },
+          "nodeIndex": "Customer",
+          "nodeLineageTag": "04227f5a-0aeb-4448-b5c5-dbf3e276da85",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 373.79999999999995,
+            "y": 122
           },
           "nodeIndex": "Product",
+          "nodeLineageTag": "e9374b9a-faee-4f9e-b2e7-d9aafb9d6a91",
           "size": {
-            "height": 497,
+            "height": 341,
             "width": 232
           },
-          "zIndex": 5
+          "zIndex": 10
         },
         {
           "location": {
@@ -66,7 +70,7 @@
             "height": 300,
             "width": 234
           },
-          "zIndex": 1
+          "zIndex": 4
         },
         {
           "location": {
@@ -78,19 +82,20 @@
             "height": 128,
             "width": 234
           },
-          "zIndex": 2
+          "zIndex": 5
         },
         {
           "location": {
-            "x": 232.86667175292951,
-            "y": 322
+            "x": 731.86667175292951,
+            "y": 801
           },
           "nodeIndex": "Store",
+          "nodeLineageTag": "54d5f884-12db-4e03-a120-08cd725db2c4",
           "size": {
             "height": 296,
             "width": 234
           },
-          "zIndex": 4
+          "zIndex": 7
         },
         {
           "location": {
@@ -102,7 +107,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 1
         },
         {
           "location": {
@@ -115,7 +120,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 2
         },
         {
           "location": {
@@ -128,7 +133,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 3
         }
       ],
       "name": "All tables",
