@@ -12,7 +12,9 @@ $nugets = @(
         ;
         version = "19.72.0"
         ;
-        path = @("lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
+        path = @(
+        "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
+        , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
         , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
         )
     }
