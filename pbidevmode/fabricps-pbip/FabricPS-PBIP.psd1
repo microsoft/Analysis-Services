@@ -94,7 +94,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/microsoft/Analysis-Services/tree/master/pbidevmode/fabricps-pbip'
+        ProjectUri = 'https://github.com/microsoft/Analysis-Services/pbidevmode/fabricps-pbip'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -116,7 +116,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-HelpInfoURI = 'https://github.com/RuiRomano/fabricps-pbip'
+HelpInfoURI = 'https://github.com/microsoft/Analysis-Services/pbidevmode/fabricps-pbip'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
