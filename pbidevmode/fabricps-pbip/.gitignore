@@ -13,3 +13,5 @@ LocalTest*
 _temp/*
 
 _tools/*
+
+**/.nuget

@@ -2,6 +2,38 @@ $script:apiUrl = "https://api.fabric.microsoft.com/v1"
 $script:resourceUrl = "https://api.fabric.microsoft.com" 
 $script:fabricToken = $null
 
+Write-Host "Getting AnalysisServices API"
+
+$currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
+
+$nugets = @(
+    @{
+        name = "Microsoft.AnalysisServices.NetCore.retail.amd64"
+        ;
+        version = "19.72.0"
+        ;
+        path = @("lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
+        , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
+        )
+    }
+)
+
+foreach ($nuget in $nugets)
+{
+    Write-Host "Installing nuget: $($nuget.name)"
+
+    if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
+        Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
+    }
+    
+    foreach ($nugetPath in $nuget.path)
+    {
+        $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
+        Add-Type -Path $path -Verbose | Out-Null
+    }
+   
+}
+
 function Get-FabricAuthToken {
     <#
     .SYNOPSIS
@@ -702,4 +734,51 @@ Function Remove-FabricItems {
         Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId" -Method Delete
     }
     
+}
+
+Function Set-SemanticModelParameters {
+    <#
+    .SYNOPSIS
+        TODO
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [string]$path = $null
+        ,
+        [hashtable]$parameters = $null 
+    )
+
+    # TODO: Update to support TMDL
+
+    $modelPath = "$path\model.bim"
+
+    $modelText = Get-Content $modelPath
+
+    $compatibilityMode = [Microsoft.AnalysisServices.CompatibilityMode]::PowerBI
+
+    $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
+    $database.CompatibilityMode = $compatibilityMode
+    $parameters.GetEnumerator() |? {
+
+        $parameterName = $_.Name
+        $parameterValue = $_.Value
+
+        $modelExpression = $database.Model.Expressions.Find($parameterName)
+
+        if (!$modelExpression)
+        {
+            throw "Cannot find model expression '$parameterName'"
+        }
+
+        $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta","""$parameterValue"" meta"
+    }
+
+    $serializeOptions = New-Object Microsoft.AnalysisServices.Tabular.SerializeOptions
+    
+    $database.Name = "Temp"
+
+    $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
+
+    $modelText | Out-File $modelPath -Force
 }
