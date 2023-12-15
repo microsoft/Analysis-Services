@@ -31,7 +31,7 @@ foreach ($nuget in $nugets)
     foreach ($nugetPath in $nuget.path)
     {
         Write-Debug "Loading assemblies of: '$($nuget.name)'"
-        
+
         $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
         
         Add-Type -Path $path -Verbose | Out-Null
@@ -574,7 +574,17 @@ Function Import-FabricItems {
                 # convert to byte array
 
                 if ($fileContent -is [string]) {
-                    $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContent)
+                    
+                    # If its a valid path, read it as byte[]
+                    
+                    if (Test-Path $fileContent)
+                    {
+                        $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
+                    }
+                    else
+                    {
+                        $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContent)
+                    }
                 }
                 elseif (!($fileContent -is [byte[]])) {
                     throw "FileOverrides value type must be string or byte[]"
