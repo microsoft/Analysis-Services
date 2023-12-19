@@ -336,6 +336,26 @@ Function New-FabricWorkspace {
     
 }
 
+Function Remove-FabricWorkspace {
+    <#
+    .SYNOPSIS
+        Deletes a  Fabric workspace.
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [string]$workspaceId     
+    )
+
+    try {        
+
+        Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId" -Method Delete
+    }
+    catch {
+        throw
+    }
+}
+
 
 Function Get-FabricWorkspace {
     <#
