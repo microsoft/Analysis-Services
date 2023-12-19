@@ -506,22 +506,32 @@ Function Import-FabricItems {
     [CmdletBinding()]
     param
     (
-        [string]$path = '.\pbipOutput'
+        [string[]]$path = '.\pbipOutput'
         ,
         [string]$workspaceId
         ,
-        [string]$filter = $null
+        [string[]]$filter = $null
         ,
         [hashtable]$fileOverrides
     )
 
     # Search for folders with .pbir and .pbidataset in it
 
-    $itemsFolders = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbidataset
+    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbidataset
 
     if ($filter) {
-        $itemsFolders = $itemsFolders | ? { $_.Directory.FullName -like $filter }
+        $itemsInFolder = $itemsInFolder | ? { 
+            $pathFolder = $_.Directory.FullName
+            $filter |? { $pathFolder -ilike $_ }
+        }
     }
+
+    if ($itemsInFolder.Count -eq 0)
+    {
+        return
+    }
+
+    Write-Host "Items in the folder: $($itemsInFolder.Count)"
 
     # File Overrides processing, convert all to base64 - Its the final format of the parts for Fabric APIs
 
@@ -560,19 +570,19 @@ Function Import-FabricItems {
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    Write-Host "Existing items: $($items.Count)"
+    Write-Host "Existing items in the workspace: $($items.Count)"
 
     # Datasets first 
 
-    $itemsFolders = $itemsFolders | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbidataset") {1} else {2} }}, * | sort-object Order    
+    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbidataset") {1} else {2} }}, * | sort-object Order    
 
     $datasetReferences = @{}
 
-    foreach ($itemFolder in $itemsFolders) {	
+    foreach ($itemInFolder in $itemsInFolder) {	
         
         # Get the parent folder
 
-        $itemPath = $itemFolder.Directory.FullName
+        $itemPath = $itemInFolder.Directory.FullName
 
         write-host "Processing item: '$itemPath'"
 

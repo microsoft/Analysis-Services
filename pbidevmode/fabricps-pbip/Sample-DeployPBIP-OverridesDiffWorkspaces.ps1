@@ -13,7 +13,7 @@ $pbipPath = "$currentPath\SamplePBIP"
 
 $workspaceId = New-FabricWorkspace  -name $workspaceDatasets -skipErrorIfExists
 
-$dataset = Import-FabricItems -workspaceId $workspaceId -path "$pbipPath\Sales.Dataset"
+$dataset = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\sales.dataset"
 
 # Deploy Report
 
@@ -38,7 +38,7 @@ $fileOverrides = @{
     } | ConvertTo-Json
 }
 
-$reportId = Import-FabricItems -workspaceId $workspaceId -path "$pbipPath\Sales.Report" -fileOverrides $fileOverrides
+$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\sales.report" -fileOverrides $fileOverrides
 
 
 
