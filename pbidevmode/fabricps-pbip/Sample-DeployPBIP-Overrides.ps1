@@ -4,47 +4,29 @@ Set-Location $currentPath
 
 Import-Module ".\FabricPS-PBIP" -Force
 
-$workspaceName = "RR - FabricAPIs - Deploy 2"
-$datasetName = "Dataset A"
-$reportName = "Report A"
-$pbipDatasetPath = "$currentPath\SamplePBIP\Sales.Dataset"
-$pbipReportPath = "$currentPath\SamplePBIP\Sales.Report"
+$workspaceName = "RR - FabricAPIs - Deploy 11"
+$datasetName = "Dataset X"
+$reportName = "Report Y"
+$pbipPath = "$currentPath\SamplePBIP"
 
 # Ensure workspace exists
 
 $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
 
-if (!$workspaceId) { throw "WorkspaceId cannot be null"}
+$fileOverrides = @{
+    
+    # Dataset Name
 
-# Deploy Dataset
-
-$fileDatasetOverrides = @{    
-    "*item.metadata.json" = @{
+    "*.dataset\item.metadata.json" = @{
         "type" = "dataset"
         "displayName" = $datasetName
     } | ConvertTo-Json
-}
 
-$datasetId = Import-FabricItems -workspaceId $workspaceId -path $pbipDatasetPath -fileOverrides $fileDatasetOverrides
+    # Report Name
 
-# Deploy Report
-
-$fileReportOverrides = @{
-    
-    # Change the connected dataset
-
-    "*definition.pbir" = @{
-        "version" = "1.0"
-        "datasetReference" = @{          
-            "byConnection" =  @{
-            "connectionString" = $null
-            "pbiServiceModelId" = $null
-            "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-            "pbiModelDatabaseName" = "$datasetId"                
-            "name" = "EntityDataSource"
-            "connectionType" = "pbiServiceXmlaStyleLive"
-            }
-        }
+    "*.report\item.metadata.json" = @{
+        "type" = "report"
+        "displayName" = $reportName
     } | ConvertTo-Json
 
     # Change logo
@@ -54,16 +36,9 @@ $fileReportOverrides = @{
     # Change theme
     
     "*Light4437032645752863.json" = [System.IO.File]::ReadAllBytes("$currentPath\sample-resources\theme_dark.json")
-
-    # Report Name
-
-    "*item.metadata.json" = @{
-            "type" = "report"
-            "displayName" = $reportName
-        } | ConvertTo-Json
 }
 
-$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipReportPath -fileOverrides $fileReportOverrides
+Import-FabricItems -workspaceId $workspaceId -path $pbipPath -fileOverrides $fileOverrides
 
 
 

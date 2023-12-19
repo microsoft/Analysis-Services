@@ -540,7 +540,7 @@ Function Import-FabricItems {
             $fileOverrideMatch = $fileOverrides.GetEnumerator() |? { "$itemPath\item.metadata.json" -ilike $_.Name  } | select -First 1
         }
 
-        if ($fileOverrideMatch) {
+        if ($fileOverrideMatch) {      
             $itemMetadataStr = $fileOverrideMatch.Value
         }
         
@@ -569,6 +569,9 @@ Function Import-FabricItems {
             }
 
             if ($fileOverrideMatch) {
+
+                Write-Host "File override '$fileName'"
+
                 $fileContent = $fileOverrideMatch.Value
 
                 # convert to byte array
@@ -645,7 +648,7 @@ Function Import-FabricItems {
                 Path        = $partPath
                 Payload     = $fileEncodedContent
                 PayloadType = "InlineBase64"
-            }				
+            }
         }
 
         Write-Host "Payload parts:"
