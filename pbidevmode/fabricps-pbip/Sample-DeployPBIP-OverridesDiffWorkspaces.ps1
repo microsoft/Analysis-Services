@@ -13,7 +13,7 @@ $pbipPath = "$currentPath\SamplePBIP"
 
 $workspaceId = New-FabricWorkspace  -name $workspaceDatasets -skipErrorIfExists
 
-$datasetId = Import-FabricItems -workspaceId $workspaceId -path "$pbipPath\Sales.Dataset"
+$dataset = Import-FabricItems -workspaceId $workspaceId -path "$pbipPath\Sales.Dataset"
 
 # Deploy Report
 
@@ -30,7 +30,7 @@ $fileOverrides = @{
             "connectionString" = $null
             "pbiServiceModelId" = $null
             "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-            "pbiModelDatabaseName" = "$datasetId"                
+            "pbiModelDatabaseName" = "$($dataset.id)"                
             "name" = "EntityDataSource"
             "connectionType" = "pbiServiceXmlaStyleLive"
             }

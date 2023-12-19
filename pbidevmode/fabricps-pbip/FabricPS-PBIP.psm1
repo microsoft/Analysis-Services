@@ -727,7 +727,11 @@ Function Import-FabricItems {
 
             write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
-            Write-Output $itemId
+            Write-Output @{
+                "id" = $itemId
+                "displayName" = $displayName
+                "type" = $itemType 
+            }
         }
         else {
             write-host "Updating item definition"
@@ -742,7 +746,11 @@ Function Import-FabricItems {
 
             write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
-            Write-Output $itemId
+            Write-Output @{
+                "id" = $itemId
+                "displayName" = $displayName
+                "type" = $itemType 
+            }
         }
 
         # Save dataset references to swap byPath to byConnection
