@@ -5,8 +5,8 @@ Set-Location $currentPath
 Import-Module ".\FabricPS-PBIP" -Force
 
 $workspaceName = "RR - FabricAPIs - Deploy 11"
-$datasetName = "Dataset X"
-$reportName = "Report Y"
+$datasetName = "Dataset XX"
+$reportName = "Report YY"
 $pbipPath = "$currentPath\SamplePBIP"
 
 # Ensure workspace exists
@@ -31,7 +31,7 @@ $fileOverrides = @{
 
     # Change logo
 
-    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = [System.IO.File]::ReadAllBytes("$currentPath\sample-resources\logo2.jpg")
+    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = "$currentPath\sample-resources\logo2.jpg"
 
     # Change theme
     

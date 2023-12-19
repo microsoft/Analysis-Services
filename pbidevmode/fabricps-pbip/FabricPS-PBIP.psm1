@@ -503,6 +503,39 @@ Function Import-FabricItems {
         $itemsFolders = $itemsFolders | ? { $_.Directory.FullName -like $filter }
     }
 
+    # File Overrides processing, convert all to base64 - Its the final format of the parts for Fabric APIs
+
+    $fileOverridesEncoded = @()
+    
+    if ($fileOverrides)
+    {
+        foreach ($fileOverride in $fileOverrides.GetEnumerator())
+        {
+            $fileContent = $fileOverride.Value
+
+            # convert to byte array
+
+            if ($fileContent -is [string]) {
+                
+                # If its a valid path, read it as byte[]
+                
+                if (Test-Path $fileContent)
+                {
+                    $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
+                }
+                else
+                {
+                    $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContent)
+                }
+            }
+            elseif (!($fileContent -is [byte[]])) {
+                throw "FileOverrides value type must be string or byte[]"
+            }
+            
+            $fileOverridesEncoded += @{Name=$fileOverride.Name; Value = $fileContent}
+        }
+    }
+
     # Get existing items of the workspace
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
@@ -535,15 +568,18 @@ Function Import-FabricItems {
         
         $fileOverrideMatch = $null
 
-        if ($fileOverrides)
+        if ($fileOverridesEncoded)
         {
-            $fileOverrideMatch = $fileOverrides.GetEnumerator() |? { "$itemPath\item.metadata.json" -ilike $_.Name  } | select -First 1
+            $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\item.metadata.json" -ilike $_.Name  } | select -First 1
+
+            if ($fileOverrideMatch) {
+            
+                Write-Host "File override 'item.metadata.json'"
+    
+                $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
+            }
         }
 
-        if ($fileOverrideMatch) {      
-            $itemMetadataStr = $fileOverrideMatch.Value
-        }
-        
         $itemMetadata = $itemMetadataStr | ConvertFrom-Json
         $itemType = $itemMetadata.type
         
@@ -563,35 +599,16 @@ Function Import-FabricItems {
             
             $fileOverrideMatch = $null
 
-            if ($fileOverrides)
+            if ($fileOverridesEncoded)
             {
-                $fileOverrideMatch = $fileOverrides.GetEnumerator() |? { $filePath -ilike $_.Name  } | select -First 1            
+                $fileOverrideMatch = $fileOverridesEncoded |? { $filePath -ilike $_.Name  } | select -First 1            
             }
 
             if ($fileOverrideMatch) {
 
                 Write-Host "File override '$fileName'"
 
-                $fileContent = $fileOverrideMatch.Value
-
-                # convert to byte array
-
-                if ($fileContent -is [string]) {
-                    
-                    # If its a valid path, read it as byte[]
-                    
-                    if (Test-Path $fileContent)
-                    {
-                        $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
-                    }
-                    else
-                    {
-                        $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContent)
-                    }
-                }
-                elseif (!($fileContent -is [byte[]])) {
-                    throw "FileOverrides value type must be string or byte[]"
-                }
+                $fileContent = $fileOverrideMatch.Value              
             }
             else {                
                 if ($filePath -like "*.pbir") {                  
