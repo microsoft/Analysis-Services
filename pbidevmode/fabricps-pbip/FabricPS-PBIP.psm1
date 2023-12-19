@@ -506,7 +506,7 @@ Function Import-FabricItems {
     [CmdletBinding()]
     param
     (
-        [string[]]$path = '.\pbipOutput'
+        [string]$path = '.\pbipOutput'
         ,
         [string]$workspaceId
         ,
@@ -528,6 +528,7 @@ Function Import-FabricItems {
 
     if ($itemsInFolder.Count -eq 0)
     {
+        Write-Host "No items found in the path '$path' (*.pbir; *.pbidataset)"
         return
     }
 

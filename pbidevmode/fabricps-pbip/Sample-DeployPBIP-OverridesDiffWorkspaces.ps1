@@ -38,7 +38,7 @@ $fileOverrides = @{
     } | ConvertTo-Json
 }
 
-$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\sales.report" -fileOverrides $fileOverrides
+$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.report" -fileOverrides $fileOverrides
 
 
 
