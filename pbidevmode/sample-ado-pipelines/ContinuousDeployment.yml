@@ -1,0 +1,122 @@
+parameters:
+  - name: environmentName
+    displayName: Which Environment to deploy?
+    type: string
+    default: 'inferFromBranchName'
+    values:
+    - inferFromBranchName
+    - dev
+    - tst
+    - prd
+  - name: workspaceName
+    displayName: Workspace name to deploy?
+    type: string
+    default: '<Set Workspace Name>'
+  - name: adminPrincipalId
+    displayName: Admin PrincipalId to be added as workspace admin?
+    type: string
+    default: '<Set Admin Object Id>'
+
+
+trigger:
+- release/*
+
+pool:
+  vmimage: 'windows-latest'
+
+variables:
+  # Variable group with AppId, AppSecret and TenantId configuration
+  - group: fabricAPISecrets
+  - name: 'environmentName'
+    ${{ if in(parameters['environmentName'], 'inferFromBranchName') }}:
+      value: '$(Build.SourceBranchName)'
+    ${{ else }}:
+      value: '${{ parameters.environmentName }}'
+
+stages:
+ - stage: Deploy  
+   jobs:
+      - deployment: Deploy
+        displayName: "Deploy"
+        environment: '$(environmentName)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  path: 'self'
+                - task: PowerShell@2
+                  displayName: 'Dependencies'
+                  inputs:
+                    pwsh: true
+                    targetType: inline
+                    script: |     
+                        $path = "$(Build.SourcesDirectory)"
+
+                        $workingFolder = "$path\.ado"
+
+                        New-Item -ItemType Directory -Path "$workingFolder\modules" -ErrorAction SilentlyContinue | Out-Null
+
+                        Write-Host "##[debug]Downloading FabricPS-PBIP module"
+
+                        @(
+                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
+                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
+                                
+                                Invoke-WebRequest -Uri $_ -OutFile "$workingFolder\modules\$(Split-Path $_ -Leaf)"
+
+                            }
+
+                        Write-Host "##[debug]Installing Az.Accounts"
+
+                        if(-not (Get-Module Az.Accounts -ListAvailable)){
+                            Install-Module Az.Accounts -Scope CurrentUser -Force
+                        }
+
+                - task: PowerShell@2
+                  displayName: 'Deploy to $(environmentName)'
+                  inputs:
+                    pwsh: true
+                    targetType: inline                    
+                    script: |     
+                        $path = "$(Build.SourcesDirectory)"
+                        $appId = "$(appId)"
+                        $appSecret = "$(appSecret)"
+                        $tenantId = "$(tenantId)"                        
+                        $environmentName = "$(environmentName)"
+                        $workspaceName = "${{ parameters.workspaceName }}"
+                        $adminPrincipalId = "${{ parameters.adminPrincipalId }}"
+
+                        Write-Host "##[debug]Deploying to environment '$environmentName'"                        
+
+                        # Co-Admin, otherwise only the SPN have visibility to the workspace
+
+                        $workingFolder = "$path\.ado"
+                        $workspacePermissions = @{
+                            "principal" = @{
+                                "id" = "$adminPrincipalId"
+                                "type" = "user"
+                            }
+                            "role"= "Admin"
+                        }
+
+                        Import-Module "$workingFolder\modules\FabricPS-PBIP" -Force
+
+                        Write-Host "##[debug]Authentication with SPN"
+
+                        Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset                        
+
+                        if ($environmentName -in @("dev", "tst", "prd"))
+                        {
+                            $workspaceName += " {$environmentName}"
+
+                            Write-Host "##[debug]Ensure Fabric Workspace & permissions"
+
+                            $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
+
+                            Set-FabricWorkspacePermissions $workspaceId $workspacePermissions
+
+                            Write-Host "##[debug]Publish PBIP to Fabric"
+
+                            $importInfo = Import-FabricItems -workspaceId $workspaceId -path $path
+                        }

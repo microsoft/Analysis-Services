@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "datasetReference": {
+    "byPath": {
+      "path": "../Sales.Dataset"
+    },
+    "byConnection": null
+  }
+}
