@@ -35,7 +35,7 @@ Set-FabricAuthToken -reset
 ## With service principal (spn)
 
 ```powershell
-Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset
+Set-FabricAuthToken -servicePrincipalId "[AppId]" -servicePrincipalSecret "[AppSecret]" -tenantId ["TenantId"] -reset
 ```
 
 # Sample - Import PBIP to workspace
