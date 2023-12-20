@@ -94,6 +94,7 @@ $deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filt
 
 # Create Workspace with permissions
 
+```powershell
 Import-Module ".\FabricPS-PBIP" -Force
 
 Set-FabricAuthToken -reset
@@ -121,4 +122,30 @@ $workspacePermissions = @(
 )
 
 Set-FabricWorkspacePermissions -workspaceId $workspaceId -permissions $workspacePermissions
+```
 
+# Invoke Fabric API
+
+```powershell
+
+Import-Module ".\FabricPS-PBIP" -Force
+
+Set-FabricAuthToken -reset
+
+Invoke-FabricAPIRequest -uri "workspaces"
+
+```
+
+# Deploy PBIP overriding semantic model parameters
+
+```powershell
+Import-Module ".\FabricPS-PBIP" -Force
+
+$pbipPath = "$currentPath\SamplePBIP"
+
+$workspaceId = "4d8c00a0-4204-4db3-8bce-2ae691b25684"
+
+Set-SemanticModelParameters -path "$pbipPath\Sales.Dataset" -parameters @{"Environment"= "DEV"}
+
+Import-FabricItems -workspaceId $workspaceId -path $pbipPath
+```
