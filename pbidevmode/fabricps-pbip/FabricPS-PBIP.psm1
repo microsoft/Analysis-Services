@@ -405,26 +405,32 @@ Function Set-FabricWorkspacePermissions {
 
         
         $existingRoles = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments" -Method Get
-
-        $principalIds = $existingRoles.principal.id
-
-        $missingPermissions = $permissions |? {
-            !$principalIds.contains($_.principal.id)
-        }
-
-        if ($missingPermissions.count -eq 0)
+        
+        foreach ($permission in $permissions)
         {
-            Write-Host "Permissions already defined in the workspace."
-        }
-        else
-        {
-            $request = $missingPermissions | ConvertTo-Json
+            $matchRole = $existingRoles |? {$_.principal.id -ieq $permission.principal.id} | select -First 1
+            
+            if (!$matchRole)
+            {
+                Write-Host "Adding role '$($permission.role)' to '$($permission.principal.id)'"
 
-            Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments" -Method Post -Body $request
+                $request = $permission | ConvertTo-Json
 
-            Write-Host "Workspace permissions defined"
-        }
+                Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments" -Method Post -Body $request                
+            }
+            else {
+                # If role already exists for principal, check the role
 
+                if ($permission.role -ine $matchRole.role)
+                {
+                    Write-Host "Updating principal '$($permission.principal.id)' role to '$($permission.role)'"
+
+                    $request = @{"role" = $permission.role} | ConvertTo-Json
+
+                    Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments/$($permission.principal.id)" -Method Patch -Body $request
+                }
+            }
+        }        
     }
     catch {
         throw
