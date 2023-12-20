@@ -4,13 +4,17 @@ Set-Location $currentPath
 
 Import-Module ".\FabricPS-PBIP" -Force
 
-$workspaceId = "d020f53d-eb41-421d-af50-8279882524f3"
+Set-FabricAuthToken -reset
+
+$workspaceName = "RR-APIsDemo-DeployPBIP"
 $newTheme = "$currentPath\sample-resources\Theme_dark.json"
 $exportFolder = "$currentPath\exportThemeSwap"
 
+$workspace = Get-FabricWorkspace -workspaceName $workspaceName
+
 # Exports all reports from workspace
 
-Export-FabricItems -workspaceId $workspaceId -path $exportFolder -itemTypes @("report")
+Export-FabricItems -workspaceId $workspace.id -path $exportFolder -filter {$_.type -in @("report")}
 
 # Only change reports with theme files
 
@@ -27,7 +31,7 @@ $themeFiles = Get-ChildItem  -Path $exportFolder -recurse |? {
     }
 }
 
-#Swap theme file and import reports
+# Swap theme file and import reports
 
 foreach($themeFile in $themeFiles)
 {
@@ -39,6 +43,6 @@ foreach($themeFile in $themeFiles)
 
     $reportFolder = "$($themeFile.DirectoryName)\..\.."
 
-    Import-FabricItems -workspaceId $workspaceId -path $reportFolder
+    Import-FabricItems -workspaceId $workspace.id -path $reportFolder
 }
 

@@ -365,11 +365,26 @@ Function Get-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [string]$workspaceName
     )
       
     $result = Invoke-FabricAPIRequest -Uri "workspaces" -Method Get
 
-    Write-Output $result
+    if ($workspaceName)
+    {
+        $workspace = $result |? {$_.displayName -ieq $workspaceName}
+
+        if (!$workspace)
+        {
+            throw "Cannot find workspace '$workspaceName'"
+        }
+
+        Write-Output $workspace
+    }
+    else
+    {
+        Write-Output $result
+    }
     
 }
 
@@ -475,11 +490,15 @@ Function Export-FabricItems {
                     
                     $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
 
-                    New-Item -ItemType Directory -Path (Split-Path $outputFilePath -Parent) -ErrorAction SilentlyContinue | Out-Null
+                    $parentFolderPath = Split-Path $outputFilePath -Parent
+
+                    New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
+
+                    $parentFolderPath = Resolve-Path $parentFolderPath
 
                     $bytes = [Convert]::FromBase64String($part.payload)
 
-                    [IO.File]::WriteAllBytes($outputFilePath, $bytes)
+                    Set-Content $outputFilePath $bytes -AsByteStream                
                 }
 
                 @{
@@ -644,7 +663,8 @@ Function Import-FabricItems {
             else {                
                 if ($filePath -like "*.pbir") {                  
     
-                    $pbirJson = Get-Content -Path $filePath | ConvertFrom-Json
+                    $fileContentText = Get-Content -Path $filePath
+                    $pbirJson = $fileContentText | ConvertFrom-Json
 
                     if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
 
@@ -680,6 +700,10 @@ Function Import-FabricItems {
                         {
                             throw "Item API dont support byPath connection, switch the connection in the *.pbir file to 'byConnection'."
                         }
+                    }
+                    # if its byConnection then just send original
+                    else {
+                        $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContentText)
                     }
                 }
                 else

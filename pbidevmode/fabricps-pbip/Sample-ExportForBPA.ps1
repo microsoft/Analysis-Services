@@ -4,6 +4,8 @@ Set-Location $currentPath
 
 Import-Module ".\FabricPS-PBIP" -Force
 
+Set-FabricAuthToken -reset
+
 #$workspaces = @("d036b3f6-049e-4757-b1cd-80ea88dfbac5", "409a6698-e92d-432c-9901-179107aecf03")
 $workspaces = @("9e34f19a-dec9-4405-88a9-f09b8c99310f")
 $exportLocation = "$currentPath\export\rules"

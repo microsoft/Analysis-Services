@@ -4,8 +4,6 @@ Set-Location $currentPath
 
 Import-Module ".\FabricPS-PBIP" -Force
 
-Invoke-FabricAPIRequest -uri "workspaces"
-
 Set-FabricAuthToken -reset
 
 Invoke-FabricAPIRequest -uri "workspaces"

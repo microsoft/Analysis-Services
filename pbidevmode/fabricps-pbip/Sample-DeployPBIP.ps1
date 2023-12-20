@@ -4,7 +4,9 @@ Set-Location $currentPath
 
 Import-Module ".\FabricPS-PBIP" -Force
 
-$workspaceName = "RR - FabricAPIs - DeployTest"
+Set-FabricAuthToken -reset
+
+$workspaceName = "RR-APIsDemo-DeployPBIP"
 $pbipPath = "$currentPath\SamplePBIP"
 
 # Ensure workspace exists
