@@ -11,7 +11,7 @@ parameters:
   - name: workspaceName
     displayName: Workspace name to deploy?
     type: string
-    default: 'CICDFabricAPITest'
+    default: '<Set Workspace Name>'
   - name: adminPrincipalId
     displayName: Admin PrincipalId to be added as workspace admin?
     type: string
@@ -60,8 +60,8 @@ stages:
                         Write-Host "##[debug]Downloading FabricPS-PBIP module"
 
                         @(
-                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/fabricps-pbip/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
-                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/fabricps-pbip/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
+                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
+                            "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
                                 
                                 Invoke-WebRequest -Uri $_ -OutFile "$workingFolder\modules\$(Split-Path $_ -Leaf)"
 
