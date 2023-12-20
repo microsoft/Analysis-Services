@@ -16,9 +16,3 @@ $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
 # Import the PBIP to service
 
 Import-FabricItems -workspaceId $workspaceId -path $pbipPath
-
-
-
-
-
-

@@ -15,7 +15,7 @@ parameters:
   - name: adminPrincipalId
     displayName: Admin PrincipalId to be added as workspace admin?
     type: string
-    default: '<Admin Object Id>'
+    default: '<Set Admin Object Id>'
 
 
 trigger:

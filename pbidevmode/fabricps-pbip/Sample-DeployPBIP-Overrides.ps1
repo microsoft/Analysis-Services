@@ -53,9 +53,3 @@ $fileOverrides = @{
 }
 
 $deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.report" -fileOverrides $fileOverrides
-
-
-
-
-
-
