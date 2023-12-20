@@ -17,3 +17,5 @@ _tools/*
 **/.nuget
 
 Sample-*
+
+/modules

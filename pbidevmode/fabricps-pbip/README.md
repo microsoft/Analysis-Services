@@ -1,58 +1,74 @@
-# Requirements
+# Setup
 
 The FabricPS-PBIP module has a dependency to Az.Accounts module for authentication into Fabric.
 
-Run the following command before importing FabricPS-PBIP to ensure the "Az.Accounts" is installed in your machine:
+Before running the sample scripts below, run the following script to download and install 'fabricps-pbip' module including it's dependencies:
 
 ```powershell
-Install-Module Az.Accounts
+
+New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | Out-Null
+
+@("https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1"
+, "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
+
+    Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
+}
+
+if(-not (Get-Module Az.Accounts -ListAvailable)) { 
+    Install-Module Az.Accounts -Scope CurrentUser -Force
+}
+
+Import-Module ".\modules\FabricPS-PBIP" -Force
+
 ```
 
-# Export items from workspace
+# Authentication
+
+To call the Fabric API you must authenticate with a user account or Service Principal. Learn more about service principals and how to enable them [here](https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal).
+
+## With user account
 
 ```powershell
-
-Import-Module ".\FabricPS-PBIP" -Force
-
-# Force authentication prompt
 Set-FabricAuthToken -reset
-
-Export-FabricItems -workspaceId "[Workspace Id]" -path '[Export folder file path]'
-
 ```
 
-# Import PBIP content to workspace
+## With service principal (spn)
 
 ```powershell
+Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset
+```
 
-Import-Module ".\FabricPS-PBIP" -Force
+# Sample - Import PBIP to workspace
 
-Set-FabricAuthToken -reset
+```powershell
 
 Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
 
 ```
 
-# Import PBIP content to multiple Workspaces and file overrides
+# Sample - Export items from workspace
+
+```powershell
+
+Export-FabricItems -workspaceId "[Workspace Id]" -path '[Export folder file path]'
+
+```
+
+# Sample - Import PBIP content to multiple Workspaces with file override
 
 
 ```powershell
 
-Import-Module ".\FabricPS-PBIP" -Force
-
-Set-FabricAuthToken -reset
-
-$workspaceName = "RR-APIsDemo-DeployPBIP"
+$pbipPath = "[PBIP Path]"
+$workspaceName = "[Workspace Name]"
 $workspaceDatasets = "$workspaceName-Models"
 $workspaceReports = "$workspaceName-Reports"
 
-$pbipPath = "$currentPath\SamplePBIP"
-
 # Deploy Dataset
 
-$workspaceId = New-FabricWorkspace  -name $workspaceDatasets -skipErrorIfExists
+$workspaceId = New-FabricWorkspace -name $workspaceDatasets -skipErrorIfExists
 
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\sales.dataset"
+$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.dataset"
 
 # Deploy Report
 
@@ -84,7 +100,7 @@ $fileOverrides = @{
 
     "*.report\item.metadata.json" = @{
         "type" = "report"
-        "displayName" = "Sales-NewName"
+        "displayName" = "Report NewName"
     } | ConvertTo-Json
 }
 
@@ -92,21 +108,31 @@ $deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filt
 
 ```
 
-# Create Workspace with permissions
+# Sample - Import PBIP overriding semantic model parameters
 
 ```powershell
-Import-Module ".\FabricPS-PBIP" -Force
 
-Set-FabricAuthToken -reset
+$pbipPath = "[PBIP Path]"
+$workspaceId = "[Workspace Id]"
 
-$workspaceName = "RR-APIsDemo-TestPermissions"
+Set-SemanticModelParameters -path "$pbipPath\[Name].Dataset" -parameters @{"Parameter1"= "Parameter1Value"}
+
+Import-FabricItems -workspaceId $workspaceId -path $pbipPath
+
+```
+
+# Sample - Create Workspace and set permissions
+
+```powershell
+
+$workspaceName = "[Workspace Name]"
 
 $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
 
 $workspacePermissions = @(
     @{
     "principal" = @{
-        "id" = "<User Principal Id1>"
+        "id" = "[User Principal Id1]"
         "type" = "user"
     }
     "role"= "Admin"
@@ -114,7 +140,7 @@ $workspacePermissions = @(
     ,
     @{
     "principal" = @{
-        "id" = "<User Principal Id2>"
+        "id" = "[User Principal Id2]"
         "type" = "user"
     }
     "role"= "Member"
@@ -122,9 +148,10 @@ $workspacePermissions = @(
 )
 
 Set-FabricWorkspacePermissions -workspaceId $workspaceId -permissions $workspacePermissions
+
 ```
 
-# Invoke Fabric API
+# Sample - Invoke any Fabric API
 
 ```powershell
 
@@ -134,18 +161,4 @@ Set-FabricAuthToken -reset
 
 Invoke-FabricAPIRequest -uri "workspaces"
 
-```
-
-# Deploy PBIP overriding semantic model parameters
-
-```powershell
-Import-Module ".\FabricPS-PBIP" -Force
-
-$pbipPath = "$currentPath\SamplePBIP"
-
-$workspaceId = "4d8c00a0-4204-4db3-8bce-2ae691b25684"
-
-Set-SemanticModelParameters -path "$pbipPath\Sales.Dataset" -parameters @{"Environment"= "DEV"}
-
-Import-FabricItems -workspaceId $workspaceId -path $pbipPath
 ```
