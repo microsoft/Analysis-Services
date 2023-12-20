@@ -820,7 +820,9 @@ Function Set-SemanticModelParameters {
     (
         [string]$path = $null
         ,
-        [hashtable]$parameters = $null 
+        [hashtable]$parameters = $null
+        ,
+        [switch]$failIfNotFound
     )
 
     # TODO: Add support to TMDL
@@ -841,6 +843,8 @@ Function Set-SemanticModelParameters {
 
     # Set expression parameters
 
+    $changedFlag = $false
+
     $parameters.GetEnumerator() |? {
 
         $parameterName = $_.Name
@@ -850,22 +854,35 @@ Function Set-SemanticModelParameters {
 
         if (!$modelExpression)
         {
-            throw "Cannot find model expression '$parameterName'"
+            if ($failIfNotFound)
+            {
+                throw "Cannot find model expression '$parameterName'"
+            }
+            else {
+                Write-Host "Cannot find model expression '$parameterName'"
+            }
+        }
+        else
+        {
+            Write-Host "Changing model expression '$parameterName'"
+            $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta","""$parameterValue"" meta"
+            $changedFlag = $true
+        }
+    }
+
+    if ($changedFlag)
+    {
+        $serializeOptions = New-Object Microsoft.AnalysisServices.Tabular.SerializeOptions
+        
+        if ([string]::IsNullOrEmpty($database.Name))
+        {
+            # If serialized without name an error is thrown later on deserialize. TODO: Review
+
+            $database.Name = "Unknown"
         }
 
-        $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta","""$parameterValue"" meta"
+        $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
+
+        $modelText | Out-File $modelPath -Force
     }
-
-    $serializeOptions = New-Object Microsoft.AnalysisServices.Tabular.SerializeOptions
-    
-    if ([string]::IsNullOrEmpty($database.Name))
-    {
-        # If serialized without name an error is thrown later on deserialize
-
-        $database.Name = "Unknown"
-    }
-
-    $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
-
-    $modelText | Out-File $modelPath -Force
 }

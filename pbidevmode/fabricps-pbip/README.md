@@ -28,38 +28,28 @@ Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
 
 ```
 
-# Import PBIP content to workspace with overrides
+# Import PBIP content to multiple Workspaces
 
 ```powershell
 
 Import-Module ".\FabricPS-PBIP" -Force
 
-$workspaceName = "[Workspace Name]"
-$datasetName = "[Dataset Name]"
-$reportName = "[Report Name]"
-$pbipDatasetPath = "[Path to Dataset PBIP folder]"
-$pbipReportPath = "[Path to Report PBIP folder]"
+$workspaceDatasets = "RR - FabricAPIs - Deploy [Datasets]"
+$workspaceReports = "RR - FabricAPIs - Deploy [Reports]"
 
-# Ensure workspace exists
-
-$workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
-
-if (!$workspaceId) { throw "WorkspaceId cannot be null"}
+$pbipPath = "$currentPath\SamplePBIP"
 
 # Deploy Dataset
 
-$fileDatasetOverrides = @{    
-    "*item.metadata.json" = @{
-        "type" = "dataset"
-        "displayName" = $datasetName
-    } | ConvertTo-Json
-}
+$workspaceId = New-FabricWorkspace  -name $workspaceDatasets -skipErrorIfExists
 
-$datasetId = Import-FabricItems -workspaceId $workspaceId -path $pbipDatasetPath -fileOverrides $fileDatasetOverrides
+$dataset = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\sales.dataset"
 
 # Deploy Report
 
-$fileReportOverrides = @{
+$workspaceId = New-FabricWorkspace  -name $workspaceReports -skipErrorIfExists
+
+$fileOverrides = @{
     
     # Change the connected dataset
 
@@ -70,7 +60,7 @@ $fileReportOverrides = @{
             "connectionString" = $null
             "pbiServiceModelId" = $null
             "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-            "pbiModelDatabaseName" = "$datasetId"                
+            "pbiModelDatabaseName" = "$($dataset.id)"                
             "name" = "EntityDataSource"
             "connectionType" = "pbiServiceXmlaStyleLive"
             }
@@ -79,20 +69,9 @@ $fileReportOverrides = @{
 
     # Change logo
 
-    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = [System.IO.File]::ReadAllBytes("$currentPath\sample-resources\logo2.jpg")
-
-    # Change theme
-    
-    "*Light4437032645752863.json" = [System.IO.File]::ReadAllBytes("$currentPath\sample-resources\theme_dark.json")
-
-    # Report Name
-
-    "*item.metadata.json" = @{
-            "type" = "report"
-            "displayName" = $reportName
-        } | ConvertTo-Json
+    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = "$currentPath\sample-resources\logo2.jpg"
 }
 
-$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipReportPath -fileOverrides $fileReportOverrides
+$reportId = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.report" -fileOverrides $fileOverrides
 
 ```

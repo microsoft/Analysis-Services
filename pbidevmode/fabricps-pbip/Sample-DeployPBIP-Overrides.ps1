@@ -38,6 +38,12 @@ $fileOverrides = @{
     "*Light4437032645752863.json" = [System.IO.File]::ReadAllBytes("$currentPath\sample-resources\theme_dark.json")
 }
 
+# Define semantic model parameters
+
+Set-SemanticModelParameters -path "$pbipPath\Sales.Dataset" -parameters @{
+    "Environment" = "dev"
+}
+
 Import-FabricItems -workspaceId $workspaceId -path $pbipPath -fileOverrides $fileOverrides
 
 
