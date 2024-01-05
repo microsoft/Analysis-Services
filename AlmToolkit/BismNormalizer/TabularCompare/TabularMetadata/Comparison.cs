@@ -15,6 +15,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private TabularModel _sourceTabularModel;
         private TabularModel _targetTabularModel;
         private bool _uncommitedChanges = false;
+        private bool _metadataResyncRequired = false;
         private DateTime _lastSourceSchemaUpdate = DateTime.MinValue;
         private DateTime _lastTargetSchemaUpdate = DateTime.MinValue;
         private bool _disposed = false;
@@ -39,6 +40,15 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             get { return _targetTabularModel; }
             set { _targetTabularModel = value; }
+        }
+
+        /// <summary>
+        /// Sometimes need to resync metadata to avoid validation errors. For example if a compat level upgrade just happened.
+        /// </summary>
+        public bool MetadataResyncRequired
+        {
+            get { return _metadataResyncRequired; }
+            set { _metadataResyncRequired = value; }
         }
 
         #endregion
@@ -654,7 +664,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 reconnect = true;
             }
 
-            if (reconnect || _uncommitedChanges)
+            if (reconnect || _uncommitedChanges || _metadataResyncRequired)
             {
                 // Reconnect to re-initialize
                 _sourceTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoSource, _comparisonInfo);
@@ -662,6 +672,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 _targetTabularModel = new TabularModel(this, _comparisonInfo.ConnectionInfoTarget, _comparisonInfo);
                 _targetTabularModel.Connect();
+
+                _metadataResyncRequired = false;
             }
 
             if (!_sourceTabularModel.ConnectionInfo.UseProject && _sourceTabularModel.TomDatabase.LastSchemaUpdate > _lastSourceSchemaUpdate)

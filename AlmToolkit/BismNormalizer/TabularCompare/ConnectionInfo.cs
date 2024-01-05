@@ -577,7 +577,8 @@ namespace BismNormalizer.TabularCompare
             Microsoft.AnalysisServices.Server amoServer = new Microsoft.AnalysisServices.Server();
             try
             {
-                amoServer.Connect(BuildConnectionString());
+                string connectionString = BuildConnectionString();
+                amoServer.Connect(connectionString);
             }
             catch (ConnectionException) when (UseProject)
             {

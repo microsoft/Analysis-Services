@@ -186,7 +186,7 @@ namespace BismNormalizer.TabularCompare
                         returnTabularComparison.TargetTabularModel.Connect();
                         returnTabularComparison.TargetTabularModel.TomDatabase.CompatibilityLevel = comparisonInfo.SourceCompatibilityLevel;
                         returnTabularComparison.TargetTabularModel.TomDatabase.Update();
-                        returnTabularComparison.Disconnect();
+                        returnTabularComparison.MetadataResyncRequired = true;
                     }
                     else
                     {
