@@ -27,6 +27,7 @@ namespace BismNormalizer.TabularCompare
         private bool _interactive = true;
         private string _appName = Utils.AssemblyProduct;
         private bool _credsProvided = false;
+        private bool _upgradeCompatLevel = false;
         private string _sourceUsername;
         private string _sourcePassword;
         private string _targetUsername;
@@ -158,6 +159,16 @@ namespace BismNormalizer.TabularCompare
         {
             get { return _credsProvided; }
             set { _credsProvided = value; }
+        }
+
+        /// <summary>
+        /// Whether to automatically upgrade the compat level if target is less than source
+        /// </summary>
+        [XmlIgnore()]
+        public bool UpgradeCompatLevel
+        {
+            get { return _upgradeCompatLevel; }
+            set { _upgradeCompatLevel = value; }
         }
 
         /// <summary>

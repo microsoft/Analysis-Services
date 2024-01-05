@@ -22,6 +22,7 @@ namespace BismNormalizer.CommandLine
             string scriptFile = null;
             List<string> skipOptions = null;
             bool credsProvided = false;
+            bool upgradeCompatLevel = false;
             string sourceUsername = "";
             string sourcePassword = "";
             string targetUsername = "";
@@ -61,6 +62,8 @@ namespace BismNormalizer.CommandLine
                     Console.WriteLine("");
                     Console.WriteLine("   /CredsProvided:True|False : User credentials from the command line to connect to Analysis Services.");
                     Console.WriteLine("");
+                    Console.WriteLine("   /UpgradeCompatLevel:True|False : Automatically upgrade target compat level if it's less than the source one.");
+                    Console.WriteLine("");
                     Console.WriteLine("   /SourceUsername:SourceUsername : Source database username.");
                     Console.WriteLine("");
                     Console.WriteLine("   /SourcePassword:SourcePassword : Source database password.");
@@ -81,6 +84,7 @@ namespace BismNormalizer.CommandLine
                 const string scriptPrefix = "/script:";
                 const string skipPrefix = "/skip:";
                 const string credsProvidedPrefix = "/credsprovided:";
+                const string upgradeCompatLevelPrefix = "/upgradecompatlevel:";
                 const string sourceUsernamePrefix = "/sourceusername:";
                 const string sourcePasswordPrefix = "/sourcepassword:";
                 const string targetUsernamePrefix = "/targetusername:";
@@ -119,6 +123,23 @@ namespace BismNormalizer.CommandLine
                         else if (credsProvidedString == "False")
                         {
                             credsProvided = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"'{args[i]}' is not a valid argument.");
+                            return ERROR_BAD_ARGUMENTS;
+                        }
+                    }
+                    else if (args[i].Length >= upgradeCompatLevelPrefix.Length && args[i].Substring(0, upgradeCompatLevelPrefix.Length).ToLower() == upgradeCompatLevelPrefix)
+                    {
+                        string upgradeCompatLevelString = args[i].Substring(upgradeCompatLevelPrefix.Length, args[i].Length - upgradeCompatLevelPrefix.Length);
+                        if (upgradeCompatLevelString == "True")
+                        {
+                            upgradeCompatLevel = true;
+                        }
+                        else if (upgradeCompatLevelString == "False")
+                        {
+                            upgradeCompatLevel = false;
                         }
                         else
                         {
@@ -169,6 +190,7 @@ namespace BismNormalizer.CommandLine
                 }
                 Console.WriteLine($"About to deserialize {bsmnFile}");
                 ComparisonInfo comparisonInfo = ComparisonInfo.DeserializeBsmnFile(bsmnFile, "BISM Normalizer Command Line");
+                comparisonInfo.Interactive = false;
 
                 Console.WriteLine();
                 if (comparisonInfo.ConnectionInfoSource.UseProject)
@@ -210,6 +232,7 @@ namespace BismNormalizer.CommandLine
                         comparisonInfo.WorkspaceServer = workspaceServer;
                     }
                 }
+                comparisonInfo.UpgradeCompatLevel = upgradeCompatLevel;
                 
                 _comparison = ComparisonFactory.CreateComparison(comparisonInfo);
                 _comparison.ValidationMessage += HandleValidationMessage;

@@ -2037,7 +2037,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         private void SaveToTmdlFolder()
         {
-            TmdlSerializer.SerializeModelToFolder(_database.Model, _connectionInfo.TmdlFolder);
+            TmdlSerializer.SerializeDatabaseToFolder(_database, _connectionInfo.TmdlFolder);
         }
 
         private void SaveBimFile()

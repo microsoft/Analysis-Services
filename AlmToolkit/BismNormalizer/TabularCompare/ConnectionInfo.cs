@@ -836,19 +836,14 @@ $@"{{
         /// <returns></returns>
         public TOM.Database OpenDatabaseFromFolder()
         {
-            TOM.Model modelFromTmdl = TOM.TmdlSerializer.DeserializeModelFromFolder(_tmdlFolder);
-            string modelJson = TOM.JsonSerializer.SerializeObject(modelFromTmdl);
-            
+            TOM.Database tomDatabase = TOM.TmdlSerializer.DeserializeDatabaseFromFolder(_tmdlFolder);
+
+            string modelJson = TOM.JsonSerializer.SerializeObject(tomDatabase.Model);
             _compatibilityMode = CompatibilityMode.AnalysisServices;
             _compatibilityMode = IsPbiCompatibilityMode(modelJson)
                 ? CompatibilityMode.PowerBI
                 : CompatibilityMode.AnalysisServices;
-            
-            //TODOTMDL: compat level is in the model.tmdl file, but it's a Database property, so not being read???
-            //also how get db name?
 
-            TOM.Database tomDatabase = new TOM.Database(modelFromTmdl.Name);
-            tomDatabase.Model = modelFromTmdl.Clone();
             return tomDatabase;
         }
 
