@@ -123,12 +123,19 @@ namespace AlmToolkit
                 var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Microsoft"));
                 var releases = await client.Repository.Release.GetAll("Microsoft", "Analysis-Services");
 
-                //TODO: iterate releases and check for latest.Name starts with "ALM Toolkit"
-                var latest = releases[0];
-                _latestVersion = latest.TagName;
-                var installedVersion = new Version(Utils.AssemblyVersion);
-                var latestVersion = new Version(_latestVersion);
-                var result = latestVersion.CompareTo(installedVersion);
+                var result = 0;
+                for (int i = 0; i < releases.Count - 1; i++)
+                {
+                    if (!releases[i].Prerelease && releases[i].Name.StartsWith("ALM Toolkit"))
+                    {
+                        var latest = releases[i];
+                        _latestVersion = latest.TagName;
+                        var installedVersion = new Version(Utils.AssemblyVersion);
+                        var latestVersion = new Version(_latestVersion);
+                        result = latestVersion.CompareTo(installedVersion);
+                        break;
+                    }
+                }
 
                 if (result > 0)
                 {
