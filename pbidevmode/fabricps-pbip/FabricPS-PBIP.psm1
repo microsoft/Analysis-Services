@@ -151,7 +151,7 @@ Function Invoke-FabricAPIRequest {
         
         $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec -OutFile $outFile
 
-        $lroFailFlag = $false
+        $lroFailOrNoResultFlag = $false
 
         if ($response.StatusCode -eq 202)
         {
@@ -172,11 +172,20 @@ Function Invoke-FabricAPIRequest {
 
             if ($lroStatusContent.status -ieq "succeeded")
             {
-                $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri "$asyncUrl/result"
+                try {
+                    $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri "$asyncUrl/result"    
+                }
+                catch {
+                    $ex = $_.Exception
+                    $lroFailOrNoResultFlag = $true
+                    # Some APIs like UpdateDefinition throw a 'OperationHasNoResult' when there is no result.
+                    # TODO: Try to find a better way to handle this error.
+                    #Write-Host "Error calling /result API. $($ex.Message)"
+                }
             }
             else
             {
-                $lroFailFlag = $true
+                $lroFailOrNoResultFlag = $true
                 
                 if ($lroStatusContent.error)
                 {
@@ -187,7 +196,7 @@ Function Invoke-FabricAPIRequest {
         }
 
         #if ($response.StatusCode -in @(200,201) -and $response.Content)        
-        if (!$lroFailFlag -and $response.Content)
+        if (!$lroFailOrNoResultFlag -and $response.Content)
         {            
             $contentBytes = $response.RawContentStream.ToArray()
 
