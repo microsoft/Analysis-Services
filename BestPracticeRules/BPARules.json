@@ -593,7 +593,7 @@
     "ID": "DATECOLUMN_FORMATSTRING",
     "Name": "[Formatting] Provide format string for \"Date\" columns",
     "Category": "Formatting",
-    "Description": "Columns of type \"DateTime\" that have \"Month\" in their names should be formatted as \"mm/dd/yyyy\".",
+    "Description": "Columns of type \"DateTime\" that have \"Date\" in their names should be formatted as \"mm/dd/yyyy\".",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
     "Expression": "Name.IndexOf(\"Date\", \"OrdinalIgnoreCase\") >= 0 \r\nand \r\nDataType = \"DateTime\" \r\nand \r\nFormatString <> \"mm/dd/yyyy\"",
