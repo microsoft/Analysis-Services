@@ -128,8 +128,7 @@ Function Invoke-FabricAPIRequest {
         [Parameter(Mandatory = $false)] [ValidateSet('Get', 'Post', 'Delete', 'Put', 'Patch')] [string] $method = "Get",
         [Parameter(Mandatory = $false)] $body,        
         [Parameter(Mandatory = $false)] [string] $contentType = "application/json; charset=utf-8",
-        [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,
-        [Parameter(Mandatory = $false)] [string] $outFile,
+        [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,        
         [Parameter(Mandatory = $false)] [int] $retryCount = 0
             
     )
@@ -149,7 +148,8 @@ Function Invoke-FabricAPIRequest {
 
         Write-Verbose "Calling $requestUrl"
         
-        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec -OutFile $outFile
+        # If need to use -OutFile beware of the following breaking change: https://github.com/PowerShell/PowerShell/issues/20744
+        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec        
 
         $lroFailOrNoResultFlag = $false
 
@@ -172,15 +172,17 @@ Function Invoke-FabricAPIRequest {
 
             if ($lroStatusContent.status -ieq "succeeded")
             {
-                try {
-                    $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri "$asyncUrl/result"    
+                # Only calls /result if there is a location header, otherwise  'OperationHasNoResult' error is thrown
+
+                $resultUrl = [string]$response.Headers.Location
+
+                if ($resultUrl)
+                {
+                    $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri $resultUrl    
                 }
-                catch {
-                    $ex = $_.Exception
+                else
+                {
                     $lroFailOrNoResultFlag = $true
-                    # Some APIs like UpdateDefinition throw a 'OperationHasNoResult' when there is no result.
-                    # TODO: Try to find a better way to handle this error.
-                    #Write-Host "Error calling /result API. $($ex.Message)"
                 }
             }
             else
@@ -251,7 +253,7 @@ Function Invoke-FabricAPIRequest {
                 
                 if ($retryCount -le $maxRetries)
                 {
-                    Invoke-FabricAPIRequest -authToken $authToken -uri $uri -method $method -body $body -contentType $contentType -timeoutSec $timeoutSec -outFile $outFile -retryCount ($retryCount + 1)
+                    Invoke-FabricAPIRequest -authToken $authToken -uri $uri -method $method -body $body -contentType $contentType -timeoutSec $timeoutSec -retryCount ($retryCount + 1)
                 }
                 else {
                     throw "Exceeded the amount of retries ($maxRetries) after 429 error."
