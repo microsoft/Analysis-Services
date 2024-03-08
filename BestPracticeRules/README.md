@@ -1,16 +1,16 @@
 Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
-Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
+Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/ "PowerBI.com blog post on v1.1").
 
-Check out this blog post to learn how to quantify the savings of following specific Best Practice Rules.
+Check out [this ElegantBI.com blog post](https://www.elegantbi.com/post/bestpracticerulesavings) to learn how to quantify the savings of following specific Best Practice Rules.
 
 [![image](https://user-images.githubusercontent.com/29556918/131373174-19f31ecb-67b3-4515-83be-f6687d442053.jpg)](https://www.elegantbi.com/post/bestpracticerulesavings)
 
-Check out this blog post to learn how to export the Best Practice Analyzer results into Excel.
+Check out [this ElegantBI.com blog post](https://www.elegantbi.com/post/exportbparesults) to learn how to export the Best Practice Analyzer results into Excel.
 
 [![image](https://user-images.githubusercontent.com/29556918/136688637-f638405e-0bda-462d-8d95-00a0037000c6.jpg)](https://www.elegantbi.com/post/exportbparesults)
 
-Lastly, check out the video below for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+Lastly, check out [this YouTube video](https://www.youtube.com/watch?v=5pu9FoTUpys) for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 <a href="https://www.youtube.com/watch?v=5pu9FoTUpys
 " target="_blank"><img src="http://i3.ytimg.com/vi/5pu9FoTUpys/hqdefault.jpg" 
