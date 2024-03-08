@@ -79,7 +79,7 @@ string url = "https://raw.githubusercontent.com/microsoft/Analysis-Services/mast
 
 ## Setup (manual)
 
-1. Download the BPARules.json file from GitHub (in this repository).
+1. [Download the BPARules.json file from this repository (right-click and select "Save link as...")](https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.json).
 2. Within the Start Menu, type %localappdata% and click Enter.
 3. Navigate to the 'TabularEditor' folder (if using Tabular Editor 3, navigate to the TabularEditor3 folder).
 4. Copy the rules file (.json) and paste it into the folder from Step 3.*
