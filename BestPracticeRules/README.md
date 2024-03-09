@@ -10,7 +10,7 @@ Check out this [blog post](https://www.elegantbi.com/post/exportbparesults) to l
 
 [![image](https://user-images.githubusercontent.com/29556918/136688637-f638405e-0bda-462d-8d95-00a0037000c6.jpg)](https://www.elegantbi.com/post/exportbparesults)
 
-Lastly, check out the video below for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
+Lastly, check out this [YouTube video](https://www.youtube.com/watch?v=5pu9FoTUpys) for an in-depth walkthrough of the Best Practice Rules and [Tabular Editor](https://tabulareditor.com/ "Tabular Editor")'s [Best Practice Analyzer](https://docs.tabulareditor.com/Best-Practice-Analyzer.html "Best Practice Analyzer").
 
 <a href="https://www.youtube.com/watch?v=5pu9FoTUpys
 " target="_blank"><img src="http://i3.ytimg.com/vi/5pu9FoTUpys/hqdefault.jpg" 
