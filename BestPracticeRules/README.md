@@ -1,6 +1,6 @@
-Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
+Make sure to also check out the [PowerBI.com blog post](https://powerbi.microsoft.com/blog/best-practice-rules-to-improve-your-models-performance/ "PowerBI.com blog post") on this topic!
 
-Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/en-us/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
+Check out the [PowerBI.com blog post on v1.1](https://powerbi.microsoft.com/blog/best-practice-rules-to-improve-your-models-performance-and-design-v1-1/, "PowerBI.com blog post").
 
 Check out this blog post to learn how to quantify the savings of following specific Best Practice Rules.
 
