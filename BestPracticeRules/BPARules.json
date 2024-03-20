@@ -225,7 +225,7 @@
     "Name": "[Performance] No DAX Columns - Eliminate the use of calculated columns",
     "Category": "Performance",
     "Description": "Eliminate the use of Calcualted Columns. In addition to SQLBI's guidance that Calculated columns: do not compress as well as data columns so they take up more memory, slow down processing times for both the table as well as process recalc. Offload calculated column logic to your data warehouse and turn these calculated columns into data columns. 16 additional reasons to eliminate DAX Calculated Columns - \r\nReference: https://www.youtube.com/watch?v=oKuO0_17Y5o",
-    "Severity": 3,
+    "Severity": 2,
     "Scope": "Model",
     "Expression": "AllColumns.Where(Type.ToString() == \"Calculated\").Count() > 0",
     "CompatibilityLevel": 1200
