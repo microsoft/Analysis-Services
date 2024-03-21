@@ -46,11 +46,22 @@ stages:
                   $rulesPath = "$tempPath\Rules-Dataset.json"
               }
 
-              $itemsFolders = Get-ChildItem  -Path $path -recurse -include *.pbidataset
+              $itemsFolders = Get-ChildItem  -Path $path -recurse -include ("*.pbidataset", "*.pbism")
 
               foreach($itemFolder in $itemsFolders)
               {	
-                  $itemPath = "$($itemFolder.Directory.FullName)\Model.bim"
+                  $itemPath = "$($itemFolder.Directory.FullName)\definition"
+
+                  if (!(Test-Path $itemPath))
+                  {
+                      $itemPath = "$($itemFolder.Directory.FullName)\model.bim"
+
+                      if (!(Test-Path $itemPath))
+                      {
+                          throw "Cannot find semantic model definition."
+                      }
+
+                  }
 
                   Write-Host "##[group]Running rules for: '$itemPath'"
 
