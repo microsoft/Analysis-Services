@@ -10,7 +10,7 @@ $nugets = @(
     @{
         name = "Microsoft.AnalysisServices.NetCore.retail.amd64"
         ;
-        version = "19.72.0"
+        version = "19.77.0"
         ;
         path = @(
         "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
@@ -629,33 +629,29 @@ Function Import-FabricItems {
 
         $files = $files | ? { $_.Name -notlike "item.*.json" -and $_.Name -notlike "*.abf" -and $_.Directory.Name -notlike ".pbi" }
 
-        # There must be a item.metadata.json in the item folder containing the item type and displayname, necessary for the item creation
+        # There must be a .platform in the item folder containing the item type and displayname, necessary for the item creation
 
-        $itemMetadataStr = Get-Content "$itemPath\item.metadata.json" 
-        
+        $itemMetadataStr = Get-Content "$itemPath\.platform"
+
         $fileOverrideMatch = $null
-
         if ($fileOverridesEncoded)
         {
-            $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\item.metadata.json" -ilike $_.Name  } | select -First 1
-
+            $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\.platform" -ilike $_.Name  } | select -First 1
             if ($fileOverrideMatch) {
-            
-                Write-Host "File override 'item.metadata.json'"
-    
+                Write-Host "File override '.platform'"
                 $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
             }
         }
 
         $itemMetadata = $itemMetadataStr | ConvertFrom-Json
-        $itemType = $itemMetadata.type
-        
+        $itemType = $itemMetadata.metadata.type
+
         if ($itemType -ieq "dataset")
         {
             $itemType = "SemanticModel"
         }
 
-        $displayName = $itemMetadata.displayName
+        $displayName = $itemMetadata.metadata.displayName
 
         $itemPathAbs = Resolve-Path $itemPath
 
