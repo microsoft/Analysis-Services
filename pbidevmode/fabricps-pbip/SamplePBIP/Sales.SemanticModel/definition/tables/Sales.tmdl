@@ -1,0 +1,372 @@
+/// Sales table for year over year analysis
+table Sales
+	lineageTag: 97143e5b-7736-4fcb-8042-26b92b1f5684
+
+	measure '# Customers (with Sales)' = DISTINCTCOUNT('Sales'[CustomerKey])
+		formatString: #,##0
+		lineageTag: 4ec872f0-a42d-4aa9-bf6b-1ca7c4916336
+
+	measure '# Products (with Sales)' = DISTINCTCOUNT('Sales'[ProductKey])
+		formatString: #,##0
+		lineageTag: b11c3386-30b8-4303-8ddb-ac0d2fa7660d
+
+		changedProperty = FormatString
+
+	measure 'Sales Qty' = sum('Sales'[Quantity])
+		formatString: #,##0
+		lineageTag: c2ff8d96-2f03-4005-84df-91458625b73b
+
+	measure 'Sales Amount' = SUMX('Sales', 'Sales'[Quantity] * 'Sales'[Net Price])
+		formatString: $ #,##0
+		lineageTag: a8e95485-02a2-4525-b02a-b2418fbdbe4c
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	measure 'Sales Amount  (Δ LY)' = [Sales Amount] - [Sales Amount (LY)]
+		formatString: $ #,##0
+		lineageTag: d2724187-f1de-4a90-84bc-fc96aab3194b
+
+	/// Sales Amount Last Year considering a full month
+	/// 
+	measure 'Sales Amount (LY)' = CALCULATE([Sales Amount], SAMEPERIODLASTYEAR('Calendar'[Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 3fa889ae-64b9-4a6e-b0e6-c81c90fd32bf
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Sales Amount (YTD, LY)' = CALCULATE([Sales Amount (YTD)], SAMEPERIODLASTYEAR('Calendar'[Date]))
+		formatString: $ #,##0
+		lineageTag: 6868b958-3e8b-4e0e-ae86-8a88e4651834
+
+	measure 'Sales Amount (YTD)' = TOTALYTD([Sales Amount],'Calendar'[Date])
+		formatString: $ #,##0
+		lineageTag: aafaacd7-ff25-4a69-b8e7-f29fb02c5351
+
+	measure 'Sales Amount Avg per Day' = AVERAGEX(VALUES('Calendar'[Date]), [Sales Amount])
+		formatString: $ #,##0
+		lineageTag: 65842ce7-7176-4106-868e-2e83aaa62b4c
+
+	measure 'Sales Amount  (% Δ LY)' =
+			var ly =[Sales Amount (LY)]
+			return
+			DIVIDE(
+			        [Sales Amount]- ly,
+			        ly
+			    )
+		formatString: #,##0.00 %
+		lineageTag: f1a3a032-8cea-4b06-b85a-f6f4e03e1d9f
+
+	measure Margin = ```
+			SUMX ( 
+			    Sales, 
+			    Sales[Quantity] 
+			        * ( Sales[Net Price] - Sales[Unit Cost] )
+			)
+			```
+		formatString: $ #,##0
+		lineageTag: d22a262b-b776-4ccd-b9bd-7ef9c90eba51
+
+		kpi
+			targetExpression = ```
+				[Margin % Overall]
+				
+				```
+			statusExpression =
+				VAR MarginPercentage = [Margin %]
+				VAR MarginTolerance = 0.02
+				VAR MarginGoal = 0.3
+				RETURN
+				    IF (
+				        NOT ISBLANK ( MarginPercentage ),
+				        SWITCH (
+				            TRUE,
+				            MarginPercentage < MarginGoal - MarginTolerance, -1,     -- Negative
+				            MarginPercentage > MarginGoal + MarginTolerance, 1,      -- Positive
+				            0
+				        )
+				    )
+			trendExpression =
+				-- DAX code for Trend Expression
+				VAR MarginPerc = [Margin %]
+				VAR PrevMarginPerc =
+				    CALCULATE (
+				        [Margin %],
+				        PREVIOUSYEAR( 'Calendar'[Date] )
+				    )
+				RETURN
+				    IF (
+				        NOT ISBLANK ( MarginPerc ) && NOT ISBLANK ( PrevMarginPerc ),
+				        SWITCH (
+				            TRUE,
+				            MarginPerc > PrevMarginPerc, 1,  -- Positive
+				            MarginPerc < PrevMarginPerc, -1, -- Negative
+				            0
+				        )
+				    )
+
+		changedProperty = FormatString
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	measure 'Margin (ly)' = ```
+			CALCULATE([Margin], SAMEPERIODLASTYEAR('Calendar'[Date]))
+			
+			```
+		formatString: $ #,##0
+		lineageTag: bdf081eb-1952-439f-96b1-a27e1a13f1a3
+
+	measure '# Sales' = COUNTROWS('Sales')
+		formatString: #,##0
+		lineageTag: 67791bd1-5f33-4a29-a9ac-be0ad2453fcf
+
+		changedProperty = FormatString
+
+		changedProperty = IsHidden
+
+	measure 'Sales Qty by Delivery Date' = ```
+			CALCULATE([Sales Qty], USERELATIONSHIP('Sales'[Delivery Date],'Calendar'[Date]))
+			
+			
+			```
+		formatString: #,##0
+		lineageTag: c85c43d0-a2e1-4d90-a8a0-4009499b6eea
+
+	/// 12 Month moving average sales calculation
+	/// 
+	measure 'Sales Amount (12M average)' =
+			
+			VAR v_selDate =
+			    MAX ( 'Calendar'[Date] )
+			VAR v_period =
+			    DATESINPERIOD ( 'Calendar'[Date], v_selDate, -12, MONTH )
+			VAR v_result =
+			    CALCULATE ( AVERAGEX ( VALUES ( 'Calendar'[Date] ), [Sales Amount] ), v_period )
+			VAR v_firstDate =
+			    MINX ( v_period, 'Calendar'[Date] )
+			VAR v_lastDateSales =
+			    MAX ( Sales[Order Date] )
+			RETURN
+			    IF ( v_firstDate <= v_lastDateSales, v_result )
+		formatString: $ #,##0
+		lineageTag: 7fd60f7e-287e-46c3-a745-24c4507bc77b
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	measure 'Sales Amount (6M average)' =
+			
+			VAR v_selDate =
+			    MAX ( 'Calendar'[Date] )
+			VAR v_period =
+			    DATESINPERIOD ( 'Calendar'[Date], v_selDate, -6, MONTH )
+			VAR v_result =
+			    CALCULATE ( AVERAGEX ( VALUES ( 'Calendar'[Date] ), [Sales Amount] ), v_period )
+			VAR v_firstDate =
+			    MINX ( v_period, 'Calendar'[Date] )
+			VAR v_lastDateSales =
+			    MAX ( Sales[Order Date] )
+			RETURN
+			    IF ( v_firstDate <= v_lastDateSales, v_result )
+		formatString: $ #,##0
+		lineageTag: 9a48bea0-e5fb-40fa-9e81-f61288e31a02
+
+	measure 'Margin %' = DIVIDE ( [Margin], [Sales Amount] )
+		formatString: #,##0.00 %
+		lineageTag: 91a7a901-c646-41fe-a1ed-6e82b421d140
+
+	measure Cost = SUMX ( Sales, Sales[Quantity] * Sales[Unit Cost] )
+		formatString: $ #,##0
+		lineageTag: 3e5cb67e-a411-476f-ad34-7ec10dfd084d
+
+	measure 'Margin % Overall' = ```
+			ROUND ( CALCULATE( [Margin %], REMOVEFILTERS () ), 2 )
+			
+			```
+		formatString: #,##0.00 %
+		lineageTag: b2155351-e104-4bae-941b-3e651804cee5
+
+	column Quantity
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 0aaf711e-9b42-4cfb-9ab6-bee80e843a12
+		summarizeBy: none
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Order Number'
+		dataType: int64
+		formatString: 0
+		lineageTag: e2e629f1-f1fb-4444-a627-b121d77fdc06
+		summarizeBy: none
+		sourceColumn: Order Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Line Number'
+		dataType: int64
+		formatString: 0
+		lineageTag: d4046972-90a5-46b2-badb-709e834b99af
+		summarizeBy: none
+		sourceColumn: Line Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d2d074d6-be1f-4dfd-b826-cd99fe83bc3a
+		summarizeBy: none
+		sourceColumn: Order Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["HIDE_FOREIGN_KEYS","RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	column 'Delivery Date'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1056fc0f-d1e5-4872-a39b-25603dba5cf5
+		summarizeBy: none
+		sourceColumn: Delivery Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["HIDE_FOREIGN_KEYS","RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 4de77f33-318d-4006-85db-580cb119fc6a
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: cf26d73c-10d7-40ac-83a3-c91c04e948d8
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 595525b1-f5ca-442e-a226-0cc478b823c0
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Net Price'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: d4df8046-8db3-4910-8759-33b904a0cac6
+		summarizeBy: sum
+		sourceColumn: Net Price
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Cost'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 03a43676-2ce4-4678-a4a7-0ee8f4e00b17
+		summarizeBy: sum
+		sourceColumn: Unit Cost
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["REMOVE_REDUNDANT_COLUMNS_IN_RELATED_TABLES"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Currency Code'
+		dataType: string
+		lineageTag: a75ba79f-22a3-4bfd-9b52-80e5d73247a9
+		summarizeBy: none
+		sourceColumn: Currency Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Exchange Rate'
+		dataType: decimal
+		lineageTag: 0b3f913f-1587-4280-a8bb-21ab7d661086
+		summarizeBy: none
+		sourceColumn: Exchange Rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Environment
+		dataType: string
+		lineageTag: 05fb6ae8-19b4-40c5-81b2-e40a6edd8692
+		summarizeBy: none
+		sourceColumn: Environment
+
+		annotation SummarizationSetBy = Automatic
+
+	column Time
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 00586e3b-f4b1-4314-9cff-0a9695c99eb2
+		summarizeBy: none
+		sourceColumn: Time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	partition Sales-ddb4c40b-46fd-49ea-9a19-16e7e640a21a = m
+		mode: import
+		source =
+				let
+				    Source = #"RAW-SalesDateAdjustedAndSalesRandomized",
+				    #"Removed Columns" = Table.RemoveColumns(Source,{"Unit Price"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns",{{"Delivery Date", type datetime}, {"Order Date", type datetime}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type1", each [Order Date] >= RangeStart and [Order Date] <= RangeEnd),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Filtered Rows",{{"Delivery Date", type date}, {"Order Date", type date}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type2", "Environment", each Environment, type text)
+				in
+				    #"Added Custom"
+
+	annotation PBI_Id = 975ddcc4-65e2-4eb0-9c9c-2c5ef0586f0e
+
+	annotation LinkedQueryName = Sales
+
+	annotation PBI_ResultType = Table
+

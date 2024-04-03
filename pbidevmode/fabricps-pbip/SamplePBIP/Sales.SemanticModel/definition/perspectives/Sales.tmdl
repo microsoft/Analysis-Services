@@ -1,0 +1,94 @@
+perspective Sales
+
+	perspectiveTable Sales
+
+		perspectiveMeasure '# Customers (with Sales)'
+
+		perspectiveMeasure '# Products (with Sales)'
+
+		perspectiveMeasure 'Sales Qty'
+
+		perspectiveMeasure 'Sales Amount'
+
+		perspectiveMeasure 'Sales Amount  (Δ LY)'
+
+		perspectiveMeasure 'Sales Amount (LY)'
+
+		perspectiveMeasure 'Sales Amount (YTD, LY)'
+
+		perspectiveMeasure 'Sales Amount (YTD)'
+
+		perspectiveMeasure 'Sales Amount Avg per Day'
+
+		perspectiveMeasure 'Sales Amount  (% Δ LY)'
+
+		perspectiveMeasure Margin
+
+		perspectiveMeasure 'Margin (ly)'
+
+		perspectiveMeasure '# Sales'
+
+		perspectiveMeasure 'Sales Qty by Delivery Date'
+
+		perspectiveMeasure 'Sales Amount (12M average)'
+
+		perspectiveMeasure 'Sales Amount (6M average)'
+
+		perspectiveColumn Quantity
+
+		perspectiveColumn 'Order Number'
+
+		perspectiveColumn 'Line Number'
+
+		perspectiveColumn 'Order Date'
+
+		perspectiveColumn 'Delivery Date'
+
+		perspectiveColumn CustomerKey
+
+		perspectiveColumn StoreKey
+
+		perspectiveColumn ProductKey
+
+		perspectiveColumn 'Net Price'
+
+		perspectiveColumn 'Unit Cost'
+
+		perspectiveColumn 'Currency Code'
+
+		perspectiveColumn 'Exchange Rate'
+
+		perspectiveColumn Environment
+
+	perspectiveTable Product
+
+		perspectiveMeasure '# Products'
+
+		perspectiveColumn Product
+
+		perspectiveColumn ProductKey
+
+		perspectiveColumn 'Product Code'
+
+		perspectiveColumn Manufacturer
+
+		perspectiveColumn Brand
+
+		perspectiveColumn Color
+
+		perspectiveColumn 'Weight Unit Measure'
+
+		perspectiveColumn Weight
+
+		perspectiveColumn 'Unit Cost'
+
+		perspectiveColumn 'Unit Price'
+
+		perspectiveColumn 'Subcategory Code'
+
+		perspectiveColumn Subcategory
+
+		perspectiveColumn 'Category Code'
+
+		perspectiveColumn Category
+

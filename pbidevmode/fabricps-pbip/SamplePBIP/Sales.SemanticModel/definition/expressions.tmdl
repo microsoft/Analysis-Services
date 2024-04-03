@@ -1,0 +1,185 @@
+expression HttpSource = "https://raw.githubusercontent.com/pbi-tools/sales-sample/data/" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 39c7bef4-452b-4b29-846c-f788ef1af01f
+
+	annotation PBI_ResultType = Text
+
+expression RAW-Sales =
+		let
+		    Source = Csv.Document(Web.Contents(HttpSource, [RelativePath = "RAW-Sales.csv"]),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Column Types" = Table.TransformColumnTypes(#"Promoted Headers",{
+		        {"Order Number", Int64.Type},
+		        {"Line Number", Int64.Type},
+		        {"Order Date", type date},
+		        {"Delivery Date", type date},
+		        {"CustomerKey", Int64.Type},
+		        {"StoreKey", Int64.Type},
+		        {"ProductKey", Int64.Type},
+		        {"Quantity", Int64.Type},
+		        {"Unit Price", Currency.Type},
+		        {"Net Price", Currency.Type},
+		        {"Unit Cost", Currency.Type},
+		        {"Currency Code", type text},
+		        {"Exchange Rate", Currency.Type}}),
+		    #"Added 'Time'" = Table.AddColumn(#"Changed Column Types"
+		        , "Time"
+		        , each #time(Number.RoundDown(Number.RandomBetween(0, 23),0), Number.RoundDown(Number.RandomBetween(0, 59),0),0)
+		        , type time)
+		        in
+		    #"Added 'Time'"
+	lineageTag: a7c64317-d746-4e5a-813d-43bbf0439e23
+	queryGroup: 'Raw Data'
+
+	annotation PBI_ResultType = Table
+
+expression RAW-Product =
+		let
+		    Source = Csv.Document(Web.Contents(HttpSource, [RelativePath = "RAW-Product.csv"]),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Column Types" = Table.TransformColumnTypes(#"Promoted Headers",{
+		        {"ProductKey", Int64.Type},
+		        {"Product Code", type text},
+		        {"Product Name", type text},
+		        {"Manufacturer", type text},
+		        {"Brand", type text},
+		        {"Color", type text},
+		        {"Weight Unit Measure", type text},
+		        {"Weight", Currency.Type},
+		        {"Unit Cost", Currency.Type},
+		        {"Unit Price", Currency.Type},
+		        {"Subcategory Code", type text},
+		        {"Subcategory", type text},
+		        {"Category Code", type text},
+		        {"Category", type text}})
+		in
+		    #"Changed Column Types"
+	lineageTag: 20f062e9-ff67-42bf-9c62-97df6dc33a35
+	queryGroup: 'Raw Data'
+
+	annotation PBI_ResultType = Exception
+
+expression RAW-Customer =
+		let
+		    Source = Csv.Document(Web.Contents(HttpSource, [RelativePath = "RAW-Customer.csv"]),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Column Types" = Table.TransformColumnTypes(#"Promoted Headers",{
+		        {"CustomerKey", Int64.Type},
+		        {"Gender", type text},
+		        {"Name", type text},
+		        {"Address", type text},
+		        {"City", type text},
+		        {"State Code", type text},
+		        {"State", type text},
+		        {"Zip Code", type text},
+		        {"Country Code", type text},
+		        {"Country", type text},
+		        {"Continent", type text},
+		        {"Birthday", type date},
+		        {"Age", Int64.Type}})
+		in
+		    #"Changed Column Types"
+	lineageTag: cd034b2b-6d5e-4420-9158-90f5ead53ec3
+	queryGroup: 'Raw Data'
+
+	annotation PBI_ResultType = Table
+
+expression RAW-Store =
+		let
+		    Source = Csv.Document(Web.Contents(HttpSource , [RelativePath = "RAW-Store.csv"]),[Delimiter=",", Columns=9, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Column Types" = Table.TransformColumnTypes(#"Promoted Headers",{
+		        {"StoreKey", Int64.Type},
+		        {"Store Code", type text},
+		        {"Country", type text},
+		        {"State", type text},
+		        {"Name", type text},
+		        {"Square Meters", Int64.Type},
+		        {"Open Date", type date},
+		        {"Close Date", type date},
+		        {"Status", type text}})
+		in
+		    #"Changed Column Types"
+	lineageTag: 524dec4a-0544-44a7-8d45-cd6794082fe6
+	queryGroup: 'Raw Data'
+
+	annotation PBI_ResultType = Table
+
+expression RAW-CurrencyExchange =
+		let
+		    Source = Csv.Document(Web.Contents(HttpSource, [RelativePath = "RAW-CurrencyExchange.csv"]),[Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Column Types" = Table.TransformColumnTypes(#"Promoted Headers",{
+		        {"Date", type date},
+		        {"FromCurrency", type text},
+		        {"ToCurrency", type text},
+		        {"Exchange", Currency.Type}})
+		in
+		    #"Changed Column Types"
+	lineageTag: 78c5038c-6adf-4b1f-85fa-879cb022b266
+	queryGroup: 'Raw Data'
+
+	annotation PBI_ResultType = Table
+
+expression RangeStart = #datetime(2020, 1, 1, 0, 0, 0) meta [IsParameterQuery=true, List={#datetime(2020, 1, 1, 0, 0, 0)}, DefaultValue=#datetime(2020, 1, 1, 0, 0, 0), Type="DateTime", IsParameterQueryRequired=true]
+	lineageTag: a1a6bc94-b59e-4ec1-9b6d-cd637ebafff5
+
+	annotation PBI_ResultType = DateTime
+
+expression RangeEnd = #datetime(2023, 12, 31, 0, 0, 0) meta [IsParameterQuery=true, List={#datetime(2023, 12, 31, 0, 0, 0)}, DefaultValue=#datetime(2023, 12, 31, 0, 0, 0), Type="DateTime", IsParameterQueryRequired=true]
+	lineageTag: 3230a904-a045-4d7e-9424-64fc69c93735
+
+	annotation PBI_ResultType = DateTime
+
+expression RAW-SalesDateAdjustedAndSalesRandomized =
+		let
+		    Source = #"RAW-Sales",
+		    minDate = List.Min(Source[Order Date]),
+		    numYearsOnDummyData = 3,
+		    yearsDiff = (Date.Year(DateTime.LocalNow()) - numYearsOnDummyData) - Date.Year(minDate),
+		    #"AdjustDates" = Table.TransformColumns(Source,{
+		        {"Order Date", each Date.AddYears(_, yearsDiff)},
+		        {"Delivery Date", each Date.AddYears(_, yearsDiff)}
+		    }),
+		    #"Added [NewQuantity]" = Table.AddColumn(#"AdjustDates", "NewQuantity", each
+		        Number.RoundDown(
+		            Number.RandomBetween(
+		                List.Max({1, [Quantity] - ([Quantity] * Randomizer)}),
+		                List.Min({[Quantity], [Quantity] + ([Quantity] * Randomizer)})
+		            )
+		        )
+		        , Int64.Type
+		    ),
+		    #"Added [NewNetPrice]" = Table.AddColumn(#"Added [NewQuantity]", "NewNetPrice", each
+		        Number.Round(
+		            Number.RandomBetween(
+		                List.Max({1, [Net Price] - ([Net Price] * Randomizer)}),
+		                List.Min({[Net Price], [Net Price] + ([Net Price] * Randomizer)})
+		            ),
+		        3),
+		        Currency.Type
+		    ),
+		    #"Removed Columns" = Table.RemoveColumns(#"Added [NewNetPrice]",{"Quantity", "Net Price"}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{
+		        {"NewQuantity", "Quantity"},
+		        {"NewNetPrice", "Net Price"}
+		    })
+		in
+		    #"Renamed Columns"
+	lineageTag: 0bd410b3-1a0d-49c7-8952-7a7465778b08
+	queryGroup: 'Raw Data'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+/// Dummy parameter to simulate data from different servers
+expression Environment = "TST" meta [IsParameterQuery=true, List={"DEV", "QUAL", "PRD"}, DefaultValue="DEV", Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 64edd943-1a90-4438-b62f-bb95a9da1510
+
+	annotation PBI_ResultType = Text
+
+expression Randomizer = 0.6 meta [IsParameterQuery=true, Type="Number", IsParameterQueryRequired=true]
+	lineageTag: c92d2f56-fbbe-4162-b5ce-373932bf5cf2
+
+	annotation PBI_ResultType = Number
+

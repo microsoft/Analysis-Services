@@ -24,7 +24,7 @@ foreach ($nuget in $nugets)
 {
     Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
-    if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
+    if (!(Test-Path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
         Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
     }
     
@@ -551,9 +551,9 @@ Function Import-FabricItems {
         [hashtable]$fileOverrides
     )
 
-    # Search for folders with .pbir and .pbidataset in it
+    # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbidataset
+    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbism
 
     if ($filter) {
         $itemsInFolder = $itemsInFolder | ? { 
@@ -564,7 +564,7 @@ Function Import-FabricItems {
 
     if ($itemsInFolder.Count -eq 0)
     {
-        Write-Host "No items found in the path '$path' (*.pbir; *.pbidataset)"
+        Write-Host "No items found in the path '$path' (*.pbir; *.pbism)"
         return
     }
 
@@ -611,7 +611,7 @@ Function Import-FabricItems {
 
     # Datasets first 
 
-    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbidataset") {1} else {2} }}, * | sort-object Order    
+    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbism") {1} else {2} }}, * | sort-object Order    
 
     $datasetReferences = @{}
 
@@ -645,11 +645,6 @@ Function Import-FabricItems {
 
         $itemMetadata = $itemMetadataStr | ConvertFrom-Json
         $itemType = $itemMetadata.metadata.type
-
-        if ($itemType -ieq "dataset")
-        {
-            $itemType = "SemanticModel"
-        }
 
         $displayName = $itemMetadata.metadata.displayName
 
@@ -862,20 +857,33 @@ Function Set-SemanticModelParameters {
         [switch]$failIfNotFound
     )
 
-    # TODO: Add support to TMDL
+    $modelPath = "$path\definition"
 
-    $modelPath = "$path\model.bim"
+    $isTMSL = $false
+
+    if (!(Test-Path $modelPath))
+    {
+        $modelPath = "$path\model.bim"
+        $isTMSL = $true
+    }
 
     if (!(Test-Path $modelPath))
     {
         throw "Cannot find semantic model definition: '$modelPath'"
     }
 
-    $modelText = Get-Content $modelPath
-
     $compatibilityMode = [Microsoft.AnalysisServices.CompatibilityMode]::PowerBI
 
-    $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
+    if ($isTMSL)
+    {
+        $modelText = Get-Content $modelPath
+    
+        $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
+    }
+    else {
+        $database = [Microsoft.AnalysisServices.Tabular.TmdlSerializer]::DeserializeDatabaseFromFolder($modelPath)
+    }
+
     $database.CompatibilityMode = $compatibilityMode
 
     # Set expression parameters
@@ -918,8 +926,14 @@ Function Set-SemanticModelParameters {
             $database.Name = "Unknown"
         }
 
-        $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
+        if ($isTMSL)
+        {
+            $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
 
-        $modelText | Out-File $modelPath -Force
+            $modelText | Out-File $modelPath -Force
+        }
+        else {
+            [Microsoft.AnalysisServices.Tabular.TmdlSerializer]::SerializeDatabaseToFolder($database, $modelPath)
+        }
     }
 }

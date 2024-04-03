@@ -1,0 +1,164 @@
+/// Dynamic Measure table
+/// Useful to explore measure "as a dimension"
+table 'Dynamic Measure'
+	lineageTag: 208f785d-03c1-41ca-b33a-c56c36916caa
+
+	measure Value = ```
+			
+			IF (
+			    HASONEVALUE ( 'Dynamic Measure'[Code] ),
+			    var measureCode = SELECTEDVALUE('Dynamic Measure'[Code])
+			    return SWITCH (
+			       measureCode
+			        ,1, [Sales Amount]
+			        ,2, [Sales Amount  (% Δ LY)]
+			        ,3, [# Customers (with Sales)]   
+			        ,4, [Sales Qty]
+			        ,5, [Margin]
+			        ,BLANK ()
+			    )
+			)
+			```
+		lineageTag: 1f748dd6-758e-4445-bf6c-dab17d61d2ee
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Value (ly)' = CALCULATE ( [Value], SAMEPERIODLASTYEAR('Calendar'[Date]) )
+		lineageTag: 59781612-6890-4665-a1b2-aa25324fe896
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Value (ytd)' = CALCULATE([Value], DATESYTD('Calendar'[Date]))
+		lineageTag: b01909c9-718c-48d2-98af-482b39bf2272
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+	measure 'Value Avg per Month' = ```
+			
+			 AVERAGEX(VALUES('Calendar'[Month (Year)]), [Value])
+			```
+		lineageTag: ba87b819-2147-443b-aaeb-8ae1729c6550
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Value Daily Max' = MAXX(VALUES('Calendar'[Date]), [Value])
+		lineageTag: d8fbae5f-a0c0-4b2e-85e9-1e045d7510e0
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Value % (Δ ly)' =
+			
+			var ly =[Value (ly)]
+			return
+			DIVIDE(
+			        [Value]- ly,
+			        ly
+			    )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 897fe824-eb94-4ec9-996e-26238f4c2b23
+
+		changedProperty = FormatString
+
+	measure 'Value Normalized (by date)' = ```
+			
+			VAR DetailValue = [Value]
+			return if (DetailValue, 
+			
+			    //VAR MinOfGroup = MINX(ALLSELECTED('Calendar'[Month (Year)], 'Calendar'[MonthYearId]), [Value])
+			    //VAR MaxOfGroup = MAXX(ALLSELECTED('Calendar'[Month (Year)], 'Calendar'[MonthYearId]), [Value])
+			    VAR MinOfGroup = MINX(ALLSELECTED('Calendar'), [Value])
+			    VAR MaxOfGroup = MAXX(ALLSELECTED('Calendar'), [Value])
+			    RETURN DIVIDE(DetailValue - MinOfGroup, MaxOfGroup - MinOfGroup)
+			)
+			```
+		lineageTag: 15549406-fb29-46e8-9094-25add2c74995
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PROVIDE_FORMAT_STRING_FOR_MEASURES","INTEGER_FORMATTING"]}
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Code
+		dataType: int64
+		formatString: 0
+		lineageTag: a5db8d3b-70af-483d-bcab-5c0fcc7478c2
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Code]
+
+		annotation SummarizationSetBy = User
+
+	column Order
+		dataType: int64
+		formatString: 0
+		lineageTag: c7824b9c-021c-4bff-b363-c04b3cb2c681
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Order]
+
+		annotation SummarizationSetBy = User
+
+	column Measure
+		dataType: string
+		lineageTag: d8e3ae78-fda2-49e6-b8cb-b6257e927261
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Measure]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Area
+		dataType: string
+		lineageTag: 364ae39d-73bd-4527-91e4-0e649a23d8a7
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Area]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Format
+		dataType: string
+		lineageTag: ec17695c-dc59-4674-bdaa-bbdeb4131593
+		summarizeBy: none
+		isNameInferred
+		isDataTypeInferred
+		sourceColumn: [Format]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dynamic Measure-e40351ed-a523-4ff4-9185-7834b3fbb8e8' = calculated
+		mode: import
+		source = ```
+				
+				DATATABLE (
+				    "Code", INTEGER,
+				    "Order", INTEGER,
+				    "Measure", STRING,
+				    "Area", STRING,
+				    "Format", STRING,
+				    { 
+				        { 1, 1, "Sales Amount", "Sales", "\$#,0.00;(\$#,0.00);\$#,0.00" },
+				        { 2, 2, "Sales Growth vs LY", "Sales", "0.000%"},
+				        { 3, 4, "# Customers", "Marketing", "#,#" },              
+				        { 4, 2, "Sales Qty", "Sales", "#,#" },
+				        { 5, 2, "Sales Margin", "Sales", "\$#,0.00;(\$#,0.00);\$#,0.00" }
+				    } 
+				)
+				
+				```
+
+	annotation PBI_Id = 4d2f308d1af14ea3accf3c458621a9d7
+
+	annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["REDUCE_USAGE_OF_CALCULATED_TABLES","ENSURE_TABLES_HAVE_RELATIONSHIPS"]}
+

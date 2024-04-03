@@ -4,6 +4,9 @@ The FabricPS-PBIP module has a dependency to Az.Accounts module for authenticati
 
 Before running the sample scripts below, run the following script to download and install 'fabricps-pbip' module including it's dependencies:
 
+> **Warning**
+> This module was updated to work only with PBIP format produced by Power BI Desktop March 2024 update.
+
 ```powershell
 
 New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | Out-Null
@@ -68,7 +71,7 @@ $workspaceReports = "$workspaceName-Reports"
 
 $workspaceId = New-FabricWorkspace -name $workspaceDatasets -skipErrorIfExists
 
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.dataset"
+$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.semanticmodel"
 
 # Deploy Report
 
@@ -79,7 +82,7 @@ $fileOverrides = @{
     # Change the connected dataset
 
     "*definition.pbir" = @{
-        "version" = "1.0"
+        "version" = "4.0"
         "datasetReference" = @{          
             "byConnection" =  @{
             "connectionString" = $null
@@ -115,7 +118,7 @@ $deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filt
 $pbipPath = "[PBIP Path]"
 $workspaceId = "[Workspace Id]"
 
-Set-SemanticModelParameters -path "$pbipPath\[Name].Dataset" -parameters @{"Parameter1"= "Parameter1Value"}
+Set-SemanticModelParameters -path "$pbipPath\[Name].SemanticModel" -parameters @{"Parameter1"= "Parameter1Value"}
 
 Import-FabricItems -workspaceId $workspaceId -path $pbipPath
 
