@@ -515,7 +515,7 @@ Function Export-FabricItems {
 
                     $bytes = [Convert]::FromBase64String($part.payload)
 
-                    Set-Content $outputFilePath $bytes -AsByteStream                
+                    Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
                 }
 
                 @{
