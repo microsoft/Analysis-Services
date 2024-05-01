@@ -756,7 +756,7 @@ Function Import-FabricItems {
 
             $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
 
-            $fileEncodedContent = ($fileContent) ? [Convert]::ToBase64String($fileContent) : ""
+            $fileEncodedContent = [Convert]::ToBase64String($fileContent)
             
             Write-Output @{
                 Path        = $partPath
@@ -976,7 +976,7 @@ Function Import-FabricItem {
         
         $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
 
-        $fileEncodedContent = ($fileContent) ? [Convert]::ToBase64String($fileContent) : ""
+        $fileEncodedContent = [Convert]::ToBase64String($fileContent)
         
         Write-Output @{
             Path        = $partPath
