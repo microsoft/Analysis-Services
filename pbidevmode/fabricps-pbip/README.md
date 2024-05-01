@@ -41,13 +41,6 @@ Set-FabricAuthToken -reset
 Set-FabricAuthToken -servicePrincipalId "[AppId]" -servicePrincipalSecret "[AppSecret]" -tenantId "[TenantId]" -reset
 ```
 
-# Sample - Import PBIP to workspace
-
-```powershell
-
-Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
-
-```
 
 # Sample - Export items from workspace
 
@@ -57,57 +50,31 @@ Export-FabricItems -workspaceId "[Workspace Id]" -path '[Export folder file path
 
 ```
 
-# Sample - Import PBIP content to multiple Workspaces with file override
-
+# Sample - Import PBIP to workspace - all items
 
 ```powershell
 
-$pbipPath = "[PBIP Path]"
-$workspaceName = "[Workspace Name]"
-$workspaceDatasets = "$workspaceName-Models"
-$workspaceReports = "$workspaceName-Reports"
+Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
 
-# Deploy Dataset
+```
 
-$workspaceId = New-FabricWorkspace -name $workspaceDatasets -skipErrorIfExists
+# Sample - Import PBIP to workspace - item by item
 
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.semanticmodel"
+```powershell
 
-# Deploy Report
+$semanticModelImport = Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel"
 
-$workspaceId = New-FabricWorkspace  -name $workspaceReports -skipErrorIfExists
+# Import the report and ensure its binded to the previous imported report
 
-$fileOverrides = @{
-    
-    # Change the connected dataset
+$reportImport = Import-FabricItem -workspaceId $workspaceId -path "[PBIP Path]\[Name].Report" -itemProperties @{"semanticModelId"=$semanticModelImport.Id}
 
-    "*definition.pbir" = @{
-        "version" = "4.0"
-        "datasetReference" = @{          
-            "byConnection" =  @{
-            "connectionString" = $null
-            "pbiServiceModelId" = $null
-            "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-            "pbiModelDatabaseName" = "$($deployInfo.id)"                
-            "name" = "EntityDataSource"
-            "connectionType" = "pbiServiceXmlaStyleLive"
-            }
-        }
-    } | ConvertTo-Json
+```
 
-    # Change logo
+# Sample - Import PBIP item with different display name
 
-    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = "$currentPath\sample-resources\logo2.jpg"
+```powershell
 
-    # Change Report Name
-
-    "*.report\item.metadata.json" = @{
-        "type" = "report"
-        "displayName" = "Report NewName"
-    } | ConvertTo-Json
-}
-
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.report" -fileOverrides $fileOverrides
+$semanticModelImport = Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel" -itemProperties @{"displayName"="[Semantic Model Name]"}
 
 ```
 
