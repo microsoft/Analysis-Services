@@ -74,7 +74,7 @@ $reportImport = Import-FabricItem -workspaceId $workspaceId -path "[PBIP Path]\[
 
 ```powershell
 
-$semanticModelImport = Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel" -itemProperties @{"displayName"="[Semantic Model Name]"}
+Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel" -itemProperties @{"displayName"="[Semantic Model Name]"}
 
 ```
 
