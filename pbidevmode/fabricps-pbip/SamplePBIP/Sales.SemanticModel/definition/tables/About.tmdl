@@ -1,0 +1,48 @@
+/// Table with information about the model.
+/// Key/Value representation, with properties like: last refresh; model creator;...
+table About
+	lineageTag: 68907830-e8ac-4c12-98d9-f70711413080
+
+	column Key
+		dataType: string
+		lineageTag: 64fdcf75-33e0-4134-a5b8-677f8fefa7ed
+		summarizeBy: none
+		sourceColumn: Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: string
+		lineageTag: 41af608f-f46f-4878-be03-184d0cad44cf
+		summarizeBy: none
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+	column Order
+		dataType: int64
+		formatString: 0
+		lineageTag: 93bae8d8-9794-480e-8753-d51693dfa9ad
+		summarizeBy: none
+		sourceColumn: Order
+
+		annotation SummarizationSetBy = User
+
+	partition About-77c21240-7751-4575-bf40-8c068bfd01cd = m
+		mode: import
+		source =
+				let
+				    Source = #table({ "Key", "Value" },{
+				        { "Developed by", "Microsoft" },
+				        { "Version", "1.0" },
+				        { "Description", "Sales.pbip" },
+				        { "Last Refresh", DateTime.ToText(DateTime.LocalNow(), "yyyy-MM-dd HH:mm:ss") }
+				    }),
+				    #"Added Index" = Table.AddIndexColumn(Source, "Order", 1, 1),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Index",{{"Key", type text},  {"Value", type text},{"Order", Int64.Type}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Changed Type",{"Key", "Value", "Order"})
+				in
+				    #"Reordered Columns"
+
+	annotation PBI_ResultType = Table
+

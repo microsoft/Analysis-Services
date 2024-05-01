@@ -10,7 +10,7 @@ $nugets = @(
     @{
         name = "Microsoft.AnalysisServices.NetCore.retail.amd64"
         ;
-        version = "19.72.0"
+        version = "19.77.0"
         ;
         path = @(
         "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
@@ -22,15 +22,16 @@ $nugets = @(
 
 foreach ($nuget in $nugets)
 {
-    Write-Host "Downloading and installing Nuget: $($nuget.name)"
+    if (!(Test-Path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
+        
+        Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
-    if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
         Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
     }
     
     foreach ($nugetPath in $nuget.path)
     {
-        Write-Debug "Loading assemblies of: '$($nuget.name)'"
+        Write-Host "Loading assembly: '$nugetPath'"
 
         $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
         
@@ -128,8 +129,7 @@ Function Invoke-FabricAPIRequest {
         [Parameter(Mandatory = $false)] [ValidateSet('Get', 'Post', 'Delete', 'Put', 'Patch')] [string] $method = "Get",
         [Parameter(Mandatory = $false)] $body,        
         [Parameter(Mandatory = $false)] [string] $contentType = "application/json; charset=utf-8",
-        [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,
-        [Parameter(Mandatory = $false)] [string] $outFile,
+        [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,        
         [Parameter(Mandatory = $false)] [int] $retryCount = 0
             
     )
@@ -149,7 +149,8 @@ Function Invoke-FabricAPIRequest {
 
         Write-Verbose "Calling $requestUrl"
         
-        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec -OutFile $outFile
+        # If need to use -OutFile beware of the following breaking change: https://github.com/PowerShell/PowerShell/issues/20744
+        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec        
 
         $lroFailOrNoResultFlag = $false
 
@@ -172,15 +173,17 @@ Function Invoke-FabricAPIRequest {
 
             if ($lroStatusContent.status -ieq "succeeded")
             {
-                try {
-                    $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri "$asyncUrl/result"    
+                # Only calls /result if there is a location header, otherwise  'OperationHasNoResult' error is thrown
+
+                $resultUrl = [string]$response.Headers.Location
+
+                if ($resultUrl)
+                {
+                    $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri $resultUrl    
                 }
-                catch {
-                    $ex = $_.Exception
+                else
+                {
                     $lroFailOrNoResultFlag = $true
-                    # Some APIs like UpdateDefinition throw a 'OperationHasNoResult' when there is no result.
-                    # TODO: Try to find a better way to handle this error.
-                    #Write-Host "Error calling /result API. $($ex.Message)"
                 }
             }
             else
@@ -251,7 +254,7 @@ Function Invoke-FabricAPIRequest {
                 
                 if ($retryCount -le $maxRetries)
                 {
-                    Invoke-FabricAPIRequest -authToken $authToken -uri $uri -method $method -body $body -contentType $contentType -timeoutSec $timeoutSec -outFile $outFile -retryCount ($retryCount + 1)
+                    Invoke-FabricAPIRequest -authToken $authToken -uri $uri -method $method -body $body -contentType $contentType -timeoutSec $timeoutSec -retryCount ($retryCount + 1)
                 }
                 else {
                     throw "Exceeded the amount of retries ($maxRetries) after 429 error."
@@ -513,7 +516,7 @@ Function Export-FabricItems {
 
                     $bytes = [Convert]::FromBase64String($part.payload)
 
-                    Set-Content $outputFilePath $bytes -AsByteStream                
+                    Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
                 }
 
                 @{
@@ -536,6 +539,10 @@ Function Import-FabricItems {
 
     .PARAMETER fileOverrides
         This parameter let's you override a PBIP file without altering the local file. 
+    
+    .PARAMETER itemProperties
+        This parameter let's you override item properties like type, displayName. 
+        E.g. -itemProperties @{"<Item Folder Name>" = @{"type" = "SemanticModel"; "displayName"="<Name of the model>"}}
     #>
     [CmdletBinding()]
     param
@@ -547,11 +554,13 @@ Function Import-FabricItems {
         [string[]]$filter = $null
         ,
         [hashtable]$fileOverrides
+        ,
+        [hashtable]$itemProperties
     )
 
-    # Search for folders with .pbir and .pbidataset in it
+    # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbidataset
+    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbism
 
     if ($filter) {
         $itemsInFolder = $itemsInFolder | ? { 
@@ -562,7 +571,7 @@ Function Import-FabricItems {
 
     if ($itemsInFolder.Count -eq 0)
     {
-        Write-Host "No items found in the path '$path' (*.pbir; *.pbidataset)"
+        Write-Host "No items found in the path '$path' (*.pbir; *.pbism)"
         return
     }
 
@@ -609,7 +618,7 @@ Function Import-FabricItems {
 
     # Datasets first 
 
-    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbidataset") {1} else {2} }}, * | sort-object Order    
+    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbism") {1} else {2} }}, * | sort-object Order    
 
     $datasetReferences = @{}
 
@@ -617,6 +626,7 @@ Function Import-FabricItems {
         
         # Get the parent folder
 
+        $itemName = $itemInFolder.Directory.Name
         $itemPath = $itemInFolder.Directory.FullName
 
         write-host "Processing item: '$itemPath'"
@@ -625,35 +635,52 @@ Function Import-FabricItems {
 
         # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
 
-        $files = $files | ? { $_.Name -notlike "item.*.json" -and $_.Name -notlike "*.abf" -and $_.Directory.Name -notlike ".pbi" }
+        $files = $files | ? { $_.Name -notlike "item.*.json" -and $_.Name -notlike "*.abf" -and $_.Directory.Name -notlike ".pbi" }        
 
-        # There must be a item.metadata.json in the item folder containing the item type and displayname, necessary for the item creation
 
-        $itemMetadataStr = Get-Content "$itemPath\item.metadata.json" 
-        
-        $fileOverrideMatch = $null
+        # Prioritizes reading the displayName and type from itemProperties parameter
+        $itemType = $null
+        $displayName = $null
 
-        if ($fileOverridesEncoded)
-        {
-            $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\item.metadata.json" -ilike $_.Name  } | select -First 1
+        if ($itemProperties -ne $null)
+        {            
+            $foundItemProperty = $itemProperties."$itemName"
 
-            if ($fileOverrideMatch) {
-            
-                Write-Host "File override 'item.metadata.json'"
+            if ($foundItemProperty)
+            {
+                $itemType = $foundItemProperty.type
     
-                $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
-            }
+                $displayName = $foundItemProperty.displayName
+            }            
         }
-
-        $itemMetadata = $itemMetadataStr | ConvertFrom-Json
-        $itemType = $itemMetadata.type
         
-        if ($itemType -ieq "dataset")
-        {
-            $itemType = "SemanticModel"
+        # Try to read the item properties from the .platform file if not found in itemProperties
+
+        if ((!$itemType -or !$displayName) -and (Test-Path "$itemPath\.platform"))
+        {            
+            $itemMetadataStr = Get-Content "$itemPath\.platform"
+
+            $fileOverrideMatch = $null
+            if ($fileOverridesEncoded)
+            {
+                $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\.platform" -ilike $_.Name  } | select -First 1
+                if ($fileOverrideMatch) {
+                    Write-Host "File override '.platform'"
+                    $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
+                }
+            }
+
+            $itemMetadata = $itemMetadataStr | ConvertFrom-Json
+
+            $itemType = $itemMetadata.metadata.type
+    
+            $displayName = $itemMetadata.metadata.displayName
         }
 
-        $displayName = $itemMetadata.displayName
+        if (!$itemType -or !$displayName)
+        {
+            throw "Cannot import item if any of the following properties is missing: itemType, displayName"
+        }
 
         $itemPathAbs = Resolve-Path $itemPath
 
@@ -738,7 +765,7 @@ Function Import-FabricItems {
             }
         }
 
-        Write-Host "Payload parts:"
+        Write-Host "Payload parts:"        
 
         $parts |% { Write-Host "part: $($_.Path)" }
 
@@ -813,6 +840,217 @@ Function Import-FabricItems {
 
 }
 
+Function Import-FabricItem {
+    <#
+    .SYNOPSIS
+        Imports items using the Power BI Project format (PBIP) into a Fabric workspace from a specified file system source.
+    
+    .PARAMETER itemProperties
+        This parameter let's you override item properties like type, displayName. 
+        E.g. -itemProperties @{"type" = "SemanticModel"; "displayName"="<Name of the model>"}
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [string]$path = '.\pbipOutput'
+        ,
+        [string]$workspaceId
+        ,
+        [hashtable]$itemProperties
+    )
+
+    # Search for folders with .pbir and .pbism in it
+
+    $itemsInFolder = Get-ChildItem -Path $path |? {@(".pbism", ".pbir")-contains $_.Extension }
+
+    if ($itemsInFolder.Count -eq 0)
+    {
+        Write-Host "Cannot find valid item definitions (*.pbir; *.pbism) in the '$path'"
+        return
+    }    
+
+    if ($itemsInFolder |? {$_.Extension -ieq ".pbir"})
+    {
+        $itemType = "Report"
+    }elseif($itemsInFolder |? {$_.Extension -ieq ".pbism"})
+    {
+        $itemType = "SemanticModel"
+    }
+    else {
+        throw "Cannot determine the itemType."
+    }
+    
+    # Get existing items of the workspace
+
+    $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
+
+    Write-Host "Existing items in the workspace: $($items.Count)"
+
+    $files = Get-ChildItem -Path $path -Recurse -Attributes !Directory
+
+    # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
+
+    $files = $files | ? { $_.Name -notlike "item.*.json" -and $_.Name -notlike "*.abf" -and $_.Directory.Name -notlike ".pbi" }        
+
+    # Prioritizes reading the displayName and type from itemProperties parameter    
+    $displayName = $null
+    
+    if ($itemProperties -ne $null)
+    {            
+        $displayName = $itemProperties.displayName         
+    }
+
+    # Try to read the item properties from the .platform file if not found in itemProperties
+
+    if ((!$itemType -or !$displayName) -and (Test-Path "$path\.platform"))
+    {            
+        $itemMetadataStr = Get-Content "$path\.platform"
+
+        $fileOverrideMatch = $null
+        if ($fileOverridesEncoded)
+        {
+            $fileOverrideMatch = $fileOverridesEncoded |? { "$path\.platform" -ilike $_.Name  } | select -First 1
+            if ($fileOverrideMatch) {
+                Write-Host "File override '.platform'"
+                $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
+            }
+        }
+
+        $itemMetadata = $itemMetadataStr | ConvertFrom-Json
+
+        $itemType = $itemMetadata.metadata.type
+
+        $displayName = $itemMetadata.metadata.displayName
+    }
+
+    if (!$itemType -or !$displayName)
+    {
+        throw "Cannot import item if any of the following properties is missing: itemType, displayName"
+    }
+
+    $itemPathAbs = Resolve-Path $path
+
+    $parts = $files | % {
+
+        $filePath = $_.FullName
+        
+        if ($filePath -like "*.pbir") {
+
+            $fileContentText = Get-Content -Path $filePath
+            $pbirJson = $fileContentText | ConvertFrom-Json
+
+            if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
+
+                $datasetId = $itemProperties.semanticModelId
+
+                if (!$datasetId)
+                {
+                    throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties' parameter."
+                }
+                
+                $newPBIR = @{
+                    "version" = "1.0"
+                    "datasetReference" = @{          
+                        "byConnection" =  @{
+                        "connectionString" = $null                
+                        "pbiServiceModelId" = $null
+                        "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                        "pbiModelDatabaseName" = "$datasetId"                
+                        "name" = "EntityDataSource"
+                        "connectionType" = "pbiServiceXmlaStyleLive"
+                        }
+                    }
+                } | ConvertTo-Json
+                
+                $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
+            }
+            # if its byConnection then just send original
+            else {
+                $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContentText)
+            }
+        }
+        else
+        {
+            $fileContent = Get-Content -Path $filePath -AsByteStream -Raw
+        }
+        
+        $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
+
+        $fileEncodedContent = [Convert]::ToBase64String($fileContent)
+        
+        Write-Output @{
+            Path        = $partPath
+            Payload     = $fileEncodedContent
+            PayloadType = "InlineBase64"
+        }
+    }
+
+    Write-Host "Payload parts:"        
+
+    $parts |% { Write-Host "part: $($_.Path)" }
+
+    $itemId = $null
+
+    # Check if there is already an item with same displayName and type
+    
+    $foundItem = $items | ? { $_.type -ieq $itemType -and $_.displayName -ieq $displayName }
+
+    if ($foundItem) {
+        if ($foundItem.Count -gt 1) {
+            throw "Found more than one item for displayName '$displayName'"
+        }
+
+        Write-Host "Item '$displayName' of type '$itemType' already exists." -ForegroundColor Yellow
+
+        $itemId = $foundItem.id
+    }
+
+    if ($itemId -eq $null) {
+        write-host "Creating a new item"
+
+        # Prepare the request                    
+
+        $itemRequest = @{ 
+            displayName = $displayName
+            type        = $itemType    
+            definition  = @{
+                Parts = $parts
+            }
+        } | ConvertTo-Json -Depth 3		
+
+        $createItemResult = Invoke-FabricAPIRequest -uri "workspaces/$workspaceId/items"  -method Post -body $itemRequest
+
+        $itemId = $createItemResult.id
+
+        write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+
+        Write-Output @{
+            "id" = $itemId
+            "displayName" = $displayName
+            "type" = $itemType 
+        }
+    }
+    else {
+        write-host "Updating item definition"
+
+        $itemRequest = @{ 
+            definition = @{
+                Parts = $parts
+            }			
+        } | ConvertTo-Json -Depth 3		
+        
+        Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
+
+        write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+
+        Write-Output @{
+            "id" = $itemId
+            "displayName" = $displayName
+            "type" = $itemType 
+        }
+    }
+}
+
 Function Remove-FabricItems {
     <#
     .SYNOPSIS
@@ -864,20 +1102,33 @@ Function Set-SemanticModelParameters {
         [switch]$failIfNotFound
     )
 
-    # TODO: Add support to TMDL
+    $modelPath = "$path\definition"
 
-    $modelPath = "$path\model.bim"
+    $isTMSL = $false
+
+    if (!(Test-Path $modelPath))
+    {
+        $modelPath = "$path\model.bim"
+        $isTMSL = $true
+    }
 
     if (!(Test-Path $modelPath))
     {
         throw "Cannot find semantic model definition: '$modelPath'"
     }
 
-    $modelText = Get-Content $modelPath
-
     $compatibilityMode = [Microsoft.AnalysisServices.CompatibilityMode]::PowerBI
 
-    $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
+    if ($isTMSL)
+    {
+        $modelText = Get-Content $modelPath
+    
+        $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
+    }
+    else {
+        $database = [Microsoft.AnalysisServices.Tabular.TmdlSerializer]::DeserializeDatabaseFromFolder($modelPath)
+    }
+
     $database.CompatibilityMode = $compatibilityMode
 
     # Set expression parameters
@@ -920,8 +1171,14 @@ Function Set-SemanticModelParameters {
             $database.Name = "Unknown"
         }
 
-        $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
+        if ($isTMSL)
+        {
+            $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
 
-        $modelText | Out-File $modelPath -Force
+            $modelText | Out-File $modelPath -Force
+        }
+        else {
+            [Microsoft.AnalysisServices.Tabular.TmdlSerializer]::SerializeDatabaseToFolder($database, $modelPath)
+        }
     }
 }
