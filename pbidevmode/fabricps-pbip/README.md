@@ -121,6 +121,47 @@ Set-FabricWorkspacePermissions -workspaceId $workspaceId -permissions $workspace
 
 ```
 
+# Sample - Deploy semantic model and bind to Shared Cloud Connection (SCC)
+
+Learn more about Sharec Cloud Connections [here](https://learn.microsoft.com/en-us/power-bi/connect-data/service-create-share-cloud-data-sources).
+
+```powershell
+
+$workspaceName = "[Workspace Name]"
+$pbipPath = "[PBIP Path]\[Name].SemanticModel"
+$connectionsToBind = @("[SCC Connection Id]")
+
+# Authenticate
+
+Set-FabricAuthToken -reset
+
+# Ensure workspace exists
+
+$workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
+
+# Import the semantic model and save the item id
+
+$semanticModelImport = Import-FabricItem -workspaceId $workspaceId -path $pbipPath
+
+# Bind to connections using PowerBI API - no need to specify the datasource, the service automatically maps the datasource to the connection
+
+Write-Host "Binding semantic model to connections"
+
+$authToken = Get-FabricAuthToken
+
+# 'gatewayObjectId' as '00000000-0000-0000-0000-000000000000 indicate the connection is a sharable cloud.
+
+$body = @{
+    "gatewayObjectId"= "00000000-0000-0000-0000-000000000000";
+    "datasourceObjectIds" = $connectionsToBind
+} | ConvertTo-Json
+
+$headers = @{'Content-Type'="application/json"; 'Authorization' = "Bearer $authToken"}
+
+Invoke-RestMethod -Headers $headers -Uri "https://api.powerbi.com/v1.0/myorg/groups/$workspaceId/datasets/$($semanticModelImport.Id)/Default.BindToGateway" -Method Post -Body $body
+
+```
+
 # Sample - Invoke any Fabric API
 
 ```powershell
