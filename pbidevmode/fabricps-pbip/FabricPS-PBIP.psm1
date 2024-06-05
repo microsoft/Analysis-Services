@@ -479,7 +479,10 @@ Function Export-FabricItems {
         $itemId = $item.id
         $itemName = $item.displayName
         $itemType = $item.type
-        $itemOutputPath = "$path\$workspaceId\$($itemName).$($itemType)"
+        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
+        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"
+        #Resolve invalid filepath chars
+        
 
         if ($itemType -in @("report", "semanticmodel")) {
             Write-Host "Getting definition of: $itemId / $itemName / $itemType"
@@ -1063,10 +1066,6 @@ Function Remove-FabricItems {
         ,
         [string]$filter = $null 
     )
-   
-    if (!$fabricHeaders) {
-        $fabricHeaders = Get-FabricHeaders
-    }
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
