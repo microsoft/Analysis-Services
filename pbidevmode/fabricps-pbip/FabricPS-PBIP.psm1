@@ -131,7 +131,6 @@ Function Invoke-FabricAPIRequest {
         [Parameter(Mandatory = $false)] [string] $contentType = "application/json; charset=utf-8",
         [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,        
         [Parameter(Mandatory = $false)] [int] $retryCount = 0
-            
     )
 
     if ([string]::IsNullOrEmpty($authToken)) {
@@ -721,22 +720,36 @@ Function Import-FabricItems {
                         
                         if ($datasetReference)
                         {
-                            $datasetName = $datasetReference.name
+                            # $datasetName = $datasetReference.name
+                            
                             $datasetId = $datasetReference.id
                             
-                            $newPBIR = @{
-                                "version" = "1.0"
-                                "datasetReference" = @{          
-                                    "byConnection" =  @{
-                                    "connectionString" = $null                
-                                    "pbiServiceModelId" = $null
-                                    "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                                    "pbiModelDatabaseName" = "$datasetId"                
-                                    "name" = "EntityDataSource"
-                                    "connectionType" = "pbiServiceXmlaStyleLive"
-                                    }
-                                }
-                            } | ConvertTo-Json
+                            $pbirJson.datasetReference.byPath = $null
+
+                            $pbirJson.datasetReference.byConnection = @{
+                                "connectionString" = $null                
+                                "pbiServiceModelId" = $null
+                                "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                                "pbiModelDatabaseName" = "$datasetId"                
+                                "name" = "EntityDataSource"
+                                "connectionType" = "pbiServiceXmlaStyleLive"
+                            }
+            
+                            $newPBIR = $pbirJson | ConvertTo-Json
+
+                            # $newPBIR = @{
+                            #     "version" = "1.0"
+                            #     "datasetReference" = @{          
+                            #         "byConnection" =  @{
+                            #         "connectionString" = $null                
+                            #         "pbiServiceModelId" = $null
+                            #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                            #         "pbiModelDatabaseName" = "$datasetId"                
+                            #         "name" = "EntityDataSource"
+                            #         "connectionType" = "pbiServiceXmlaStyleLive"
+                            #         }
+                            #     }
+                            # } | ConvertTo-Json
                             
                             $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
 
@@ -950,20 +963,33 @@ Function Import-FabricItem {
                 {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties' parameter."
                 }
+
+                $pbirJson.datasetReference.byPath = $null
+
+                $pbirJson.datasetReference.byConnection = @{
+                    "connectionString" = $null                
+                    "pbiServiceModelId" = $null
+                    "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                    "pbiModelDatabaseName" = "$datasetId"                
+                    "name" = "EntityDataSource"
+                    "connectionType" = "pbiServiceXmlaStyleLive"
+                }
+
+                $newPBIR = $pbirJson | ConvertTo-Json
                 
-                $newPBIR = @{
-                    "version" = "1.0"
-                    "datasetReference" = @{          
-                        "byConnection" =  @{
-                        "connectionString" = $null                
-                        "pbiServiceModelId" = $null
-                        "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                        "pbiModelDatabaseName" = "$datasetId"                
-                        "name" = "EntityDataSource"
-                        "connectionType" = "pbiServiceXmlaStyleLive"
-                        }
-                    }
-                } | ConvertTo-Json
+                # $newPBIR = @{
+                #     "version" = "1.0"
+                #     "datasetReference" = @{          
+                #         "byConnection" =  @{
+                #         "connectionString" = $null                
+                #         "pbiServiceModelId" = $null
+                #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                #         "pbiModelDatabaseName" = "$datasetId"                
+                #         "name" = "EntityDataSource"
+                #         "connectionType" = "pbiServiceXmlaStyleLive"
+                #         }
+                #     }
+                # } | ConvertTo-Json
                 
                 $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
             }
