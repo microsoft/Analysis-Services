@@ -62,7 +62,10 @@ namespace AlmToolkit
                 // Initialize cef with the provided settings
                 settings.CefCommandLineArgs.Add("disable-gpu", "1");
 
-                settings.BrowserSubprocessPath = @"x86\CefSharp.BrowserSubprocess.exe";
+                //settings.BrowserSubprocessPath = @"x86\CefSharp.BrowserSubprocess.exe";
+                string relativePath = @"x86\CefSharp.BrowserSubprocess.exe";
+                string absolutePath = Path.GetFullPath(relativePath);
+                settings.BrowserSubprocessPath = absolutePath;
                 //settings.BrowserSubprocessPath = string.Format(@"{0}\x86\CefSharp.BrowserSubprocess.exe", Application.StartupPath); ;
 
                 Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
@@ -73,14 +76,16 @@ namespace AlmToolkit
                 chromeBrowser.Dock = DockStyle.Fill;
                 chromeBrowser.BringToFront();
 
-                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+                //CefSharpSettings.LegacyJavascriptBindingEnabled = true;
 
                 // Initialize the interaction variable
                 _comparisonInter = new ComparisonJSInteraction(this);
 
                 // Register C# objects
-                chromeBrowser.RegisterAsyncJsObject("chromeDebugger", new ChromeDebugger(chromeBrowser, this));
-                chromeBrowser.RegisterAsyncJsObject("comparisonJSInteraction", _comparisonInter);
+                chromeBrowser.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
+
+                chromeBrowser.JavascriptObjectRepository.Register("chromeDebugger", new ChromeDebugger(chromeBrowser, this), isAsync: true, options: BindingOptions.DefaultBinder);
+                chromeBrowser.JavascriptObjectRepository.Register("comparisonJSInteraction", _comparisonInter, isAsync: true, options: BindingOptions.DefaultBinder);
             }
             catch (FileNotFoundException)
             {
@@ -95,7 +100,7 @@ namespace AlmToolkit
         private void ComparisonForm_Load(object sender, EventArgs e)
         {
             if (_comparisonInfo == null)
-            { 
+            {
                 _comparisonInfo = new ComparisonInfo();
                 _comparisonInfo.AppName = Utils.AssemblyProduct;
 
