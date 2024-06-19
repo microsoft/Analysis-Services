@@ -1,4 +1,4 @@
-export const tmdlKewords: string[] = ['true', 'false', 'none', 'null'];
+export const tmdlKewords: string[] = ['true', 'false', 'null'];
 export const tmdlTypeKewords: string[] =
   ["automatic",
     "string",

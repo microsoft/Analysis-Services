@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 import { IDisposable, languages } from 'monaco-editor/esm/vs/editor/editor.api';
-import { TmdlParserManager } from './tmdlParserManager';
+import { TmdlParserManager } from './tmdl-parser-manager';
 
 export const TmdlLanguageId = 'tmdl';
 
@@ -16,16 +16,13 @@ export class TmdlMonacoContributions {
   private static tmdlContributions: TmdlContributions;
   private static disposables: IDisposable[] = [];
 
-  public static registerLanguageContributions(language: string): TmdlContributions {
-    if (language === TmdlLanguageId) {
+  public static registerLanguageContributions(): TmdlContributions {
 
       TmdlMonacoContributions.registerTmdlContributions();
       TmdlMonacoContributions.initializeTmdlContributions();
 
-
       return this.tmdlContributions;
-    }
-    return this.tmdlContributions;
+
   }
 
   private static registerTmdlContributions(): void {
@@ -46,7 +43,7 @@ export class TmdlMonacoContributions {
     }));
 
     // Initialize the language providers
-    this.tmdlContributions.tmdlParserManager.initialize(TmdlLanguageId);
+    this.tmdlContributions.tmdlParserManager.initialize();
   }
 }
 

@@ -35,7 +35,7 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
         [/^\s*\b\w+\b\s*$/, 'variable'], //Boolean properties
         [/(\w+)(\s+)(\w+)(\s+)(['"]?[\w-]+(?:\s+[\w-]+)*['"]?)$/, ['entity', '', 'identifier', '', 'meta']], // Reference objects
         [/(\w+)(\s+)('[\w\s.-:=]+'(?:\s*\.\s*'[\w\s.-:=]+')*|[\w-]+)$/, ['entity', '', 'identifier']], //Objects        
-        [/(\w+)(\s+)(['"]?[\w-]+(?:\s+[\w-]+)*['"]?)(\s*=\s*)(.*)$/, ['entity', '', 'identifier', '', 'attribute']], //Partition
+        [/(\w+)(\s+)(['"]?.+[\w-]+(?:\s+.+)*['"]?)(\s*=\s*)(.*)$/, ['entity', '', 'identifier', '', 'attribute']], //Partition
         [/(\w+)(\s+)(\w+)(\s*)(=)(\s*)([\[\{](?:"[^"]*"|\d+(?:\.\d+)*|[^[\]{}]+)*[\]\}]|\w+)/, ['entity', '', 'identifier', '', 'operators', '', 'attribute']], //Annotation
         [/(\w+)(\s+)(\w+)(\s*)(=)(\s*)(.*)/, ['entity', '', 'identifier', '', 'operators', 'attribute']],//Annotation
         [/(\w+)(\s*=\s*)(```)/, [{ token: 'variable' }, { token: 'operators' }, { token: 'attribute', next: '@exprWithBackticks' }]], //Expression enclosed with backticks (```)

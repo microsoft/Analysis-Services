@@ -5,10 +5,10 @@ export class TmdlParserManager implements IDisposable {
 
   constructor() { }
 
-  public initialize(languageId: string): void {
+  public initialize(): void {
     this.disposables.push(editor.onDidCreateEditor(codeEditor => {
       this.disposables.push(codeEditor.onDidChangeModelContent(e => {
-        this.handleModelChange(codeEditor, "reset");
+        this.handleModelChange(codeEditor);
       }));
     }));
   }
@@ -19,7 +19,7 @@ export class TmdlParserManager implements IDisposable {
     }
   }
 
-  private handleModelChange(codeEditor: editor.ICodeEditor, editSource: string): void {
+  private handleModelChange(codeEditor: editor.ICodeEditor): void {
     codeEditor.trigger("TriggerSuggestion", "editor.action.triggerSuggest", { auto: true, completionOptions: { providerFilter: undefined, kindFilter: undefined } });
   }
 }
