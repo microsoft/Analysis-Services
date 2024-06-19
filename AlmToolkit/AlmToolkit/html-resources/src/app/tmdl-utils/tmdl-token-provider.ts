@@ -62,7 +62,10 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
 
       propertyValue: [
         { include: '@flowNumbers' },
-
+        //[
+        //  /\b\d+\b/,
+        //  { token: 'attribute' }
+        //],
         [
           /[\w-$()#.,;\\]+\s*/, // Match words followed by optional whitespace
           {
@@ -83,13 +86,13 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
 
       ],
       flowNumbers: [
-        { regex: /(?:0|[+-]?[0-9]+)(?![ \t]*\S+)/, action: { token: 'attribute' } }, // number
-        { regex: /(?:0|[+-]?[0-9]+)(?:\.[0-9]+)?(?:e[-+][1-9][0-9]*)?/, action: { token: 'attribute' } }, // number.float
-        { regex: /0o[0-7]+/, action: { token: 'attribute' } }, // number.octal
-        { regex: /0x[0-9a-fA-F]+/, action: { token: 'attribute' } }, // number.hex
-        { regex: /[+-]?\.(?:inf|Inf|INF)/, action: { token: 'attribute' } }, // number.infinity
-        { regex: /\.(?:nan|Nan|NAN)/, action: { token: 'attribute' } }, // number.nan
-        { regex: /\d{4}-\d\d-\d\d([Tt ]\d\d:\d\d:\d\d(\.\d+)?(( ?[+-]\d\d?(:\d\d)?)|Z)?)?/, action: { token: 'attribute' } }, // number.date
+        { regex: /\b(?:0|[+-]?[0-9]+)(?![ \t]*\S+)\b/, action: { token: 'attribute' } }, // number
+        { regex: /\b(?:0|[+-]?[0-9]+)(?:\.[0-9]+)?(?:e[-+][1-9][0-9]*)?\b/, action: { token: 'attribute' } }, // number.float
+        { regex: /\b0o[0-7]+\b/, action: { token: 'attribute' } }, // number.octal
+        { regex: /\b0x[0-9a-fA-F]+\b/, action: { token: 'attribute' } }, // number.hex
+        { regex: /\b[+-]?\.(?:inf|Inf|INF)\b/, action: { token: 'attribute' } }, // number.infinity
+        { regex: /\b\.(?:nan|Nan|NAN)\b/, action: { token: 'attribute' } }, // number.nan
+        { regex: /\b\d{4}-\d\d-\d\d([Tt ]\d\d:\d\d:\d\d(\.\d+)?(( ?[+-]\d\d?(:\d\d)?)|Z)?)?\b/, action: { token: 'attribute' } }, // number.date
       ]
     }
   };
