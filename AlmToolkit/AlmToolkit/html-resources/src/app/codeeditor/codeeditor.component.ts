@@ -5,7 +5,6 @@ import { lightPalette } from '../tmdl-utils/tmdl-color-palette';
 import { getMonarchTokensDefinition } from "../tmdl-utils/tmdl-token-provider";
 import { tmdlKewords, tmdlTypeKewords } from "../tmdl-utils/tmdl-types";
 import { TmdlMonacoContributions } from '../tmdl-utils/tmdl.monaco.contributions';
-/*import { TMDLSemanticTokensProvider } from "../tmdl-semanticTokenProvider";*/
 
 @Component({
   selector: 'app-codeeditor',
@@ -31,8 +30,8 @@ export class CodeeditorComponent implements OnChanges {
       return;
     }
 
-      TmdlMonacoContributions.registerLanguageContributions();
-  
+    TmdlMonacoContributions.registerLanguageContributions();
+
     const sourceDataModel = monaco.editor.createModel(this.comparisonData.SourceObjectDefinition, this.languageName);
     const targetDataModel = monaco.editor.createModel(this.comparisonData.TargetObjectDefinition, this.languageName);
 
@@ -64,7 +63,6 @@ export class CodeeditorComponent implements OnChanges {
       inherit: true, // If true, this theme inherits from other themes defined before it
       ...lightPalette,
     };
-    console.log("Check if getting called again");
     monaco.editor.defineTheme('tmdlLightTheme', tmdlLightTheme);
 
     // Set the custom theme to the editor

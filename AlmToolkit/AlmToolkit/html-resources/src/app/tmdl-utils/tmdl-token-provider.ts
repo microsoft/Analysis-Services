@@ -1,5 +1,8 @@
-
-
+//-----------------------------------------------------------------------
+// <copyright company="Microsoft Corporation">
+//        Copyright (c) Microsoft Corporation.  All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
 import { languages } from "monaco-editor";
 
 export interface MonarchTokenizer extends languages.IMonarchLanguage {
@@ -23,7 +26,7 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
     ignoreCase: true,
     tmdlKeywords: tmdlKeywords,
     tmdlTypeKeywords: tmdlTypeKeywords,
-    
+
     tokenizer: {
       root: [
         { include: '@expression' }
@@ -62,10 +65,6 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
 
       propertyValue: [
         { include: '@flowNumbers' },
-        //[
-        //  /\b\d+\b/,
-        //  { token: 'attribute' }
-        //],
         [
           /[\w-$()#.,;\\]+\s*/, // Match words followed by optional whitespace
           {
