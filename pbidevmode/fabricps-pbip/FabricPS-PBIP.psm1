@@ -520,12 +520,6 @@ Function Export-FabricItems {
 
                     Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
                 }
-
-                @{
-                    "type"        = $itemType
-                    "displayName" = $itemName
-
-                } | ConvertTo-Json | Out-File "$itemOutputPath\item.metadata.json"
             }
         }
         else {

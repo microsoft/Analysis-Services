@@ -1,0 +1,112 @@
+parameters:
+  - name: workspaceName
+    displayName: Workspace name to deploy?
+    type: string
+    default: '[Workspace Name]'
+  # Azure AD user object id, that will be added as admin in case the workspace does not exist. Learn more: https://learn.microsoft.com/en-us/partner-center/account-settings/find-ids-and-domain-names
+  - name: adminPrincipalId
+    displayName: Admin Principal Id to be added as workspace admin?
+    type: string
+    default: '[Azure AD object Id]'
+
+trigger: none
+
+pool:
+  vmimage: 'windows-latest'
+
+variables:
+  # Variable group with AppId, AppSecret and TenantId configuration. Learn more: https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml
+  - group: fabricAPISecrets
+
+stages:
+ - stage: Deploy
+   jobs:
+
+    - job: Deploy
+      steps:
+        - checkout: self
+          path: 'self'
+        - task: PowerShell@2
+          displayName: 'Download dependencies'
+          inputs:
+            pwsh: true
+            targetType: inline
+            script: |     
+                $path = "$(Build.SourcesDirectory)"
+
+                $workingFolder = "$path\.ado"
+
+                New-Item -ItemType Directory -Path "$workingFolder\modules" -ErrorAction SilentlyContinue | Out-Null
+
+                Write-Host "##[debug]Downloading FabricPS-PBIP module"
+
+                @(
+                    "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
+                    "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") |% {
+                        
+                        Invoke-WebRequest -Uri $_ -OutFile "$workingFolder\modules\$(Split-Path $_ -Leaf)"
+
+                    }
+
+                Write-Host "##[debug]Installing Az.Accounts"
+
+                if(-not (Get-Module Az.Accounts -ListAvailable)){
+                    Install-Module Az.Accounts -Scope CurrentUser -Force
+                }
+        - task: PowerShell@2
+          displayName: 'Deploy PBIP'
+          # TODO: Must change the $pbipSemanticModelPath and $pbipReportPath to the path of the PBIP semantic model and report.
+          inputs:
+            pwsh: true
+            targetType: inline
+            script: |
+              
+                $path = "$(Build.SourcesDirectory)"
+                $appId = "$(appId)"
+                $appSecret = "$(appSecret)"
+                $tenantId = "$(tenantId)"                                        
+                $workspaceName = "${{ parameters.workspaceName }}"
+                $adminPrincipalId = "${{ parameters.adminPrincipalId }}"
+
+                $pbipSemanticModelPath = "$path\[Semantic Model folder name].SemanticModel"
+                $pbipReportPath = "$path\[Report folder name].Report"
+
+                $workingFolder = "$path\.ado"
+
+                Import-Module "$workingFolder\modules\FabricPS-PBIP" -Force
+
+                Write-Host "##[debug]Authentication with SPN"
+
+                Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset       
+
+                $workspacePermissions = @{
+                    "principal" = @{
+                        "id" = "$adminPrincipalId"
+                        "type" = "user"
+                    }
+                    "role"= "Admin"
+                }
+
+                Import-Module "$workingFolder\modules\FabricPS-PBIP" -Force
+
+                Write-Host "##[debug]Authentication with SPN"
+
+                Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset                        
+
+                Write-Host "##[debug]Ensure Fabric Workspace & permissions"
+
+                $workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
+
+                Set-FabricWorkspacePermissions $workspaceId $workspacePermissions
+
+                Write-Host "##[debug]Publish Semantic Model"
+
+                $semanticModelImport = Import-FabricItem -workspaceId $workspaceId -path $pbipSemanticModelPath
+
+                Write-Host "##[debug]Publish Report"
+
+                # Import the report and ensure its binded to the previous imported report
+
+                $reportImport = Import-FabricItem -workspaceId $workspaceId -path $pbipReportPath -itemProperties @{"semanticModelId"=$semanticModelImport.Id}
+
+
