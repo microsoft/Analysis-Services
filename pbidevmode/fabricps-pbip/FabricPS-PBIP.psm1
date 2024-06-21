@@ -306,6 +306,7 @@ Function New-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$name
         ,
         [switch]$skipErrorIfExists        
@@ -355,6 +356,7 @@ Function Remove-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId     
     )
 
@@ -376,6 +378,7 @@ Function Get-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceName
     )
       
@@ -407,8 +410,10 @@ Function Set-FabricWorkspacePermissions {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
+        [Parameter(Mandatory)]
         $permissions
     )
 
@@ -456,76 +461,103 @@ Function Export-FabricItems {
     [CmdletBinding()]
     param
     (
-        [string]$path = '.\pbipOutput'
+        [Parameter(Mandatory)]
+        [string]$path
         ,
-        [string]$workspaceId = ''    
+        [Parameter(Mandatory)]
+        [string]$workspaceId  
         ,
+        # Focus only on report and semantic model, there are items that are not exportable.
         [scriptblock]$filter = {$_.type -in @("report", "SemanticModel")}
-        ,
-        [string]$format
     )    
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    if ($filter) {
-        #$items = $items | ? { $_.type -in  $itemTypes }
+    if ($filter) {        
         $items = $items | Where-Object $filter
-    }
+    }    
 
     Write-Host "Existing items: $($items.Count)"
 
     foreach ($item in $items) {
+        
         $itemId = $item.id
         $itemName = $item.displayName
         $itemType = $item.type
-        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
-        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"
-        #Resolve invalid filepath chars
         
+        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
+        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"        
+        
+        Export-FabricItem -workspaceId $workspaceId -itemId $itemId -path $itemOutputPath
+    }
+}
 
-        if ($itemType -in @("report", "semanticmodel")) {
-            Write-Host "Getting definition of: $itemId / $itemName / $itemType"
+Function Export-FabricItem {
+    <#
+    .SYNOPSIS
+        Exports item from a Fabric workspace to a specified local file system destination.
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory)]
+        [string]$workspaceId
+        ,
+        [Parameter(Mandatory)]
+        [string]$itemId
+        ,    
+        [Parameter(Mandatory)]
+        [string]$path = '.\pbipOutput'
+        ,
+        [string]$format        
+    )    
 
-            #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
+    $itemOutputPath = $path   
 
-            $response = $null
+    try {
+        Write-Host "Getting definition of: $itemId"
 
-            $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
+        #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
 
-            if ($format)
-            {
-                $getDefinitionUrl += "?format=$format"
-            }
+        $response = $null
 
-            $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
+        $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
 
-            $partCount = $response.definition.parts.Count
-
-            Write-Host "Parts: $partCount"
-            
-            if ($partCount -gt 0)
-            {
-                foreach ($part in $response.definition.parts) {
-                    Write-Host "Saving part: $($part.path)"
-                    
-                    $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
-
-                    $parentFolderPath = Split-Path $outputFilePath -Parent
-
-                    New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
-
-                    $parentFolderPath = Resolve-Path $parentFolderPath
-
-                    $bytes = [Convert]::FromBase64String($part.payload)
-
-                    Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
-                }
-            }
+        if ($format)
+        {
+            $getDefinitionUrl += "?format=$format"
         }
-        else {
-            Write-Host "Type '$itemType' not available for export."
+
+        $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
+
+        $partCount = $response.definition.parts.Count
+
+        Write-Host "Parts: $partCount"
+        
+        if ($partCount -gt 0)
+        {
+            foreach ($part in $response.definition.parts) {
+                Write-Host "Saving part: $($part.path)"
+                
+                $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
+
+                $parentFolderPath = Split-Path $outputFilePath -Parent
+
+                New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
+
+                $parentFolderPath = Resolve-Path $parentFolderPath
+
+                $bytes = [Convert]::FromBase64String($part.payload)
+
+                Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
+            }
         }
     }
+    catch{
+        $ex = $_.Exception
+
+        Write-Warning "Error exporting item '$itemId' - '$($ex.ToString())'"
+    }     
 }
 
 Function Import-FabricItems {
@@ -543,8 +575,10 @@ Function Import-FabricItems {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = '.\pbipOutput'
         ,
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
         [string[]]$filter = $null
@@ -862,8 +896,10 @@ Function Import-FabricItem {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = '.\pbipOutput'
         ,
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
         [hashtable]$itemProperties
@@ -1082,6 +1118,7 @@ Function Remove-FabricItems {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId = $null
         ,
         [string]$filter = $null 
@@ -1114,8 +1151,10 @@ Function Set-SemanticModelParameters {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = $null
         ,
+        [Parameter(Mandatory)]
         [hashtable]$parameters = $null
         ,
         [switch]$failIfNotFound
