@@ -20,22 +20,6 @@
     </NuGetPackageImportStamp>
     <CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
     <TargetFrameworkProfile />
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>Q:\Repos\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,18 +61,6 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>59149841F160DA4A2722BF068744CE40E362145F</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>AlmToolkit_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -136,9 +108,7 @@
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp">
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -192,7 +162,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="almtoolkit.pbitool.json" />
-    <None Include="AlmToolkit_TemporaryKey.pfx" />
     <None Include="app.manifest" />
     <None Include="html-resources\.angular-cli.json" />
     <None Include="html-resources\.editorconfig" />
@@ -517,11 +486,6 @@
     <TypeScriptCompile Include="html-resources\src\app\service\window-reference.service.ts" />
     <TypeScriptCompile Include="html-resources\src\app\shared\mocks\data-list.ts" />
     <TypeScriptCompile Include="html-resources\src\app\shared\model\comparison-node.ts" />
-    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-color-palette.ts" />
-    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-parser-manager.ts" />
-    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-token-provider.ts" />
-    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-types.ts" />
-    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl.monaco.contributions.ts" />
     <TypeScriptCompile Include="html-resources\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="html-resources\src\environments\environment.ts" />
     <TypeScriptCompile Include="html-resources\src\main.ts" />
@@ -534,18 +498,6 @@
       <Project>{8e68fb9b-73df-4bc3-9c56-760c87078d13}</Project>
       <Name>BismNormalizer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
