@@ -9,7 +9,8 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        "symbol-sprite.svg"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -20,8 +21,7 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/monaco-editor/min/vs/editor/editor.main.css",
-        "symbol-sprite.svg"
+        "../node_modules/monaco-editor/min/vs/editor/editor.main.css"
       ],
       "scripts": [
       ],
