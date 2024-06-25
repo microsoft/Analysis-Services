@@ -14,7 +14,7 @@ import { TmdlMonacoContributions } from '../tmdl-utils/tmdl.monaco.contributions
 
 export class CodeeditorComponent implements OnChanges {
 
-  @Input() comparisonData!: ComparisonNode | null;
+  @Input() comparisonData?: ComparisonNode | null;
   public languageName: string = 'tmdl';
   constructor() { }
 

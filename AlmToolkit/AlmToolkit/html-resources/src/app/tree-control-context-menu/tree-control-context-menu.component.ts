@@ -12,7 +12,7 @@ export class TreeControlContextMenuComponent implements OnInit {
   @Input() contextMenuPositionX = 0;
   @Input() contextMenuPositionY = 0;
   @Input() selectedNodes: number[] = [];
-  @Input() selectedCell!: HTMLElement;
+  @Input() selectedCell?: HTMLElement;
   constructor(private gridService: GridDataService, private appLog: AppLogService) { }
 
   ngOnInit() {
@@ -46,19 +46,19 @@ export class TreeControlContextMenuComponent implements OnInit {
   onKeydown(event: any) {
     event.preventDefault();
     event.stopPropagation();
-    let siblingRow!: HTMLElement |null;
+    let siblingRow: HTMLElement ;
     // This is for up and down arrow keys
     if (event.which === 38 || event.which === 40) {
       if (event.which === 38) {
-        siblingRow = this.getSiblingElement(true, event.target.id) as HTMLElement |null;
+        siblingRow = this.getSiblingElement(true, event.target.id) as HTMLElement;
       } else {
-        siblingRow = this.getSiblingElement(false, event.target.id) as HTMLElement |null;
+        siblingRow = this.getSiblingElement(false, event.target.id) as HTMLElement;
       }
       if (!siblingRow) {
         if (event.which === 38) {
-          siblingRow = document.getElementById(event.target.id)!.parentElement!.lastElementChild as HTMLElement |null;
+          siblingRow = document.getElementById(event.target.id)!.parentElement!.lastElementChild as HTMLElement;
         } else {
-          siblingRow = document.getElementById(event.target.id)!.parentElement!.firstElementChild  as HTMLElement |null;
+          siblingRow = document.getElementById(event.target.id)!.parentElement!.firstElementChild  as HTMLElement;
         }
       }
       const allOptions = document.querySelectorAll('.tree-control-context-menu-options');
@@ -72,12 +72,12 @@ export class TreeControlContextMenuComponent implements OnInit {
       const action = document.getElementById(event.target.id)!.getAttribute('data-action');
       if (action) {
         this.performAction(action);
-        document.getElementById(this.selectedCell.id)!.focus();
+        document.getElementById(this.selectedCell!.id)?.focus();
       }
     } else if (event.which === 27) {
       // This is to exit from context menu when ESC is pressed
       this.performAction('');
-      document.getElementById(this.selectedCell.id)!.focus();
+      document.getElementById(this.selectedCell!.id)?.focus();
     }
   }
 

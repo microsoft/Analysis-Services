@@ -23,6 +23,7 @@
     "monaco-editor-webpack-plugin": "^7.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "ws": "^8.17.1",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

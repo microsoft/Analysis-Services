@@ -22,7 +22,7 @@ interface ComparisonJSInteraction {
 export class GridDataService {
 
   private _window: Window;
-  private databaseObjects!: ComparisonNode[];
+  private databaseObjects?: ComparisonNode[];
 
   constructor(private logService: AppLogService, private windowRef: WindowReferenceService) {
     this._window = this.windowRef.nativeWindow;
