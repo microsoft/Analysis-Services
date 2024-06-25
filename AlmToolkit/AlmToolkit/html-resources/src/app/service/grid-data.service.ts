@@ -1,20 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
+import { Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { AppLogService } from '../app-log/app-log.service';
 import { WindowReferenceService } from './window-reference.service';
 
-import { DatabaseSourceData } from '../shared/mocks/data-list';
 import { ComparisonNode } from '../shared/model/comparison-node';
-
+declare global {
+  interface Window {
+    comparisonJSInteraction: ComparisonJSInteraction;
+  }
+}
+interface ComparisonJSInteraction {
+  getComparisonList: () => Promise<string>;
+  changeOccurred: (id: number, newAction: string, oldAction: string) => void;
+  saveOrCompare(action: string) : void;
+  performActionsOnSelectedActions(action: string,  selectedNodes: number[]) : void;
+}
 @Injectable()
 export class GridDataService {
 
   private _window: Window;
-  private databaseObjects: ComparisonNode[];
+  private databaseObjects!: ComparisonNode[];
 
   constructor(private logService: AppLogService, private windowRef: WindowReferenceService) {
     this._window = this.windowRef.nativeWindow;
@@ -23,15 +31,20 @@ export class GridDataService {
   /**
    * Get the data from the C# application
    */
+  // getGridDataToDisplay(): Observable<ComparisonNode[]> {
+  //   this.logService.add('Grid data service: Getting data from C#', 'info');
+  //   return fromPromise(this._window['comparisonJSInteraction']
+  //      .getComparisonList())
+  //      .pipe(map((data: string) => JSON.parse(data)));
+  //   //var test: Observable<ComparisonNode[]> = of(DatabaseSourceData);
+  //   //return test;
+  // }
+
   getGridDataToDisplay(): Observable<ComparisonNode[]> {
     this.logService.add('Grid data service: Getting data from C#', 'info');
-    return fromPromise(this._window['comparisonJSInteraction']
-       .getComparisonList())
-       .pipe(map((data: string) => JSON.parse(data)));
-    //var test: Observable<ComparisonNode[]> = of(DatabaseSourceData);
-    //return test;
+    return from(this._window.comparisonJSInteraction.getComparisonList())
+      .pipe(map((data: string) => JSON.parse(data) as ComparisonNode[]));
   }
-
   /**
    * Send the change done to the C# application
    * @param id - Id of the node for which action was changed

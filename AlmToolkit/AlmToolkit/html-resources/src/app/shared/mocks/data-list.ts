@@ -1,5 +1,5 @@
 import { ComparisonNode } from '../model/comparison-node';
-import { fail } from 'assert';
+// import { fail } from 'assert';
 
 
 export const DatabaseSourceData: ComparisonNode[] = [

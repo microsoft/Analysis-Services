@@ -11,12 +11,12 @@ export class TreeControlContextMenuComponent implements OnInit {
 
   @Input() contextMenuPositionX = 0;
   @Input() contextMenuPositionY = 0;
-  @Input() selectedNodes = [];
-  @Input() selectedCell;
+  @Input() selectedNodes: number[] = [];
+  @Input() selectedCell!: HTMLElement;
   constructor(private gridService: GridDataService, private appLog: AppLogService) { }
 
   ngOnInit() {
-    document.getElementById('skip-selected').focus();
+    document.getElementById('skip-selected')!.focus();
   }
 
   /**
@@ -26,7 +26,7 @@ export class TreeControlContextMenuComponent implements OnInit {
   focusElement(event: any) {
     event.preventDefault();
     if (event.target.classList && event.target.classList.contains('tree-control-context-menu-options')) {
-      document.getElementById(event.target.id).focus();
+      document.getElementById(event.target.id)!.focus();
     }
   }
 
@@ -46,19 +46,19 @@ export class TreeControlContextMenuComponent implements OnInit {
   onKeydown(event: any) {
     event.preventDefault();
     event.stopPropagation();
-    let siblingRow;
+    let siblingRow!: HTMLElement |null;
     // This is for up and down arrow keys
     if (event.which === 38 || event.which === 40) {
       if (event.which === 38) {
-        siblingRow = this.getSiblingElement(true, event.target.id);
+        siblingRow = this.getSiblingElement(true, event.target.id) as HTMLElement |null;
       } else {
-        siblingRow = this.getSiblingElement(false, event.target.id);
+        siblingRow = this.getSiblingElement(false, event.target.id) as HTMLElement |null;
       }
       if (!siblingRow) {
         if (event.which === 38) {
-          siblingRow = document.getElementById(event.target.id).parentElement.lastElementChild;
+          siblingRow = document.getElementById(event.target.id)!.parentElement!.lastElementChild as HTMLElement |null;
         } else {
-          siblingRow = document.getElementById(event.target.id).parentElement.firstElementChild;
+          siblingRow = document.getElementById(event.target.id)!.parentElement!.firstElementChild  as HTMLElement |null;
         }
       }
       const allOptions = document.querySelectorAll('.tree-control-context-menu-options');
@@ -66,18 +66,18 @@ export class TreeControlContextMenuComponent implements OnInit {
       for (optionCounter = 0; optionCounter < allOptions.length; optionCounter += 1) {
         allOptions[optionCounter].classList.remove('hover');
       }
-      siblingRow.focus();
+      siblingRow!.focus();
     } else if (event.which === 13) {
       // This is for selecting action when enter is pressed
-      const action = document.getElementById(event.target.id).getAttribute('data-action');
+      const action = document.getElementById(event.target.id)!.getAttribute('data-action');
       if (action) {
         this.performAction(action);
-        document.getElementById(this.selectedCell).focus();
+        document.getElementById(this.selectedCell.id)!.focus();
       }
     } else if (event.which === 27) {
       // This is to exit from context menu when ESC is pressed
       this.performAction('');
-      document.getElementById(this.selectedCell).focus();
+      document.getElementById(this.selectedCell.id)!.focus();
     }
   }
 
@@ -86,11 +86,11 @@ export class TreeControlContextMenuComponent implements OnInit {
    * @param prev - True if previous sibling is to be fetched and false if next sibling is to be fetched
    * @param id - Id of the element for which sibling is to be fetched
    */
-  getSiblingElement(prev: boolean, id: string): Node {
+  getSiblingElement(prev: boolean, id: string): Element|null {
     if (prev) {
-      return document.getElementById(id).previousElementSibling;
+      return document.getElementById(id)!.previousElementSibling;
     } else {
-      return document.getElementById(id).nextElementSibling;
+      return document.getElementById(id)!.nextElementSibling;
     }
   }
 }
