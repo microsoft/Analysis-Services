@@ -21,6 +21,7 @@
     "braces": "^3.0.3",
     "lodash": "^4.17.21",
     "monaco-editor-webpack-plugin": "^7.1.0",
+    "protractor": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "ws": "^8.17.1",
