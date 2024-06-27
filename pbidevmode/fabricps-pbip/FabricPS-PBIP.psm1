@@ -22,7 +22,7 @@ $nugets = @(
 
 foreach ($nuget in $nugets)
 {
-    if (!(Test-Path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
+    if (!(Test-Path -LiteralPath "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
         
         Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
@@ -33,7 +33,7 @@ foreach ($nuget in $nugets)
     {
         Write-Host "Loading assembly: '$nugetPath'"
 
-        $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
+        $path = Resolve-Path -LiteralPath (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
         
         Add-Type -Path $path -Verbose | Out-Null
     }
@@ -545,7 +545,7 @@ Function Export-FabricItem {
 
                 New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
 
-                $parentFolderPath = Resolve-Path $parentFolderPath
+                $parentFolderPath = Resolve-Path -LiteralPath $parentFolderPath
 
                 $bytes = [Convert]::FromBase64String($part.payload)
 
@@ -590,7 +590,7 @@ Function Import-FabricItems {
 
     # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbism
+    $itemsInFolder = Get-ChildItem  -LiteralPath $path -recurse -include *.pbir, *.pbism
 
     if ($filter) {
         $itemsInFolder = $itemsInFolder | ? { 
@@ -623,7 +623,7 @@ Function Import-FabricItems {
                 
                 # If its a valid path, read it as byte[]
                 
-                if (Test-Path $fileContent)
+                if (Test-Path -LiteralPath $fileContent)
                 {
                     $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
                 }
@@ -661,7 +661,7 @@ Function Import-FabricItems {
 
         write-host "Processing item: '$itemPath'"
 
-        $files = Get-ChildItem -Path $itemPath -Recurse -Attributes !Directory
+        $files = Get-ChildItem -LiteralPath $itemPath -Recurse -Attributes !Directory
 
         # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
 
@@ -686,9 +686,9 @@ Function Import-FabricItems {
         
         # Try to read the item properties from the .platform file if not found in itemProperties
 
-        if ((!$itemType -or !$displayName) -and (Test-Path "$itemPath\.platform"))
+        if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$itemPath\.platform"))
         {            
-            $itemMetadataStr = Get-Content "$itemPath\.platform"
+            $itemMetadataStr = Get-Content -LiteralPath "$itemPath\.platform"
 
             $fileOverrideMatch = $null
             if ($fileOverridesEncoded)
@@ -712,7 +712,7 @@ Function Import-FabricItems {
             throw "Cannot import item if any of the following properties is missing: itemType, displayName"
         }
 
-        $itemPathAbs = Resolve-Path $itemPath
+        $itemPathAbs = Resolve-Path -LiteralPath $itemPath
 
         $parts = $files | % {
             
@@ -735,14 +735,14 @@ Function Import-FabricItems {
             else {                
                 if ($filePath -like "*.pbir") {                  
     
-                    $fileContentText = Get-Content -Path $filePath
+                    $fileContentText = Get-Content -LiteralPath $filePath
                     $pbirJson = $fileContentText | ConvertFrom-Json
 
                     if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
 
                         # try to swap byPath to byConnection
 
-                        $reportDatasetPath = (Resolve-path (Join-Path $itemPath $pbirJson.datasetReference.byPath.path.Replace("/", "\"))).Path
+                        $reportDatasetPath = (Resolve-path -LiteralPath (Join-Path $itemPath $pbirJson.datasetReference.byPath.path.Replace("/", "\"))).Path
 
                         $datasetReference = $datasetReferences[$reportDatasetPath]       
                         
@@ -794,7 +794,7 @@ Function Import-FabricItems {
                 }
                 else
                 {
-                    $fileContent = Get-Content -Path $filePath -AsByteStream -Raw                
+                    $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw                
                 }
             }
 
@@ -907,7 +907,7 @@ Function Import-FabricItem {
 
     # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem -Path $path |? {@(".pbism", ".pbir")-contains $_.Extension }
+    $itemsInFolder = Get-ChildItem -LiteralPath $path |? {@(".pbism", ".pbir") -contains $_.Extension }
 
     if ($itemsInFolder.Count -eq 0)
     {
@@ -932,7 +932,7 @@ Function Import-FabricItem {
 
     Write-Host "Existing items in the workspace: $($items.Count)"
 
-    $files = Get-ChildItem -Path $path -Recurse -Attributes !Directory
+    $files = Get-ChildItem -LiteralPath $path -Recurse -Attributes !Directory
 
     # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
 
@@ -948,9 +948,9 @@ Function Import-FabricItem {
 
     # Try to read the item properties from the .platform file if not found in itemProperties
 
-    if ((!$itemType -or !$displayName) -and (Test-Path "$path\.platform"))
+    if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$path\.platform"))
     {            
-        $itemMetadataStr = Get-Content "$path\.platform"
+        $itemMetadataStr = Get-Content -LiteralPath "$path\.platform"
 
         $fileOverrideMatch = $null
         if ($fileOverridesEncoded)
@@ -974,7 +974,7 @@ Function Import-FabricItem {
         throw "Cannot import item if any of the following properties is missing: itemType, displayName"
     }
 
-    $itemPathAbs = Resolve-Path $path
+    $itemPathAbs = Resolve-Path -LiteralPath $path
 
     $parts = $files | % {
 
@@ -982,7 +982,7 @@ Function Import-FabricItem {
         
         if ($filePath -like "*.pbir") {
 
-            $fileContentText = Get-Content -Path $filePath
+            $fileContentText = Get-Content -LiteralPath $filePath
             $pbirJson = $fileContentText | ConvertFrom-Json
 
             if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
@@ -1030,7 +1030,7 @@ Function Import-FabricItem {
         }
         else
         {
-            $fileContent = Get-Content -Path $filePath -AsByteStream -Raw
+            $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw
         }
         
         $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
@@ -1164,13 +1164,13 @@ Function Set-SemanticModelParameters {
 
     $isTMSL = $false
 
-    if (!(Test-Path $modelPath))
+    if (!(Test-Path -LiteralPath $modelPath))
     {
         $modelPath = "$path\model.bim"
         $isTMSL = $true
     }
 
-    if (!(Test-Path $modelPath))
+    if (!(Test-Path -LiteralPath $modelPath))
     {
         throw "Cannot find semantic model definition: '$modelPath'"
     }
@@ -1179,7 +1179,7 @@ Function Set-SemanticModelParameters {
 
     if ($isTMSL)
     {
-        $modelText = Get-Content $modelPath
+        $modelText = Get-Content -LiteralPath $modelPath
     
         $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
     }
