@@ -47,6 +47,9 @@ export class GridComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.resizeComparisonTable(event);
+
+    const element = document.getElementById('code-editor-resizable');
+    element.style.removeProperty('max-height');
   }
 
 
@@ -94,8 +97,13 @@ export class GridComponent implements OnInit {
   stopDragging(event: any) {
     if (this.mouseDragged) {
       const mainContainer = document.getElementById('main-container');
-      const gridPercentageHeight = ((event.pageY - mainContainer.offsetTop) / mainContainer.offsetHeight) * 100;
-      const codeEditorPercentageHeight = 100 - gridPercentageHeight;
+      console.log("Dragged");
+      const gridHeight = (event.pageY - mainContainer.offsetTop);
+      const gridPercentageHeight = (gridHeight / mainContainer.offsetHeight) * 100;
+      const codeEditorHeight = mainContainer.offsetHeight - gridHeight - 5;
+      const codeEditorPercentageHeight = (codeEditorHeight / mainContainer.offsetHeight) * 100;
+      document.getElementById('code-editor-resizable').style.maxHeight = ((mainContainer.offsetHeight - 105) / mainContainer.offsetHeight)* 100 + '%';
+
       document.getElementById('comparison-table-container').style.height = gridPercentageHeight.toString() + '%';
       document.getElementById('code-editor-resizable').style.height = codeEditorPercentageHeight.toString() + '%';
       document.removeEventListener('mousemove', this.changeCodeEditorHeight);
@@ -110,10 +118,14 @@ export class GridComponent implements OnInit {
    */
   changeCodeEditorHeight(mouseMoveEvent: any) {
     const codeEditorResizable = document.getElementById('code-editor-resizable');
-    const comparisonTableContainer = document.getElementById('comparison-table-container');
     const mainContainer = document.getElementById('main-container');
+    document.getElementById('code-editor-resizable').style.maxHeight = ((mainContainer.offsetHeight - 105) / mainContainer.offsetHeight) * 100 + '%';
+    const comparisonTableContainer = document.getElementById('comparison-table-container');
+    const gridHeight = (mouseMoveEvent.pageY - mainContainer.offsetTop);
     const gridPercentageHeight = ((mouseMoveEvent.pageY - mainContainer.offsetTop) / mainContainer.offsetHeight) * 100;
-    const codeEditorPercentageHeight = 100 - gridPercentageHeight;
+
+    const codeEditorHeight = mainContainer.offsetHeight - gridHeight - 5;
+    const codeEditorPercentageHeight = (codeEditorHeight / mainContainer.offsetHeight) * 100;
     comparisonTableContainer.style.height = gridPercentageHeight.toString() + '%';
     codeEditorResizable.style.height = codeEditorPercentageHeight.toString() + '%';
   }

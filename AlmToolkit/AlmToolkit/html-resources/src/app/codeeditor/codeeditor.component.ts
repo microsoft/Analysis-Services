@@ -12,7 +12,7 @@ import { TmdlMonacoContributions } from '../tmdl-utils/tmdl.monaco.contributions
   styleUrls: ['./codeeditor.component.css']
 })
 
-export class CodeeditorComponent implements OnChanges {
+export class CodeeditorComponent implements OnChanges, OnInit {
 
   @Input() comparisonData: ComparisonNode;
   public languageName: string = 'tmdl';
@@ -20,6 +20,15 @@ export class CodeeditorComponent implements OnChanges {
 
   ngOnChanges(changes) {
     this.embedEditor();
+  }
+
+  ngOnInit() {
+    // Set default height of the code editor 
+    const comparisonTable = document.getElementById('comparison-table-container');
+    const mainContainer = document.getElementById('main-container');
+    const codeEditorWrapper = document.getElementById('code-editor-resizable');
+    const codeEditorWrapperHeight = mainContainer.offsetHeight - comparisonTable.offsetHeight;
+    codeEditorWrapper.style.height = ((codeEditorWrapperHeight / mainContainer.offsetHeight) * 100) + '%';
   }
 
   /**
