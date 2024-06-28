@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import * as monaco from 'monaco-editor';
 import { ComparisonNode } from '../shared/model/comparison-node';
+import { lightPalette } from '../tmdl-utils/tmdl-color-palette';
+import { getMonarchTokensDefinition } from "../tmdl-utils/tmdl-token-provider";
+import { tmdlKewords, tmdlTypeKewords } from "../tmdl-utils/tmdl-types";
+import { TmdlMonacoContributions } from '../tmdl-utils/tmdl.monaco.contributions';
 
 @Component({
   selector: 'app-codeeditor',
@@ -11,7 +15,7 @@ import { ComparisonNode } from '../shared/model/comparison-node';
 export class CodeeditorComponent implements OnChanges {
 
   @Input() comparisonData: ComparisonNode;
-
+  public languageName: string = 'tmdl';
   constructor() { }
 
   ngOnChanges(changes) {
@@ -25,8 +29,11 @@ export class CodeeditorComponent implements OnChanges {
     if (!this.comparisonData) {
       return;
     }
-    const sourceDataModel = monaco.editor.createModel(this.comparisonData.SourceObjectDefinition, 'json');
-    const targetDataModel = monaco.editor.createModel(this.comparisonData.TargetObjectDefinition, 'json');
+
+    TmdlMonacoContributions.registerLanguageContributions();
+
+    const sourceDataModel = monaco.editor.createModel(this.comparisonData.SourceObjectDefinition, this.languageName);
+    const targetDataModel = monaco.editor.createModel(this.comparisonData.TargetObjectDefinition, this.languageName);
 
     // If the container already contains an editor, remove it
     const codeEditorContainer = document.getElementById('code-editor-container');
@@ -36,6 +43,7 @@ export class CodeeditorComponent implements OnChanges {
 
     // Create diff editor with required settings
     const diffEditor = monaco.editor.createDiffEditor(codeEditorContainer, {
+
       scrollBeyondLastLine: false,
       automaticLayout: true,
       renderIndicators: false
@@ -47,16 +55,18 @@ export class CodeeditorComponent implements OnChanges {
       modified: targetDataModel
     });
 
-    // Define the theme for original and modified code
-    monaco.editor.defineTheme('flippedDiffTheme', {
-      base: 'vs',
-      inherit: true,
-      rules: [],
-      colors: {
-        'diffEditor.insertedTextBackground': '#ff000033',
-        'diffEditor.removedTextBackground': '#e2f6c5'
-      }
-    });
-    monaco.editor.setTheme('flippedDiffTheme');
+    const monarchTokensProvider = getMonarchTokensDefinition(tmdlKewords, tmdlTypeKewords);
+    monaco.languages.setMonarchTokensProvider(this.languageName, monarchTokensProvider);
+
+    const tmdlLightTheme: monaco.editor.IStandaloneThemeData = {
+      base: 'vs', // or 'vs' for light theme
+      inherit: true, // If true, this theme inherits from other themes defined before it
+      ...lightPalette,
+    };
+    monaco.editor.defineTheme('tmdlLightTheme', tmdlLightTheme);
+
+    // Set the custom theme to the editor
+    monaco.editor.setTheme('tmdlLightTheme');
+
   }
 }
