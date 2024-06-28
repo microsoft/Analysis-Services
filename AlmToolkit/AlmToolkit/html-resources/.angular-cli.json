@@ -20,7 +20,8 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/monaco-editor/min/vs/editor/editor.main.css"
+        "../node_modules/monaco-editor/min/vs/editor/editor.main.css",
+        "symbol-sprite.svg"
       ],
       "scripts": [
       ],

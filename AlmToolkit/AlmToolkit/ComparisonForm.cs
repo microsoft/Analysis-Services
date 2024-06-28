@@ -44,9 +44,6 @@ namespace AlmToolkit
             InitializeChromium();
         }
 
-        /// <summary>
-        /// Initialize the chrome browser with the html file to be opened
-        /// </summary>
         private void InitializeChromium()
         {
             try
@@ -62,25 +59,29 @@ namespace AlmToolkit
                 // Initialize cef with the provided settings
                 settings.CefCommandLineArgs.Add("disable-gpu", "1");
 
-                settings.BrowserSubprocessPath = @"x86\CefSharp.BrowserSubprocess.exe";
-                //settings.BrowserSubprocessPath = string.Format(@"{0}\x86\CefSharp.BrowserSubprocess.exe", Application.StartupPath); ;
+                string relativePath = @"x86\CefSharp.BrowserSubprocess.exe";
+                string absolutePath = Path.GetFullPath(relativePath);
+                settings.BrowserSubprocessPath = absolutePath;
 
                 Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
+
                 // Create a browser component
                 chromeBrowser = new ChromiumWebBrowser(page);
+
                 // Add it to the form and fill it to the form window.
                 this.Controls.Add(chromeBrowser);
                 chromeBrowser.Dock = DockStyle.Fill;
                 chromeBrowser.BringToFront();
 
-                CefSharpSettings.LegacyJavascriptBindingEnabled = true;
 
                 // Initialize the interaction variable
                 _comparisonInter = new ComparisonJSInteraction(this);
 
                 // Register C# objects
-                chromeBrowser.RegisterAsyncJsObject("chromeDebugger", new ChromeDebugger(chromeBrowser, this));
-                chromeBrowser.RegisterAsyncJsObject("comparisonJSInteraction", _comparisonInter);
+                chromeBrowser.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
+
+                chromeBrowser.JavascriptObjectRepository.Register("chromeDebugger", new ChromeDebugger(chromeBrowser, this), isAsync: true, options: BindingOptions.DefaultBinder);
+                chromeBrowser.JavascriptObjectRepository.Register("comparisonJSInteraction", _comparisonInter, isAsync: true, options: BindingOptions.DefaultBinder);
             }
             catch (FileNotFoundException)
             {
@@ -95,7 +96,7 @@ namespace AlmToolkit
         private void ComparisonForm_Load(object sender, EventArgs e)
         {
             if (_comparisonInfo == null)
-            { 
+            {
                 _comparisonInfo = new ComparisonInfo();
                 _comparisonInfo.AppName = Utils.AssemblyProduct;
 

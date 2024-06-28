@@ -10,6 +10,12 @@ html, body {
 
 #main-container {
   height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: hidden;
 }
 
 #comparison-table-container {
@@ -32,7 +38,7 @@ html, body {
   margin: 10px;
   border-collapse: collapse;
   background-color: #FFF;
-  min-width: 99%;
+  min-width: -webkit-fill-available;
   max-width: 99%;
 }
 
