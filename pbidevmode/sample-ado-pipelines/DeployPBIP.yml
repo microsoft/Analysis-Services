@@ -87,8 +87,6 @@ stages:
                     "role"= "Admin"
                 }
 
-                Import-Module "$workingFolder\modules\FabricPS-PBIP" -Force
-
                 Write-Host "##[debug]Authentication with SPN"
 
                 Set-FabricAuthToken -servicePrincipalId $appId -servicePrincipalSecret $appSecret -tenantId $tenantId -reset                        
