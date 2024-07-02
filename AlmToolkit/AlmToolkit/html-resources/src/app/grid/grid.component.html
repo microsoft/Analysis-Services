@@ -42,7 +42,7 @@
         </td>
         <td class='grid-column action-options' (click)='onSelect(dataObject, $event)' tabindex='{{index*10+5}}' (keydown)='onKeydown($event)'
           (keyup)='onKeyup($event)' id='node-{{dataObject.Id}}-action-dropdown' data-column-type='action-dropdown'>
-          <select class='action-dropdown' (change)='optionChange(dataObject.Id, $event.target.value)' [class.dropdown-disabled]='dataObject.DropdownDisabled ? true : false'
+          <select class='action-dropdown' (change)='optionChange(dataObject.Id, $event)' [class.dropdown-disabled]='dataObject.DropdownDisabled ? true : false'
             [disabled]='dataObject.DropdownDisabled ? true : null' id='node-{{dataObject.Id}}-select'>
             <option *ngFor='let option of dataObject.AvailableActions; let index = index' [selected]='option == dataObject.MergeAction ? true : null'
               id='node-{{dataObject.Id}}-option-{{index}}'>{{option}}</option>

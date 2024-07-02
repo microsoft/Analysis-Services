@@ -1,5 +1,5 @@
-export class ComparisonNode {
-
+export interface ComparisonNode {
+ 
   // Id of the object
   Id: number;
 
@@ -51,5 +51,5 @@ export class ComparisonNode {
   DropdownDisabled: boolean;
   // Text mentioning why the dropdown is disabled
   DisableMessage: string;
-}
 
+}

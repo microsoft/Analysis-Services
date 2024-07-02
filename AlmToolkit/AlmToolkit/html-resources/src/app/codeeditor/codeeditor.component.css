@@ -1,8 +1,8 @@
 #code-editor-container {
-  height: 100%;
+  height: 300px; /*Addded temporarily to test the height of the code editor*/
 }
 
 #code-editor-section{
-height: 100%;
+height: 300px; /*Addded temporarily to test the height of the code editor*/
 width:100%;
 }

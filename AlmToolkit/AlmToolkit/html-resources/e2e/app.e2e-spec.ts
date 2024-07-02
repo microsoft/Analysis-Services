@@ -7,8 +7,9 @@ describe('gridcontrol App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display welcome message', async () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!');
+    const paragraphText = await page.getParagraphText();
+    expect(paragraphText).toEqual('Welcome to app!');
   });
 });
