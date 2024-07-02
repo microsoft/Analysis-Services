@@ -22,7 +22,7 @@ $nugets = @(
 
 foreach ($nuget in $nugets)
 {
-    if (!(Test-Path -LiteralPath "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
+    if (!(Test-Path -path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
         
         Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
