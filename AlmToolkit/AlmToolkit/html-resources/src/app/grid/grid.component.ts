@@ -24,6 +24,7 @@ export class GridComponent implements OnInit {
   isDataAvailable = false;
   intervalId: number;
   mouseDragged = false;
+  maxGridHeight: number;
 
   constructor(private gridService: GridDataService, private appLog: AppLogService, private zone: NgZone) {
     window['angularComponentRef'] = {
@@ -33,6 +34,8 @@ export class GridComponent implements OnInit {
       clearTree: (dataCompared: boolean) => this.clearGrid(dataCompared),
       changeCursor: (showWaitCursor: boolean) => this.changeCursor(showWaitCursor)
     };
+
+    this.maxGridHeight = 80;
   }
 
   /**
@@ -103,9 +106,10 @@ export class GridComponent implements OnInit {
       const codeEditorHeight = mainContainer.offsetHeight - gridHeight - 5;
       const codeEditorPercentageHeight = (codeEditorHeight / mainContainer.offsetHeight) * 100;
       document.getElementById('code-editor-resizable').style.maxHeight = ((mainContainer.offsetHeight - 105) / mainContainer.offsetHeight)* 100 + '%';
-
-      document.getElementById('comparison-table-container').style.height = gridPercentageHeight.toString() + '%';
-      document.getElementById('code-editor-resizable').style.height = codeEditorPercentageHeight.toString() + '%';
+      if (gridPercentageHeight <= 80) {
+        document.getElementById('comparison-table-container').style.height = gridPercentageHeight.toString() + '%';
+        document.getElementById('code-editor-resizable').style.height = codeEditorPercentageHeight.toString() + '%';
+      }
       document.removeEventListener('mousemove', this.changeCodeEditorHeight);
       this.mouseDragged = false;
       document.getElementById('comparison-table-container').style.overflowY = 'auto';
@@ -126,8 +130,11 @@ export class GridComponent implements OnInit {
 
     const codeEditorHeight = mainContainer.offsetHeight - gridHeight - 5;
     const codeEditorPercentageHeight = (codeEditorHeight / mainContainer.offsetHeight) * 100;
-    comparisonTableContainer.style.height = gridPercentageHeight.toString() + '%';
-    codeEditorResizable.style.height = codeEditorPercentageHeight.toString() + '%';
+    console.log(this.maxGridHeight);
+    if (gridPercentageHeight <= 80) {
+      comparisonTableContainer.style.height = gridPercentageHeight.toString() + '%';
+      codeEditorResizable.style.height = codeEditorPercentageHeight.toString() + '%';
+    }
   }
 
   /**
