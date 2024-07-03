@@ -193,10 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BismNorm.ico" />
-    <Content Include="html-resources\dist\**\*.*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="html-resources\karma.conf.js" />
+	  <Content Include="html-resources\dist\**\*.*">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	<Content Include="html-resources\karma.conf.js" />
     <Content Include="html-resources\protractor.conf.js" />
     <Content Include="html-resources\src\app\app.component.css" />
     <Content Include="html-resources\src\app\app.component.html" />
@@ -299,12 +299,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-	  <Error Condition="!Exists('..\packages\chromiumembeddedframework.runtime.win-x64.126.2.7\build\chromiumembeddedframework.runtime.win-x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\chromiumembeddedframework.runtime.win-x64.126.2.7\build\chromiumembeddedframework.runtime.win-x64.props'))" />
-	  <Error Condition="!Exists('..\packages\chromiumembeddedframework.runtime.win-x86.126.2.7\build\chromiumembeddedframework.runtime.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\chromiumembeddedframework.runtime.win-x86.126.2.7\build\chromiumembeddedframework.runtime.win-x86.props'))" />
-	  <Error Condition="!Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props'))" />
-	  <Error Condition="!Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets'))" />
-	  <Error Condition="!Exists('..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props'))" />
-	  <Error Condition="!Exists('..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('..\packages\chromiumembeddedframework.runtime.win-x64.126.2.7\build\chromiumembeddedframework.runtime.win-x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\chromiumembeddedframework.runtime.win-x64.126.2.7\build\chromiumembeddedframework.runtime.win-x64.props'))" />
+    <Error Condition="!Exists('..\packages\chromiumembeddedframework.runtime.win-x86.126.2.7\build\chromiumembeddedframework.runtime.win-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\chromiumembeddedframework.runtime.win-x86.126.2.7\build\chromiumembeddedframework.runtime.win-x86.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props'))" />
   </Target>
   <Import Project="..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets')" />
 </Project>
