@@ -58,6 +58,14 @@ Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
 
 ```
 
+# Sample - Export item from workspace
+
+```powershell
+
+Export-FabricItem -workspaceId "[Workspace Id]" -itemId "[Item Id]" -path '[Export folder file path]'
+
+```
+
 # Sample - Import PBIP to workspace - item by item
 
 ```powershell

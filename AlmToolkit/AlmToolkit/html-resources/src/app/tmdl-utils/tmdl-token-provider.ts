@@ -38,7 +38,7 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
         [/^\s*\b\w+\b\s*$/, 'variable'], //Boolean properties
         [/(\w+)(\s+)(\w+)(\s+)(['"]?[\w-]+(?:\s+[\w-]+)*['"]?)$/, ['entity', '', 'identifier', '', 'meta']], // Reference objects
         [/(\w+)(\s+)('[\w\s.-:=]+'(?:\s*\.\s*'[\w\s.-:=]+')*|[\w-]+)$/, ['entity', '', 'identifier']], //Objects        
-        [/(\w+)(\s+)(['"]?.+[\w-]+(?:\s+.+)*['"]?)(\s*=\s*)(.*)$/, ['entity', '', 'identifier', '', 'attribute']], //Partition
+        [/(\w+)(\s+)(['"]?[^=]+['"]?)(\s*=\s*)(.*)$/, ['entity', '', 'identifier', '', 'attribute']], //Partition
         [/(\w+)(\s+)(\w+)(\s*)(=)(\s*)([\[\{](?:"[^"]*"|\d+(?:\.\d+)*|[^[\]{}]+)*[\]\}]|\w+)/, ['entity', '', 'identifier', '', 'operators', '', 'attribute']], //Annotation
         [/(\w+)(\s+)(\w+)(\s*)(=)(\s*)(.*)/, ['entity', '', 'identifier', '', 'operators', 'attribute']],//Annotation
         [/(\w+)(\s*=\s*)(```)/, [{ token: 'variable' }, { token: 'operators' }, { token: 'attribute', next: '@exprWithBackticks' }]], //Expression enclosed with backticks (```)
@@ -66,7 +66,7 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
       propertyValue: [
         { include: '@flowNumbers' },
         [
-          /[\w-$()#.,;\\]+\s*/, // Match words followed by optional whitespace
+          /[^\s*\n]+/, // Match any sequence of characters except newlines
           {
             cases: {
               '@tmdlTypeKeywords': 'keyword.type',
@@ -85,13 +85,13 @@ export function getMonarchTokensDefinition(tmdlKeywords: string[], tmdlTypeKeywo
 
       ],
       flowNumbers: [
-        { regex: /\b(?:0|[+-]?[0-9]+)(?![ \t]*\S+)\b/, action: { token: 'attribute' } }, // number
-        { regex: /\b(?:0|[+-]?[0-9]+)(?:\.[0-9]+)?(?:e[-+][1-9][0-9]*)?\b/, action: { token: 'attribute' } }, // number.float
-        { regex: /\b0o[0-7]+\b/, action: { token: 'attribute' } }, // number.octal
-        { regex: /\b0x[0-9a-fA-F]+\b/, action: { token: 'attribute' } }, // number.hex
-        { regex: /\b[+-]?\.(?:inf|Inf|INF)\b/, action: { token: 'attribute' } }, // number.infinity
-        { regex: /\b\.(?:nan|Nan|NAN)\b/, action: { token: 'attribute' } }, // number.nan
-        { regex: /\b\d{4}-\d\d-\d\d([Tt ]\d\d:\d\d:\d\d(\.\d+)?(( ?[+-]\d\d?(:\d\d)?)|Z)?)?\b/, action: { token: 'attribute' } }, // number.date
+        { regex: /(?:0|[+-]?[0-9]+)(?=\s*$)/, action: { token: 'attribute' } }, // number
+        { regex: /(?:0|[+-]?[0-9]+)(?:\.[0-9]+)?(?:e[-+][1-9][0-9]*)?(?=\s*$)/, action: { token: 'attribute' } }, // number.float
+        { regex: /0o[0-7]+(?=\s*$)/, action: { token: 'attribute' } }, // number.octal
+        { regex: /0x[0-9a-fA-F]+(?=\s*$)/, action: { token: 'attribute' } }, // number.hex
+        { regex: /[+-]?\.(?:inf|Inf|INF)(?=\s*$)/, action: { token: 'attribute' } }, // number.infinity
+        { regex: /\.(?:nan|Nan|NAN)(?=\s*$)/, action: { token: 'attribute' } }, // number.nan
+        { regex: /\d{4}-\d\d-\d\d([Tt ]\d\d:\d\d:\d\d(\.\d+)?(( ?[+-]\d\d?(:\d\d)?)|Z)?)?(?=\s*$)/, action: { token: 'attribute' } }, // number.date
       ]
     }
   };
