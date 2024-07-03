@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as monaco from 'monaco-editor';
 import { ComparisonNode } from '../shared/model/comparison-node';
 import { lightPalette } from '../tmdl-utils/tmdl-color-palette';
@@ -14,11 +14,11 @@ import { TmdlMonacoContributions } from '../tmdl-utils/tmdl.monaco.contributions
 
 export class CodeeditorComponent implements OnChanges, OnInit {
 
-  @Input() comparisonData: ComparisonNode;
+  @Input() comparisonData?: ComparisonNode | null;
   public languageName: string = 'tmdl';
   constructor() { }
 
-  ngOnChanges(changes) {
+  ngOnChanges(changes : SimpleChanges) {
     this.embedEditor();
   }
 
@@ -27,8 +27,8 @@ export class CodeeditorComponent implements OnChanges, OnInit {
     const comparisonTable = document.getElementById('comparison-table-container');
     const mainContainer = document.getElementById('main-container');
     const codeEditorWrapper = document.getElementById('code-editor-resizable');
-    const codeEditorWrapperHeight = mainContainer.offsetHeight - comparisonTable.offsetHeight;
-    codeEditorWrapper.style.height = ((codeEditorWrapperHeight / mainContainer.offsetHeight) * 100) + '%';
+    const codeEditorWrapperHeight = mainContainer!.offsetHeight - comparisonTable!.offsetHeight;
+    codeEditorWrapper!.style.height = ((codeEditorWrapperHeight / mainContainer!.offsetHeight) * 100) + '%';
   }
 
   /**
@@ -46,12 +46,12 @@ export class CodeeditorComponent implements OnChanges, OnInit {
 
     // If the container already contains an editor, remove it
     const codeEditorContainer = document.getElementById('code-editor-container');
-    if (codeEditorContainer.firstChild) {
+    if (codeEditorContainer?.firstChild) {
       codeEditorContainer.removeChild(codeEditorContainer.firstChild);
     }
 
     // Create diff editor with required settings
-    const diffEditor = monaco.editor.createDiffEditor(codeEditorContainer, {
+    const diffEditor = monaco.editor.createDiffEditor(codeEditorContainer!, {
 
       scrollBeyondLastLine: false,
       automaticLayout: true,

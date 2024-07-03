@@ -22,7 +22,7 @@ $nugets = @(
 
 foreach ($nuget in $nugets)
 {
-    if (!(Test-Path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
+    if (!(Test-Path -path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
         
         Write-Host "Downloading and installing Nuget: $($nuget.name)"
 
@@ -33,7 +33,7 @@ foreach ($nuget in $nugets)
     {
         Write-Host "Loading assembly: '$nugetPath'"
 
-        $path = Resolve-Path (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
+        $path = Resolve-Path -LiteralPath (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
         
         Add-Type -Path $path -Verbose | Out-Null
     }
@@ -131,7 +131,6 @@ Function Invoke-FabricAPIRequest {
         [Parameter(Mandatory = $false)] [string] $contentType = "application/json; charset=utf-8",
         [Parameter(Mandatory = $false)] [int] $timeoutSec = 240,        
         [Parameter(Mandatory = $false)] [int] $retryCount = 0
-            
     )
 
     if ([string]::IsNullOrEmpty($authToken)) {
@@ -307,6 +306,7 @@ Function New-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$name
         ,
         [switch]$skipErrorIfExists        
@@ -356,6 +356,7 @@ Function Remove-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId     
     )
 
@@ -377,6 +378,7 @@ Function Get-FabricWorkspace {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceName
     )
       
@@ -408,8 +410,10 @@ Function Set-FabricWorkspacePermissions {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
+        [Parameter(Mandatory)]
         $permissions
     )
 
@@ -457,82 +461,103 @@ Function Export-FabricItems {
     [CmdletBinding()]
     param
     (
-        [string]$path = '.\pbipOutput'
+        [Parameter(Mandatory)]
+        [string]$path
         ,
-        [string]$workspaceId = ''    
+        [Parameter(Mandatory)]
+        [string]$workspaceId  
         ,
+        # Focus only on report and semantic model, there are items that are not exportable.
         [scriptblock]$filter = {$_.type -in @("report", "SemanticModel")}
-        ,
-        [string]$format
     )    
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    if ($filter) {
-        #$items = $items | ? { $_.type -in  $itemTypes }
+    if ($filter) {        
         $items = $items | Where-Object $filter
-    }
+    }    
 
     Write-Host "Existing items: $($items.Count)"
 
     foreach ($item in $items) {
+        
         $itemId = $item.id
         $itemName = $item.displayName
         $itemType = $item.type
-        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
-        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"
-        #Resolve invalid filepath chars
         
+        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
+        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"        
+        
+        Export-FabricItem -workspaceId $workspaceId -itemId $itemId -path $itemOutputPath
+    }
+}
 
-        if ($itemType -in @("report", "semanticmodel")) {
-            Write-Host "Getting definition of: $itemId / $itemName / $itemType"
+Function Export-FabricItem {
+    <#
+    .SYNOPSIS
+        Exports item from a Fabric workspace to a specified local file system destination.
+    #>
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory)]
+        [string]$workspaceId
+        ,
+        [Parameter(Mandatory)]
+        [string]$itemId
+        ,    
+        [Parameter(Mandatory)]
+        [string]$path = '.\pbipOutput'
+        ,
+        [string]$format        
+    )    
 
-            #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
+    $itemOutputPath = $path   
 
-            $response = $null
+    try {
+        Write-Host "Getting definition of: $itemId"
 
-            $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
+        #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
 
-            if ($format)
-            {
-                $getDefinitionUrl += "?format=$format"
-            }
+        $response = $null
 
-            $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
+        $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
 
-            $partCount = $response.definition.parts.Count
-
-            Write-Host "Parts: $partCount"
-            
-            if ($partCount -gt 0)
-            {
-                foreach ($part in $response.definition.parts) {
-                    Write-Host "Saving part: $($part.path)"
-                    
-                    $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
-
-                    $parentFolderPath = Split-Path $outputFilePath -Parent
-
-                    New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
-
-                    $parentFolderPath = Resolve-Path $parentFolderPath
-
-                    $bytes = [Convert]::FromBase64String($part.payload)
-
-                    Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
-                }
-
-                @{
-                    "type"        = $itemType
-                    "displayName" = $itemName
-
-                } | ConvertTo-Json | Out-File "$itemOutputPath\item.metadata.json"
-            }
+        if ($format)
+        {
+            $getDefinitionUrl += "?format=$format"
         }
-        else {
-            Write-Host "Type '$itemType' not available for export."
+
+        $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
+
+        $partCount = $response.definition.parts.Count
+
+        Write-Host "Parts: $partCount"
+        
+        if ($partCount -gt 0)
+        {
+            foreach ($part in $response.definition.parts) {
+                Write-Host "Saving part: $($part.path)"
+                
+                $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
+
+                $parentFolderPath = Split-Path $outputFilePath -Parent
+
+                New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
+
+                $parentFolderPath = Resolve-Path -LiteralPath $parentFolderPath
+
+                $bytes = [Convert]::FromBase64String($part.payload)
+
+                Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
+            }
         }
     }
+    catch{
+        $ex = $_.Exception
+
+        Write-Warning "Error exporting item '$itemId' - '$($ex.ToString())'"
+    }     
 }
 
 Function Import-FabricItems {
@@ -550,8 +575,10 @@ Function Import-FabricItems {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = '.\pbipOutput'
         ,
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
         [string[]]$filter = $null
@@ -563,7 +590,7 @@ Function Import-FabricItems {
 
     # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem  -Path $path -recurse -include *.pbir, *.pbism
+    $itemsInFolder = Get-ChildItem  -LiteralPath $path -recurse -include *.pbir, *.pbism
 
     if ($filter) {
         $itemsInFolder = $itemsInFolder | ? { 
@@ -596,7 +623,7 @@ Function Import-FabricItems {
                 
                 # If its a valid path, read it as byte[]
                 
-                if (Test-Path $fileContent)
+                if (Test-Path -LiteralPath $fileContent)
                 {
                     $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
                 }
@@ -634,7 +661,7 @@ Function Import-FabricItems {
 
         write-host "Processing item: '$itemPath'"
 
-        $files = Get-ChildItem -Path $itemPath -Recurse -Attributes !Directory
+        $files = Get-ChildItem -LiteralPath $itemPath -Recurse -Attributes !Directory
 
         # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
 
@@ -659,9 +686,9 @@ Function Import-FabricItems {
         
         # Try to read the item properties from the .platform file if not found in itemProperties
 
-        if ((!$itemType -or !$displayName) -and (Test-Path "$itemPath\.platform"))
+        if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$itemPath\.platform"))
         {            
-            $itemMetadataStr = Get-Content "$itemPath\.platform"
+            $itemMetadataStr = Get-Content -LiteralPath "$itemPath\.platform"
 
             $fileOverrideMatch = $null
             if ($fileOverridesEncoded)
@@ -685,7 +712,7 @@ Function Import-FabricItems {
             throw "Cannot import item if any of the following properties is missing: itemType, displayName"
         }
 
-        $itemPathAbs = Resolve-Path $itemPath
+        $itemPathAbs = Resolve-Path -LiteralPath $itemPath
 
         $parts = $files | % {
             
@@ -708,35 +735,49 @@ Function Import-FabricItems {
             else {                
                 if ($filePath -like "*.pbir") {                  
     
-                    $fileContentText = Get-Content -Path $filePath
+                    $fileContentText = Get-Content -LiteralPath $filePath
                     $pbirJson = $fileContentText | ConvertFrom-Json
 
                     if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
 
                         # try to swap byPath to byConnection
 
-                        $reportDatasetPath = (Resolve-path (Join-Path $itemPath $pbirJson.datasetReference.byPath.path.Replace("/", "\"))).Path
+                        $reportDatasetPath = (Resolve-path -LiteralPath (Join-Path $itemPath $pbirJson.datasetReference.byPath.path.Replace("/", "\"))).Path
 
                         $datasetReference = $datasetReferences[$reportDatasetPath]       
                         
                         if ($datasetReference)
                         {
-                            $datasetName = $datasetReference.name
+                            # $datasetName = $datasetReference.name
+                            
                             $datasetId = $datasetReference.id
                             
-                            $newPBIR = @{
-                                "version" = "1.0"
-                                "datasetReference" = @{          
-                                    "byConnection" =  @{
-                                    "connectionString" = $null                
-                                    "pbiServiceModelId" = $null
-                                    "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                                    "pbiModelDatabaseName" = "$datasetId"                
-                                    "name" = "EntityDataSource"
-                                    "connectionType" = "pbiServiceXmlaStyleLive"
-                                    }
-                                }
-                            } | ConvertTo-Json
+                            $pbirJson.datasetReference.byPath = $null
+
+                            $pbirJson.datasetReference.byConnection = @{
+                                "connectionString" = $null                
+                                "pbiServiceModelId" = $null
+                                "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                                "pbiModelDatabaseName" = "$datasetId"                
+                                "name" = "EntityDataSource"
+                                "connectionType" = "pbiServiceXmlaStyleLive"
+                            }
+            
+                            $newPBIR = $pbirJson | ConvertTo-Json
+
+                            # $newPBIR = @{
+                            #     "version" = "1.0"
+                            #     "datasetReference" = @{          
+                            #         "byConnection" =  @{
+                            #         "connectionString" = $null                
+                            #         "pbiServiceModelId" = $null
+                            #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                            #         "pbiModelDatabaseName" = "$datasetId"                
+                            #         "name" = "EntityDataSource"
+                            #         "connectionType" = "pbiServiceXmlaStyleLive"
+                            #         }
+                            #     }
+                            # } | ConvertTo-Json
                             
                             $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
 
@@ -753,7 +794,7 @@ Function Import-FabricItems {
                 }
                 else
                 {
-                    $fileContent = Get-Content -Path $filePath -AsByteStream -Raw                
+                    $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw                
                 }
             }
 
@@ -855,8 +896,10 @@ Function Import-FabricItem {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = '.\pbipOutput'
         ,
+        [Parameter(Mandatory)]
         [string]$workspaceId
         ,
         [hashtable]$itemProperties
@@ -864,7 +907,7 @@ Function Import-FabricItem {
 
     # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem -Path $path |? {@(".pbism", ".pbir")-contains $_.Extension }
+    $itemsInFolder = Get-ChildItem -LiteralPath $path |? {@(".pbism", ".pbir") -contains $_.Extension }
 
     if ($itemsInFolder.Count -eq 0)
     {
@@ -889,7 +932,7 @@ Function Import-FabricItem {
 
     Write-Host "Existing items in the workspace: $($items.Count)"
 
-    $files = Get-ChildItem -Path $path -Recurse -Attributes !Directory
+    $files = Get-ChildItem -LiteralPath $path -Recurse -Attributes !Directory
 
     # Remove files not required for the API: item.*.json; cache.abf; .pbi folder
 
@@ -905,9 +948,9 @@ Function Import-FabricItem {
 
     # Try to read the item properties from the .platform file if not found in itemProperties
 
-    if ((!$itemType -or !$displayName) -and (Test-Path "$path\.platform"))
+    if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$path\.platform"))
     {            
-        $itemMetadataStr = Get-Content "$path\.platform"
+        $itemMetadataStr = Get-Content -LiteralPath "$path\.platform"
 
         $fileOverrideMatch = $null
         if ($fileOverridesEncoded)
@@ -931,7 +974,7 @@ Function Import-FabricItem {
         throw "Cannot import item if any of the following properties is missing: itemType, displayName"
     }
 
-    $itemPathAbs = Resolve-Path $path
+    $itemPathAbs = Resolve-Path -LiteralPath $path
 
     $parts = $files | % {
 
@@ -939,7 +982,7 @@ Function Import-FabricItem {
         
         if ($filePath -like "*.pbir") {
 
-            $fileContentText = Get-Content -Path $filePath
+            $fileContentText = Get-Content -LiteralPath $filePath
             $pbirJson = $fileContentText | ConvertFrom-Json
 
             if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
@@ -950,20 +993,33 @@ Function Import-FabricItem {
                 {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties' parameter."
                 }
+
+                $pbirJson.datasetReference.byPath = $null
+
+                $pbirJson.datasetReference.byConnection = @{
+                    "connectionString" = $null                
+                    "pbiServiceModelId" = $null
+                    "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                    "pbiModelDatabaseName" = "$datasetId"                
+                    "name" = "EntityDataSource"
+                    "connectionType" = "pbiServiceXmlaStyleLive"
+                }
+
+                $newPBIR = $pbirJson | ConvertTo-Json
                 
-                $newPBIR = @{
-                    "version" = "1.0"
-                    "datasetReference" = @{          
-                        "byConnection" =  @{
-                        "connectionString" = $null                
-                        "pbiServiceModelId" = $null
-                        "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                        "pbiModelDatabaseName" = "$datasetId"                
-                        "name" = "EntityDataSource"
-                        "connectionType" = "pbiServiceXmlaStyleLive"
-                        }
-                    }
-                } | ConvertTo-Json
+                # $newPBIR = @{
+                #     "version" = "1.0"
+                #     "datasetReference" = @{          
+                #         "byConnection" =  @{
+                #         "connectionString" = $null                
+                #         "pbiServiceModelId" = $null
+                #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                #         "pbiModelDatabaseName" = "$datasetId"                
+                #         "name" = "EntityDataSource"
+                #         "connectionType" = "pbiServiceXmlaStyleLive"
+                #         }
+                #     }
+                # } | ConvertTo-Json
                 
                 $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
             }
@@ -974,7 +1030,7 @@ Function Import-FabricItem {
         }
         else
         {
-            $fileContent = Get-Content -Path $filePath -AsByteStream -Raw
+            $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw
         }
         
         $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
@@ -1062,6 +1118,7 @@ Function Remove-FabricItems {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$workspaceId = $null
         ,
         [string]$filter = $null 
@@ -1094,8 +1151,10 @@ Function Set-SemanticModelParameters {
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory)]
         [string]$path = $null
         ,
+        [Parameter(Mandatory)]
         [hashtable]$parameters = $null
         ,
         [switch]$failIfNotFound
@@ -1105,13 +1164,13 @@ Function Set-SemanticModelParameters {
 
     $isTMSL = $false
 
-    if (!(Test-Path $modelPath))
+    if (!(Test-Path -LiteralPath $modelPath))
     {
         $modelPath = "$path\model.bim"
         $isTMSL = $true
     }
 
-    if (!(Test-Path $modelPath))
+    if (!(Test-Path -LiteralPath $modelPath))
     {
         throw "Cannot find semantic model definition: '$modelPath'"
     }
@@ -1120,7 +1179,7 @@ Function Set-SemanticModelParameters {
 
     if ($isTMSL)
     {
-        $modelText = Get-Content $modelPath
+        $modelText = Get-Content -LiteralPath $modelPath
     
         $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
     }

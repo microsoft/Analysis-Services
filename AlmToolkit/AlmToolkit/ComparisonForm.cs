@@ -58,6 +58,8 @@ namespace AlmToolkit
                 CefSettings settings = new CefSettings();
                 // Initialize cef with the provided settings
                 settings.CefCommandLineArgs.Add("disable-gpu", "1");
+                settings.CefCommandLineArgs.Add("disable-web-security", "1"); // to prevent CORS error in runtime.js, polyfills.js and main.js
+                settings.CefCommandLineArgs.Add("allow-file-access-from-files", "1"); //  to allow access to local files
 
                 string relativePath = @"x86\CefSharp.BrowserSubprocess.exe";
                 string absolutePath = Path.GetFullPath(relativePath);
