@@ -8,20 +8,19 @@ $currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
 
 $nugets = @(
     @{
-        name = "Microsoft.AnalysisServices.NetCore.retail.amd64"
+        name    = "Microsoft.AnalysisServices.NetCore.retail.amd64"
         ;
         version = "19.77.0"
         ;
-        path = @(
-        "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
-        , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
-        , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
+        path    = @(
+            "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
+            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
+            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
         )
     }
 )
 
-foreach ($nuget in $nugets)
-{
+foreach ($nuget in $nugets) {
     if (!(Test-Path -path "$currentPath\.nuget\$($nuget.name).$($nuget.version)*" -PathType Container)) {
         
         Write-Host "Downloading and installing Nuget: $($nuget.name)"
@@ -29,8 +28,7 @@ foreach ($nuget in $nugets)
         Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser  -Force
     }
     
-    foreach ($nugetPath in $nuget.path)
-    {
+    foreach ($nugetPath in $nuget.path) {
         Write-Host "Loading assembly: '$nugetPath'"
 
         $path = Resolve-Path -LiteralPath (Join-Path "$currentPath\.nuget\$($nuget.name).$($nuget.Version)" $nugetPath)
@@ -50,8 +48,7 @@ function Get-FabricAuthToken {
     (
     )
 
-    if (!$script:fabricToken)
-    {                
+    if (!$script:fabricToken) {                
         Set-FabricAuthToken
     }
     
@@ -79,13 +76,11 @@ function Set-FabricAuthToken {
         [string]$apiUrl
     )
 
-    if (!$reset)
-    {
+    if (!$reset) {
         $azContext = Get-AzContext
     }
     
-    if ($apiUrl)
-    {
+    if ($apiUrl) {
         $script:apiUrl = $apiUrl
     }
 
@@ -100,8 +95,7 @@ function Set-FabricAuthToken {
 
             Set-AzContext -Tenant $tenantId | Out-Null
         }
-        elseif ($credential -ne $null)
-        {
+        elseif ($credential -ne $null) {
             Connect-AzAccount -Credential $credential -Tenant $tenantId | Out-Null
         }
         else {
@@ -149,14 +143,15 @@ Function Invoke-FabricAPIRequest {
         Write-Verbose "Calling $requestUrl"
         
         # If need to use -OutFile beware of the following breaking change: https://github.com/PowerShell/PowerShell/issues/20744
-        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec        
+
+        # TODO: use -SkipHttpErrorCheck to read the entire error response, need to find a solution to handle 429 errors: https://stackoverflow.com/questions/75629606/powershell-webrequest-handle-response-code-and-exit
+
+        $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec     
 
         $lroFailOrNoResultFlag = $false
 
-        if ($response.StatusCode -eq 202)
-        {
-            do
-            {                
+        if ($response.StatusCode -eq 202) {
+            do {                
                 $asyncUrl = [string]$response.Headers.Location
 
                 Write-Host "Waiting for request to complete. Sleeping..."
@@ -168,29 +163,24 @@ Function Invoke-FabricAPIRequest {
                 $lroStatusContent = $response.Content | ConvertFrom-Json
 
             }
-            while($lroStatusContent.status -ine "succeeded" -and $lroStatusContent.status -ine "failed")
+            while ($lroStatusContent.status -ine "succeeded" -and $lroStatusContent.status -ine "failed")
 
-            if ($lroStatusContent.status -ieq "succeeded")
-            {
+            if ($lroStatusContent.status -ieq "succeeded") {
                 # Only calls /result if there is a location header, otherwise  'OperationHasNoResult' error is thrown
 
                 $resultUrl = [string]$response.Headers.Location
 
-                if ($resultUrl)
-                {
+                if ($resultUrl) {
                     $response = Invoke-WebRequest -Headers $fabricHeaders -Method Get -Uri $resultUrl    
                 }
-                else
-                {
+                else {
                     $lroFailOrNoResultFlag = $true
                 }
             }
-            else
-            {
+            else {
                 $lroFailOrNoResultFlag = $true
                 
-                if ($lroStatusContent.error)
-                {
+                if ($lroStatusContent.error) {
                     throw "LRO API Error: '$($lroStatusContent.error.errorCode)' - $($lroStatusContent.error.message)"
                 }
             }
@@ -198,25 +188,21 @@ Function Invoke-FabricAPIRequest {
         }
 
         #if ($response.StatusCode -in @(200,201) -and $response.Content)        
-        if (!$lroFailOrNoResultFlag -and $response.Content)
-        {            
+        if (!$lroFailOrNoResultFlag -and $response.Content) {            
             $contentBytes = $response.RawContentStream.ToArray()
 
             # Test for BOM
 
-            if ($contentBytes[0] -eq 0xef -and $contentBytes[1] -eq 0xbb -and $contentBytes[2] -eq 0xbf)
-            {
+            if ($contentBytes[0] -eq 0xef -and $contentBytes[1] -eq 0xbb -and $contentBytes[2] -eq 0xbf) {
                 $contentText = [System.Text.Encoding]::UTF8.GetString($contentBytes[3..$contentBytes.Length])                
             }
-            else
-            {
+            else {
                 $contentText = $response.Content
             }
 
             $jsonResult = $contentText | ConvertFrom-Json
 
-            if ($jsonResult.value)
-            {
+            if ($jsonResult.value) {
                 $jsonResult = $jsonResult.value
             }
 
@@ -226,22 +212,19 @@ Function Invoke-FabricAPIRequest {
     catch {
           
         $ex = $_.Exception
-        
+
         $message = $null
 
         if ($ex.Response -ne $null) {
 
             $responseStatusCode = [int]$ex.Response.StatusCode
 
-            if ($responseStatusCode -in @(429))
-            {
-                if ($ex.Response.Headers.RetryAfter)
-                {
+            if ($responseStatusCode -in @(429)) {
+                if ($ex.Response.Headers.RetryAfter) {
                     $retryAfterSeconds = $ex.Response.Headers.RetryAfter.Delta.TotalSeconds + 5
                 }
 
-                if (!$retryAfterSeconds)
-                {
+                if (!$retryAfterSeconds) {
                     $retryAfterSeconds = 60
                 }
 
@@ -251,46 +234,35 @@ Function Invoke-FabricAPIRequest {
 
                 $maxRetries = 3
                 
-                if ($retryCount -le $maxRetries)
-                {
+                if ($retryCount -le $maxRetries) {
                     Invoke-FabricAPIRequest -authToken $authToken -uri $uri -method $method -body $body -contentType $contentType -timeoutSec $timeoutSec -retryCount ($retryCount + 1)
                 }
                 else {
                     throw "Exceeded the amount of retries ($maxRetries) after 429 error."
                 }
-
             }
-            else
-            {
-                $apiErrorObj = $ex.Response.Headers |? {$_.key -ieq "x-ms-public-api-error-code"} | Select -First 1
+            else {                
+                $apiErrorObj = $ex.Response.Headers | ? { $_.key -ieq "x-ms-public-api-error-code" } | Select -First 1
 
-                if ($apiErrorObj)
-                {
+                if ($apiErrorObj) {
                     $apiError = $apiErrorObj.Value[0]
-                }
+                    
+                    if ($apiError -ieq "ItemHasProtectedLabel") {
+                        Write-Warning "Item has a protected label."
+                    }
+                    else {
+                        $message = "$($ex.Message); API error code: '$apiError'"
 
-                if ($apiError -ieq "ItemHasProtectedLabel")
-                {
-                    Write-Warning "Item has a protected label."
-                }
-                else
-                {
-                    throw
-                }
-
-                # TODO: Investigate why response.Content is empty but powershell can read it on throw
-
-                #$errorContent = $ex.Response.Content.ReadAsStringAsync().Result;
-        
-                #$message = "$($ex.Message) - StatusCode: '$($ex.Response.StatusCode)'; Content: '$errorContent'"
+                        throw $message
+                    }
+                }                
             }
         }
         else {
             $message = "$($ex.Message)"
         }
                 
-        if ($message)
-        {
+        if ($message) {
             throw $message
         }
     		
@@ -384,19 +356,16 @@ Function Get-FabricWorkspace {
       
     $result = Invoke-FabricAPIRequest -Uri "workspaces" -Method Get
 
-    if ($workspaceName)
-    {
-        $workspace = $result |? {$_.displayName -ieq $workspaceName}
+    if ($workspaceName) {
+        $workspace = $result | ? { $_.displayName -ieq $workspaceName }
 
-        if (!$workspace)
-        {
+        if (!$workspace) {
             throw "Cannot find workspace '$workspaceName'"
         }
 
         Write-Output $workspace
     }
-    else
-    {
+    else {
         Write-Output $result
     }
     
@@ -422,12 +391,10 @@ Function Set-FabricWorkspacePermissions {
         
         $existingRoles = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments" -Method Get
         
-        foreach ($permission in $permissions)
-        {
-            $matchRole = $existingRoles |? {$_.principal.id -ieq $permission.principal.id} | select -First 1
+        foreach ($permission in $permissions) {
+            $matchRole = $existingRoles | ? { $_.principal.id -ieq $permission.principal.id } | select -First 1
             
-            if (!$matchRole)
-            {
+            if (!$matchRole) {
                 Write-Host "Adding role '$($permission.role)' to '$($permission.principal.id)'"
 
                 $request = $permission | ConvertTo-Json
@@ -437,11 +404,10 @@ Function Set-FabricWorkspacePermissions {
             else {
                 # If role already exists for principal, check the role
 
-                if ($permission.role -ine $matchRole.role)
-                {
+                if ($permission.role -ine $matchRole.role) {
                     Write-Host "Updating principal '$($permission.principal.id)' role to '$($permission.role)'"
 
-                    $request = @{"role" = $permission.role} | ConvertTo-Json
+                    $request = @{"role" = $permission.role } | ConvertTo-Json
 
                     Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/roleAssignments/$($permission.principal.id)" -Method Patch -Body $request
                 }
@@ -468,7 +434,7 @@ Function Export-FabricItems {
         [string]$workspaceId  
         ,
         # Focus only on report and semantic model, there are items that are not exportable.
-        [scriptblock]$filter = {$_.type -in @("report", "SemanticModel")}
+        [scriptblock]$filter = { $_.type -in @("report", "SemanticModel") }
     )    
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
@@ -481,14 +447,22 @@ Function Export-FabricItems {
 
     foreach ($item in $items) {
         
-        $itemId = $item.id
-        $itemName = $item.displayName
-        $itemType = $item.type
-        
-        $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
-        $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"        
-        
-        Export-FabricItem -workspaceId $workspaceId -itemId $itemId -path $itemOutputPath
+        try {
+            $itemId = $item.id
+            $itemName = $item.displayName
+            $itemType = $item.type
+            
+            $itemNamePath = $itemName.Split([IO.Path]::GetInvalidFileNameChars()) -join '_'
+            $itemOutputPath = "$path\$workspaceId\$($itemNamePath).$($itemType)"        
+                
+            Export-FabricItem -workspaceId $workspaceId -itemId $itemId -path $itemOutputPath
+        }
+        catch {
+            $ex = $_.Exception
+
+            Write-Warning "Error exporting item '$itemId' - '$($ex.ToString())'"
+        } 
+
     }
 }
 
@@ -513,51 +487,43 @@ Function Export-FabricItem {
     )    
 
     $itemOutputPath = $path   
+    
+    Write-Host "Getting definition of: $itemId"
 
-    try {
-        Write-Host "Getting definition of: $itemId"
+    #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
 
-        #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
+    $response = $null
 
-        $response = $null
+    $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
 
-        $getDefinitionUrl = "workspaces/$workspaceId/items/$itemId/getDefinition"
+    if ($format) {
+        $getDefinitionUrl += "?format=$format"
+    }
 
-        if ($format)
-        {
-            $getDefinitionUrl += "?format=$format"
-        }
+    $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
 
-        $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
+    $partCount = $response.definition.parts.Count
 
-        $partCount = $response.definition.parts.Count
-
-        Write-Host "Parts: $partCount"
+    Write-Host "Parts: $partCount"
         
-        if ($partCount -gt 0)
-        {
-            foreach ($part in $response.definition.parts) {
-                Write-Host "Saving part: $($part.path)"
+    if ($partCount -gt 0) {
+        foreach ($part in $response.definition.parts) {
+            Write-Host "Saving part: $($part.path)"
                 
-                $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
+            $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
 
-                $parentFolderPath = Split-Path $outputFilePath -Parent
+            $parentFolderPath = Split-Path $outputFilePath -Parent
 
-                New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
+            New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
 
-                $parentFolderPath = Resolve-Path -LiteralPath $parentFolderPath
+            $parentFolderPath = Resolve-Path -LiteralPath $parentFolderPath
 
-                $bytes = [Convert]::FromBase64String($part.payload)
+            $bytes = [Convert]::FromBase64String($part.payload)
 
-                Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
-            }
+            Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
         }
     }
-    catch{
-        $ex = $_.Exception
-
-        Write-Warning "Error exporting item '$itemId' - '$($ex.ToString())'"
-    }     
+      
 }
 
 Function Import-FabricItems {
@@ -595,12 +561,11 @@ Function Import-FabricItems {
     if ($filter) {
         $itemsInFolder = $itemsInFolder | ? { 
             $pathFolder = $_.Directory.FullName
-            $filter |? { $pathFolder -ilike $_ }
+            $filter | ? { $pathFolder -ilike $_ }
         }
     }
 
-    if ($itemsInFolder.Count -eq 0)
-    {
+    if ($itemsInFolder.Count -eq 0) {
         Write-Host "No items found in the path '$path' (*.pbir; *.pbism)"
         return
     }
@@ -611,10 +576,8 @@ Function Import-FabricItems {
 
     $fileOverridesEncoded = @()
     
-    if ($fileOverrides)
-    {
-        foreach ($fileOverride in $fileOverrides.GetEnumerator())
-        {
+    if ($fileOverrides) {
+        foreach ($fileOverride in $fileOverrides.GetEnumerator()) {
             $fileContent = $fileOverride.Value
 
             # convert to byte array
@@ -623,12 +586,10 @@ Function Import-FabricItems {
                 
                 # If its a valid path, read it as byte[]
                 
-                if (Test-Path -LiteralPath $fileContent)
-                {
+                if (Test-Path -LiteralPath $fileContent) {
                     $fileContent = [System.IO.File]::ReadAllBytes($fileContent)                        
                 }
-                else
-                {
+                else {
                     $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContent)
                 }
             }
@@ -636,7 +597,7 @@ Function Import-FabricItems {
                 throw "FileOverrides value type must be string or byte[]"
             }
             
-            $fileOverridesEncoded += @{Name=$fileOverride.Name; Value = $fileContent}
+            $fileOverridesEncoded += @{Name = $fileOverride.Name; Value = $fileContent }
         }
     }
 
@@ -648,7 +609,7 @@ Function Import-FabricItems {
 
     # Datasets first 
 
-    $itemsInFolder = $itemsInFolder | Select-Object  @{n="Order";e={ if ($_.Name -like "*.pbism") {1} else {2} }}, * | sort-object Order    
+    $itemsInFolder = $itemsInFolder | Select-Object  @{n = "Order"; e = { if ($_.Name -like "*.pbism") { 1 } else { 2 } } }, * | sort-object Order    
 
     $datasetReferences = @{}
 
@@ -672,12 +633,10 @@ Function Import-FabricItems {
         $itemType = $null
         $displayName = $null
 
-        if ($itemProperties -ne $null)
-        {            
+        if ($itemProperties -ne $null) {            
             $foundItemProperty = $itemProperties."$itemName"
 
-            if ($foundItemProperty)
-            {
+            if ($foundItemProperty) {
                 $itemType = $foundItemProperty.type
     
                 $displayName = $foundItemProperty.displayName
@@ -686,14 +645,12 @@ Function Import-FabricItems {
         
         # Try to read the item properties from the .platform file if not found in itemProperties
 
-        if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$itemPath\.platform"))
-        {            
+        if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$itemPath\.platform")) {            
             $itemMetadataStr = Get-Content -LiteralPath "$itemPath\.platform"
 
             $fileOverrideMatch = $null
-            if ($fileOverridesEncoded)
-            {
-                $fileOverrideMatch = $fileOverridesEncoded |? { "$itemPath\.platform" -ilike $_.Name  } | select -First 1
+            if ($fileOverridesEncoded) {
+                $fileOverrideMatch = $fileOverridesEncoded | ? { "$itemPath\.platform" -ilike $_.Name } | select -First 1
                 if ($fileOverrideMatch) {
                     Write-Host "File override '.platform'"
                     $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
@@ -707,8 +664,7 @@ Function Import-FabricItems {
             $displayName = $itemMetadata.metadata.displayName
         }
 
-        if (!$itemType -or !$displayName)
-        {
+        if (!$itemType -or !$displayName) {
             throw "Cannot import item if any of the following properties is missing: itemType, displayName"
         }
 
@@ -721,9 +677,8 @@ Function Import-FabricItems {
             
             $fileOverrideMatch = $null
 
-            if ($fileOverridesEncoded)
-            {
-                $fileOverrideMatch = $fileOverridesEncoded |? { $filePath -ilike $_.Name  } | select -First 1            
+            if ($fileOverridesEncoded) {
+                $fileOverrideMatch = $fileOverridesEncoded | ? { $filePath -ilike $_.Name } | select -First 1            
             }
 
             if ($fileOverrideMatch) {
@@ -746,8 +701,7 @@ Function Import-FabricItems {
 
                         $datasetReference = $datasetReferences[$reportDatasetPath]       
                         
-                        if ($datasetReference)
-                        {
+                        if ($datasetReference) {
                             # $datasetName = $datasetReference.name
                             
                             $datasetId = $datasetReference.id
@@ -755,12 +709,12 @@ Function Import-FabricItems {
                             $pbirJson.datasetReference.byPath = $null
 
                             $pbirJson.datasetReference.byConnection = @{
-                                "connectionString" = $null                
-                                "pbiServiceModelId" = $null
+                                "connectionString"          = $null                
+                                "pbiServiceModelId"         = $null
                                 "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                                "pbiModelDatabaseName" = "$datasetId"                
-                                "name" = "EntityDataSource"
-                                "connectionType" = "pbiServiceXmlaStyleLive"
+                                "pbiModelDatabaseName"      = "$datasetId"                
+                                "name"                      = "EntityDataSource"
+                                "connectionType"            = "pbiServiceXmlaStyleLive"
                             }
             
                             $newPBIR = $pbirJson | ConvertTo-Json
@@ -782,8 +736,7 @@ Function Import-FabricItems {
                             $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
 
                         }
-                        else
-                        {
+                        else {
                             throw "Item API dont support byPath connection, switch the connection in the *.pbir file to 'byConnection'."
                         }
                     }
@@ -792,8 +745,7 @@ Function Import-FabricItems {
                         $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContentText)
                     }
                 }
-                else
-                {
+                else {
                     $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw                
                 }
             }
@@ -811,7 +763,7 @@ Function Import-FabricItems {
 
         Write-Host "Payload parts:"        
 
-        $parts |% { Write-Host "part: $($_.Path)" }
+        $parts | % { Write-Host "part: $($_.Path)" }
 
         $itemId = $null
 
@@ -849,9 +801,9 @@ Function Import-FabricItems {
             write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
             Write-Output @{
-                "id" = $itemId
+                "id"          = $itemId
                 "displayName" = $displayName
-                "type" = $itemType 
+                "type"        = $itemType 
             }
         }
         else {
@@ -868,17 +820,16 @@ Function Import-FabricItems {
             write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
             Write-Output @{
-                "id" = $itemId
+                "id"          = $itemId
                 "displayName" = $displayName
-                "type" = $itemType 
+                "type"        = $itemType 
             }
         }
 
         # Save dataset references to swap byPath to byConnection
 
-        if ($itemType -ieq "semanticmodel")
-        {
-            $datasetReferences[$itemPath] = @{"id" = $itemId; "name" = $displayName}
+        if ($itemType -ieq "semanticmodel") {
+            $datasetReferences[$itemPath] = @{"id" = $itemId; "name" = $displayName }
         }
     }
 
@@ -907,19 +858,17 @@ Function Import-FabricItem {
 
     # Search for folders with .pbir and .pbism in it
 
-    $itemsInFolder = Get-ChildItem -LiteralPath $path |? {@(".pbism", ".pbir") -contains $_.Extension }
+    $itemsInFolder = Get-ChildItem -LiteralPath $path | ? { @(".pbism", ".pbir") -contains $_.Extension }
 
-    if ($itemsInFolder.Count -eq 0)
-    {
+    if ($itemsInFolder.Count -eq 0) {
         Write-Host "Cannot find valid item definitions (*.pbir; *.pbism) in the '$path'"
         return
     }    
 
-    if ($itemsInFolder |? {$_.Extension -ieq ".pbir"})
-    {
+    if ($itemsInFolder | ? { $_.Extension -ieq ".pbir" }) {
         $itemType = "Report"
-    }elseif($itemsInFolder |? {$_.Extension -ieq ".pbism"})
-    {
+    }
+    elseif ($itemsInFolder | ? { $_.Extension -ieq ".pbism" }) {
         $itemType = "SemanticModel"
     }
     else {
@@ -941,21 +890,18 @@ Function Import-FabricItem {
     # Prioritizes reading the displayName and type from itemProperties parameter    
     $displayName = $null
     
-    if ($itemProperties -ne $null)
-    {            
+    if ($itemProperties -ne $null) {            
         $displayName = $itemProperties.displayName         
     }
 
     # Try to read the item properties from the .platform file if not found in itemProperties
 
-    if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$path\.platform"))
-    {            
+    if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$path\.platform")) {            
         $itemMetadataStr = Get-Content -LiteralPath "$path\.platform"
 
         $fileOverrideMatch = $null
-        if ($fileOverridesEncoded)
-        {
-            $fileOverrideMatch = $fileOverridesEncoded |? { "$path\.platform" -ilike $_.Name  } | select -First 1
+        if ($fileOverridesEncoded) {
+            $fileOverrideMatch = $fileOverridesEncoded | ? { "$path\.platform" -ilike $_.Name } | select -First 1
             if ($fileOverrideMatch) {
                 Write-Host "File override '.platform'"
                 $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
@@ -969,8 +915,7 @@ Function Import-FabricItem {
         $displayName = $itemMetadata.metadata.displayName
     }
 
-    if (!$itemType -or !$displayName)
-    {
+    if (!$itemType -or !$displayName) {
         throw "Cannot import item if any of the following properties is missing: itemType, displayName"
     }
 
@@ -989,20 +934,19 @@ Function Import-FabricItem {
 
                 $datasetId = $itemProperties.semanticModelId
 
-                if (!$datasetId)
-                {
+                if (!$datasetId) {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties' parameter."
                 }
 
                 $pbirJson.datasetReference.byPath = $null
 
                 $pbirJson.datasetReference.byConnection = @{
-                    "connectionString" = $null                
-                    "pbiServiceModelId" = $null
+                    "connectionString"          = $null                
+                    "pbiServiceModelId"         = $null
                     "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                    "pbiModelDatabaseName" = "$datasetId"                
-                    "name" = "EntityDataSource"
-                    "connectionType" = "pbiServiceXmlaStyleLive"
+                    "pbiModelDatabaseName"      = "$datasetId"                
+                    "name"                      = "EntityDataSource"
+                    "connectionType"            = "pbiServiceXmlaStyleLive"
                 }
 
                 $newPBIR = $pbirJson | ConvertTo-Json
@@ -1028,8 +972,7 @@ Function Import-FabricItem {
                 $fileContent = [system.Text.Encoding]::UTF8.GetBytes($fileContentText)
             }
         }
-        else
-        {
+        else {
             $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw
         }
         
@@ -1046,7 +989,7 @@ Function Import-FabricItem {
 
     Write-Host "Payload parts:"        
 
-    $parts |% { Write-Host "part: $($_.Path)" }
+    $parts | % { Write-Host "part: $($_.Path)" }
 
     $itemId = $null
 
@@ -1084,9 +1027,9 @@ Function Import-FabricItem {
         write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
         Write-Output @{
-            "id" = $itemId
+            "id"          = $itemId
             "displayName" = $displayName
-            "type" = $itemType 
+            "type"        = $itemType 
         }
     }
     else {
@@ -1103,9 +1046,9 @@ Function Import-FabricItem {
         write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
 
         Write-Output @{
-            "id" = $itemId
+            "id"          = $itemId
             "displayName" = $displayName
-            "type" = $itemType 
+            "type"        = $itemType 
         }
     }
 }
@@ -1164,21 +1107,18 @@ Function Set-SemanticModelParameters {
 
     $isTMSL = $false
 
-    if (!(Test-Path -LiteralPath $modelPath))
-    {
+    if (!(Test-Path -LiteralPath $modelPath)) {
         $modelPath = "$path\model.bim"
         $isTMSL = $true
     }
 
-    if (!(Test-Path -LiteralPath $modelPath))
-    {
+    if (!(Test-Path -LiteralPath $modelPath)) {
         throw "Cannot find semantic model definition: '$modelPath'"
     }
 
     $compatibilityMode = [Microsoft.AnalysisServices.CompatibilityMode]::PowerBI
 
-    if ($isTMSL)
-    {
+    if ($isTMSL) {
         $modelText = Get-Content -LiteralPath $modelPath
     
         $database = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::DeserializeDatabase($modelText, $null, $compatibilityMode)
@@ -1193,44 +1133,38 @@ Function Set-SemanticModelParameters {
 
     $changedFlag = $false
 
-    $parameters.GetEnumerator() |? {
+    $parameters.GetEnumerator() | ? {
 
         $parameterName = $_.Name
         $parameterValue = $_.Value
 
         $modelExpression = $database.Model.Expressions.Find($parameterName)
 
-        if (!$modelExpression)
-        {
-            if ($failIfNotFound)
-            {
+        if (!$modelExpression) {
+            if ($failIfNotFound) {
                 throw "Cannot find model expression '$parameterName'"
             }
             else {
                 Write-Host "Cannot find model expression '$parameterName'"
             }
         }
-        else
-        {
+        else {
             Write-Host "Changing model expression '$parameterName'"
-            $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta","""$parameterValue"" meta"
+            $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta", """$parameterValue"" meta"
             $changedFlag = $true
         }
     }
 
-    if ($changedFlag)
-    {
+    if ($changedFlag) {
         $serializeOptions = New-Object Microsoft.AnalysisServices.Tabular.SerializeOptions
         
-        if ([string]::IsNullOrEmpty($database.Name))
-        {
+        if ([string]::IsNullOrEmpty($database.Name)) {
             # If serialized without name an error is thrown later on deserialize. TODO: Review
 
             $database.Name = "Unknown"
         }
 
-        if ($isTMSL)
-        {
+        if ($isTMSL) {
             $modelText = [Microsoft.AnalysisServices.Tabular.JsonSerializer]::SerializeDatabase($database, $serializeOptions)
 
             $modelText | Out-File $modelPath -Force
