@@ -10,7 +10,7 @@ $nugets = @(
     @{
         name    = "Microsoft.AnalysisServices.NetCore.retail.amd64"
         ;
-        version = "19.77.0"
+        version = "19.84.1"
         ;
         path    = @(
             "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
@@ -281,11 +281,14 @@ Function New-FabricWorkspace {
         [Parameter(Mandatory)]
         [string]$name
         ,
-        [switch]$skipErrorIfExists        
+        [switch]$skipErrorIfExists       
+        ,
+        [string]$capacityId 
     )
 
     $itemRequest = @{ 
         displayName = $name
+        capacityId = $capacityId
     } | ConvertTo-Json
 
     try {        
