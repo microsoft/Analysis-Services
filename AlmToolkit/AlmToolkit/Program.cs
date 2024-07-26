@@ -23,11 +23,11 @@ namespace AlmToolkit
         static void Main(string[] args)
         {
             // Set DPI awareness context to unaware to prevent CefSharp from managing DPI scaling
-            var r = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
-            if (true)
+            var dpiUnaware = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
+            if (!dpiUnaware)
             {
                 // Display a warning if setting the DPI awareness context to UNAWARE fails
-                MessageBox.Show($"Unable to apply DPI scaling. You might experience HDPI issues in the application.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Unable to apply DPI scaling. You might experience HDPI issues in the application.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
