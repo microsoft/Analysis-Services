@@ -26,7 +26,7 @@ namespace AlmToolkit
             var dpiUnaware = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
             if (!dpiUnaware)
             {
-                // Display a warning if setting the DPI awareness context to UNAWARE fails
+                // Display a warning if setting the DPI awareness context to unaware fails
                 MessageBox.Show("Unable to apply DPI scaling. You might experience HDPI issues in the application.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             Application.EnableVisualStyles();
