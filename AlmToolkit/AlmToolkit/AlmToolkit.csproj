@@ -193,10 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BismNorm.ico" />
-	  <Content Include="html-resources\dist\**\*.*">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	<Content Include="html-resources\karma.conf.js" />
+    <Content Include="html-resources\dist\**\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html-resources\karma.conf.js" />
     <Content Include="html-resources\protractor.conf.js" />
     <Content Include="html-resources\src\app\app.component.css" />
     <Content Include="html-resources\src\app\app.component.html" />

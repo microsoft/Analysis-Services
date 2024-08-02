@@ -22,6 +22,9 @@ namespace AlmToolkit
         [STAThread]
         static void Main(string[] args)
         {
+            //Set current directory for CefSharp references
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+
             // Set DPI awareness context to unaware to prevent CefSharp from managing DPI scaling
             var dpiUnaware = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
             if (!dpiUnaware)
