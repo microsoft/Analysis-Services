@@ -1911,8 +1911,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                   (_targetTabularModel.ConnectionInfo.UseBimFile && _targetTabularModel.ConnectionInfo.BimFile != null && _targetTabularModel.ConnectionInfo.IsPbit)
                )
             {
+                string objName = (String.IsNullOrEmpty(comparisonObject.TargetObjectName) ? comparisonObject.SourceObjectName : comparisonObject.TargetObjectName);
+
                 //V3 hardening
-                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {comparisonObject.TargetObjectName} because target is Power BI Desktop or .PBIT, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
+                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {objName} because target is Power BI Desktop or .PBIT, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
                 return false;
             }
             else
