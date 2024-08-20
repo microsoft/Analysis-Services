@@ -1,5 +1,5 @@
 @angular/common
-MITcd 
+MIT
 
 @angular/core
 MIT

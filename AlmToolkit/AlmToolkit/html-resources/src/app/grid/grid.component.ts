@@ -356,8 +356,11 @@ export class GridComponent implements OnInit {
 
     // Find all elements above or below this row and select them as well
     while (isSiblingAvailable) {
-      siblingRow = this.getSiblingElement(directionToMove, startRowId) as HTMLElement;
-      if (siblingRow && siblingRow.id && siblingRow.id == endRowId) {
+      siblingRow = directionToMove
+        ? document.getElementById(startRowId)?.previousElementSibling as HTMLElement
+        : document.getElementById(startRowId)?.nextElementSibling as HTMLElement;
+
+      if (siblingRow?.id && siblingRow.id !== endRowId) {
         startRowId = siblingRow.id;
         document.getElementById(startRowId + '-' + columnType)!.focus();
         nodeSelected = this.comparisonDataToDisplay
@@ -370,7 +373,9 @@ export class GridComponent implements OnInit {
         }
 
         siblingRow.focus();
-        siblingRow = this.getSiblingElement(directionToMove, startRowId) as HTMLElement;
+        siblingRow = directionToMove
+          ? document.getElementById(startRowId)?.previousElementSibling as HTMLElement
+          : document.getElementById(startRowId)?.nextElementSibling as HTMLElement;
       } else {
         isSiblingAvailable = false;
       }

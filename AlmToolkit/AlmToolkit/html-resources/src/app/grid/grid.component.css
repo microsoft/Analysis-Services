@@ -19,7 +19,6 @@ html, body {
 }
 
 #comparison-table-container {
-  display: flex;
   height: 72.22%;
   overflow-y: auto;
   background-color: #F2F2F2;
