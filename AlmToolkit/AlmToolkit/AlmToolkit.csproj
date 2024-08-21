@@ -281,6 +281,11 @@
     <TypeScriptCompile Include="html-resources\src\app\service\window-reference.service.ts" />
     <TypeScriptCompile Include="html-resources\src\app\shared\mocks\data-list.ts" />
     <TypeScriptCompile Include="html-resources\src\app\shared\model\comparison-node.ts" />
+    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-color-palette.ts" />
+    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-parser-manager.ts" />
+    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-token-provider.ts" />
+    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl-types.ts" />
+    <TypeScriptCompile Include="html-resources\src\app\tmdl-utils\tmdl.monaco.contributions.ts" />
     <TypeScriptCompile Include="html-resources\src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="html-resources\src\environments\environment.ts" />
     <TypeScriptCompile Include="html-resources\src\main.ts" />
