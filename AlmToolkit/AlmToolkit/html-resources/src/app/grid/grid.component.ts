@@ -298,7 +298,8 @@ export class GridComponent implements OnInit {
     } else {
       let prev;
       let startRow;
-      if (this.lastSelectedRow) {
+     
+      if (this.lastSelectedRow && document.getElementById(this.lastSelectedRow!.id)) {
         startRow = document.getElementById(this.lastSelectedRow!.id);
       }
       else {
@@ -307,7 +308,6 @@ export class GridComponent implements OnInit {
       let endRow;
       let columnType;
       endRow = document.getElementById(event.target.id)!.parentElement;
-
       if (!(startRow!.classList.contains('grid-row') && endRow!.classList.contains('grid-row'))) {
 
         if (startRow!.classList.contains('grid-row')) {
