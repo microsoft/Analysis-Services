@@ -13,7 +13,7 @@
         <td class='grid-header-column action-icon-column' id='header-selected-action' (click)='onSelect(null, $event)' data-column-type='selected-action'></td>
         <td class='grid-header-column grid-column action-options' id='header-action-dropdown' (click)='onSelect(null, $event)' data-column-type='action-dropdown'>Action</td>
       </tr>
-      <tr *ngFor='let dataObject of comparisonDataToDisplay; let first = first; let index = index;' class='grid-data-row object-level-{{dataObject.Level}}'
+      <tr #gridRow *ngFor='let dataObject of comparisonDataToDisplay; let first = first; let index = index;' class='grid-data-row object-level-{{dataObject.Level}}'
         [class.hide-row]='!dataObject.ShowNode' [class.selected-row]='first' id='node-{{dataObject.Id}}' [attr.data-row-number]='index'
         (contextmenu)='showTreeControlContextMenu($event)'>
         <td class='grid-column node-type-column' [style.padding-left]='getIndentLevel(dataObject.Level)' (click)='onSelect(dataObject, $event)'

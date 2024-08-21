@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, HostListener } from '@angular/core';
+import { Component, OnInit, NgZone, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { GridDataService } from '../service/grid-data.service';
 import { ComparisonNode } from '../shared/model/comparison-node';
 import { CodeeditorComponent as codeeditor } from '../codeeditor/codeeditor.component';
@@ -37,6 +37,7 @@ export class GridComponent implements OnInit {
   mouseDragged = false;
   maxGridHeight: number;
 
+  @ViewChild('gridRow', { static: false }) firstRow!: ElementRef;
   constructor(private gridService: GridDataService, private appLog: AppLogService, private zone: NgZone) {
     const customWindow = window as WindowWithAngularComponentRef;
     customWindow.angularComponentRef = {
@@ -296,11 +297,17 @@ export class GridComponent implements OnInit {
       }
     } else {
       let prev;
-      let startRow = document.getElementById(this.lastSelectedRow!.id);
+      let startRow;
+     
+      if (this.lastSelectedRow && document.getElementById(this.lastSelectedRow!.id)) {
+        startRow = document.getElementById(this.lastSelectedRow!.id);
+      }
+      else {
+        startRow = this.firstRow.nativeElement;
+      }
       let endRow;
       let columnType;
       endRow = document.getElementById(event.target.id)!.parentElement;
-
       if (!(startRow!.classList.contains('grid-row') && endRow!.classList.contains('grid-row'))) {
 
         if (startRow!.classList.contains('grid-row')) {
