@@ -534,17 +534,17 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         string sourceLinguisticMetadata = String.Empty;
                         string targetLinguisticMetadata = String.Empty;
                         if (cultureSource.TomCulture?.LinguisticMetadata?.Content != null)
-                            sourceLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureSource.TomCulture.LinguisticMetadata.Content).ToString();
+                            sourceLinguisticMetadata = cultureSource.TomCulture.LinguisticMetadata.Content;
                         if (cultureTarget.TomCulture?.LinguisticMetadata?.Content != null)
-                            targetLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureTarget.TomCulture.LinguisticMetadata.Content).ToString();
+                            targetLinguisticMetadata = cultureTarget.TomCulture.LinguisticMetadata.Content;
 
                         // check if culture object definition is different
                         //if (cultureSource.ObjectDefinition != cultureTarget.ObjectDefinition)
                         if ( (
                                  (_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource)) ||
                                  (!_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource) && cultureSource.ContainsOtherCultureTranslations(cultureTarget))
-                             ) &&
-                             (sourceLinguisticMetadata == targetLinguisticMetadata)
+                             )
+                             && (sourceLinguisticMetadata == targetLinguisticMetadata)
                            )
                         {
                             // they are equal, ...
@@ -923,7 +923,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Create)
                 {
-                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
+                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole, false);
                     OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
                 }
             }

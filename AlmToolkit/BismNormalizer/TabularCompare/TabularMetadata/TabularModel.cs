@@ -585,9 +585,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="name">Name of the table to be deleted.</param>
         /// <returns>Collection of all associated relationships that had to be deleted. Useful if updating tables as then need to add back.</returns>
-        public List<SingleColumnRelationship> DeleteTable(string name)
+        public List<RelationshipToRetain> DeleteTable(string name)
         {
-            List<SingleColumnRelationship> deletedRelationships = new List<SingleColumnRelationship>();
+            List<RelationshipToRetain> deletedRelationships = new List<RelationshipToRetain>();
 
             // shell model
             if (_tables.ContainsName(name))
@@ -651,7 +651,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 out PartitionSourceType partitionSourceTypeTarget);
             Tom.Table tomTableTargetOrig = tableTarget.TomTable.Clone();
             ModeType tableTargetModeType = tableTarget.TableModeType;
-            List<SingleColumnRelationship> tomRelationshipsToAddBack = DeleteTable(tableTarget.Name);
+            List<RelationshipToRetain> relationshipsToAddBack = DeleteTable(tableTarget.Name);
             CreateTable(tableSource);
 
             //get back the newly created table
@@ -662,19 +662,19 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 RetainPartitions(tableTarget, tomTableTargetOrig, out retainPartitionsMessage);
 
             //add back deleted relationships where possible
-            foreach (SingleColumnRelationship tomRelationshipToAddBack in tomRelationshipsToAddBack)
+            foreach (RelationshipToRetain relationshipToAddBack in relationshipsToAddBack)
             {
-                Table fromTable = _tables.FindByName(tomRelationshipToAddBack.FromTable.Name);
-                Table toTable = _tables.FindByName(tomRelationshipToAddBack.ToTable.Name);
+                Table fromTable = _tables.FindByName(relationshipToAddBack.FromTableName);
+                Table toTable = _tables.FindByName(relationshipToAddBack.ToTableName);
 
-                if (fromTable != null && fromTable.TomTable.Columns.ContainsName(tomRelationshipToAddBack.FromColumn.Name) &&
-                    toTable != null & toTable.TomTable.Columns.ContainsName(tomRelationshipToAddBack.ToColumn.Name))
+                if (fromTable != null && fromTable.TomTable.Columns.ContainsName(relationshipToAddBack.FromColumnName) &&
+                    toTable != null & toTable.TomTable.Columns.ContainsName(relationshipToAddBack.ToColumnName))
                 {
                     //decouple from original table to the current one
-                    tomRelationshipToAddBack.FromColumn = fromTable.TomTable.Columns.Find(tomRelationshipToAddBack.FromColumn.Name);
-                    tomRelationshipToAddBack.ToColumn = toTable.TomTable.Columns.Find(tomRelationshipToAddBack.ToColumn.Name);
+                    relationshipToAddBack.TomRelationship.FromColumn = fromTable.TomTable.Columns.Find(relationshipToAddBack.FromColumnName);
+                    relationshipToAddBack.TomRelationship.ToColumn = toTable.TomTable.Columns.Find(relationshipToAddBack.ToColumnName);
 
-                    fromTable.CreateRelationship(tomRelationshipToAddBack);
+                    fromTable.CreateRelationship(relationshipToAddBack.TomRelationship);
                 }
             }
 
@@ -1346,7 +1346,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 foreach (ModelRole tomRole in _tomRolesBackup)
                 {
-                    CreateRole(tomRole);
+                    CreateRole(tomRole, true);
                 }
             }
         }
@@ -1868,7 +1868,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Create role associated with the TabularModel object.
         /// </summary>
         /// <param name="tomRoleSource">Tabular Object Model ModelRole object from the source tabular model to be abstracted in the target.</param>
-        public ModelRole CreateRole(ModelRole tomRoleSource)
+        public ModelRole CreateRole(ModelRole tomRoleSource, bool restore)
         {
             ModelRole tomRoleTarget = new ModelRole();
             tomRoleSource.CopyTo(tomRoleTarget);
@@ -1876,10 +1876,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             List<string> permissionNamesToDelete = new List<string>();
             foreach (TablePermission permission in tomRoleTarget.TablePermissions)
             {
-                if (_tables.ContainsName(permission.Table.Name))
+                if (_tables.ContainsName(permission.Name))
                 {
                     //decouple table permissions from from original table to the one in target model (if exists)
-                    permission.Table = _tables.FindByName(permission.Table.Name).TomTable;
+                    permission.Table = _tables.FindByName(permission.Name).TomTable;
                 }
                 else
                 {
@@ -1900,6 +1900,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 tomRoleTarget.Members.Add(roleMemberTarget);
             }
 
+            if (!restore) tomRoleTarget.Annotations.Clear();
             _database.Model.Roles.Add(tomRoleTarget);
 
             // shell model
@@ -1919,7 +1920,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 Tom.ModelRole tomModelRoleBackup = roleTarget.TomRole.Clone();
                 DeleteRole(roleTarget.Name);
-                Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole);
+                Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole, false);
                 tomModelRoleNew.Members.Clear();
                 foreach (ModelRoleMember roleMemberOrig in tomModelRoleBackup.Members)
                 {
@@ -1930,7 +1931,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 DeleteRole(roleTarget.Name);
-                CreateRole(roleSource.TomRole);
+                CreateRole(roleSource.TomRole, false);
             }
         }
 
@@ -2560,4 +2561,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
     }
+
+    public struct RelationshipToRetain
+    {
+        public SingleColumnRelationship TomRelationship;
+        public string FromTableName;
+        public string FromColumnName;
+        public string ToTableName;
+        public string ToColumnName;
+
+        public RelationshipToRetain(SingleColumnRelationship tomRelationship, string fromTableName, string fromColumnName, string toTableName, string toColumnName)
+        {
+            TomRelationship = tomRelationship;
+            FromTableName = fromTableName;
+            FromColumnName = fromColumnName;
+            ToTableName = toTableName;
+            ToColumnName = toColumnName;
+        }
+    }
+
 }
