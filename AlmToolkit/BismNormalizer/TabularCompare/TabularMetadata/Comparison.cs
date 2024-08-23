@@ -1406,18 +1406,27 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     {
                         if (table.TomTable.RefreshPolicy != null)
                         {
-                            //Confirm the table with incremental refresh policy isn't going to be deleted anyway
-                            bool tableBeingDeletedAnyway = false;
+                            //Confirm the table with incremental refresh policy isn't going to be deleted (or updated to not have a refresh policy) anyway
+                            bool policyBeingDeletedAnyway = false;
                             foreach (ComparisonObject comparisonObjectToCheck in _comparisonObjects)
                             {
                                 if (comparisonObjectToCheck.TargetObjectName == table.Name && comparisonObjectToCheck.MergeAction == MergeAction.Delete)
                                 {
-                                    tableBeingDeletedAnyway = true;
+                                    policyBeingDeletedAnyway = true;
+                                    break;
+                                }
+
+                                if (comparisonObjectToCheck.TargetObjectName == table.Name && comparisonObjectToCheck.MergeAction == MergeAction.Update &&
+                                    !_comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy && !_comparisonInfo.OptionsInfo.OptionRetainPartitions &&
+                                    _sourceTabularModel.Tables.ContainsName(table.Name) && _sourceTabularModel.Tables.FindByName(table.Name).TomTable.RefreshPolicy == null)
+                                    //Condition above includes OptionRetainPartitions because otherwise removal of the policy wouldn't go through if there are partitions in it
+                                {
+                                    policyBeingDeletedAnyway = true;
                                     break;
                                 }
                             }
 
-                            if (!tableBeingDeletedAnyway)
+                            if (!policyBeingDeletedAnyway)
                             {
                                 OnValidationMessage(new ValidationMessageEventArgs($"Unable to delete expression {comparisonObject.TargetObjectName} because it is an incremental-refresh parameter and table {table.Name} contains an incremental-refresh policy.", ValidationMessageType.Expression, ValidationMessageStatus.Warning));
                                 return;

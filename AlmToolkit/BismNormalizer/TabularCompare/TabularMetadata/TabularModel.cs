@@ -53,32 +53,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
         /// <summary>
-        /// Connect to SSAS server and instantiate properties of the TabularModel object.
+        /// Connect to AS server and instantiate properties of the TabularModel object.
         /// </summary>
         public void Connect()
         {
-            this.Disconnect();
-
-            if (_connectionInfo.UseTmdlFolder)
-            {
-                _database = _connectionInfo.OpenDatabaseFromFolder();
-            }
-            else if (_connectionInfo.UseBimFile)
-            {
-                _database = _connectionInfo.OpenDatabaseFromFile();
-            }
-            else
-            {
-                _server = new Server();
-                _server.Connect(_connectionInfo.BuildConnectionString());
-
-                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
-                if (_database == null)
-                {
-                    //Don't need try to load from project here as will already be done before instantiated Comparison
-                    throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
-                }
-            }
+            TomConnect();
 
             //Shell model
             _model = new Model(this, _database.Model);
@@ -162,6 +141,35 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 InitializeCalcDependenciesFromServer();
+            }
+        }
+
+        /// <summary>
+        /// Connect only to AS server. Does not instantiate properties of the TabularModel object.
+        /// </summary>
+        public void TomConnect()
+        {
+            this.Disconnect();
+
+            if (_connectionInfo.UseTmdlFolder)
+            {
+                _database = _connectionInfo.OpenDatabaseFromFolder();
+            }
+            else if (_connectionInfo.UseBimFile)
+            {
+                _database = _connectionInfo.OpenDatabaseFromFile();
+            }
+            else
+            {
+                _server = new Server();
+                _server.Connect(_connectionInfo.BuildConnectionString());
+
+                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
+                if (_database == null)
+                {
+                    //Don't need try to load from project here as will already be done before instantiated Comparison
+                    throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
+                }
             }
         }
 
@@ -710,6 +718,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     else
                     {
                         tableTarget.TomTable.RefreshPolicy = tomTableTargetOrig.RefreshPolicy.Clone();
+                        retainPartitionsMessage = "Retain refresh policy option applied. " + retainPartitionsMessage;
                     }
                 }
             }
