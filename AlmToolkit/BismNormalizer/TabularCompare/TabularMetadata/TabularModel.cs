@@ -162,7 +162,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 _server = new Server();
-                _server.Connect(_connectionInfo.BuildConnectionString());
+                string connectionString = _connectionInfo.BuildConnectionString();
+                _server.Connect(connectionString);
 
                 _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
                 if (_database == null)
