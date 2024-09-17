@@ -753,15 +753,12 @@ Function Import-FabricItems {
                 }
             }
 
-            $os = uname -s
-
-            if ($os -eq "Darwin" || $os -eq "Linux") {
-                $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("/").Replace("\", "/")
-            }
-            else {
+            if ($IsWindows) {
                 $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
             }
-            
+            else {
+                $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("/")
+            }
 
             $fileEncodedContent = ($fileContent) ? [Convert]::ToBase64String($fileContent) : ""
             
