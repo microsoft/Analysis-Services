@@ -288,7 +288,7 @@ Function New-FabricWorkspace {
 
     $itemRequest = @{ 
         displayName = $name
-        capacityId = $capacityId
+        capacityId  = $capacityId
     } | ConvertTo-Json
 
     try {        
@@ -857,6 +857,8 @@ Function Import-FabricItem {
         [string]$workspaceId
         ,
         [hashtable]$itemProperties
+        ,
+        [switch]$skipIfExists
     )
 
     # Search for folders with .pbir and .pbism in it
@@ -1036,17 +1038,23 @@ Function Import-FabricItem {
         }
     }
     else {
-        write-host "Updating item definition"
 
-        $itemRequest = @{ 
-            definition = @{
-                Parts = $parts
-            }			
-        } | ConvertTo-Json -Depth 3		
-        
-        Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
+        if ($skipIfExists) {
+            write-host "Item '$displayName' of type '$itemType' already exists. Skipping." -ForegroundColor Yellow
+        }
+        else {
+            write-host "Updating item definition"
 
-        write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+            $itemRequest = @{ 
+                definition = @{
+                    Parts = $parts
+                }			
+            } | ConvertTo-Json -Depth 3		
+            
+            Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
+
+            write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+        }
 
         Write-Output @{
             "id"          = $itemId
