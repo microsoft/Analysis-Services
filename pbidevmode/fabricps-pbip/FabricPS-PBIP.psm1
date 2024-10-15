@@ -926,7 +926,7 @@ Function Import-FabricItem {
 
     $itemPathAbs = Resolve-Path -LiteralPath $path
 
-    $parts = $files | % {
+    $parts = $files |% {
 
         $filePath = $_.FullName
         
@@ -935,12 +935,15 @@ Function Import-FabricItem {
             $fileContentText = Get-Content -LiteralPath $filePath
             $pbirJson = $fileContentText | ConvertFrom-Json
 
-            if ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
+            $datasetId = $itemProperties.semanticModelId
 
-                $datasetId = $itemProperties.semanticModelId
+            if ($datasetId || $pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
 
                 if (!$datasetId) {
-                    throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties' parameter."
+                    throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties.semanticModelId' parameter."
+                }
+                else {
+                    Write-Host "Binding to semantic model: $datasetId"
                 }
 
                 $pbirJson.datasetReference.byPath = $null
@@ -954,21 +957,7 @@ Function Import-FabricItem {
                     "connectionType"            = "pbiServiceXmlaStyleLive"
                 }
 
-                $newPBIR = $pbirJson | ConvertTo-Json
-                
-                # $newPBIR = @{
-                #     "version" = "1.0"
-                #     "datasetReference" = @{          
-                #         "byConnection" =  @{
-                #         "connectionString" = $null                
-                #         "pbiServiceModelId" = $null
-                #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                #         "pbiModelDatabaseName" = "$datasetId"                
-                #         "name" = "EntityDataSource"
-                #         "connectionType" = "pbiServiceXmlaStyleLive"
-                #         }
-                #     }
-                # } | ConvertTo-Json
+                $newPBIR = $pbirJson | ConvertTo-Json            
                 
                 $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
             }
