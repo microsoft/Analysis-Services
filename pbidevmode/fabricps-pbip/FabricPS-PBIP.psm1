@@ -937,7 +937,7 @@ Function Import-FabricItem {
 
             $datasetId = $itemProperties.semanticModelId
 
-            if ($datasetId || $pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path) {
+            if ($datasetId -or ($pbirJson.datasetReference.byPath -and $pbirJson.datasetReference.byPath.path)) {
 
                 if (!$datasetId) {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties.semanticModelId' parameter."
