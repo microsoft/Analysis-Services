@@ -62,7 +62,8 @@ namespace AlmToolkit
                 settings.CefCommandLineArgs.Add("allow-file-access-from-files", "1"); //  to allow access to local files
 
                 string relativePath = @"x86\CefSharp.BrowserSubprocess.exe";
-                string absolutePath = Path.GetFullPath(relativePath);
+                //string absolutePath = Path.GetFullPath(relativePath); https://github.com/microsoft/Analysis-Services/issues/307 https://github.com/cefsharp/CefSharp/discussions/4892
+                string absolutePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), relativePath);
                 settings.BrowserSubprocessPath = absolutePath;
 
                 Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);

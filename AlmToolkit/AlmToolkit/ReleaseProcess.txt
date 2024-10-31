@@ -65,14 +65,8 @@
 * Install and test locally
     Check file properties for assemblies in installation folder to check there is a Digital Certificate tab
 
-* Zip the contents of
-    C:\Program Files\Power BI ALM Toolkit\
-    to a new zip file
-    C:\Users\chwade\Source\repos\Analysis-Services\AlmToolkit\AlmToolkit\ReleaseItems\SignedFiles\AlmToolkitPortable.zip
-
 * Upload following to github at https://github.com/microsoft/Analysis-Services/releases
     AlmToolkitSetup.msi
-    AlmToolkitPortable.zip
 
 
 
