@@ -9,5 +9,7 @@ The ALM Toolkit is a schema comparison tool for Power BI semantic models that en
 
 ALM Toolkit supports the Tabular Model Definition Language (TMDL) format to view semantic model metadata in a human-readable, YAML-like syntax. See the TMDL [documentation](https://learn.microsoft.com/analysis-services/tmdl/tmdl-overview) page for more information.
 
+Download and try out the [latest release](/../../releases/latest) of ALM Toolkit to manage your Power BI semantic models.
+
 ![ALM Toolkit UI](https://github.com/user-attachments/assets/5990837f-494e-4a49-b563-42bd2c854c3b)
 
