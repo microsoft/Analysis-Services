@@ -633,7 +633,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 if (partition.SourceType == PartitionSourceType.Query)
                 {
                     QueryPartitionSource queryPartition = ((QueryPartitionSource)partition.Source);
-                    string dataSourceName = queryPartition.DataSource.Name;
+                    //string dataSourceName = queryPartition.DataSource.Name;
+                    //11/19/2024 commented above line due to another instance of Oren's change where CopyTo loses object references.
+                    //However, we know there is at least 1 partition in tableSource and all partitions in a table must have the same SourceType and DataSource, so can reliably do this instead:
+                    string dataSourceName = ((QueryPartitionSource)tableSource.TomTable.Partitions[0].Source).DataSource.Name;
                     queryPartition.DataSource = _dataSources.FindByName(dataSourceName).TomDataSource;
                 }
             }
