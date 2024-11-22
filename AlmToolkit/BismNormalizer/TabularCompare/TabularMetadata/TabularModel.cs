@@ -623,20 +623,20 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             tableSource.TomTable.CopyTo(tomTableTarget);
 
             //decouple from original model to the current one
-            foreach (Partition partition in tomTableTarget.Partitions)
+            for (int i = 0; i < tomTableTarget.Partitions.Count; i++)
             {
-                if (partition.QueryGroup != null)
+                if (tomTableTarget.Partitions[i].QueryGroup != null)
                 {
-                    CreateQueryGroup(partition.QueryGroup);
+                    CreateQueryGroup(tomTableTarget.Partitions[i].QueryGroup);
                 }
 
-                if (partition.SourceType == PartitionSourceType.Query)
+                if (tomTableTarget.Partitions[i].SourceType == PartitionSourceType.Query)
                 {
-                    QueryPartitionSource queryPartition = ((QueryPartitionSource)partition.Source);
+                    QueryPartitionSource queryPartition = ((QueryPartitionSource)tomTableTarget.Partitions[i].Source);
                     //string dataSourceName = queryPartition.DataSource.Name;
                     //11/19/2024 commented above line due to another instance of Oren's change where CopyTo loses object references.
-                    //However, we know there is at least 1 partition in tableSource and all partitions in a table must have the same SourceType and DataSource, so can reliably do this instead:
-                    string dataSourceName = ((QueryPartitionSource)tableSource.TomTable.Partitions[0].Source).DataSource.Name;
+                    //However, we know there is at least 1 partition in tableSource and all partitions in a table with SourceType=Query have only 1 DataSource, so can reliably do this instead:
+                    string dataSourceName = ((QueryPartitionSource)tableSource.TomTable.Partitions[i].Source).DataSource.Name;
                     queryPartition.DataSource = _dataSources.FindByName(dataSourceName).TomDataSource;
                 }
             }
