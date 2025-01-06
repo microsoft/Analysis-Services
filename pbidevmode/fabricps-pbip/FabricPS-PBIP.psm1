@@ -140,7 +140,7 @@ Function Invoke-FabricAPIRequest {
         
         $requestUrl = "$($script:apiUrl)/$uri"
 
-        Write-Verbose "Calling $requestUrl"
+        Write-Host "[$([datetime]::Now.ToString("s"))] Calling $requestUrl"
         
         # If need to use -OutFile beware of the following breaking change: https://github.com/PowerShell/PowerShell/issues/20744
 
@@ -154,7 +154,7 @@ Function Invoke-FabricAPIRequest {
             do {                
                 $asyncUrl = [string]$response.Headers.Location
 
-                Write-Host "Waiting for request to complete. Sleeping..."
+                Write-Host "[$([datetime]::Now.ToString("s"))] LRO - Waiting for request to complete in service."
 
                 Start-Sleep -Seconds 5
 
@@ -183,12 +183,14 @@ Function Invoke-FabricAPIRequest {
                 if ($lroStatusContent.error) {
                     throw "LRO API Error: '$($lroStatusContent.error.errorCode)' - $($lroStatusContent.error.message)"
                 }
-            }
-            
+            }            
         }
 
+        Write-Host "[$([datetime]::Now.ToString("s"))] Request completed."
+
         #if ($response.StatusCode -in @(200,201) -and $response.Content)        
-        if (!$lroFailOrNoResultFlag -and $response.Content) {            
+        if (!$lroFailOrNoResultFlag -and $response.Content) {      
+                        
             $contentBytes = $response.RawContentStream.ToArray()
 
             # Test for BOM
@@ -505,13 +507,12 @@ Function Export-FabricItem {
 
     $response = Invoke-FabricAPIRequest -Uri $getDefinitionUrl -Method Post
 
-    $partCount = $response.definition.parts.Count
-
-    Write-Host "Parts: $partCount"
+    $partCount = $response.definition.parts.Count    
         
-    if ($partCount -gt 0) {
+    if ($partCount -gt 0) {        
+
         foreach ($part in $response.definition.parts) {
-            Write-Host "Saving part: $($part.path)"
+            Write-Verbose "Saving part: $($part.path)"
                 
             $outputFilePath = "$itemOutputPath\$($part.path.Replace("/", "\"))"
 
@@ -520,13 +521,14 @@ Function Export-FabricItem {
             New-Item -ItemType Directory -Path $parentFolderPath -ErrorAction SilentlyContinue | Out-Null
 
             $parentFolderPath = Resolve-Path -LiteralPath $parentFolderPath
-
+            
             $bytes = [Convert]::FromBase64String($part.payload)
 
             Set-Content -LiteralPath $outputFilePath $bytes -AsByteStream
         }
     }
-      
+
+    Write-Host "Total parts: $partCount"      
 }
 
 Function Import-FabricItems {
@@ -801,7 +803,7 @@ Function Import-FabricItems {
 
             $itemId = $createItemResult.id
 
-            write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+            write-host "[$([datetime]::Now.ToString("s"))] Created a new item with ID '$itemId'" -ForegroundColor Green
 
             Write-Output @{
                 "id"          = $itemId
@@ -820,7 +822,7 @@ Function Import-FabricItems {
             
             Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
 
-            write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+            write-host "[$([datetime]::Now.ToString("s"))] Updated item with ID '$itemId'" -ForegroundColor Green
 
             Write-Output @{
                 "id"          = $itemId
@@ -943,7 +945,7 @@ Function Import-FabricItem {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties.semanticModelId' parameter."
                 }
                 else {
-                    Write-Host "Binding to semantic model: $datasetId"
+                    Write-Host "Report connected to semantic model: $datasetId"
                 }
 
                 $pbirJson.datasetReference.byPath = $null
@@ -979,11 +981,11 @@ Function Import-FabricItem {
             Payload     = $fileEncodedContent
             PayloadType = "InlineBase64"
         }
-    }
+    }    
 
-    Write-Host "Payload parts:"        
+    $parts | % { Write-Verbose "part: $($_.Path)" }
 
-    $parts | % { Write-Host "part: $($_.Path)" }
+    Write-Host "Total parts: $($parts.Count)"
 
     $itemId = $null
 
