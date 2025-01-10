@@ -38,6 +38,17 @@ foreach ($nuget in $nugets) {
    
 }
 
+function Write-Log{
+    param
+    (
+        $message
+        ,
+        $foregroundColor = [System.Console]::ForegroundColor
+    )
+
+    Write-Host "[$([datetime]::Now.ToString("s"))] $message" -ForegroundColor $foregroundColor
+}
+
 function Get-FabricAuthToken {
     <#
     .SYNOPSIS
@@ -86,7 +97,7 @@ function Set-FabricAuthToken {
 
     if (!$azContext) {
         
-        Write-Host "Getting authentication token"
+        Write-Log "Getting authentication token"
         
         if ($servicePrincipalId) {
             $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $servicePrincipalId, ($servicePrincipalSecret | ConvertTo-SecureString -AsPlainText -Force)
@@ -105,7 +116,7 @@ function Set-FabricAuthToken {
         $azContext = Get-AzContext        
     }
 
-    Write-Host "Connnected: $($azContext.Account)"
+    Write-Log "Connnected: $($azContext.Account)"
 
     $script:fabricToken = (Get-AzAccessToken -ResourceUrl $script:resourceUrl).Token
 }
@@ -140,7 +151,7 @@ Function Invoke-FabricAPIRequest {
         
         $requestUrl = "$($script:apiUrl)/$uri"
 
-        Write-Host "[$([datetime]::Now.ToString("s"))] Calling $requestUrl"
+        Write-Log "Calling $requestUrl"
         
         # If need to use -OutFile beware of the following breaking change: https://github.com/PowerShell/PowerShell/issues/20744
 
@@ -148,13 +159,17 @@ Function Invoke-FabricAPIRequest {
 
         $response = Invoke-WebRequest -Headers $fabricHeaders -Method $method -Uri $requestUrl -Body $body  -TimeoutSec $timeoutSec     
 
+        $requestId = [string]$response.Headers.requestId
+
+        Write-Log "RAID: $requestId"
+
         $lroFailOrNoResultFlag = $false
 
         if ($response.StatusCode -eq 202) {
             do {                
                 $asyncUrl = [string]$response.Headers.Location
 
-                Write-Host "[$([datetime]::Now.ToString("s"))] LRO - Waiting for request to complete in service."
+                Write-Log "LRO - Waiting for request to complete in service."
 
                 Start-Sleep -Seconds 5
 
@@ -186,7 +201,7 @@ Function Invoke-FabricAPIRequest {
             }            
         }
 
-        Write-Host "[$([datetime]::Now.ToString("s"))] Request completed."
+        Write-Log "Request completed."
 
         #if ($response.StatusCode -in @(200,201) -and $response.Content)        
         if (!$lroFailOrNoResultFlag -and $response.Content) {      
@@ -230,7 +245,7 @@ Function Invoke-FabricAPIRequest {
                     $retryAfterSeconds = 60
                 }
 
-                Write-Host "Exceeded the amount of calls (TooManyRequests - 429), sleeping for $retryAfterSeconds seconds."
+                Write-Log "Exceeded the amount of calls (TooManyRequests - 429), sleeping for $retryAfterSeconds seconds."
 
                 Start-Sleep -Seconds $retryAfterSeconds
 
@@ -296,7 +311,7 @@ Function New-FabricWorkspace {
     try {        
         $createResult = Invoke-FabricAPIRequest -Uri "workspaces" -Method Post -Body $itemRequest
 
-        Write-Host "Workspace created: '$name'"
+        Write-Log "Workspace created: '$name'"
 
         Write-Output $createResult.id
     }
@@ -305,7 +320,7 @@ Function New-FabricWorkspace {
 
         if ($skipErrorIfExists) {
             if ($ex.Message -ilike "*409*") {
-                Write-Host "Workspace '$name' already exists"
+                Write-Log "Workspace '$name' already exists"
 
                 $listWorkspaces = Invoke-FabricAPIRequest -Uri "workspaces" -Method Get
 
@@ -400,7 +415,7 @@ Function Set-FabricWorkspacePermissions {
             $matchRole = $existingRoles | ? { $_.principal.id -ieq $permission.principal.id } | select -First 1
             
             if (!$matchRole) {
-                Write-Host "Adding role '$($permission.role)' to '$($permission.principal.id)'"
+                Write-Log "Adding role '$($permission.role)' to '$($permission.principal.id)'"
 
                 $request = $permission | ConvertTo-Json
 
@@ -410,7 +425,7 @@ Function Set-FabricWorkspacePermissions {
                 # If role already exists for principal, check the role
 
                 if ($permission.role -ine $matchRole.role) {
-                    Write-Host "Updating principal '$($permission.principal.id)' role to '$($permission.role)'"
+                    Write-Log "Updating principal '$($permission.principal.id)' role to '$($permission.role)'"
 
                     $request = @{"role" = $permission.role } | ConvertTo-Json
 
@@ -448,7 +463,7 @@ Function Export-FabricItems {
         $items = $items | Where-Object $filter
     }    
 
-    Write-Host "Existing items: $($items.Count)"
+    Write-Log "Existing items: $($items.Count)"
 
     foreach ($item in $items) {
         
@@ -493,7 +508,7 @@ Function Export-FabricItem {
 
     $itemOutputPath = $path   
     
-    Write-Host "Getting definition of: $itemId"
+    Write-Log "Getting definition of: $itemId"
 
     #POST https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items/{itemId}/getDefinition
 
@@ -528,7 +543,7 @@ Function Export-FabricItem {
         }
     }
 
-    Write-Host "Total parts: $partCount"      
+    Write-Log "Total parts: $partCount"      
 }
 
 Function Import-FabricItems {
@@ -571,11 +586,11 @@ Function Import-FabricItems {
     }
 
     if ($itemsInFolder.Count -eq 0) {
-        Write-Host "No items found in the path '$path' (*.pbir; *.pbism)"
+        Write-Log "No items found in the path '$path' (*.pbir; *.pbism)"
         return
     }
 
-    Write-Host "Items in the folder: $($itemsInFolder.Count)"
+    Write-Log "Items in the folder: $($itemsInFolder.Count)"
 
     # File Overrides processing, convert all to base64 - Its the final format of the parts for Fabric APIs
 
@@ -610,7 +625,7 @@ Function Import-FabricItems {
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    Write-Host "Existing items in the workspace: $($items.Count)"
+    Write-Log "Existing items in the workspace: $($items.Count)"
 
     # Datasets first 
 
@@ -625,7 +640,7 @@ Function Import-FabricItems {
         $itemName = $itemInFolder.Directory.Name
         $itemPath = $itemInFolder.Directory.FullName
 
-        write-host "Processing item: '$itemPath'"
+        Write-Log "Processing item: '$itemPath'"
 
         $files = Get-ChildItem -LiteralPath $itemPath -Recurse -Attributes !Directory
 
@@ -657,7 +672,7 @@ Function Import-FabricItems {
             if ($fileOverridesEncoded) {
                 $fileOverrideMatch = $fileOverridesEncoded | ? { "$itemPath\.platform" -ilike $_.Name } | select -First 1
                 if ($fileOverrideMatch) {
-                    Write-Host "File override '.platform'"
+                    Write-Log "File override '.platform'"
                     $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
                 }
             }
@@ -688,7 +703,7 @@ Function Import-FabricItems {
 
             if ($fileOverrideMatch) {
 
-                Write-Host "File override '$fileName'"
+                Write-Log "File override '$fileName'"
 
                 $fileContent = $fileOverrideMatch.Value              
             }
@@ -766,9 +781,9 @@ Function Import-FabricItems {
             }
         }
 
-        Write-Host "Payload parts:"        
+        Write-Log "Payload parts:"        
 
-        $parts | % { Write-Host "part: $($_.Path)" }
+        $parts | % { Write-Log "part: $($_.Path)" }
 
         $itemId = $null
 
@@ -781,13 +796,13 @@ Function Import-FabricItems {
                 throw "Found more than one item for displayName '$displayName'"
             }
 
-            Write-Host "Item '$displayName' of type '$itemType' already exists." -ForegroundColor Yellow
+            Write-Log "Item '$displayName' of type '$itemType' already exists." -foregroundColor Yellow
 
             $itemId = $foundItem.id
         }
 
         if ($itemId -eq $null) {
-            write-host "Creating a new item"
+            Write-Log "Creating a new item"
 
             # Prepare the request                    
 
@@ -803,7 +818,7 @@ Function Import-FabricItems {
 
             $itemId = $createItemResult.id
 
-            write-host "[$([datetime]::Now.ToString("s"))] Created a new item with ID '$itemId'" -ForegroundColor Green
+            Write-Log "Created a new item with ID '$itemId'" -foregroundColor Green
 
             Write-Output @{
                 "id"          = $itemId
@@ -812,7 +827,7 @@ Function Import-FabricItems {
             }
         }
         else {
-            write-host "Updating item definition"
+            Write-Log "Updating item definition"
 
             $itemRequest = @{ 
                 definition = @{
@@ -822,7 +837,7 @@ Function Import-FabricItems {
             
             Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
 
-            write-host "[$([datetime]::Now.ToString("s"))] Updated item with ID '$itemId'" -ForegroundColor Green
+            Write-Log "Updated item with ID '$itemId'" -ForegroundColor Green
 
             Write-Output @{
                 "id"          = $itemId
@@ -868,7 +883,7 @@ Function Import-FabricItem {
     $itemsInFolder = Get-ChildItem -LiteralPath $path | ? { @(".pbism", ".pbir") -contains $_.Extension }
 
     if ($itemsInFolder.Count -eq 0) {
-        Write-Host "Cannot find valid item definitions (*.pbir; *.pbism) in the '$path'"
+        Write-Log "Cannot find valid item definitions (*.pbir; *.pbism) in the '$path'"
         return
     }    
 
@@ -886,7 +901,7 @@ Function Import-FabricItem {
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    Write-Host "Existing items in the workspace: $($items.Count)"
+    Write-Log "Existing items in the workspace: $($items.Count)"
 
     $files = Get-ChildItem -LiteralPath $path -Recurse -Attributes !Directory
 
@@ -910,7 +925,7 @@ Function Import-FabricItem {
         if ($fileOverridesEncoded) {
             $fileOverrideMatch = $fileOverridesEncoded | ? { "$path\.platform" -ilike $_.Name } | select -First 1
             if ($fileOverrideMatch) {
-                Write-Host "File override '.platform'"
+                Write-Log "File override '.platform'"
                 $itemMetadataStr = [System.Text.Encoding]::UTF8.GetString($fileOverrideMatch.Value)
             }
         }
@@ -945,7 +960,7 @@ Function Import-FabricItem {
                     throw "Cannot import directly a report using byPath connection. You must first resolve the semantic model id and pass it through the 'itemProperties.semanticModelId' parameter."
                 }
                 else {
-                    Write-Host "Report connected to semantic model: $datasetId"
+                    Write-Log "Report connected to semantic model: $datasetId"
                 }
 
                 $pbirJson.datasetReference.byPath = $null
@@ -985,7 +1000,7 @@ Function Import-FabricItem {
 
     $parts | % { Write-Verbose "part: $($_.Path)" }
 
-    Write-Host "Total parts: $($parts.Count)"
+    Write-Log "Total parts: $($parts.Count)"
 
     $itemId = $null
 
@@ -998,13 +1013,13 @@ Function Import-FabricItem {
             throw "Found more than one item for displayName '$displayName'"
         }
 
-        Write-Host "Item '$displayName' of type '$itemType' already exists." -ForegroundColor Yellow
+        Write-Log "Item '$displayName' of type '$itemType' already exists." -ForegroundColor Yellow
 
         $itemId = $foundItem.id
     }
 
     if ($itemId -eq $null) {
-        write-host "Creating a new item"
+        Write-Log "Creating a new item"
 
         # Prepare the request                    
 
@@ -1020,7 +1035,7 @@ Function Import-FabricItem {
 
         $itemId = $createItemResult.id
 
-        write-host "Created a new item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+        Write-Log "Created a new item with ID '$itemId'" -ForegroundColor Green
 
         Write-Output @{
             "id"          = $itemId
@@ -1031,10 +1046,10 @@ Function Import-FabricItem {
     else {
 
         if ($skipIfExists) {
-            write-host "Item '$displayName' of type '$itemType' already exists. Skipping." -ForegroundColor Yellow
+            Write-Log "Item '$displayName' of type '$itemType' already exists. Skipping." -ForegroundColor Yellow
         }
         else {
-            write-host "Updating item definition"
+            Write-Log "Updating item definition"
 
             $itemRequest = @{ 
                 definition = @{
@@ -1044,7 +1059,7 @@ Function Import-FabricItem {
             
             Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId/updateDefinition" -Method Post -Body $itemRequest
 
-            write-host "Updated item with ID '$itemId' $([datetime]::Now.ToString("s"))" -ForegroundColor Green
+            Write-Log "Updated item with ID '$itemId'" -ForegroundColor Green
         }
 
         Write-Output @{
@@ -1071,7 +1086,7 @@ Function Remove-FabricItems {
 
     $items = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items" -Method Get
 
-    Write-Host "Existing items: $($items.Count)"
+    Write-Log "Existing items: $($items.Count)"
 
     if ($filter) {
         $items = $items | ? { $_.DisplayName -like $filter }
@@ -1081,7 +1096,7 @@ Function Remove-FabricItems {
         $itemId = $item.id
         $itemName = $item.displayName
 
-        Write-Host "Removing item '$itemName' ($itemId)"
+        Write-Log "Removing item '$itemName' ($itemId)"
         
         Invoke-FabricAPIRequest -Uri "workspaces/$workspaceId/items/$itemId" -Method Delete
     }
@@ -1147,11 +1162,11 @@ Function Set-SemanticModelParameters {
                 throw "Cannot find model expression '$parameterName'"
             }
             else {
-                Write-Host "Cannot find model expression '$parameterName'"
+                Write-Log "Cannot find model expression '$parameterName'"
             }
         }
         else {
-            Write-Host "Changing model expression '$parameterName'"
+            Write-Log "Changing model expression '$parameterName'"
             $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta", """$parameterValue"" meta"
             $changedFlag = $true
         }
