@@ -721,7 +721,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _bismNormalizerCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -892,7 +892,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _bismNormalizerCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -933,7 +933,7 @@ namespace BismNormalizer.TabularCompare.UI
 
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _bismNormalizerCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -989,7 +989,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _bismNormalizerCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -1072,7 +1072,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _bismNormalizerCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
             }
             finally
             {

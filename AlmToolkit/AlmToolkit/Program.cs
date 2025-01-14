@@ -84,7 +84,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
             }
 
         }

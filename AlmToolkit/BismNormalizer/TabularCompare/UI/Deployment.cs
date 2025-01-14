@@ -89,7 +89,7 @@ namespace BismNormalizer.TabularCompare.UI
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, _comparisonInfo.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BismNormalizer.Utils.ShowErrorMessage(exc);
             }
         }
 

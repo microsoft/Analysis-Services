@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Identity.Client.NativeInterop.0.16.2\build\net461\Microsoft.Identity.Client.NativeInterop.props" Condition="Exists('..\packages\Microsoft.Identity.Client.NativeInterop.0.16.2\build\net461\Microsoft.Identity.Client.NativeInterop.props')" />
   <Import Project="..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props')" />
   <Import Project="..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props')" />
   <Import Project="..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.props')" />
@@ -78,26 +79,32 @@
       <HintPath>..\packages\CefSharp.WinForms.126.2.70\lib\net462\CefSharp.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices, Version=19.84.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.84.1\lib\net45\Microsoft.AnalysisServices.dll</HintPath>
+    <Reference Include="Microsoft.AnalysisServices, Version=19.87.7.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.19.87.7\lib\net472\Microsoft.AnalysisServices.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Core, Version=19.84.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.84.1\lib\net45\Microsoft.AnalysisServices.Core.dll</HintPath>
+    <Reference Include="Microsoft.AnalysisServices.Core, Version=19.87.7.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.19.87.7\lib\net472\Microsoft.AnalysisServices.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.SPClient.Interfaces, Version=19.84.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.84.1\lib\net45\Microsoft.AnalysisServices.SPClient.Interfaces.dll</HintPath>
+    <Reference Include="Microsoft.AnalysisServices.SPClient.Interfaces, Version=19.87.7.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.19.87.7\lib\net472\Microsoft.AnalysisServices.SPClient.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Tabular, Version=19.84.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.84.1\lib\net45\Microsoft.AnalysisServices.Tabular.dll</HintPath>
+    <Reference Include="Microsoft.AnalysisServices.Tabular, Version=19.87.7.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.19.87.7\lib\net472\Microsoft.AnalysisServices.Tabular.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AnalysisServices.Tabular.Json, Version=19.84.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AnalysisServices.retail.amd64.19.84.1\lib\net45\Microsoft.AnalysisServices.Tabular.Json.dll</HintPath>
+    <Reference Include="Microsoft.AnalysisServices.Tabular.Json, Version=19.87.7.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AnalysisServices.19.87.7\lib\net472\Microsoft.AnalysisServices.Tabular.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Identity.Client, Version=4.56.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Identity.Client.4.56.0\lib\net461\Microsoft.Identity.Client.dll</HintPath>
+    <Reference Include="Microsoft.Identity.Client, Version=4.65.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.4.65.0\lib\net472\Microsoft.Identity.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.6.22.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Identity.Client.Broker, Version=4.65.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.Broker.4.65.0\lib\net462\Microsoft.Identity.Client.Broker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client.NativeInterop, Version=0.16.2.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.NativeInterop.0.16.2\lib\net461\Microsoft.Identity.Client.NativeInterop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.35.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.6.35.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -106,8 +113,24 @@
       <HintPath>..\packages\Octokit.0.36.0\lib\net46\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.1\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms.Ribbon, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\System.Windows.Forms.Ribbon.dll</HintPath>
@@ -313,6 +336,7 @@
     <Error Condition="!Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets'))" />
     <Error Condition="!Exists('..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.120.2.5\build\cef.redist.x64.props'))" />
     <Error Condition="!Exists('..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.120.2.5\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Identity.Client.NativeInterop.0.16.2\build\net461\Microsoft.Identity.Client.NativeInterop.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Identity.Client.NativeInterop.0.16.2\build\net461\Microsoft.Identity.Client.NativeInterop.props'))" />
   </Target>
   <Import Project="..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.126.2.70\build\CefSharp.Common.targets')" />
 </Project>

@@ -6,10 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AlmToolkit
+namespace BismNormalizer
 {
-    public static class Utils
+    public class Utils
     {
+        public static bool DebugErrors = false; //Todo: create an option setting for this so customers can set to share debug error messages
+
         public static string AssemblyProduct
         {
             get
@@ -61,17 +63,9 @@ namespace AlmToolkit
             }
         }
 
-        public static string LatestVersionDownloadUrl
-        {
-            get
-            {
-                return "https://github.com/microsoft/Analysis-Services/releases/latest/download/AlmToolkitSetup.msi";
-            }
-        }
-
         public static void ShowErrorMessage(Exception exc)
         {
-            if (!BismNormalizer.Utils.DebugErrors)
+            if (!DebugErrors)
                 MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 MessageBox.Show(exc.ToString(), Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);

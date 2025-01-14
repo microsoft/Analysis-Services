@@ -92,7 +92,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
             }
         }
 
@@ -293,7 +293,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -502,7 +502,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -550,7 +550,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
             }
             finally
             {
@@ -690,7 +690,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -735,7 +735,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
             finally
@@ -915,7 +915,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
         }
@@ -951,7 +951,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
 
@@ -965,7 +965,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
                 SetNotComparedState();
             }
         }
