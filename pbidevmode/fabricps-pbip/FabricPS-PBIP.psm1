@@ -728,7 +728,7 @@ Function Import-FabricItems {
                             
                             $pbirJson.datasetReference.byPath = $null
 
-                            $pbirJson.datasetReference.byConnection = @{
+                            $byConnectionObj = @{
                                 "connectionString"          = $null                
                                 "pbiServiceModelId"         = $null
                                 "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
@@ -736,6 +736,8 @@ Function Import-FabricItems {
                                 "name"                      = "EntityDataSource"
                                 "connectionType"            = "pbiServiceXmlaStyleLive"
                             }
+                                                        
+                            $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -ErrorAction SilentlyContinue       
             
                             $newPBIR = $pbirJson | ConvertTo-Json
 
@@ -965,7 +967,7 @@ Function Import-FabricItem {
 
                 $pbirJson.datasetReference.byPath = $null
 
-                $pbirJson.datasetReference.byConnection = @{
+                $byConnectionObj = @{
                     "connectionString"          = $null                
                     "pbiServiceModelId"         = $null
                     "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
@@ -973,6 +975,8 @@ Function Import-FabricItem {
                     "name"                      = "EntityDataSource"
                     "connectionType"            = "pbiServiceXmlaStyleLive"
                 }
+
+                $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -ErrorAction SilentlyContinue                            
 
                 $newPBIR = $pbirJson | ConvertTo-Json            
                 
