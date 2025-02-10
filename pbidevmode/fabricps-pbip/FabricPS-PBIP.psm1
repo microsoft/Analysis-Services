@@ -736,24 +736,10 @@ Function Import-FabricItems {
                                 "name"                      = "EntityDataSource"
                                 "connectionType"            = "pbiServiceXmlaStyleLive"
                             }
-                                                        
-                            $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -ErrorAction SilentlyContinue       
+
+                            $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -Force
             
                             $newPBIR = $pbirJson | ConvertTo-Json
-
-                            # $newPBIR = @{
-                            #     "version" = "1.0"
-                            #     "datasetReference" = @{          
-                            #         "byConnection" =  @{
-                            #         "connectionString" = $null                
-                            #         "pbiServiceModelId" = $null
-                            #         "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                            #         "pbiModelDatabaseName" = "$datasetId"                
-                            #         "name" = "EntityDataSource"
-                            #         "connectionType" = "pbiServiceXmlaStyleLive"
-                            #         }
-                            #     }
-                            # } | ConvertTo-Json
                             
                             $fileContent = [system.Text.Encoding]::UTF8.GetBytes($newPBIR)
 
@@ -976,7 +962,7 @@ Function Import-FabricItem {
                     "connectionType"            = "pbiServiceXmlaStyleLive"
                 }
 
-                $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -ErrorAction SilentlyContinue                            
+                $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -Force
 
                 $newPBIR = $pbirJson | ConvertTo-Json            
                 
