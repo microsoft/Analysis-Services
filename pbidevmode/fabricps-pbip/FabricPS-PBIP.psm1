@@ -617,7 +617,7 @@ Function Import-FabricItems {
                 throw "FileOverrides value type must be string or byte[]"
             }
             
-            $fileOverridesEncoded += @{Name = $fileOverride.Name; Value = $fileContent }
+            $fileOverridesEncoded += @{Name = $fileOverride.Key; Value = $fileContent }
         }
     }
 
