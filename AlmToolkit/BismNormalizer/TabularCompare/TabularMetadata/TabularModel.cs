@@ -53,32 +53,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
         /// <summary>
-        /// Connect to SSAS server and instantiate properties of the TabularModel object.
+        /// Connect to AS server and instantiate properties of the TabularModel object.
         /// </summary>
         public void Connect()
         {
-            this.Disconnect();
-
-            if (_connectionInfo.UseTmdlFolder)
-            {
-                _database = _connectionInfo.OpenDatabaseFromFolder();
-            }
-            else if (_connectionInfo.UseBimFile)
-            {
-                _database = _connectionInfo.OpenDatabaseFromFile();
-            }
-            else
-            {
-                _server = new Server();
-                _server.Connect(_connectionInfo.BuildConnectionString());
-
-                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
-                if (_database == null)
-                {
-                    //Don't need try to load from project here as will already be done before instantiated Comparison
-                    throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
-                }
-            }
+            TomConnect();
 
             //Shell model
             _model = new Model(this, _database.Model);
@@ -162,6 +141,36 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 InitializeCalcDependenciesFromServer();
+            }
+        }
+
+        /// <summary>
+        /// Connect only to AS server. Does not instantiate properties of the TabularModel object.
+        /// </summary>
+        public void TomConnect()
+        {
+            this.Disconnect();
+
+            if (_connectionInfo.UseTmdlFolder)
+            {
+                _database = _connectionInfo.OpenDatabaseFromFolder();
+            }
+            else if (_connectionInfo.UseBimFile)
+            {
+                _database = _connectionInfo.OpenDatabaseFromFile();
+            }
+            else
+            {
+                _server = new Server();
+                string connectionString = _connectionInfo.BuildConnectionString();
+                _server.Connect(connectionString);
+
+                _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
+                if (_database == null)
+                {
+                    //Don't need try to load from project here as will already be done before instantiated Comparison
+                    throw new Amo.ConnectionException($"Could not connect to database {_connectionInfo.DatabaseName}");
+                }
             }
         }
 
@@ -585,9 +594,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// </summary>
         /// <param name="name">Name of the table to be deleted.</param>
         /// <returns>Collection of all associated relationships that had to be deleted. Useful if updating tables as then need to add back.</returns>
-        public List<SingleColumnRelationship> DeleteTable(string name)
+        public List<RelationshipToRetain> DeleteTable(string name)
         {
-            List<SingleColumnRelationship> deletedRelationships = new List<SingleColumnRelationship>();
+            List<RelationshipToRetain> deletedRelationships = new List<RelationshipToRetain>();
 
             // shell model
             if (_tables.ContainsName(name))
@@ -614,17 +623,20 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             tableSource.TomTable.CopyTo(tomTableTarget);
 
             //decouple from original model to the current one
-            foreach (Partition partition in tomTableTarget.Partitions)
+            for (int i = 0; i < tomTableTarget.Partitions.Count; i++)
             {
-                if (partition.QueryGroup != null)
+                if (tomTableTarget.Partitions[i].QueryGroup != null)
                 {
-                    CreateQueryGroup(partition.QueryGroup);
+                    CreateQueryGroup(tomTableTarget.Partitions[i].QueryGroup);
                 }
 
-                if (partition.SourceType == PartitionSourceType.Query)
+                if (tomTableTarget.Partitions[i].SourceType == PartitionSourceType.Query)
                 {
-                    QueryPartitionSource queryPartition = ((QueryPartitionSource)partition.Source);
-                    string dataSourceName = queryPartition.DataSource.Name;
+                    QueryPartitionSource queryPartition = ((QueryPartitionSource)tomTableTarget.Partitions[i].Source);
+                    //string dataSourceName = queryPartition.DataSource.Name;
+                    //11/19/2024 commented above line due to another instance of Oren's change where CopyTo loses object references.
+                    //However, we know there is at least 1 partition in tableSource and all partitions in a table with SourceType=Query have only 1 DataSource, so can reliably do this instead:
+                    string dataSourceName = ((QueryPartitionSource)tableSource.TomTable.Partitions[i].Source).DataSource.Name;
                     queryPartition.DataSource = _dataSources.FindByName(dataSourceName).TomDataSource;
                 }
             }
@@ -651,7 +663,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 out PartitionSourceType partitionSourceTypeTarget);
             Tom.Table tomTableTargetOrig = tableTarget.TomTable.Clone();
             ModeType tableTargetModeType = tableTarget.TableModeType;
-            List<SingleColumnRelationship> tomRelationshipsToAddBack = DeleteTable(tableTarget.Name);
+            List<RelationshipToRetain> relationshipsToAddBack = DeleteTable(tableTarget.Name);
             CreateTable(tableSource);
 
             //get back the newly created table
@@ -662,19 +674,19 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 RetainPartitions(tableTarget, tomTableTargetOrig, out retainPartitionsMessage);
 
             //add back deleted relationships where possible
-            foreach (SingleColumnRelationship tomRelationshipToAddBack in tomRelationshipsToAddBack)
+            foreach (RelationshipToRetain relationshipToAddBack in relationshipsToAddBack)
             {
-                Table fromTable = _tables.FindByName(tomRelationshipToAddBack.FromTable.Name);
-                Table toTable = _tables.FindByName(tomRelationshipToAddBack.ToTable.Name);
+                Table fromTable = _tables.FindByName(relationshipToAddBack.FromTableName);
+                Table toTable = _tables.FindByName(relationshipToAddBack.ToTableName);
 
-                if (fromTable != null && fromTable.TomTable.Columns.ContainsName(tomRelationshipToAddBack.FromColumn.Name) &&
-                    toTable != null & toTable.TomTable.Columns.ContainsName(tomRelationshipToAddBack.ToColumn.Name))
+                if (fromTable != null && fromTable.TomTable.Columns.ContainsName(relationshipToAddBack.FromColumnName) &&
+                    toTable != null & toTable.TomTable.Columns.ContainsName(relationshipToAddBack.ToColumnName))
                 {
                     //decouple from original table to the current one
-                    tomRelationshipToAddBack.FromColumn = fromTable.TomTable.Columns.Find(tomRelationshipToAddBack.FromColumn.Name);
-                    tomRelationshipToAddBack.ToColumn = toTable.TomTable.Columns.Find(tomRelationshipToAddBack.ToColumn.Name);
+                    relationshipToAddBack.TomRelationship.FromColumn = fromTable.TomTable.Columns.Find(relationshipToAddBack.FromColumnName);
+                    relationshipToAddBack.TomRelationship.ToColumn = toTable.TomTable.Columns.Find(relationshipToAddBack.ToColumnName);
 
-                    fromTable.CreateRelationship(tomRelationshipToAddBack);
+                    fromTable.CreateRelationship(relationshipToAddBack.TomRelationship);
                 }
             }
 
@@ -710,6 +722,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     else
                     {
                         tableTarget.TomTable.RefreshPolicy = tomTableTargetOrig.RefreshPolicy.Clone();
+                        retainPartitionsMessage = "Retain refresh policy option applied. " + retainPartitionsMessage;
                     }
                 }
             }
@@ -1346,7 +1359,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 foreach (ModelRole tomRole in _tomRolesBackup)
                 {
-                    CreateRole(tomRole);
+                    CreateRole(tomRole, true);
                 }
             }
         }
@@ -1868,7 +1881,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Create role associated with the TabularModel object.
         /// </summary>
         /// <param name="tomRoleSource">Tabular Object Model ModelRole object from the source tabular model to be abstracted in the target.</param>
-        public ModelRole CreateRole(ModelRole tomRoleSource)
+        public ModelRole CreateRole(ModelRole tomRoleSource, bool restore)
         {
             ModelRole tomRoleTarget = new ModelRole();
             tomRoleSource.CopyTo(tomRoleTarget);
@@ -1876,10 +1889,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             List<string> permissionNamesToDelete = new List<string>();
             foreach (TablePermission permission in tomRoleTarget.TablePermissions)
             {
-                if (_tables.ContainsName(permission.Table.Name))
+                if (_tables.ContainsName(permission.Name))
                 {
                     //decouple table permissions from from original table to the one in target model (if exists)
-                    permission.Table = _tables.FindByName(permission.Table.Name).TomTable;
+                    permission.Table = _tables.FindByName(permission.Name).TomTable;
                 }
                 else
                 {
@@ -1900,6 +1913,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 tomRoleTarget.Members.Add(roleMemberTarget);
             }
 
+            if (!restore) tomRoleTarget.Annotations.Clear();
             _database.Model.Roles.Add(tomRoleTarget);
 
             // shell model
@@ -1919,7 +1933,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 Tom.ModelRole tomModelRoleBackup = roleTarget.TomRole.Clone();
                 DeleteRole(roleTarget.Name);
-                Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole);
+                Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole, false);
                 tomModelRoleNew.Members.Clear();
                 foreach (ModelRoleMember roleMemberOrig in tomModelRoleBackup.Members)
                 {
@@ -1930,7 +1944,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 DeleteRole(roleTarget.Name);
-                CreateRole(roleSource.TomRole);
+                CreateRole(roleSource.TomRole, false);
             }
         }
 
@@ -2560,4 +2574,23 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         }
 
     }
+
+    public struct RelationshipToRetain
+    {
+        public SingleColumnRelationship TomRelationship;
+        public string FromTableName;
+        public string FromColumnName;
+        public string ToTableName;
+        public string ToColumnName;
+
+        public RelationshipToRetain(SingleColumnRelationship tomRelationship, string fromTableName, string fromColumnName, string toTableName, string toColumnName)
+        {
+            TomRelationship = tomRelationship;
+            FromTableName = fromTableName;
+            FromColumnName = fromColumnName;
+            ToTableName = toTableName;
+            ToColumnName = toColumnName;
+        }
+    }
+
 }

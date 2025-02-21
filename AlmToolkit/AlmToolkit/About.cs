@@ -48,22 +48,10 @@ namespace AlmToolkit
             this.linkReportIssue.LinkVisited = false;
         }
 
-        private void linkALMTWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.linkALMTWebsite.LinkVisited = true;
-            System.Diagnostics.Process.Start("http://alm-toolkit.com/");
-        }
-
-        private void linkHowToUse_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.linkHowToUse.LinkVisited = true;
-            System.Diagnostics.Process.Start("http://alm-toolkit.com/HowToUse");
-        }
-
         private void linkDocumentation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.linkDocumentation.LinkVisited = true;
-            System.Diagnostics.Process.Start("https://github.com/microsoft/Analysis-Services/blob/master/BismNormalizer/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf");
+            System.Diagnostics.Process.Start("https://github.com/microsoft/Analysis-Services/blob/master/AlmToolkit/Semantic%20Model%20Comparison%20and%20Merging%20with%20ALM%20Toolkit.pdf");
         }
 
         private void linkLatestVersion_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

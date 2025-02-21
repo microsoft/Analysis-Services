@@ -25,6 +25,14 @@ Import-Module ".\modules\FabricPS-PBIP" -Force
 
 ```
 
+If you encounter the error 'Install-Package: No match was found...', make sure NuGet is registered as your package source by running the following command:
+
+``` 
+Register-PackageSource -Name "NuGet.org" -Location "https://api.nuget.org/v3/index.json" -ProviderName "NuGet"
+```
+
+Or manually download the [Microsoft.AnalysisServices.NetCore.retail.amd64](https://www.nuget.org/packages/Microsoft.AnalysisServices.NetCore.retail.amd64) NuGet package and unzip it to the folder *.nuget\\* in the same folder as *FabricPS-PBIP.psm1* file
+
 # Authentication
 
 To call the Fabric API you must authenticate with a user account or Service Principal. Learn more about service principals and how to enable them [here](https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal).

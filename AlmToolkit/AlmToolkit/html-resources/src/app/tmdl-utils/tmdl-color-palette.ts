@@ -15,5 +15,10 @@ export const lightPalette: TMDLPalette = {
     { token: "variable", foreground: "001080" },
     { token: "attribute", foreground: "795e26" },
   ],
-  colors: {},
+  colors: {
+    'diffEditor.insertedTextBackground': '#ff000033',
+    'diffEditor.removedTextBackground': '#e2f6c5',
+    "diffEditor.insertedLineBackground": "#ff000033",
+    "diffEditor.removedLineBackground": "#e2f6c5",
+  },
 };
