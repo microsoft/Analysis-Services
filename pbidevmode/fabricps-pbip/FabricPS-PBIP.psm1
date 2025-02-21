@@ -572,6 +572,8 @@ Function Import-FabricItems {
         [hashtable]$fileOverrides
         ,
         [hashtable]$itemProperties
+        ,
+        [switch]$useDirNameAsProperties
     )
 
     # Search for folders with .pbir and .pbism in it
@@ -662,7 +664,17 @@ Function Import-FabricItems {
                 $displayName = $foundItemProperty.displayName
             }            
         }
-        
+
+        # Use the parent path to set the displayName and itemType, if useDirNameAsProperties parameter was set
+
+        if ($useDirNameAsProperties) {
+            if ($itemProperties -or (Test-Path -LiteralPath "$itemPath\.platform")){
+                Write-Host "itemProperties have been passed in or .platform file exists `n Will not set itemProperties based on path"}
+            else {
+                $displayName = $itemName.Split('.')[0]
+                $itemType = $itemName.Split('.')[1]}
+        }
+
         # Try to read the item properties from the .platform file if not found in itemProperties
 
         if ((!$itemType -or !$displayName) -and (Test-Path -LiteralPath "$itemPath\.platform")) {            
