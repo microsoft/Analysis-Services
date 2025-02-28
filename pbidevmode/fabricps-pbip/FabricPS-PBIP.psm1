@@ -951,7 +951,10 @@ Function Import-FabricItem {
                     Write-Log "Report connected to semantic model: $datasetId"
                 }
 
-                $pbirJson.datasetReference.byPath = $null
+                if ($pbirJson.datasetReference.byPath)
+                {
+                    $pbirJson.datasetReference.byPath = $null
+                }
 
                 $byConnectionObj = @{
                     "connectionString"          = $null                
