@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,12 +12,23 @@ namespace AlmToolkit
 {
     static class Program
     {
+        [DllImport(@"user32.dll")]
+        private static extern bool SetProcessDpiAwarenessContext(IntPtr dpiAWarenessContext);
+        private static readonly IntPtr DPI_AWARENESS_CONTEXT_UNAWARE = new IntPtr(-1);
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
+            // Set DPI awareness context to unaware to prevent CefSharp from managing DPI scaling
+            var dpiUnaware = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
+            if (!dpiUnaware)
+            {
+                // Display a warning if setting the DPI awareness context to unaware fails
+                MessageBox.Show("Unable to apply DPI scaling. You might experience HDPI issues in the application.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
@@ -72,7 +84,7 @@ namespace AlmToolkit
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowErrorMessage(exc);
             }
 
         }

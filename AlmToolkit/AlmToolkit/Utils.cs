@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AlmToolkit
 {
@@ -66,6 +67,14 @@ namespace AlmToolkit
             {
                 return "https://github.com/microsoft/Analysis-Services/releases/latest/download/AlmToolkitSetup.msi";
             }
+        }
+
+        public static void ShowErrorMessage(Exception exc)
+        {
+            if (!BismNormalizer.Utils.DebugErrors)
+                MessageBox.Show(exc.Message, Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                MessageBox.Show(exc.ToString(), Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

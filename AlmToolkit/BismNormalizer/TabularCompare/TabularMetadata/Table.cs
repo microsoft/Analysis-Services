@@ -183,9 +183,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Delete all associated relationships including those from other tables that refer to this table.
         /// </summary>
         /// <returns>Collection of all associated relationships that were deleted. Useful if updating tables as then need to add back.</returns>
-        public List<SingleColumnRelationship> DeleteAllAssociatedRelationships()
+        public List<RelationshipToRetain> DeleteAllAssociatedRelationships()
         {
-            List<SingleColumnRelationship> relationshipsToDelete = new List<SingleColumnRelationship>();
+            List<RelationshipToRetain> relationshipsToDelete = new List<RelationshipToRetain>();
 
             foreach (Table table in _parentTabularModel.Tables)
             {
@@ -196,8 +196,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     {
                         SingleColumnRelationship relationshipTarget = new SingleColumnRelationship();
                         relationship.TomRelationship.CopyTo(relationshipTarget);
-
-                        relationshipsToDelete.Add(relationshipTarget);
+                        RelationshipToRetain relationshipToDelete = new RelationshipToRetain(
+                            relationshipTarget,
+                            relationship.TomRelationship.FromTable.Name,
+                            relationship.TomRelationship.FromColumn.Name,
+                            relationship.TomRelationship.ToTable.Name,
+                            relationship.TomRelationship.ToColumn.Name
+                            );
+                        relationshipsToDelete.Add(relationshipToDelete);
                         relationshipsToDeleteInternalNames.Add(relationship.InternalName);
                     }
                 }
@@ -335,8 +341,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             tabularRelationshipSource.CopyTo(relationshipTarget);
 
             //decouple from original table to the current one
-            relationshipTarget.FromColumn = this.TomTable.Columns.Find(relationshipTarget.FromColumn.Name);
-            relationshipTarget.ToColumn = toTableTarget.Columns.Find(relationshipTarget.ToColumn.Name);
+            relationshipTarget.FromColumn = this.TomTable.Columns.Find(tabularRelationshipSource.FromColumn.Name);
+            relationshipTarget.ToColumn = toTableTarget.Columns.Find(tabularRelationshipSource.ToColumn.Name);
 
             // Delete the target relationship with same tables/columns if still there. Not using RemoveByInternalName in case internal name is actually different.
             if (this.Relationships.ContainsName(relationshipSource.Name))
@@ -403,8 +409,8 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             tabularRelationshipSource.CopyTo(relationshipTarget);
 
             //decouple from original table to the current one
-            relationshipTarget.FromColumn = this.TomTable.Columns.Find(relationshipTarget.FromColumn.Name);
-            relationshipTarget.ToColumn = toTableTarget.Columns.Find(relationshipTarget.ToColumn.Name);
+            relationshipTarget.FromColumn = this.TomTable.Columns.Find(tabularRelationshipSource.FromColumn.Name);
+            relationshipTarget.ToColumn = toTableTarget.Columns.Find(tabularRelationshipSource.ToColumn.Name);
 
             CreateRelationship(relationshipTarget);
             return true;
