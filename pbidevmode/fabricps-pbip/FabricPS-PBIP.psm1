@@ -63,7 +63,9 @@ function Get-FabricAuthToken {
         Set-FabricAuthToken
     }
     
-    Write-Output $script:fabricToken
+    $tokenText = ConvertFrom-SecureString -SecureString $script:fabricToken -AsPlainText
+    
+    Write-Output $tokenText
 }
 
 function Set-FabricAuthToken {
@@ -118,7 +120,7 @@ function Set-FabricAuthToken {
 
     Write-Log "Connnected: $($azContext.Account)"
 
-    $script:fabricToken = (Get-AzAccessToken -ResourceUrl $script:resourceUrl).Token
+    $script:fabricToken = (Get-AzAccessToken -ResourceUrl $script:resourceUrl -AsSecureString).Token
 }
 
 Function Invoke-FabricAPIRequest {
