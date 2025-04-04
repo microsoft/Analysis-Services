@@ -49,7 +49,7 @@ stages:
               $itemsFolders = Get-ChildItem  -Path $path -recurse -include ("*.pbidataset", "*.pbism")
 
               foreach($itemFolder in $itemsFolders)
-              {	
+              {
                   $itemPath = "$($itemFolder.Directory.FullName)\definition"
 
                   if (!(Test-Path $itemPath))
@@ -113,7 +113,7 @@ stages:
                   $itemsFolders = Get-ChildItem  -Path $path -recurse -include *.pbir
 
                   foreach($itemFolder in $itemsFolders)
-                  {	
+                  {
                       $itemPath = $itemFolder.Directory.FullName
                       
                       Write-Host "##[group]Running rules for: '$itemPath'"
