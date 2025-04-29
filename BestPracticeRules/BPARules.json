@@ -615,10 +615,10 @@
     "ID": "PROVIDE_FORMAT_STRING_FOR_MEASURES",
     "Name": "[Formatting] Provide format string for measures",
     "Category": "Formatting",
-    "Description": "Visible measures should have their format string property assigned",
+    "Description": "Visible not string measures should have their format string property assigned",
     "Severity": 3,
     "Scope": "Measure",
-    "Expression": "not IsHidden \r\nand not Table.IsHidden \r\nand string.IsNullOrWhitespace(FormatString)",
+    "Expression": "not IsHidden \r\nand not Table.IsHidden \r\nand string.IsNullOrWhitespace(FormatString)\r\nand DataType <> \"String\"",
     "CompatibilityLevel": 1200
   },
   {
