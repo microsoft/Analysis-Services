@@ -8,14 +8,14 @@ $currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
 
 $nugets = @(
     @{
-        name    = "Microsoft.AnalysisServices.NetCore.retail.amd64"
+        name    = "Microsoft.AnalysisServices"
         ;
-        version = "19.84.1"
+        version = "19.94.1.1"
         ;
         path    = @(
-            "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
-            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
-            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
+            "lib\net6.0\Microsoft.AnalysisServices.Core.dll"
+            , "lib\net6.0\Microsoft.AnalysisServices.Tabular.dll"
+            , "lib\net6.0\Microsoft.AnalysisServices.Tabular.Json.dll"
         )
     }
 )
