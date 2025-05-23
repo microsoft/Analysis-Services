@@ -1,4 +1,4 @@
-# ALM Toolkit
+# ![AlmToolkitLogo](https://github.com/user-attachments/assets/ec958328-97c4-4e85-aecc-f95d3e18828c) ALM Toolkit
 
 ## For a detailed list of features and use cases, please refer to the ALM Toolkit [documentation](Semantic%20Model%20Comparison%20and%20Merging%20with%20ALM%20Toolkit.pdf)
 
