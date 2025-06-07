@@ -1285,10 +1285,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Delete)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 //Check any objects in target that depend on the DataSource are also going to be deleted
                 List<string> warningObjectList = new List<string>();
@@ -1352,10 +1352,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Create)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 _targetTabularModel.CreateDataSource(_sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName));
                 OnValidationMessage(new ValidationMessageEventArgs($"Create data source [{comparisonObject.SourceObjectName}].", ValidationMessageType.DataSource, ValidationMessageStatus.Informational));
@@ -1366,10 +1366,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Update)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 DataSource sourceDataSource = _sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName);
                 DataSource targetDataSource = _targetTabularModel.DataSources.FindByName(comparisonObject.TargetObjectName);

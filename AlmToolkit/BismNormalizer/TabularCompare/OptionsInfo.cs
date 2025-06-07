@@ -27,6 +27,7 @@ namespace BismNormalizer.TabularCompare
         private bool _optionRetainPolicyPartitions;
         private bool _optionRetainRefreshPolicy;
         private bool _optionRetainStorageMode;
+        private bool _optionInteractiveLogin;
         private bool _optionMeasureDependencies;
         private ProcessingOption _optionProcessingOption;
         private bool _optionTransaction;
@@ -52,6 +53,7 @@ namespace BismNormalizer.TabularCompare
             _optionRetainPolicyPartitions = Settings.Default.OptionRetainPolicyPartitions;
             _optionRetainRefreshPolicy = Settings.Default.OptionRetainRefreshPolicy;
             _optionRetainStorageMode = Settings.Default.OptionRetainStorageMode;
+            _optionInteractiveLogin = Settings.Default.OptionInteractiveLogin;
             _optionMeasureDependencies = Settings.Default.OptionMeasureDependencies;
             _optionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), Settings.Default.OptionProcessingOption);
             _optionTransaction = Settings.Default.OptionTransaction;
@@ -192,6 +194,15 @@ namespace BismNormalizer.TabularCompare
         }
 
         /// <summary>
+        /// A Boolean specifying whether to retain storage for table updates on composite models.
+        /// </summary>
+        public bool OptionInteractiveLogin
+        {
+            get { return _optionInteractiveLogin; }
+            set { _optionInteractiveLogin = value; }
+        }
+
+        /// <summary>
         /// A Boolean specifying whether to display warnings for missing measure dependencies.
         /// </summary>
         public bool OptionMeasureDependencies
@@ -249,6 +260,7 @@ namespace BismNormalizer.TabularCompare
             Settings.Default.OptionRetainPolicyPartitions = _optionRetainPolicyPartitions;
             Settings.Default.OptionRetainRefreshPolicy = _optionRetainRefreshPolicy;
             Settings.Default.OptionRetainStorageMode = _optionRetainStorageMode;
+            Settings.Default.OptionInteractiveLogin = _optionInteractiveLogin;
             Settings.Default.OptionMeasureDependencies = _optionMeasureDependencies;
             Settings.Default.OptionProcessingOption = _optionProcessingOption.ToString();
             Settings.Default.OptionTransaction = _optionTransaction;

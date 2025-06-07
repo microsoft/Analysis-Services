@@ -13,7 +13,7 @@ namespace BismNormalizer {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -416,6 +416,18 @@ namespace BismNormalizer {
             }
             set {
                 this["LastTmdlFolderLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptionInteractiveLogin {
+            get {
+                return ((bool)(this["OptionInteractiveLogin"]));
+            }
+            set {
+                this["OptionInteractiveLogin"] = value;
             }
         }
     }

@@ -897,6 +897,10 @@ $@"{{
             {
                 connectionString += $"User ID={this.Username};Password={this.Password};";
             }
+            else if (Settings.Default.OptionInteractiveLogin)
+            {
+                connectionString += $"Identity Mode=Connection;";
+            }
 
             return connectionString;
         }
