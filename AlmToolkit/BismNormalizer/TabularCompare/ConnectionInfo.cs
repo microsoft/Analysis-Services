@@ -577,7 +577,7 @@ namespace BismNormalizer.TabularCompare
             Microsoft.AnalysisServices.Server amoServer = new Microsoft.AnalysisServices.Server();
             try
             {
-                string connectionString = BuildConnectionString();
+                string connectionString = BuildConnectionStringWithServerAndDb();
                 amoServer.Connect(connectionString);
             }
             catch (ConnectionException) when (UseProject)
@@ -601,7 +601,7 @@ namespace BismNormalizer.TabularCompare
                             {
                                 string port = File.ReadAllText(portFilePath[0]).Replace("\0", "");
                                 this.ServerName = $"localhost:{Convert.ToString(port)}";
-                                amoServer.Connect(BuildConnectionString());
+                                amoServer.Connect(BuildConnectionStringWithServerAndDb());
                                 foundServer = true;
                                 break;
                             }
@@ -767,7 +767,7 @@ $@"{{
                 //need next lines in case just created the db using the Execute method
                 //amoServer.Refresh(); //todo workaround for bug 9719887 on 3/10/17 need to disconnect and reconnect
                 amoServer.Disconnect();
-                amoServer.Connect(BuildConnectionString());
+                amoServer.Connect(BuildConnectionStringWithServerAndDb());
 
                 amoDatabase = amoServer.Databases.FindByName(this.DatabaseName);
             }
@@ -886,7 +886,7 @@ $@"{{
         /// Build connection string.
         /// </summary>
         /// <returns></returns>
-        public string BuildConnectionString()
+        public string BuildConnectionStringWithServerAndDb()
         {
             string connectionString = $"Provider=MSOLAP;Data Source={this.ServerName};";
             if (!String.IsNullOrEmpty(this.DatabaseName))

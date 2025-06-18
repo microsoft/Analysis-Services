@@ -626,7 +626,7 @@ namespace BismNormalizer.TabularCompare.UI
 
                 // discover databases
                 Tom.Server server = new Tom.Server();
-                server.Connect($"Provider=MSOLAP;Data Source={serverName};");
+                server.Connect(BuildConnectionStringWithServer(serverName));
                 List<string> databases = new List<string>();
                 foreach (Tom.Database database in server.Databases)
                 {
@@ -641,6 +641,16 @@ namespace BismNormalizer.TabularCompare.UI
             { // if user entered duff server name, just ignore
                 cboCatalog.DataSource = null;
             }
+        }
+
+        public static string BuildConnectionStringWithServer(string serverName)
+        {
+            string connectionString = $"Provider=MSOLAP;Data Source={serverName};";
+            if (Settings.Default.OptionInteractiveLogin)
+            {
+                connectionString += $"Identity Mode=Connection;";
+            }
+            return connectionString;
         }
     }
 }
