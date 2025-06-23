@@ -4,6 +4,9 @@ The FabricPS-PBIP module has a dependency to Az.Accounts module for authenticati
 
 Before running the sample scripts below, run the following script to download and install 'fabricps-pbip' module including it's dependencies:
 
+> **Warning**
+> This module was updated to work only with PBIP format produced by Power BI Desktop March 2024 update.
+
 ```powershell
 
 New-Item -ItemType Directory -Path ".\modules" -ErrorAction SilentlyContinue | Out-Null
@@ -22,6 +25,14 @@ Import-Module ".\modules\FabricPS-PBIP" -Force
 
 ```
 
+If you encounter the error 'Install-Package: No match was found...', make sure NuGet is registered as your package source by running the following command:
+
+``` 
+Register-PackageSource -Name "NuGet.org" -Location "https://api.nuget.org/v3/index.json" -ProviderName "NuGet"
+```
+
+Or manually download the [Microsoft.AnalysisServices.NetCore.retail.amd64](https://www.nuget.org/packages/Microsoft.AnalysisServices.NetCore.retail.amd64) NuGet package and unzip it to the folder *.nuget\\* in the same folder as *FabricPS-PBIP.psm1* file
+
 # Authentication
 
 To call the Fabric API you must authenticate with a user account or Service Principal. Learn more about service principals and how to enable them [here](https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal).
@@ -38,13 +49,6 @@ Set-FabricAuthToken -reset
 Set-FabricAuthToken -servicePrincipalId "[AppId]" -servicePrincipalSecret "[AppSecret]" -tenantId "[TenantId]" -reset
 ```
 
-# Sample - Import PBIP to workspace
-
-```powershell
-
-Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
-
-```
 
 # Sample - Export items from workspace
 
@@ -54,57 +58,39 @@ Export-FabricItems -workspaceId "[Workspace Id]" -path '[Export folder file path
 
 ```
 
-# Sample - Import PBIP content to multiple Workspaces with file override
-
+# Sample - Import PBIP to workspace - all items
 
 ```powershell
 
-$pbipPath = "[PBIP Path]"
-$workspaceName = "[Workspace Name]"
-$workspaceDatasets = "$workspaceName-Models"
-$workspaceReports = "$workspaceName-Reports"
+Import-FabricItems -workspaceId "[Workspace Id]" -path "[PBIP file path]"
 
-# Deploy Dataset
+```
 
-$workspaceId = New-FabricWorkspace -name $workspaceDatasets -skipErrorIfExists
+# Sample - Export item from workspace
 
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.dataset"
+```powershell
 
-# Deploy Report
+Export-FabricItem -workspaceId "[Workspace Id]" -itemId "[Item Id]" -path '[Export folder file path]'
 
-$workspaceId = New-FabricWorkspace  -name $workspaceReports -skipErrorIfExists
+```
 
-$fileOverrides = @{
-    
-    # Change the connected dataset
+# Sample - Import PBIP to workspace - item by item
 
-    "*definition.pbir" = @{
-        "version" = "1.0"
-        "datasetReference" = @{          
-            "byConnection" =  @{
-            "connectionString" = $null
-            "pbiServiceModelId" = $null
-            "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-            "pbiModelDatabaseName" = "$($deployInfo.id)"                
-            "name" = "EntityDataSource"
-            "connectionType" = "pbiServiceXmlaStyleLive"
-            }
-        }
-    } | ConvertTo-Json
+```powershell
 
-    # Change logo
+$semanticModelImport = Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel"
 
-    "*_7abfc6c7-1a23-4b5f-bd8b-8dc472366284171093267.jpg" = "$currentPath\sample-resources\logo2.jpg"
+# Import the report and ensure its binded to the previous imported report
 
-    # Change Report Name
+$reportImport = Import-FabricItem -workspaceId $workspaceId -path "[PBIP Path]\[Name].Report" -itemProperties @{"semanticModelId"=$semanticModelImport.Id}
 
-    "*.report\item.metadata.json" = @{
-        "type" = "report"
-        "displayName" = "Report NewName"
-    } | ConvertTo-Json
-}
+```
 
-$deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filter "*\*.report" -fileOverrides $fileOverrides
+# Sample - Import PBIP item with different display name
+
+```powershell
+
+Import-FabricItem -workspaceId "[Workspace Id]" -path "[PBIP Path]\[Name].SemanticModel" -itemProperties @{"displayName"="[Semantic Model Name]"}
 
 ```
 
@@ -115,7 +101,7 @@ $deployInfo = Import-FabricItems -workspaceId $workspaceId -path $pbipPath -filt
 $pbipPath = "[PBIP Path]"
 $workspaceId = "[Workspace Id]"
 
-Set-SemanticModelParameters -path "$pbipPath\[Name].Dataset" -parameters @{"Parameter1"= "Parameter1Value"}
+Set-SemanticModelParameters -path "$pbipPath\[Name].SemanticModel" -parameters @{"Parameter1"= "Parameter1Value"}
 
 Import-FabricItems -workspaceId $workspaceId -path $pbipPath
 
@@ -148,6 +134,47 @@ $workspacePermissions = @(
 )
 
 Set-FabricWorkspacePermissions -workspaceId $workspaceId -permissions $workspacePermissions
+
+```
+
+# Sample - Deploy semantic model and bind to Shared Cloud Connection (SCC)
+
+Learn more about Sharec Cloud Connections [here](https://learn.microsoft.com/en-us/power-bi/connect-data/service-create-share-cloud-data-sources).
+
+```powershell
+
+$workspaceName = "[Workspace Name]"
+$pbipPath = "[PBIP Path]\[Name].SemanticModel"
+$connectionsToBind = @("[SCC Connection Id]")
+
+# Authenticate
+
+Set-FabricAuthToken -reset
+
+# Ensure workspace exists
+
+$workspaceId = New-FabricWorkspace  -name $workspaceName -skipErrorIfExists
+
+# Import the semantic model and save the item id
+
+$semanticModelImport = Import-FabricItem -workspaceId $workspaceId -path $pbipPath
+
+# Bind to connections using PowerBI API - no need to specify the datasource, the service automatically maps the datasource to the connection
+
+Write-Host "Binding semantic model to connections"
+
+$authToken = Get-FabricAuthToken
+
+# 'gatewayObjectId' as '00000000-0000-0000-0000-000000000000 indicate the connection is a sharable cloud.
+
+$body = @{
+    "gatewayObjectId"= "00000000-0000-0000-0000-000000000000";
+    "datasourceObjectIds" = $connectionsToBind
+} | ConvertTo-Json
+
+$headers = @{'Content-Type'="application/json"; 'Authorization' = "Bearer $authToken"}
+
+Invoke-RestMethod -Headers $headers -Uri "https://api.powerbi.com/v1.0/myorg/groups/$workspaceId/datasets/$($semanticModelImport.Id)/Default.BindToGateway" -Method Post -Body $body
 
 ```
 

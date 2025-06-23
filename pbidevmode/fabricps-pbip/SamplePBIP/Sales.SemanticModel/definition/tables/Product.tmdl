@@ -1,0 +1,156 @@
+/// Product Catalog
+table Product
+	lineageTag: e9374b9a-faee-4f9e-b2e7-d9aafb9d6a91
+
+	measure '# Products' = COUNTROWS('Product')
+		formatString: #,##0
+		lineageTag: 1f8f1a2a-06b6-4989-8af7-212719cf3617
+
+	column Product
+		dataType: string
+		lineageTag: da435585-1f9a-44bd-ba2c-34c98f298cfc
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		isKey
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 4184d53e-cd2d-4cbe-b8cb-04c72a750bc4
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Code'
+		dataType: string
+		lineageTag: e9d204ad-76d8-4db9-9d1a-b9c07a4b50b2
+		summarizeBy: none
+		sourceColumn: Product Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Manufacturer
+		dataType: string
+		lineageTag: 59e45f50-f68d-44c3-becd-70ccd5a7eb7d
+		summarizeBy: none
+		sourceColumn: Manufacturer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Brand
+		dataType: string
+		lineageTag: a71b235d-8f7e-4678-85a3-96a78d64bf87
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: 7054b4d0-6d93-4c96-be74-800d02d96e43
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Weight Unit Measure'
+		dataType: string
+		lineageTag: 78fcf7c4-2b5d-45b0-abf9-6ee3b3aa255b
+		summarizeBy: none
+		sourceColumn: Weight Unit Measure
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weight
+		dataType: decimal
+		lineageTag: a6299b36-bd05-4b41-8493-e45359af237b
+		summarizeBy: none
+		sourceColumn: Weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Cost'
+		dataType: decimal
+		lineageTag: f89fa3e3-061d-4269-8cd3-aa6ce2a464d2
+		summarizeBy: none
+		sourceColumn: Unit Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Price'
+		dataType: decimal
+		lineageTag: ef300027-e4eb-4c7d-9770-ab8f6dab6b15
+		summarizeBy: none
+		sourceColumn: Unit Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Subcategory Code'
+		dataType: string
+		lineageTag: 7cd08eb9-2cad-4263-ae88-8c5121a68b7e
+		summarizeBy: none
+		sourceColumn: Subcategory Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategory
+		dataType: string
+		lineageTag: 0a208c62-4bdd-4873-af18-ebc286c5b3bb
+		summarizeBy: none
+		sourceColumn: Subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Code'
+		dataType: string
+		lineageTag: c0fc218a-5a06-4757-9172-2d303a67f3ff
+		summarizeBy: none
+		sourceColumn: Category Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 0f4b99cc-fdb6-4f04-b7d9-bbdcf7b2c601
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Product Hierarchy'
+		lineageTag: 89345cc9-e735-4d62-8caf-e494a6314e93
+
+		level Category
+			lineageTag: 9ff3052d-e0de-44e8-85c3-85b8cc978936
+			column: Category
+
+		level Subcategory
+			lineageTag: 647503e7-1d2b-4e0a-bc36-1ce6bc3d81ca
+			column: Subcategory
+
+		level Product
+			lineageTag: 85ba527d-a9e2-4f3d-85d9-447600445bc3
+			column: Product
+
+	partition Product-171f48b3-e0ea-4ea3-b9a0-c8c673eb0648 = m
+		mode: import
+		source =
+				let
+				    Source = #"RAW-Product",
+				    #"Renamed Columns" = Table.RenameColumns(Source,{{"Product Name", "Product"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+

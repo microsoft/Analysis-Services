@@ -1,26 +1,17 @@
-### Use cases
+# ![AlmToolkitLogo](https://github.com/user-attachments/assets/ec958328-97c4-4e85-aecc-f95d3e18828c) ALM Toolkit
 
-Here are a few, but you can use your imagination 😀
+## For a detailed list of features and use cases, please refer to the ALM Toolkit [documentation](Semantic%20Model%20Comparison%20and%20Merging%20with%20ALM%20Toolkit.pdf)
 
-* Merge branched models. Manage production branches for bug fixes.
-* Deploy bug fixes and partial releases.
-* Reuse definitions between tabular models for alignment with common business definitions.
-* Reuse definitions from self-service models to IT-owned semantic models.
+The ALM Toolkit is a schema comparison tool for Power BI semantic models that enables scenarios such as:
 
-For a detailed list of features and use cases, see the ALM Toolkit and BISM Normalizer  [documentation](https://github.com/microsoft/Analysis-Services/blob/master/AlmToolkit/Model%20Comparison%20and%20Merging%20for%20Analysis%20Services.pdf).
+* Easily deploy changes only to model metadata, whilst retaining data including incremental refresh data.
+* Diff & merge across models/repos with guardrails to ensure the integrity of the resulting model metadata. Pick and choose objects to reuse in other models.
+* Reuse common objects across models. For example, conformed dimensions, standardized date dimensions, and common measures to be standardized across models.
+* Command-line execution for automation.
 
-### History
+ALM Toolkit supports the Tabular Model Definition Language (TMDL) format to view semantic model metadata in a human-readable, YAML-like syntax. See the TMDL [documentation](https://learn.microsoft.com/analysis-services/tmdl/tmdl-overview) page for more information.
 
-The ALM Toolkit codebase started out as the BISM Normalizer Visual Studio extension. ALM Toolkit is decoupled from Visual Studio.
+Download and try out the [latest release](/../../releases/latest) of ALM Toolkit to manage your Power BI semantic models.
 
-This video covers BISM Normalizer 3 use cases and demo. Most of this still applies to ALM Toolkit.
-
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/LZdOwfJqFrM/0.jpg)](http://www.youtube.com/watch?v=LZdOwfJqFrM)
-
-    
-### Internal code/object model
-
-This video shows the internals and object model of BISM Normalizer/ALM Toolkit. Most of it is still relevant today.
-
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/r3eGK-dSYuw/0.jpg)](http://www.youtube.com/watch?v=r3eGK-dSYuw)
+![ALM Toolkit UI](https://github.com/user-attachments/assets/5990837f-494e-4a49-b563-42bd2c854c3b)
 

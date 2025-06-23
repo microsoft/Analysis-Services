@@ -1,0 +1,7 @@
+role 'Stores Cluster 1'
+	modelPermission: read
+
+	tablePermission Store = 'Store'[Store Code] IN {"1","2","4"}
+
+	annotation PBI_Id = 3c40ccf098eb4253ad31f8c679e140d3
+

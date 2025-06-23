@@ -1,24 +1,36 @@
 ﻿* Run as Admin
 
+* In BismNormalizer.Utils.cs, if necessary, set:
+    public static bool DebugErrors = false;
+
 * In the Solution > VersionInfo.cs file:
     Increment AssemblyVersion & AssemblyFileVersion
 
 * In the Setup project properties window, increment version number (say yes to reset ProductCode guid)
 
 * Set configuration to Release
-    Rebuild Solution
+    Rebuild (not Build) Solution
 
 * Open a cmd prompt from the AlmToolkit project root and run the following command
     ReleaseItems\GetAssembliesForSigning.bat
 
-* Upload the following assemblies from \ReleaseItems\ForSigning to https://portal.esrp.microsoft.com/ & get them signed
+* Upload the following assemblies from \ReleaseItems\ForSigning to get them signed
     AlmToolkit.exe
     BismNormalizer.dll
     BismNormalizer.CommandLine.exe
 
-    https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
-    ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
-    Operation Key Code: CP-230012
+    https://portal.esrp.microsoft.com/ManualSign/SignRequest
+        New Request
+        Provide descritption like "Sign ALMT X.X.X"
+        Sign operation: Sign ALM Toolkit Assemblies
+        Browse Files > Select 3 assemblies above
+        Submit
+        Wait for them to be approved
+
+    Ref info:
+        https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
+        ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
+        Operation Key Code: CP-230012
 
 * Download signed assemblies to \ReleaseItems\SignedFiles
 
@@ -46,17 +58,26 @@
 * Run the following command
     ReleaseItems\GetMsiForSigning.bat
 
-* Upload AlmToolkitSetup.msi from \ReleaseItems\ForSigning to https://portal.esrp.microsoft.com/ & get it signed
+* Upload AlmToolkitSetup.msi from \ReleaseItems\ForSigning & get it signed
+    https://portal.esrp.microsoft.com/ManualSign/SignRequest
+        New Request
+        Same process as above
 
 * Download signed MSI to \ReleaseItems\SignedFiles
 
 * Install and test locally
+    Check file properties for assemblies in installation folder to check there is a Digital Certificate tab
 
-* Deploy AlmToolkitSetup.msi github at https://github.com/microsoft/Analysis-Services/releases
+* Upload following to github at https://github.com/microsoft/Analysis-Services/releases
+    AlmToolkitSetup.msi
 
 
 
 =============
-Note: if ever increment .NET Framework version, need to:
-    1. In Setup project properties (dialog, not properties window) > Prerequisites > Change .NET Framework version
-    2. In the Solution Explorer, expand the Setup project > Detected Dependencies > Microsoft .NET Framework > double click > Change .NET Framework version
+Notes
+1. HAD TO REMOVE CefSharp.Core.Runtime.dll FROM INSTALLATION FOLDER IN SETUP PROJECT (select>properties>Include=false)
+2. If ever increment .NET Framework version, need to:
+    a. In Setup project properties (dialog, not properties window) > Prerequisites > Change .NET Framework version
+    b. In the Solution Explorer, expand the Setup project > Detected Dependencies > Microsoft .NET Framework > double click > Change .NET Framework version
+
+

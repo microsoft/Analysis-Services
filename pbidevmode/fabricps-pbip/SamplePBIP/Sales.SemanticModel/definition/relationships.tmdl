@@ -1,0 +1,21 @@
+relationship d4e6dc5a-6f46-443d-ab94-4cc0e10323c6
+	fromColumn: Sales.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship 434e79a9-f527-481f-accd-8bc60ed1370e
+	fromColumn: Sales.'Order Date'
+	toColumn: Calendar.Date
+
+relationship 21bd108e-527d-4566-be7d-9e474c858ee0
+	isActive: false
+	fromColumn: Sales.'Delivery Date'
+	toColumn: Calendar.Date
+
+relationship bb5c5591-a0ff-4ce4-a62e-6c5f56006368
+	fromColumn: Sales.ProductKey
+	toColumn: Product.ProductKey
+
+relationship 55a6f513-c6f2-4d1c-b8aa-46edeaeb23f2
+	fromColumn: Sales.StoreKey
+	toColumn: Store.StoreKey
+

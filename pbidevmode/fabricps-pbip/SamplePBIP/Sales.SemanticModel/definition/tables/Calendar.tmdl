@@ -1,0 +1,397 @@
+/// Calendar table
+table Calendar
+	lineageTag: bfa0074c-0a44-4a9c-8bba-c87af778b3d7
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: ede68123-9903-412b-8747-d0cb8117ed41
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: 15ee1357-a55a-4206-b87f-4537950cefd1
+		summarizeBy: none
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = User
+
+	column 'Week Day'
+		dataType: string
+		lineageTag: b249ac49-0964-4b34-ab62-786c1f6d7709
+		summarizeBy: none
+		sourceColumn: Week Day
+		sortByColumn: 'Week Day (#)'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b47fd7c-b526-4a87-8304-50f9da4c79ed
+		summarizeBy: none
+		sourceColumn: Week
+
+		annotation SummarizationSetBy = User
+
+	column Month
+		dataType: string
+		lineageTag: 229b9d13-a91e-42b0-9d59-bf1aa3568da7
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: 'Month (#)'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d2804c4-111e-4544-aaf6-c6a6988e49a1
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = User
+
+	column Semester
+		dataType: int64
+		formatString: 0
+		lineageTag: 1fa538c1-2ae2-4bbf-81ba-ef222e5944ed
+		summarizeBy: none
+		sourceColumn: Semester
+
+		annotation SummarizationSetBy = User
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: e2e54129-d9ea-422d-a07a-747ce9981020
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = User
+
+	column 'Week (Year)'
+		dataType: string
+		lineageTag: 6977be25-6a48-4eac-846f-85a3c3c271fe
+		summarizeBy: none
+		sourceColumn: Week (Year)
+		sortByColumn: WeekYearId
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month (Year)'
+		dataType: string
+		lineageTag: 557c5e05-696f-4418-85cc-b086c08c3d61
+		summarizeBy: none
+		sourceColumn: Month (Year)
+		sortByColumn: MonthYearId
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter (Year)'
+		dataType: string
+		lineageTag: c0e2abff-7224-4166-b0a9-2fef49976c82
+		summarizeBy: none
+		sourceColumn: Quarter (Year)
+		sortByColumn: QuarterYearId
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Semester (Year)'
+		dataType: string
+		lineageTag: b2b0b830-1b3e-4e9e-b87d-585f4a23deeb
+		summarizeBy: none
+		sourceColumn: Semester (Year)
+		sortByColumn: SemesterYearId
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekYearId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 90bba6d9-d308-40f6-826b-e4d5ca8fda78
+		summarizeBy: none
+		sourceColumn: WeekYearId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column MonthYearId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 81e0ba4a-f927-4152-843a-dfc0e3bd858c
+		summarizeBy: none
+		sourceColumn: MonthYearId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column QuarterYearId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 72f566a1-f253-4c96-ba97-47c76d5ce07c
+		summarizeBy: none
+		sourceColumn: QuarterYearId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column SemesterYearId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9c42bf51-c759-439c-b02e-1861c41f56c4
+		summarizeBy: none
+		sourceColumn: SemesterYearId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Week Day (#)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 5559c18c-3ef4-4f17-bce2-e0a7cd5e6dea
+		summarizeBy: none
+		sourceColumn: Week Day (#)
+
+		annotation SummarizationSetBy = User
+
+	column 'Month (#)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 337dbbc4-139c-47a8-bb39-85c6deba31c8
+		summarizeBy: none
+		sourceColumn: Month (#)
+
+		annotation SummarizationSetBy = User
+
+	column 'Day (Relative)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6eee588e-1d25-4994-a6f6-1f94ef196fef
+		summarizeBy: none
+		sourceColumn: Day (Relative)
+
+		annotation SummarizationSetBy = User
+
+	column 'Month (Relative)'
+		dataType: int64
+		formatString: 0
+		lineageTag: f884824e-2aa5-4a3c-9b59-89e31181a6bb
+		summarizeBy: none
+		sourceColumn: Month (Relative)
+
+		annotation SummarizationSetBy = User
+
+	column 'Year (Relative)'
+		dataType: int64
+		formatString: 0
+		lineageTag: f9ccaf5a-3f08-42f5-bce9-2f67e78a4173
+		summarizeBy: none
+		sourceColumn: Year (Relative)
+
+		annotation SummarizationSetBy = User
+
+	column 'Work Day'
+		dataType: string
+		lineageTag: f58c6828-fdf1-4c2a-9e2f-59454b2f43b5
+		summarizeBy: none
+		sourceColumn: Work Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateId
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5e5b06be-4f4f-4624-a922-74de16645764
+		summarizeBy: none
+		sourceColumn: DateId
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["ISAVAILABLEINMDX_FALSE_NONATTRIBUTE_COLUMNS","UNNECESSARY_COLUMNS"]}
+
+	column 'Month (Long)'
+		dataType: string
+		lineageTag: b27d8a5e-c4bd-4a82-a4c8-bb402aefa873
+		summarizeBy: none
+		sourceColumn: Month (Long)
+		sortByColumn: 'Month (#)'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week (Relative)'
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e0d9793-9a33-451a-bc05-24d7878c8964
+		summarizeBy: none
+		sourceColumn: Week (Relative)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Start Date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 138a3a63-bb64-469c-a94e-1a65757bd1d1
+		summarizeBy: none
+		sourceColumn: Week Start Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Week End Date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c91844bb-d8e2-49b1-97e8-7ff79f35faf6
+		summarizeBy: none
+		sourceColumn: Week End Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Month Start Date'
+		dataType: dateTime
+		formatString: yyyy-mmm
+		lineageTag: 9398fb3c-c0de-4357-afc0-69df70186f6d
+		summarizeBy: none
+		sourceColumn: Month Start Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Date (Year-Month)' = DATE([Year], [Month (#)],1)
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: 0e65a7a5-6c15-437d-8333-10653d8d673f
+		summarizeBy: none
+		isDataTypeInferred
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	hierarchy Year-Month-Day
+		lineageTag: d00d0618-e29f-486f-a4d4-dea56417f06b
+
+		level Year
+			lineageTag: 5d3a5413-d08c-47e5-866e-894c288c29b0
+			column: Year
+
+		level Month
+			lineageTag: 4009bc63-dec6-46e9-84eb-679578b38105
+			column: Month
+
+		level Day
+			lineageTag: 6c697b75-14d3-4471-b6ad-80d79cd35f23
+			column: Day
+
+	partition Calendar-c9bc757b-0dad-4b99-8287-18a451a3c5c3 = m
+		mode: import
+		source = ```
+				let 
+				
+				    P_Today =  DateTime.LocalNow(),
+				    P_StartDate = #date(Date.Year(List.Min(#"RAW-SalesDateAdjustedAndSalesRandomized"[Order Date])), 1, 1),
+				    P_EndDate  = #date(Date.Year(List.Max(#"RAW-SalesDateAdjustedAndSalesRandomized"[Order Date])), 12, 31),  
+				    P_FirstDayOfWeek = 1,
+				    P_IsCarnivalHoliday = true,
+				    P_UseIsoWeek = true,
+				    P_Culture = "en-US",
+				    DayCount = Duration.Days(Duration.From(P_EndDate - P_StartDate)) + 1,
+				    Source = List.Dates(P_StartDate,DayCount,#duration(1,0,0,0)),
+				    TableFromList = Table.FromList(Source, Splitter.SplitByNothing()),    
+				    ChangedType = Table.TransformColumnTypes(TableFromList,{{"Column1", type date}}),
+				    RenamedColumns = Table.RenameColumns(ChangedType,{{"Column1", "Date"}}),
+				    InsertId = Table.AddColumn(RenamedColumns, "DateId", each Date.Year([Date])*10000 + Date.Month([Date])*100 +Date.Day([Date])),
+				    InsertYear = Table.AddColumn(InsertId, "Year", each Date.Year([Date])),
+				    InsertQuarter = Table.AddColumn(InsertYear, "Quarter", each Date.QuarterOfYear([Date])),
+				    InsertSemester = Table.AddColumn(InsertQuarter, "Semester", each if [Quarter] < 3 then 1 else 2),
+				    InsertMonth = Table.AddColumn(InsertSemester, "Month (#)", each Date.Month([Date])),
+				        // Simple week
+				    InsertWeekYear = Table.AddColumn(InsertMonth, "WeekYear", each [Year]),
+				    InsertWeek = Table.AddColumn(InsertWeekYear, "Week", each Date.WeekOfYear([Date], P_FirstDayOfWeek )),
+				    // ISO Week
+				    InsertIsoYear = Table.AddColumn(InsertMonth, "WeekYear", each Date.Year(Date.AddDays([Date], 4-(Date.DayOfWeek([Date], Day.Monday) + 1)))),
+				    InsertIsoWeek = Table.AddColumn(InsertIsoYear, "Week", each Duration.Days(Date.AddDays( [Date], 4-(Date.DayOfWeek([Date], Day.Monday) + 1)) - #date([WeekYear], 1 , 7 - Date.DayOfWeek( #date([WeekYear],1,4), Day.Monday)) ) / 7  + 1),
+				    // Choose beetween simple Week and Iso Week according to parameter
+				    ChosenWeek = if P_UseIsoWeek = true then InsertIsoWeek else InsertWeek,
+				    
+				    InsertDay = Table.AddColumn(ChosenWeek, "Day", each Date.Day([Date])),    
+				    InsertMonthName = Table.AddColumn(InsertDay, "Month (Long)", each Date.ToText([Date], "MMMM", P_Culture), type text),
+				    InsertShortMonthName = Table.AddColumn(InsertMonthName, "Month", each try(Text.Range([#"Month (Long)"],0,3)) otherwise [#"Month (Long)"]),
+				    InsertCalendarWeek = Table.AddColumn(InsertShortMonthName, "Week (Year)", each "W" & Number.ToText([Week]) & " " & Number.ToText([WeekYear])),
+				    InsertCalendarMonth = Table.AddColumn(InsertCalendarWeek, "Month (Year)", each [#"Month"] & " " & Number.ToText([Year])),
+				    InsertCalendarQtr = Table.AddColumn(InsertCalendarMonth, "Quarter (Year)", each "Q" & Number.ToText([Quarter]) & " " & Number.ToText([Year])),    
+				    InsertCalendarSem = Table.AddColumn(InsertCalendarQtr, "Semester (Year)", each "S" & Number.ToText([Semester]) & " " & Number.ToText([Year])),    
+				    InsertDayWeek = Table.AddColumn(InsertCalendarSem , "Week Day (#)", each Date.DayOfWeek([Date], P_FirstDayOfWeek ) + 1),
+				    InsertDayName = Table.AddColumn(InsertDayWeek, "Week Day", each Date.ToText([Date], "dddd", P_Culture), type text),
+				    InsertWeekYearId = Table.AddColumn(InsertDayName, "WeekYearId", each [WeekYear] * 100 + [Week]),
+				    InsertMonthYear = Table.AddColumn(InsertWeekYearId, "MonthYearId", each [Year] *100 + [#"Month (#)"]),
+				    InsertWeekStartDate = Table.AddColumn(InsertMonthYear , "Week Start Date", each Date.StartOfWeek([Date], P_FirstDayOfWeek), type date),
+				    InsertWeekEndDate = Table.AddColumn(InsertWeekStartDate , "Week End Date", each Date.EndOfWeek([Date], P_FirstDayOfWeek), type date),
+				    InsertQuarterYear = Table.AddColumn(InsertWeekEndDate, "QuarterYearId", each [Year] * 100 + [Quarter]),
+				    InsertSemesterYear = Table.AddColumn(InsertQuarterYear, "SemesterYearId", each [Year] * 100 + [Semester]),
+				    #"Capitalized Each Word" = Table.TransformColumns(InsertSemesterYear,{{"Month (Long)", Text.Proper}, {"Month", Text.Proper}, {"Month (Year)", Text.Proper}, {"Week Day", Text.Proper}}),
+				    #"Relative (Year)" = Table.AddColumn(#"Capitalized Each Word", "Year (Relative)", each [Year] - Date.Year(P_Today)),
+				    #"Relative (Month)" = Table.AddColumn(#"Relative (Year)", "Month (Relative)", each [#"Year (Relative)"] * 12 + ([#"Month (#)"] - Date.Month(P_Today))),
+				    #"Relative (Week)" = Table.AddColumn(#"Relative (Month)", "Week (Relative)", each Duration.TotalDays(DateTime.Date(Date.StartOfWeek([Date])) - DateTime.Date(Date.StartOfWeek(P_Today))) / 7),
+				    #"Relative (Day)" = Table.AddColumn(#"Relative (Week)", "Day (Relative)", each Duration.TotalDays([Date] - DateTime.Date(P_Today))),
+				    AddedWorkDay =Table.AddColumn(#"Relative (Day)", "Work Day", each if [#"Week Day (#)"] > 5 then "Weekend" else "WorkDay"),
+				    #"Reordered Columns" = Table.ReorderColumns(AddedWorkDay,{"Date", "Day", "Week Day (#)", "Week Day", "Week", "Month (Long)", "Month", "Month (#)", "Quarter", "Semester", "Year", "Week (Year)", "Month (Year)", "Quarter (Year)", "Semester (Year)", "WeekYearId", "MonthYearId", "QuarterYearId", "SemesterYearId", "Day (Relative)", "Week (Relative)", "Month (Relative)", "Year (Relative)", "Work Day"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"WeekYear"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"Day", Int64.Type}, {"Week Day (#)", Int64.Type}, {"Week", Int64.Type}, {"Month (#)", Int64.Type}, {"Quarter", Int64.Type}, {"Semester", Int64.Type}, {"Year", Int64.Type}, {"Week (Year)", type text}, {"Quarter (Year)", type text}, {"Semester (Year)", type text}, {"WeekYearId", Int64.Type}, {"SemesterYearId", Int64.Type}, {"MonthYearId", Int64.Type}, {"QuarterYearId", Int64.Type}, {"Day (Relative)", Int64.Type}, {"Month (Relative)", Int64.Type}, {"Year (Relative)", Int64.Type},  {"Work Day", type text}, {"DateId", Int64.Type}, {"Week (Relative)", Int64.Type}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Month Start Date", each #date([Year],[#"Month (#)"],1)),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"Month Start Date", type date}})
+				in
+				    #"Changed Type1"
+				```
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MINIMIZE_POWER_QUERY_TRANSFORMATIONS"]}
+
+	annotation PBI_Id = 9eaa3654-c4d6-42e5-a057-348df1b3f460
+
+	annotation LinkedQueryName = Calendar
+
+	annotation PBI_ResultType = Table
+

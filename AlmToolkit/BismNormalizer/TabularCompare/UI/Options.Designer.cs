@@ -33,6 +33,7 @@
             this.chkMeasureDependencies = new System.Windows.Forms.CheckBox();
             this.chkPerspectives = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkInteractiveLogin = new System.Windows.Forms.CheckBox();
             this.chkTmsl = new System.Windows.Forms.CheckBox();
             this.chkAnnotations = new System.Windows.Forms.CheckBox();
             this.chkRetainRefreshPolicy = new System.Windows.Forms.CheckBox();
@@ -89,7 +90,7 @@
             this.chkMeasureDependencies.AutoSize = true;
             this.chkMeasureDependencies.Checked = true;
             this.chkMeasureDependencies.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMeasureDependencies.Location = new System.Drawing.Point(38, 716);
+            this.chkMeasureDependencies.Location = new System.Drawing.Point(38, 774);
             this.chkMeasureDependencies.Margin = new System.Windows.Forms.Padding(6);
             this.chkMeasureDependencies.Name = "chkMeasureDependencies";
             this.chkMeasureDependencies.Size = new System.Drawing.Size(86, 29);
@@ -111,6 +112,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkInteractiveLogin);
             this.groupBox1.Controls.Add(this.chkTmsl);
             this.groupBox1.Controls.Add(this.chkAnnotations);
             this.groupBox1.Controls.Add(this.chkRetainRefreshPolicy);
@@ -131,10 +133,21 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
-            this.groupBox1.Size = new System.Drawing.Size(798, 799);
+            this.groupBox1.Size = new System.Drawing.Size(798, 866);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Comparison Options";
+            // 
+            // chkInteractiveLogin
+            // 
+            this.chkInteractiveLogin.AutoSize = true;
+            this.chkInteractiveLogin.Location = new System.Drawing.Point(38, 722);
+            this.chkInteractiveLogin.Margin = new System.Windows.Forms.Padding(6);
+            this.chkInteractiveLogin.Name = "chkInteractiveLogin";
+            this.chkInteractiveLogin.Size = new System.Drawing.Size(239, 29);
+            this.chkInteractiveLogin.TabIndex = 18;
+            this.chkInteractiveLogin.Text = "Use interactive login";
+            this.chkInteractiveLogin.UseVisualStyleBackColor = true;
             // 
             // chkTmsl
             // 
@@ -272,7 +285,7 @@
             this.groupBox2.Controls.Add(this.cboProcessingOption);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(0, 799);
+            this.groupBox2.Location = new System.Drawing.Point(0, 866);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
@@ -288,11 +301,11 @@
             this.lblProcessingWarning.Location = new System.Drawing.Point(73, 150);
             this.lblProcessingWarning.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblProcessingWarning.Name = "lblProcessingWarning";
-            this.lblProcessingWarning.Size = new System.Drawing.Size(612, 75);
+            this.lblProcessingWarning.Size = new System.Drawing.Size(659, 75);
             this.lblProcessingWarning.TabIndex = 32;
-            this.lblProcessingWarning.Text = "⚠️ Warning: if your dataset requires long-running refreshes, it\'s\r\nrecommended to" +
-    " select Recalc or Do Not Process and refresh\r\nfrom SSMS after deployment for bet" +
-    "ter visibility of progress.";
+            this.lblProcessingWarning.Text = "⚠️ Warning: if your semantic model requires long-running refreshes,\r\nit\'s recomme" +
+    "nded to select Recalc or Do Not Process and refresh\r\nfrom SSMS after deployment " +
+    "for better visibility of progress.";
             // 
             // chkAffectedTables
             // 
@@ -339,7 +352,7 @@
             this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 1033);
+            this.panel2.Location = new System.Drawing.Point(0, 1121);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(798, 86);
@@ -376,7 +389,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(798, 1119);
+            this.ClientSize = new System.Drawing.Size(798, 1207);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -425,5 +438,6 @@
         private System.Windows.Forms.Label lblProcessingWarning;
         private System.Windows.Forms.CheckBox chkTmsl;
         private System.Windows.Forms.CheckBox chkAnnotations;
+        private System.Windows.Forms.CheckBox chkInteractiveLogin;
     }
 }

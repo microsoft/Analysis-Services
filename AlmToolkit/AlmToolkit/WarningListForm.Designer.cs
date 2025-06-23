@@ -31,10 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WarningListForm));
             this.btnOK = new System.Windows.Forms.Button();
-            this.validationOutput = new BismNormalizer.TabularCompare.UI.ValidationOutput();
             this.panelOk = new System.Windows.Forms.Panel();
             this.panelGrid = new System.Windows.Forms.Panel();
             this.TreeGridImageList2 = new System.Windows.Forms.ImageList(this.components);
+            this.lblValidating = new System.Windows.Forms.Label();
+            this.validationOutput = new BismNormalizer.TabularCompare.UI.ValidationOutput();
             this.panelOk.SuspendLayout();
             this.panelGrid.SuspendLayout();
             this.SuspendLayout();
@@ -43,38 +44,33 @@
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(609, 12);
+            this.btnOK.Location = new System.Drawing.Point(1218, 23);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(150, 44);
             this.btnOK.TabIndex = 20;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
-            // validationOutput
-            // 
-            this.validationOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.validationOutput.Location = new System.Drawing.Point(0, 0);
-            this.validationOutput.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
-            this.validationOutput.Name = "validationOutput";
-            this.validationOutput.Size = new System.Drawing.Size(696, 342);
-            this.validationOutput.TabIndex = 22;
             // 
             // panelOk
             // 
             this.panelOk.Controls.Add(this.btnOK);
             this.panelOk.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelOk.Location = new System.Drawing.Point(0, 342);
+            this.panelOk.Location = new System.Drawing.Point(0, 658);
+            this.panelOk.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panelOk.Name = "panelOk";
-            this.panelOk.Size = new System.Drawing.Size(696, 47);
+            this.panelOk.Size = new System.Drawing.Size(1392, 90);
             this.panelOk.TabIndex = 23;
             // 
             // panelGrid
             // 
+            this.panelGrid.Controls.Add(this.lblValidating);
             this.panelGrid.Controls.Add(this.validationOutput);
             this.panelGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGrid.Location = new System.Drawing.Point(0, 0);
+            this.panelGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.panelGrid.Name = "panelGrid";
-            this.panelGrid.Size = new System.Drawing.Size(696, 342);
+            this.panelGrid.Size = new System.Drawing.Size(1392, 658);
             this.panelGrid.TabIndex = 24;
             // 
             // TreeGridImageList2
@@ -109,22 +105,43 @@
             this.TreeGridImageList2.Images.SetKeyName(25, "Model.png");
             this.TreeGridImageList2.Images.SetKeyName(26, "RefreshPolicy.png");
             // 
+            // lblValidating
+            // 
+            this.lblValidating.AutoSize = true;
+            this.lblValidating.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblValidating.Location = new System.Drawing.Point(441, 254);
+            this.lblValidating.Name = "lblValidating";
+            this.lblValidating.Size = new System.Drawing.Size(143, 29);
+            this.lblValidating.TabIndex = 23;
+            this.lblValidating.Text = "Validating ...";
+            // 
+            // validationOutput
+            // 
+            this.validationOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.validationOutput.Location = new System.Drawing.Point(0, 0);
+            this.validationOutput.Margin = new System.Windows.Forms.Padding(14, 13, 14, 13);
+            this.validationOutput.Name = "validationOutput";
+            this.validationOutput.Size = new System.Drawing.Size(1392, 658);
+            this.validationOutput.TabIndex = 22;
+            // 
             // WarningListForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(696, 389);
+            this.ClientSize = new System.Drawing.Size(1392, 748);
             this.Controls.Add(this.panelGrid);
             this.Controls.Add(this.panelOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "WarningListForm";
             this.Text = "Warning List";
             this.Load += new System.EventHandler(this.WarningListForm_Load);
             this.Shown += new System.EventHandler(this.WarningListForm_Shown);
             this.panelOk.ResumeLayout(false);
             this.panelGrid.ResumeLayout(false);
+            this.panelGrid.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -135,5 +152,6 @@
         private System.Windows.Forms.Panel panelOk;
         private System.Windows.Forms.Panel panelGrid;
         public System.Windows.Forms.ImageList TreeGridImageList2;
+        private System.Windows.Forms.Label lblValidating;
     }
 }

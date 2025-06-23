@@ -51,6 +51,7 @@ namespace AlmToolkit
 
         public void HandleValidationMessage(object sender, ValidationMessageEventArgs e)
         {
+            lblValidating.Visible = false;
             validationOutput.ShowStatusMessage(
                 0,
                 "ALM Toolkit Comparison",

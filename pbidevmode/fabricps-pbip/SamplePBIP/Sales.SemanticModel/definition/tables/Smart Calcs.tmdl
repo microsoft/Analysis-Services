@@ -1,0 +1,96 @@
+table 'Smart Calcs'
+	lineageTag: fa79b28a-6a9c-43b1-a775-099dabcd4428
+
+	calculationGroup
+
+		calculationItem Normalize = ```
+				VAR DetailValue = SELECTEDMEASURE()
+				
+				return if (DetailValue, 
+				
+				    VAR MinOfGroup = MINX(ALLSELECTED('Calendar'), SELECTEDMEASURE())
+				    VAR MaxOfGroup = MAXX(ALLSELECTED('Calendar'), SELECTEDMEASURE())
+				
+				    RETURN DIVIDE(DetailValue - MinOfGroup, MaxOfGroup - MinOfGroup)
+				)
+				```
+
+			formatStringDefinition = "0.0"
+
+		calculationItem Randomize = IFERROR(SELECTEDMEASURE() * RAND(), SELECTEDMEASURE())
+
+		calculationItem 'Label - ▲ LY' = ```
+				var vValue = SELECTEDMEASURE()
+				var vValueLY = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Calendar'[Date]))
+				var vGrowth = DIVIDE(vValue - vValueLY, vValueLY)
+				var vFormat = SELECTEDMEASUREFORMATSTRING()
+				
+				return
+				    FORMAT(vValue, vFormat)
+				    & IF (ISBLANK(vGrowth)
+				        , BLANK()
+				        , " | "    
+				        & IF (vGrowth >= 0, "▲" , "▼") & FORMAT(vGrowth, "0%")
+				    )
+				
+				```
+
+			formatStringDefinition = SELECTEDMEASUREFORMATSTRING()
+
+		calculationItem 'Dynamic Measure - Apply Format' = SELECTEDMEASURE()
+
+			formatStringDefinition = ```
+					
+					IF (
+					    // Only do this for the 'Dynamic Measure' Measures
+					    ISSELECTEDMEASURE ( [Value], [Value (ly)], [Value (ytd)], [Value Avg per Month] ),
+					        VAR measureCode =
+					            SELECTEDVALUE ( 'Dynamic Measure'[Code] )
+					        VAR measureFormat =
+					            IF (
+					                measureCode <> BLANK (),
+					                LOOKUPVALUE ( 'Dynamic Measure'[Format], 'Dynamic Measure'[Code], measureCode )
+					            )
+					        RETURN
+					            IF ( measureFormat <> BLANK (), measureFormat, SELECTEDMEASUREFORMATSTRING () )
+					    
+					   , SELECTEDMEASUREFORMATSTRING ()
+					)
+					```
+
+		calculationItem 'Label - ▲ LM' = ```
+				var vValue = SELECTEDMEASURE()
+				var vValueLM = CALCULATE(SELECTEDMEASURE(), PREVIOUSMONTH('Calendar'[Date]))
+				var vGrowth = DIVIDE(vValue - vValueLM, vValueLM)
+				var vFormat = SELECTEDMEASUREFORMATSTRING()
+				
+				return
+				    FORMAT(vValue, vFormat)
+				    & IF (ISBLANK(vGrowth)
+				        , BLANK()
+				        , " | "    
+				        & IF (vGrowth >= 0, "▲" , "▼") & FORMAT(vGrowth, "0%")
+				    )
+				
+				```
+
+			formatStringDefinition = SELECTEDMEASUREFORMATSTRING()
+
+	column 'Smart Calc'
+		dataType: string
+		lineageTag: 005e8b9e-378a-421a-905c-f21dad946ceb
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		lineageTag: 2532b358-06e7-449d-a944-810f51fff7a5
+		summarizeBy: none
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = User
+

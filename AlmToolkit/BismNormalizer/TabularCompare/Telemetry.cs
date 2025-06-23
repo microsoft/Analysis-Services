@@ -34,11 +34,6 @@
 //            return client;
 //        }
 
-//        public static void SetUser(string user)
-//        {
-//            _telemetry.Context.User.AuthenticatedUserId = user;
-//        }
-
 //        public static void TrackEvent(string key, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
 //        {
 //            if (Enabled)

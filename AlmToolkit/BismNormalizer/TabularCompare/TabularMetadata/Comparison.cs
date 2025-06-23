@@ -534,17 +534,17 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         string sourceLinguisticMetadata = String.Empty;
                         string targetLinguisticMetadata = String.Empty;
                         if (cultureSource.TomCulture?.LinguisticMetadata?.Content != null)
-                            sourceLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureSource.TomCulture.LinguisticMetadata.Content).ToString();
+                            sourceLinguisticMetadata = cultureSource.TomCulture.LinguisticMetadata.Content;
                         if (cultureTarget.TomCulture?.LinguisticMetadata?.Content != null)
-                            targetLinguisticMetadata = Newtonsoft.Json.Linq.JToken.Parse(cultureTarget.TomCulture.LinguisticMetadata.Content).ToString();
+                            targetLinguisticMetadata = cultureTarget.TomCulture.LinguisticMetadata.Content;
 
                         // check if culture object definition is different
                         //if (cultureSource.ObjectDefinition != cultureTarget.ObjectDefinition)
                         if ( (
                                  (_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource)) ||
                                  (!_comparisonInfo.OptionsInfo.OptionMergeCultures && cultureTarget.ContainsOtherCultureTranslations(cultureSource) && cultureSource.ContainsOtherCultureTranslations(cultureTarget))
-                             ) &&
-                             (sourceLinguisticMetadata == targetLinguisticMetadata)
+                             )
+                             && (sourceLinguisticMetadata == targetLinguisticMetadata)
                            )
                         {
                             // they are equal, ...
@@ -923,7 +923,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             {
                 if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Role && comparisonObject.MergeAction == MergeAction.Create)
                 {
-                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole);
+                    _targetTabularModel.CreateRole(_sourceTabularModel.Roles.FindById(comparisonObject.SourceObjectInternalName).TomRole, false);
                     OnValidationMessage(new ValidationMessageEventArgs($"Create role [{comparisonObject.SourceObjectName}].", ValidationMessageType.Role, ValidationMessageStatus.Informational));
                 }
             }
@@ -1285,10 +1285,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Delete)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 //Check any objects in target that depend on the DataSource are also going to be deleted
                 List<string> warningObjectList = new List<string>();
@@ -1352,10 +1352,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Create)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 _targetTabularModel.CreateDataSource(_sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName));
                 OnValidationMessage(new ValidationMessageEventArgs($"Create data source [{comparisonObject.SourceObjectName}].", ValidationMessageType.DataSource, ValidationMessageStatus.Informational));
@@ -1366,10 +1366,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.DataSource && comparisonObject.MergeAction == MergeAction.Update)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.DataSource))
+                //{
+                //    return;
+                //};
 
                 DataSource sourceDataSource = _sourceTabularModel.DataSources.FindByName(comparisonObject.SourceObjectName);
                 DataSource targetDataSource = _targetTabularModel.DataSources.FindByName(comparisonObject.TargetObjectName);
@@ -1394,10 +1394,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Delete)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                //{
+                //    return;
+                //};
 
                 //Check if incremental refresh param and there is an incremental refresh table in the model
                 if (comparisonObject.TargetObjectName == "RangeStart" || comparisonObject.TargetObjectName == "RangeEnd")
@@ -1406,18 +1406,27 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     {
                         if (table.TomTable.RefreshPolicy != null)
                         {
-                            //Confirm the table with incremental refresh policy isn't going to be deleted anyway
-                            bool tableBeingDeletedAnyway = false;
+                            //Confirm the table with incremental refresh policy isn't going to be deleted (or updated to not have a refresh policy) anyway
+                            bool policyBeingDeletedAnyway = false;
                             foreach (ComparisonObject comparisonObjectToCheck in _comparisonObjects)
                             {
                                 if (comparisonObjectToCheck.TargetObjectName == table.Name && comparisonObjectToCheck.MergeAction == MergeAction.Delete)
                                 {
-                                    tableBeingDeletedAnyway = true;
+                                    policyBeingDeletedAnyway = true;
+                                    break;
+                                }
+
+                                if (comparisonObjectToCheck.TargetObjectName == table.Name && comparisonObjectToCheck.MergeAction == MergeAction.Update &&
+                                    !_comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy && !_comparisonInfo.OptionsInfo.OptionRetainPartitions &&
+                                    _sourceTabularModel.Tables.ContainsName(table.Name) && _sourceTabularModel.Tables.FindByName(table.Name).TomTable.RefreshPolicy == null)
+                                    //Condition above includes OptionRetainPartitions because otherwise removal of the policy wouldn't go through if there are partitions in it
+                                {
+                                    policyBeingDeletedAnyway = true;
                                     break;
                                 }
                             }
 
-                            if (!tableBeingDeletedAnyway)
+                            if (!policyBeingDeletedAnyway)
                             {
                                 OnValidationMessage(new ValidationMessageEventArgs($"Unable to delete expression {comparisonObject.TargetObjectName} because it is an incremental-refresh parameter and table {table.Name} contains an incremental-refresh policy.", ValidationMessageType.Expression, ValidationMessageStatus.Warning));
                                 return;
@@ -1449,10 +1458,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Create)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                //{
+                //    return;
+                //};
 
                 //Check any objects in source that this expression depends on are also going to be created if not already in target
                 List<string> warningObjectList = new List<string>();
@@ -1484,10 +1493,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Expression && comparisonObject.MergeAction == MergeAction.Update)
             {
-                if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
-                {
-                    return;
-                };
+                //if (!DesktopHardened(comparisonObject, ValidationMessageType.Expression))
+                //{
+                //    return;
+                //};
 
                 //Check any objects in source that this expression depends on are also going to be created if not already in target
                 List<string> warningObjectList = new List<string>();
@@ -1532,10 +1541,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     isCalculationGroup = targetTable.IsCalculationGroup;
                     isCalcTable = (targetTable.TomTable.Partitions.Count > 0 && targetTable.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
                 }
-                if (!isCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
-                {
-                    return;
-                };
+
+                //if (!isCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                //{
+                //    return;
+                //};
 
                 //Check any objects in target that depend on the table expression are also going to be deleted
                 List<string> warningObjectList = new List<string>();
@@ -1599,12 +1609,12 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
-                        bool isCalcTable = (sourceTable.TomTable.Partitions.Count > 0 && sourceTable.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+                        //bool isCalcTable = (sourceTable.TomTable.Partitions.Count > 0 && sourceTable.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+                        //if (!isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        //{
+                        //    return;
+                        //};
 
-                        if (!isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
-                        {
-                            return;
-                        };
                         _targetTabularModel.CreateTable(sourceTable);
                         OnValidationMessage(new ValidationMessageEventArgs($"Create table '{comparisonObject.SourceObjectName}'.", ValidationMessageType.Table, ValidationMessageStatus.Informational));
                     }
@@ -1666,12 +1676,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     }
                     else
                     {
-                        bool isCalcTable = (tableSource.TomTable.Partitions.Count > 0 && tableSource.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
-
-                        if (!tableSource.IsCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
-                        {
-                            return;
-                        };
+                        //bool isCalcTable = (tableSource.TomTable.Partitions.Count > 0 && tableSource.TomTable.Partitions[0].SourceType == PartitionSourceType.Calculated);
+                        //if (!tableSource.IsCalculationGroup && !isCalcTable && !DesktopHardened(comparisonObject, ValidationMessageType.Table))
+                        //{
+                        //    return;
+                        //};
 
                         //Check if, based on options selected, check if target table would contain policy based partitions with no refresh policy
                         if (
@@ -1904,22 +1913,25 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
         #endregion
 
-        private bool DesktopHardened(ComparisonObject comparisonObject, ValidationMessageType validationMessageType)
-        {
-            if (
-                  (_targetTabularModel.ConnectionInfo.UseDesktop && _targetTabularModel.ConnectionInfo.ServerMode == Microsoft.AnalysisServices.ServerMode.SharePoint) ||
-                  (_targetTabularModel.ConnectionInfo.UseBimFile && _targetTabularModel.ConnectionInfo.BimFile != null && _targetTabularModel.ConnectionInfo.IsPbit)
-               )
-            {
-                //V3 hardening
-                OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {comparisonObject.TargetObjectName} because target is Power BI Desktop or .PBIT, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        // 6/9/2025: No longer needed various calls are commented out. TODO: Search for DesktopHardened to clean up.
+        //private bool DesktopHardened(ComparisonObject comparisonObject, ValidationMessageType validationMessageType)
+        //{
+        //    if (
+        //          (_targetTabularModel.ConnectionInfo.UseDesktop && _targetTabularModel.ConnectionInfo.ServerMode == Microsoft.AnalysisServices.ServerMode.SharePoint) ||
+        //          (_targetTabularModel.ConnectionInfo.UseBimFile && _targetTabularModel.ConnectionInfo.BimFile != null && _targetTabularModel.ConnectionInfo.IsPbit)
+        //       )
+        //    {
+        //        string objName = (String.IsNullOrEmpty(comparisonObject.TargetObjectName) ? comparisonObject.SourceObjectName : comparisonObject.TargetObjectName);
+
+        //        //V3 hardening
+        //        OnValidationMessage(new ValidationMessageEventArgs($"Unable to {comparisonObject.MergeAction.ToString().ToLower()} {comparisonObject.ComparisonObjectType.ToString()} {objName} because target is Power BI Desktop or .PBIT, which does not yet support modifications for this object type.", validationMessageType, ValidationMessageStatus.Warning));
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
+        //}
 
         /// <summary>
         /// Update target tabular model with changes defined by actions in ComparisonObject instances.

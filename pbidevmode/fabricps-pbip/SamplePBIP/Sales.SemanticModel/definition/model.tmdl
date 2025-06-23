@@ -1,0 +1,42 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Raw Data'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBIDesktopVersion = 2.128.352.0 (24.04)
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["HttpSource","RangeStart","RangeEnd","Environment","Randomizer","Calendar","Sales","Product","Customer","Store","RAW-Product","RAW-Store","RAW-Customer","RAW-Sales","RAW-SalesDateAdjustedAndSalesRandomized","RAW-CurrencyExchange","About"]
+
+annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["PARTITION_NAME_SHOULD_MATCH_TABLE_NAME_FOR_SINGLE_PARTITION_TABLES"]}
+
+annotation __TEdtr = 1
+
+annotation PBI_ProTooling = ["DevMode","CalcGroup"]
+
+ref table Calendar
+ref table Sales
+ref table Product
+ref table Customer
+ref table 'Smart Calcs'
+ref table 'Dynamic Measure'
+ref table Store
+ref table About
+ref table 'Parameter - Dimension'
+ref table 'Parameter - Measure'
+ref table 'Time Intelligence'
+
+ref culture en-US
+
+ref role 'Stores Cluster 1'
+ref role 'Stores Cluster 2'
+
