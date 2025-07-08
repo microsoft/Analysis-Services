@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Role role in this)
             {
-                if (role.Name == name)
+                if (string.Equals(role.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return role;
                 }
@@ -37,7 +37,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Role role in this)
             {
-                if (role.Name == name)
+                if (string.Equals(role.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

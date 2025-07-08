@@ -17,7 +17,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Measure measure in this)
             {
-                if (measure.Name == name)
+                if (string.Equals(measure.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return measure;
                 }
@@ -34,7 +34,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Measure measure in this)
             {
-                if (measure.Name == name)
+                if (string.Equals(measure.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -86,7 +86,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Measure measure in this)
             {
-                if (measure.Name == name)
+                if (string.Equals(measure.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     this.Remove(measure);
                     return true;

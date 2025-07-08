@@ -707,7 +707,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 //add back storage mode if option selected
-                if (_comparisonInfo.OptionsInfo.OptionRetainStorageMode)
+                if (_comparisonInfo.OptionsInfo.OptionRetainStorageMode && tableTargetModeType != ModeType.DirectLake)
                 {
                     tableTarget.ResetStorageMode(tableTargetModeType);
                 }
@@ -829,9 +829,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             NamedExpression tomExpressionTarget = new NamedExpression();
             tomExpressionSource.CopyTo(tomExpressionTarget);
 
-            if (tomExpressionTarget.QueryGroup != null)
+            if (tomExpressionSource.QueryGroup != null)
             {
-                CreateQueryGroup(tomExpressionTarget.QueryGroup);
+                CreateQueryGroup(tomExpressionSource.QueryGroup);
             }
 
             _database.Model.Expressions.Add(tomExpressionTarget);
