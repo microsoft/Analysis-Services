@@ -625,9 +625,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             //decouple from original model to the current one
             for (int i = 0; i < tomTableTarget.Partitions.Count; i++)
             {
-                if (tomTableTarget.Partitions[i].QueryGroup != null)
+                if (tableSource.TomTable.Partitions[i].QueryGroup != null) // As of TOM v19.84.1 related to CopyTo stopped bringing in all the properties/metadata, so referring to tableSource.TomTable instead of tomTableTarget
                 {
-                    CreateQueryGroup(tomTableTarget.Partitions[i].QueryGroup);
+                    CreateQueryGroup(tableSource.TomTable.Partitions[i].QueryGroup);
                 }
 
                 if (tomTableTarget.Partitions[i].SourceType == PartitionSourceType.Query)

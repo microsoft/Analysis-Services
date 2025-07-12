@@ -262,6 +262,12 @@
         "Entry"
         {
         "MsmKey" = "8:_1FB375A7FE9C13BE13D5697E99BF7DFA"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1FB375A7FE9C13BE13D5697E99BF7DFA"
         "OwnerKey" = "8:_5E924C1019D34309AEEFFBDF815BDE91"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -269,12 +275,6 @@
         {
         "MsmKey" = "8:_1FB375A7FE9C13BE13D5697E99BF7DFA"
         "OwnerKey" = "8:_C0D6652D4DC572BBB16E5B41EAF2E5FA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1FB375A7FE9C13BE13D5697E99BF7DFA"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -316,18 +316,6 @@
         "Entry"
         {
         "MsmKey" = "8:_2459C938551163ED2A4A3BFEEFB6D072"
-        "OwnerKey" = "8:_5E924C1019D34309AEEFFBDF815BDE91"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_251A14F72C19775F1894B31CD64F2626"
-        "OwnerKey" = "8:_3D696E5A39F34571B6B0384AA8C5D0D3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_251A14F72C19775F1894B31CD64F2626"
         "OwnerKey" = "8:_5E924C1019D34309AEEFFBDF815BDE91"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -400,7 +388,7 @@
         "Entry"
         {
         "MsmKey" = "8:_2D4E796B0C92B47DB46CE0D0D947FBD3"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -885,6 +873,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
+        "OwnerKey" = "8:_3D696E5A39F34571B6B0384AA8C5D0D3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
+        "OwnerKey" = "8:_5E924C1019D34309AEEFFBDF815BDE91"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6379A8DB557C327307FED8D911731170"
         "OwnerKey" = "8:_BF3AB5435632C17E678B463C198B8135"
         "MsmSig" = "8:_UNDEFINED"
@@ -1030,7 +1030,7 @@
         "Entry"
         {
         "MsmKey" = "8:_6F81647019F95B17AA242C85C21D4EDB"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1576,7 +1576,7 @@
         "Entry"
         {
         "MsmKey" = "8:_AB6A435C366A0B10386ABA66E29A0C9E"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1774,6 +1774,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C0D6652D4DC572BBB16E5B41EAF2E5FA"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C0D6652D4DC572BBB16E5B41EAF2E5FA"
         "OwnerKey" = "8:_5E924C1019D34309AEEFFBDF815BDE91"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1781,12 +1787,6 @@
         {
         "MsmKey" = "8:_C0D6652D4DC572BBB16E5B41EAF2E5FA"
         "OwnerKey" = "8:_3D696E5A39F34571B6B0384AA8C5D0D3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C0D6652D4DC572BBB16E5B41EAF2E5FA"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2212,7 +2212,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F359F56EB5F4694F022DF1FD509C0589"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2350,6 +2350,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_61ABF76D5E8E100BE9ABC064657B5FE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_E01C23D042974CFDADC6880ED91380B3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2435,12 +2441,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_4501BE087352C033D483389C2EB11EA8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_251A14F72C19775F1894B31CD64F2626"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3573,37 +3573,6 @@
                     }
                 }
             "SourcePath" = "8:CefSharp.WinForms.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_C3C2AB347C6D4BB2B146347638598C77"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_251A14F72C19775F1894B31CD64F2626"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.1.11.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_251A14F72C19775F1894B31CD64F2626"
-                    {
-                    "Name" = "8:BismNormalizer.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:BismNormalizer.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C3C2AB347C6D4BB2B146347638598C77"
@@ -5174,6 +5143,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_61ABF76D5E8E100BE9ABC064657B5FE5"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.1.13.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_61ABF76D5E8E100BE9ABC064657B5FE5"
+                    {
+                    "Name" = "8:BismNormalizer.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:BismNormalizer.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_C3C2AB347C6D4BB2B146347638598C77"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6379A8DB557C327307FED8D911731170"
@@ -9737,15 +9737,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Power BI ALM Toolkit"
-        "ProductCode" = "8:{AD649072-2543-4D3D-9CBF-9602B54BD466}"
-        "PackageCode" = "8:{E100000B-BA3E-4EB0-A1C6-68307FBFD096}"
+        "ProductCode" = "8:{050AA4F7-EC28-48DB-99E1-D39447498843}"
+        "PackageCode" = "8:{FE4BC579-FD93-4042-A7D4-B14DB68592D8}"
         "UpgradeCode" = "8:{96819CFD-6462-4AD1-ADB4-7903F30ADB92}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.1.12"
+        "ProductVersion" = "8:5.1.14"
         "Manufacturer" = "8:Power BI ALM Toolkit"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
