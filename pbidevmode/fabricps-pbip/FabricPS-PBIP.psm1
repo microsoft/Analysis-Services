@@ -760,7 +760,12 @@ Function Import-FabricItems {
                 }
             }
 
-            $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
+            if ($IsWindows) {
+                $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
+            }
+            else {
+                $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("/")
+            }
 
             $fileEncodedContent = ($fileContent) ? [Convert]::ToBase64String($fileContent) : ""
             
