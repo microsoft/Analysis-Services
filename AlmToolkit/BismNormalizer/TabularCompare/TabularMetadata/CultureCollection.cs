@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Culture culture in this)
             {
-                if (culture.Name == name)
+                if (string.Equals(culture.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return culture;
                 }
@@ -37,7 +37,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Culture culture in this)
             {
-                if (culture.Name == name)
+                if (string.Equals(culture.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

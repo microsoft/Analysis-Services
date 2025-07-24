@@ -8,14 +8,14 @@ $currentPath = (Split-Path $MyInvocation.MyCommand.Definition -Parent)
 
 $nugets = @(
     @{
-        name    = "Microsoft.AnalysisServices.NetCore.retail.amd64"
+        name    = "Microsoft.AnalysisServices"
         ;
-        version = "19.84.1"
+        version = "19.94.1.1"
         ;
         path    = @(
-            "lib\netcoreapp3.0\Microsoft.AnalysisServices.Core.dll"
-            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.dll"
-            , "lib\netcoreapp3.0\Microsoft.AnalysisServices.Tabular.Json.dll"
+            "lib\net6.0\Microsoft.AnalysisServices.Core.dll"
+            , "lib\net6.0\Microsoft.AnalysisServices.Tabular.dll"
+            , "lib\net6.0\Microsoft.AnalysisServices.Tabular.Json.dll"
         )
     }
 )
@@ -63,7 +63,9 @@ function Get-FabricAuthToken {
         Set-FabricAuthToken
     }
     
-    Write-Output $script:fabricToken
+    $tokenText = ConvertFrom-SecureString -SecureString $script:fabricToken -AsPlainText
+    
+    Write-Output $tokenText
 }
 
 function Set-FabricAuthToken {
@@ -118,7 +120,7 @@ function Set-FabricAuthToken {
 
     Write-Log "Connnected: $($azContext.Account)"
 
-    $script:fabricToken = (Get-AzAccessToken -ResourceUrl $script:resourceUrl).Token
+    $script:fabricToken = (Get-AzAccessToken -ResourceUrl $script:resourceUrl -AsSecureString).Token
 }
 
 Function Invoke-FabricAPIRequest {
@@ -963,7 +965,10 @@ Function Import-FabricItem {
                     Write-Log "Report connected to semantic model: $datasetId"
                 }
 
-                $pbirJson.datasetReference.byPath = $null
+                if ($pbirJson.datasetReference.byPath)
+                {
+                    $pbirJson.datasetReference.byPath = $null
+                }
 
                 $byConnectionObj = @{
                     "connectionString"          = $null                

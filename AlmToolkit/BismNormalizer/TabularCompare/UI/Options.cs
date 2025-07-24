@@ -63,6 +63,7 @@ namespace BismNormalizer.TabularCompare.UI
             chkRetainPolicyPartitions.Checked = _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions;
             chkRetainRefreshPolicy.Checked = _comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy;
             chkRetainStorageMode.Checked = _comparisonInfo.OptionsInfo.OptionRetainStorageMode;
+            chkInteractiveLogin.Checked = _comparisonInfo.OptionsInfo.OptionInteractiveLogin;
             chkMeasureDependencies.Checked = _comparisonInfo.OptionsInfo.OptionMeasureDependencies;
             string processingOption = _comparisonInfo.OptionsInfo.OptionProcessingOption.ToString();
             cboProcessingOption.Text = processingOption == "DoNotProcess" ? "Do Not Process" : processingOption;
@@ -86,6 +87,7 @@ namespace BismNormalizer.TabularCompare.UI
             _comparisonInfo.OptionsInfo.OptionRetainPolicyPartitions = chkRetainPolicyPartitions.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainRefreshPolicy = chkRetainRefreshPolicy.Checked;
             _comparisonInfo.OptionsInfo.OptionRetainStorageMode = chkRetainStorageMode.Checked;
+            _comparisonInfo.OptionsInfo.OptionInteractiveLogin = chkInteractiveLogin.Checked;
             _comparisonInfo.OptionsInfo.OptionMeasureDependencies = chkMeasureDependencies.Checked;
             _comparisonInfo.OptionsInfo.OptionProcessingOption = (ProcessingOption)Enum.Parse(typeof(ProcessingOption), cboProcessingOption.Text.Replace(" ", ""));
             _comparisonInfo.OptionsInfo.OptionTransaction = false;

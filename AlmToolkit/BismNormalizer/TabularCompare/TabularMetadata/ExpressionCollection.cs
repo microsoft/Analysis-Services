@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Expression expression in this)
             {
-                if (expression.Name == name)
+                if (string.Equals(expression.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return expression;
                 }
@@ -37,7 +37,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Expression expression in this)
             {
-                if (expression.Name == name)
+                if (string.Equals(expression.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

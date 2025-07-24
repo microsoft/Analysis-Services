@@ -162,7 +162,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 _server = new Server();
-                string connectionString = _connectionInfo.BuildConnectionString();
+                string connectionString = _connectionInfo.BuildConnectionStringWithServerAndDb();
                 _server.Connect(connectionString);
 
                 _database = _server.Databases.FindByName(_connectionInfo.DatabaseName);
@@ -625,9 +625,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             //decouple from original model to the current one
             for (int i = 0; i < tomTableTarget.Partitions.Count; i++)
             {
-                if (tomTableTarget.Partitions[i].QueryGroup != null)
+                if (tableSource.TomTable.Partitions[i].QueryGroup != null) // As of TOM v19.84.1 related to CopyTo stopped bringing in all the properties/metadata, so referring to tableSource.TomTable instead of tomTableTarget
                 {
-                    CreateQueryGroup(tomTableTarget.Partitions[i].QueryGroup);
+                    CreateQueryGroup(tableSource.TomTable.Partitions[i].QueryGroup);
                 }
 
                 if (tomTableTarget.Partitions[i].SourceType == PartitionSourceType.Query)
@@ -707,7 +707,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             else
             {
                 //add back storage mode if option selected
-                if (_comparisonInfo.OptionsInfo.OptionRetainStorageMode)
+                if (_comparisonInfo.OptionsInfo.OptionRetainStorageMode && tableTargetModeType != ModeType.DirectLake)
                 {
                     tableTarget.ResetStorageMode(tableTargetModeType);
                 }
@@ -829,9 +829,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             NamedExpression tomExpressionTarget = new NamedExpression();
             tomExpressionSource.CopyTo(tomExpressionTarget);
 
-            if (tomExpressionTarget.QueryGroup != null)
+            if (tomExpressionSource.QueryGroup != null)
             {
-                CreateQueryGroup(tomExpressionTarget.QueryGroup);
+                CreateQueryGroup(tomExpressionSource.QueryGroup);
             }
 
             _database.Model.Expressions.Add(tomExpressionTarget);
@@ -1476,9 +1476,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                     if (perspectiveTableTarget == null)
                     {
                         perspectiveTableTarget = new PerspectiveTable();
-                        perspectiveTarget.PerspectiveTables.Add(perspectiveTableTarget);
                         perspectiveTableTarget.Name = perspectiveTableSource.Name;
                         perspectiveTableTarget.Table = tableTarget.TomTable;
+                        perspectiveTarget.PerspectiveTables.Add(perspectiveTableTarget);
                     }
 
                     //Columns
@@ -1502,9 +1502,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             if (perspectiveColumnTarget == null)
                             {
                                 perspectiveColumnTarget = new PerspectiveColumn();
-                                perspectiveTableTarget.PerspectiveColumns.Add(perspectiveColumnTarget);
                                 perspectiveColumnTarget.Name = perspectiveColumnSource.Name;
                                 perspectiveColumnTarget.Column = column;
+                                perspectiveTableTarget.PerspectiveColumns.Add(perspectiveColumnTarget);
                             }
                         }
                     }
@@ -1530,9 +1530,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             if (perspectiveHierarchyTarget == null)
                             {
                                 perspectiveHierarchyTarget = new PerspectiveHierarchy();
-                                perspectiveTableTarget.PerspectiveHierarchies.Add(perspectiveHierarchyTarget);
                                 perspectiveHierarchyTarget.Name = perspectiveHierarchySource.Name;
                                 perspectiveHierarchyTarget.Hierarchy = hierarchy;
+                                perspectiveTableTarget.PerspectiveHierarchies.Add(perspectiveHierarchyTarget);
                             }
                         }
                     }
@@ -1558,9 +1558,9 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                             if (perspectiveMeasureTarget == null)
                             {
                                 perspectiveMeasureTarget = new PerspectiveMeasure();
-                                perspectiveTableTarget.PerspectiveMeasures.Add(perspectiveMeasureTarget);
                                 perspectiveMeasureTarget.Name = perspectiveMeasureSource.Name;
                                 perspectiveMeasureTarget.Measure = measure;
+                                perspectiveTableTarget.PerspectiveMeasures.Add(perspectiveMeasureTarget);
                             }
                         }
                     }
@@ -2273,7 +2273,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
                 _server.Disconnect();
                 _server = new Server();
-                _server.Connect(_connectionInfo.BuildConnectionString());
+                _server.Connect(_connectionInfo.BuildConnectionStringWithServerAndDb());
                 Amo.XmlaResultCollection results = _server.Execute(tmslCommand);
                 if (results.ContainsErrors)
                     throw new Amo.OperationException(results);

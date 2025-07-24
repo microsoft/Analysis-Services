@@ -17,7 +17,7 @@ namespace BismNormalizer.TabularCompare
         {
             foreach (ProcessingTable table in this)
             {
-                if (table.Name == name)
+                if (string.Equals(table.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return table;
                 }
@@ -51,7 +51,7 @@ namespace BismNormalizer.TabularCompare
         {
             foreach (ProcessingTable table in this)
             {
-                if (table.Name == name)
+                if (string.Equals(table.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

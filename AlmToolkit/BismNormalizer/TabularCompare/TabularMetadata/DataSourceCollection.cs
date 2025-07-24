@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (DataSource dataSource in this)
             {
-                if (dataSource.Name == name)
+                if (string.Equals(dataSource.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return dataSource;
                 }
@@ -37,7 +37,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (DataSource dataSource in this)
             {
-                if (dataSource.Name == name)
+                if (string.Equals(dataSource.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (DataSource dataSource in this)
             {
-                if (dataSource.Name == name)
+                if (string.Equals(dataSource.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     this.Remove(dataSource);
                     return true;
