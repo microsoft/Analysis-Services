@@ -982,7 +982,7 @@ Function Import-FabricItem {
             $fileContent = Get-Content -LiteralPath $filePath -AsByteStream -Raw
         }
         
-        $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\").Replace("\", "/")
+        $partPath = $filePath.Replace($itemPathAbs, "").TrimStart("\", "/")
 
         $fileEncodedContent = ($fileContent) ? [Convert]::ToBase64String($fileContent) : ""
         
