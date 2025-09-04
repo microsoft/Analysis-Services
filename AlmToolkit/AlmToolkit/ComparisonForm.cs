@@ -972,24 +972,31 @@ namespace AlmToolkit
 
         private void SaveFileAs()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "ALM Toolkit Files (.almt)|*.almt";
-            sfd.Title = "Save As";
-
-            if (String.IsNullOrEmpty(_fileName))
+            if (_comparison == null)
             {
-                sfd.FileName = "Comparison1";
+                MessageBox.Show("Please perform a comparison before saving it.", Utils.AssemblyProduct, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                sfd.FileName = Path.GetFileName(_fileName);
-            }
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "ALM Toolkit Files (.almt)|*.almt";
+                sfd.Title = "Save As";
 
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                _fileName = sfd.FileName;
-                SetFileNameTitle(false);
-                this.SaveFile(_fileName);
+                if (String.IsNullOrEmpty(_fileName))
+                {
+                    sfd.FileName = "Comparison1";
+                }
+                else
+                {
+                    sfd.FileName = Path.GetFileName(_fileName);
+                }
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    _fileName = sfd.FileName;
+                    SetFileNameTitle(false);
+                    this.SaveFile(_fileName);
+                }
             }
         }
 

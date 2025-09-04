@@ -169,10 +169,11 @@ namespace BismNormalizer.TabularCompare
                     string message = $"Source compatibility level { Convert.ToString(comparisonInfo.SourceCompatibilityLevel) } is higher than the target { Convert.ToString(comparisonInfo.TargetCompatibilityLevel) }, which is not supported for comparison.\n";
 
                     if (
-                        ( !comparisonInfo.ConnectionInfoTarget.UseProject && //Upgrade in SSDT not supported
-                          !comparisonInfo.ConnectionInfoTarget.UseDesktop && //Upgrade via port number to Desktop or SSDT not supported
-                          !comparisonInfo.ConnectionInfoTarget.UseBimFile    //Upgrade to offline file not (currently) supported
-                        ) &&
+                        //Commented out 7/2025 based on Ed Hansbury feedback
+                        //( !comparisonInfo.ConnectionInfoTarget.UseProject && //Upgrade in SSDT not supported
+                        //  !comparisonInfo.ConnectionInfoTarget.UseDesktop && //Upgrade via port number to Desktop or SSDT not supported
+                        //  !comparisonInfo.ConnectionInfoTarget.UseBimFile    //Upgrade to offline file not (currently) supported
+                        //) &&
                         (
                             ( comparisonInfo.Interactive && 
                               System.Windows.Forms.MessageBox.Show(message + $"\nDo you want to upgrade the target to {Convert.ToString(comparisonInfo.SourceCompatibilityLevel)} and allow the comparison?", comparisonInfo.AppName, System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes

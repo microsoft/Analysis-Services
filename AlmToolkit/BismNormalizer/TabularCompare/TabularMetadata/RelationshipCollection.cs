@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Relationship relationship in this)
             {
-                if (relationship.Name == name)
+                if (string.Equals(relationship.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return relationship;
                 }

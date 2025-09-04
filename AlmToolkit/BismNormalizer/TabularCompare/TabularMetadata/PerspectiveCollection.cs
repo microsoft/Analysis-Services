@@ -20,7 +20,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Perspective perspective in this)
             {
-                if (perspective.Name == name)
+                if (string.Equals(perspective.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return perspective;
                 }
@@ -37,7 +37,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             foreach (Perspective perspective in this)
             {
-                if (perspective.Name == name)
+                if (string.Equals(perspective.Name, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
