@@ -728,17 +728,33 @@ Function Import-FabricItems {
                             
                             $datasetId = $datasetReference.id
                             
-                            $pbirJson.datasetReference.byPath = $null
+                            $pbirJson.datasetReference.byPath = $null   
+                            
+                            # force schema 2.0 if not present
 
-                            $byConnectionObj = @{
-                                "connectionString"          = $null                
-                                "pbiServiceModelId"         = $null
-                                "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
-                                "pbiModelDatabaseName"      = "$datasetId"                
-                                "name"                      = "EntityDataSource"
-                                "connectionType"            = "pbiServiceXmlaStyleLive"
+                            if (!$pbirJson.'$schema') {
+                                $pbirJson | Add-Member -NotePropertyName '$schema' -NotePropertyValue "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/2.0.0/schema.json" -Force                    
                             }
+                            
+                            # if version 1.0 use the old connection representation, if not use the new one.                 
 
+                            if ($pbirJson.'$schema' -like "*/1.0.0/*")
+                            {
+                                $byConnectionObj = @{
+                                    "connectionString"          = $null                
+                                    "pbiServiceModelId"         = $null
+                                    "pbiModelVirtualServerName" = "sobe_wowvirtualserver"
+                                    "pbiModelDatabaseName"      = "$datasetId"                
+                                    "name"                      = "EntityDataSource"
+                                    "connectionType"            = "pbiServiceXmlaStyleLive"
+                                }
+                            }
+                            else {
+                                $byConnectionObj = @{
+                                    "connectionString"          = "semanticmodelid=$datasetId"      
+                                }
+                            }
+                 
                             $pbirJson.datasetReference | Add-Member -NotePropertyName "byConnection" -NotePropertyValue $byConnectionObj -Force
             
                             $newPBIR = $pbirJson | ConvertTo-Json
