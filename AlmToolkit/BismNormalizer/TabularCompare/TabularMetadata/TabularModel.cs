@@ -1934,11 +1934,14 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 Tom.ModelRole tomModelRoleBackup = roleTarget.TomRole.Clone();
                 DeleteRole(roleTarget.Name);
                 Tom.ModelRole tomModelRoleNew = CreateRole(roleSource.TomRole, false);
-                tomModelRoleNew.Members.Clear();
+                //tomModelRoleNew.Members.Clear(); //10/3/2025 bug https://github.com/microsoft/Analysis-Services/issues/354 where wasn't ending up with union of roles
                 foreach (ModelRoleMember roleMemberOrig in tomModelRoleBackup.Members)
                 {
-                    ModelRoleMember roleMemberTarget = roleMemberOrig.Clone();
-                    tomModelRoleNew.Members.Add(roleMemberTarget);
+                    if (tomModelRoleNew.Members.Find(roleMemberOrig.Name) == null) //10/3/2025 added
+                    {
+                        ModelRoleMember roleMemberTarget = roleMemberOrig.Clone();
+                        tomModelRoleNew.Members.Add(roleMemberTarget);
+                    }
                 }
             }
             else
