@@ -460,6 +460,53 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
 
             #endregion
 
+            #region Functions
+
+            foreach (Function functionSource in _sourceTabularModel.Functions)
+            {
+                // check if source is not in target
+                if (!_targetTabularModel.Functions.ContainsName(functionSource.Name))
+                {
+                    ComparisonObject comparisonObjectFunction = new ComparisonObject(ComparisonObjectType.Function, ComparisonObjectStatus.MissingInTarget, functionSource, null, MergeAction.Create);
+                    _comparisonObjects.Add(comparisonObjectFunction);
+                    _comparisonObjectCount += 1;
+                }
+                else
+                {
+                    // there is a Function in the target with the same name at least
+                    Function functionTarget = _targetTabularModel.Functions.FindByName(functionSource.Name);
+                    ComparisonObject comparisonObjectFunction;
+
+                    // check if function object definition is different
+                    if (functionSource.ObjectDefinition != functionTarget.ObjectDefinition)
+                    {
+                        comparisonObjectFunction = new ComparisonObject(ComparisonObjectType.Function, ComparisonObjectStatus.DifferentDefinitions, functionSource, functionTarget, MergeAction.Update);
+                        _comparisonObjects.Add(comparisonObjectFunction);
+                        _comparisonObjectCount += 1;
+                    }
+                    else
+                    {
+                        // they are equal, ...
+                        comparisonObjectFunction = new ComparisonObject(ComparisonObjectType.Function, ComparisonObjectStatus.SameDefinition, functionSource, functionTarget, MergeAction.Skip);
+                        _comparisonObjects.Add(comparisonObjectFunction);
+                        _comparisonObjectCount += 1;
+                    }
+                }
+            }
+
+            foreach (Function functionTarget in _targetTabularModel.Functions)
+            {
+                // if target function is Missing in Source, offer deletion
+                if (!_sourceTabularModel.Functions.ContainsName(functionTarget.Name))
+                {
+                    ComparisonObject comparisonObjectFunction = new ComparisonObject(ComparisonObjectType.Function, ComparisonObjectStatus.MissingInSource, null, functionTarget, MergeAction.Delete);
+                    _comparisonObjects.Add(comparisonObjectFunction);
+                    _comparisonObjectCount += 1;
+                }
+            }
+
+            #endregion
+
             #region Perspectives
 
             if (_comparisonInfo.OptionsInfo.OptionPerspectives)
@@ -734,6 +781,25 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             foreach (ComparisonObject comparisonObject in _comparisonObjects)
             {
                 UpdateExpression(comparisonObject);
+            }
+
+            #endregion
+
+            #region Functions
+
+            foreach (ComparisonObject comparisonObject in _comparisonObjects)
+            {
+                DeleteFunction(comparisonObject);
+            }
+
+            foreach (ComparisonObject comparisonObject in _comparisonObjects)
+            {
+                CreateFunction(comparisonObject);
+            }
+
+            foreach (ComparisonObject comparisonObject in _comparisonObjects)
+            {
+                UpdateFunction(comparisonObject);
             }
 
             #endregion
@@ -1521,6 +1587,37 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                         OnValidationMessage(new ValidationMessageEventArgs($"Unable to update expression {comparisonObject.TargetObjectName} because version from the source depends on the following objects, which (considering changes) are missing from target and/or depend on a structured data source that is provider in the target: {String.Join(", ", warningObjectList)}.", ValidationMessageType.Expression, ValidationMessageStatus.Warning));
                     }
                 }
+            }
+        }
+
+        #endregion
+
+        #region Functions
+
+        private void DeleteFunction(ComparisonObject comparisonObject)
+        {
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Function && comparisonObject.MergeAction == MergeAction.Delete)
+            {
+                _targetTabularModel.DeleteFunction(comparisonObject.TargetObjectName);
+                OnValidationMessage(new ValidationMessageEventArgs($"Delete function [{comparisonObject.TargetObjectName}].", ValidationMessageType.Function, ValidationMessageStatus.Informational));
+            }
+        }
+
+        private void CreateFunction(ComparisonObject comparisonObject)
+        {
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Function && comparisonObject.MergeAction == MergeAction.Create)
+            {
+                _targetTabularModel.CreateFunction(_sourceTabularModel.Functions.FindByName(comparisonObject.SourceObjectName).TomFunction);
+                OnValidationMessage(new ValidationMessageEventArgs($"Create function [{comparisonObject.SourceObjectName}].", ValidationMessageType.Function, ValidationMessageStatus.Informational));
+            }
+        }
+
+        private void UpdateFunction(ComparisonObject comparisonObject)
+        {
+            if (comparisonObject.ComparisonObjectType == ComparisonObjectType.Function && comparisonObject.MergeAction == MergeAction.Update)
+            {
+                _targetTabularModel.UpdateFunction(_sourceTabularModel.Functions.FindByName(comparisonObject.SourceObjectName), _targetTabularModel.Functions.FindByName(comparisonObject.TargetObjectName));
+                OnValidationMessage(new ValidationMessageEventArgs($"Update function [{comparisonObject.TargetObjectName}].", ValidationMessageType.Function, ValidationMessageStatus.Informational));
             }
         }
 

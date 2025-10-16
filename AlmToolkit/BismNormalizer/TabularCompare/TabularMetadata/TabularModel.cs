@@ -28,6 +28,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         private DataSourceCollection _dataSources = new DataSourceCollection();
         private TableCollection _tables = new TableCollection();
         private ExpressionCollection _expressions = new ExpressionCollection();
+        private FunctionCollection _functions = new FunctionCollection();
         private PerspectiveCollection _perspectives = new PerspectiveCollection();
         private CultureCollection _cultures = new CultureCollection();
         private RoleCollection _roles = new RoleCollection();
@@ -75,6 +76,10 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             foreach (Tom.NamedExpression expression in _database.Model.Expressions)
             {
                 _expressions.Add(new Expression(this, expression));
+            }
+            foreach (Tom.Function function in _database.Model.Functions)
+            {
+                _functions.Add(new Function(this, function));
             }
             foreach (ModelRole role in _database.Model.Roles)
             {
@@ -425,6 +430,11 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         /// Collection of expressions for the TabularModel object.
         /// </summary>
         public ExpressionCollection Expressions => _expressions;
+
+        /// <summary>
+        /// Collection of Functions for the TabularModel object.
+        /// </summary>
+        public FunctionCollection Functions => _functions;
 
         /// <summary>
         /// Collection of perspectives for the TabularModel object.
@@ -847,7 +857,7 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
             string[] folders = queryGroupToCreate.Folder.Split('\\');
             for (int i = 0; i < folders.Length; ++i)
             {
-                if (i==0)
+                if (i == 0)
                     currentPath += folders[i];
                 else
                     currentPath += '\\' + folders[i];
@@ -874,6 +884,54 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
         {
             DeleteExpression(expressionTarget.Name);
             CreateExpression(expressionSource.TomExpression);
+        }
+
+        #endregion
+
+        #region Functions
+
+        /// <summary>
+        /// Delete Function associated with the TabularModel object.
+        /// </summary>
+        /// <param name="name">Name of the daxFunction to be deleted.</param>
+        public void DeleteFunction(string name)
+        {
+            if (_database.Model.Functions.Contains(name))
+            {
+                _database.Model.Functions.Remove(name);
+            }
+
+            // shell model
+            if (_functions.ContainsName(name))
+            {
+                _functions.Remove(name);
+            }
+        }
+
+        /// <summary>
+        /// Create Function associated with the TabularModel object.
+        /// </summary>
+        /// <param name="tomFunctionSource">Tabular Object Model Function object from the source tabular model to be abstracted in the target.</param>
+        public void CreateFunction(Tom.Function tomFunctionSource)
+        {
+            Tom.Function tomFunctionTarget = new Tom.Function();
+            tomFunctionSource.CopyTo(tomFunctionTarget);
+
+            _database.Model.Functions.Add(tomFunctionTarget);
+
+            // shell model
+            _functions.Add(new Function(this, tomFunctionTarget));
+        }
+
+        /// <summary>
+        /// Update Function associated with the TabularModel object.
+        /// </summary>
+        /// <param name="functionSource">Function object from the source tabular model to be updated in the target.</param>
+        /// <param name="functionTarget">Function object in the target tabular model to be updated.</param>
+        public void UpdateFunction(Function functionSource, Function functionTarget)
+        {
+            DeleteFunction(functionTarget.Name);
+            CreateFunction(functionSource.TomFunction);
         }
 
         #endregion

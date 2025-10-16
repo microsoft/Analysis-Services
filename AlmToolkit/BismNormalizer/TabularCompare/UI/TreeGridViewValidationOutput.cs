@@ -156,12 +156,16 @@ namespace BismNormalizer.TabularCompare.UI
                     particularTypeNode = FindOrCreateTypeNode(topLevelNodeForHandle, "Expression");
                     particularTypeNode.ImageIndex = 22;
                     break;
+                case ValidationMessageType.Function:
+                    particularTypeNode = FindOrCreateTypeNode(topLevelNodeForHandle, "Funcions");
+                    particularTypeNode.ImageIndex = 22;
+                    break;
                 case ValidationMessageType.Perspective:
                     particularTypeNode = FindOrCreateTypeNode(topLevelNodeForHandle, "Perspectives");
                     particularTypeNode.ImageIndex = 15;
                     break;
                 case ValidationMessageType.Culture:
-                    particularTypeNode = FindOrCreateTypeNode(topLevelNodeForHandle, "Culture");
+                    particularTypeNode = FindOrCreateTypeNode(topLevelNodeForHandle, "Cultures");
                     particularTypeNode.ImageIndex = 21;
                     break;
                 case ValidationMessageType.Role:

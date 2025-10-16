@@ -3594,7 +3594,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.1.14.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BismNormalizer, Version=5.1.15.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_251A14F72C19775F1894B31CD64F2626"
@@ -9737,15 +9737,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Power BI ALM Toolkit"
-        "ProductCode" = "8:{CAF03FB8-72F9-45D4-9409-B22877BB5D6E}"
-        "PackageCode" = "8:{340C9112-EC05-41A6-AA0D-C30A090F4C30}"
+        "ProductCode" = "8:{EE518398-AA9E-46A8-9898-7B55CAD1BE07}"
+        "PackageCode" = "8:{378A9453-8549-4F63-AFFA-D903F927B809}"
         "UpgradeCode" = "8:{96819CFD-6462-4AD1-ADB4-7903F30ADB92}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.1.15"
+        "ProductVersion" = "8:5.1.16"
         "Manufacturer" = "8:Power BI ALM Toolkit"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

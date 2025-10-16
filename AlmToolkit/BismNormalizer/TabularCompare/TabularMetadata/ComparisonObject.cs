@@ -181,32 +181,35 @@ namespace BismNormalizer.TabularCompare.TabularMetadata
                 case ComparisonObjectType.Expression:
                     sortKey = "C";
                     break;
-                case ComparisonObjectType.Table:
+                case ComparisonObjectType.Function:
                     sortKey = "D";
                     break;
-                case ComparisonObjectType.Relationship:
+                case ComparisonObjectType.Table:
                     sortKey = "E";
                     break;
-                case ComparisonObjectType.Measure:
+                case ComparisonObjectType.Relationship:
                     sortKey = "F";
                     break;
-                case ComparisonObjectType.Kpi:
+                case ComparisonObjectType.Measure:
                     sortKey = "G";
                     break;
-                case ComparisonObjectType.CalculationItem:
+                case ComparisonObjectType.Kpi:
                     sortKey = "H";
                     break;
-                case ComparisonObjectType.Action:
+                case ComparisonObjectType.CalculationItem:
                     sortKey = "I";
                     break;
-                case ComparisonObjectType.Perspective:
+                case ComparisonObjectType.Action:
                     sortKey = "J";
                     break;
-                case ComparisonObjectType.Culture:
+                case ComparisonObjectType.Perspective:
                     sortKey = "K";
                     break;
-                case ComparisonObjectType.Role:
+                case ComparisonObjectType.Culture:
                     sortKey = "L";
+                    break;
+                case ComparisonObjectType.Role:
+                    sortKey = "M";
                     break;
 
                 default:

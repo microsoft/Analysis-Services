@@ -4,7 +4,7 @@ namespace BismNormalizer.TabularCompare
     /// <summary>
     /// Type of object that a validation message relates to. For example, Table, Measure, MeasureCalculationDependency, etc.
     /// </summary>
-    public enum ValidationMessageType { Model, DataSource, Table, Relationship, Measure, Kpi, CalculationGroup, CalculationItem, Perspective, Culture, Role, Expression, Action, MeasureCalculationDependency, AggregationDependency, General }; //General used for command line only
+    public enum ValidationMessageType { Model, DataSource, Table, Relationship, Measure, Kpi, CalculationGroup, CalculationItem, Perspective, Culture, Role, Expression, Function, Action, MeasureCalculationDependency, AggregationDependency, General }; //General used for command line only
 
     /// <summary>
     /// Status for a validation message, such as Informational and Warning.
@@ -14,7 +14,7 @@ namespace BismNormalizer.TabularCompare
     /// <summary>
     /// Type of comparison object. For example, Table, Measure, Relationship, etc.
     /// </summary>
-    public enum ComparisonObjectType { Model, DataSource, Table, Relationship, Measure, Kpi, CalculationItem, Perspective, Culture, Role, Expression, Action, Connection }; //Need connection for backwards compatibility when deserializing from xml. Set to data source.
+    public enum ComparisonObjectType { Model, DataSource, Table, Relationship, Measure, Kpi, CalculationItem, Perspective, Culture, Role, Expression, Function, Action, Connection }; //Need connection for backwards compatibility when deserializing from xml. Set to data source.
 
     /// <summary>
     /// Status of comparison object, such as Same Definition, Different Definitions and Missing In Target.
