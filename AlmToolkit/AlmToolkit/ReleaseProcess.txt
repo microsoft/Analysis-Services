@@ -19,18 +19,7 @@
     BismNormalizer.dll
     BismNormalizer.CommandLine.exe
 
-    https://portal.esrp.microsoft.com/ManualSign/SignRequest
-        New Request
-        Provide descritption like "Sign ALMT X.X.X"
-        Sign operation: Sign ALM Toolkit Assemblies
-        Browse Files > Select 3 assemblies above
-        Submit
-        Wait for them to be approved
-
-    Ref info:
-        https://microsoft-my.sharepoint.com/:v:/p/chwade/EeAAFiJhE3dEs9Oyum0tSIsBSp6P32y7pp1DGfOqbHbJIg?e=kPE2cg
-        ALM Toolkit App ID (Azure Portal): 62119323-7be0-4d45-9adb-8f90cafdf0b5
-        Operation Key Code: CP-230012
+    Follow C:\Users\chwade\OneDrive - Microsoft\Microsoft\Features\ALMT\Digital Signing\SigningProcess.docx
 
 * Download signed assemblies to \ReleaseItems\SignedFiles
 
@@ -59,8 +48,6 @@
     ReleaseItems\GetMsiForSigning.bat
 
 * Upload AlmToolkitSetup.msi from \ReleaseItems\ForSigning & get it signed
-    https://portal.esrp.microsoft.com/ManualSign/SignRequest
-        New Request
         Same process as above
 
 * Download signed MSI to \ReleaseItems\SignedFiles
