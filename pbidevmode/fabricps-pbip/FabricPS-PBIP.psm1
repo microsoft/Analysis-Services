@@ -1067,7 +1067,8 @@ Function Import-FabricItem {
         Write-Output @{
             "id"          = $itemId
             "displayName" = $displayName
-            "type"        = $itemType 
+            "type"        = $itemType
+            "importType"  = "Create"
         }
     }
     else {
@@ -1092,7 +1093,8 @@ Function Import-FabricItem {
         Write-Output @{
             "id"          = $itemId
             "displayName" = $displayName
-            "type"        = $itemType 
+            "type"        = $itemType
+            "importType"  = "Update"
         }
     }
 }
