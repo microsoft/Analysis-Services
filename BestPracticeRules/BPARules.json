@@ -669,7 +669,7 @@
     "Description": "Add Data Category property for appropriate columns.\r\n\r\nReference: https://docs.microsoft.com/power-bi/transform-model/desktop-data-categorization",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "string.IsNullOrWhitespace(DataCategory)\r\nand\r\n(\r\n(\r\nName.ToLower().Contains(\"country\")\r\nor \r\n\nName.ToLower().Contains(\"continent\"\n)\r\nor\r\nName.ToLower().Contains(\"city\")\r\n)\r\nand DataType == \"String\"\r\n)\r\nor \r\n(\r\n(\nName.ToLower() == \"latitude\" \n or \nName.ToLower() == \"longitude\")\r\nand (DataType == DataType.Decimal or DataType == DataType.Double)\r\n)",
+    "Expression": "string.IsNullOrWhiteSpace(DataCategory)\r\n&&\r\n(\r\n    (\r\n        (\r\n            Name.ToLower().Contains(\"country\")\r\n            || Name.ToLower().Contains(\"continent\")\r\n            || Name.ToLower().Contains(\"city\")\r\n        )\r\n        && DataType == DataType.String\r\n    )\r\n    ||\r\n    (\r\n        (\r\n            Name.ToLower() == \"latitude\"\r\n            || Name.ToLower() == \"longitude\"\r\n        )\r\n        &&\r\n        (\r\n            DataType == DataType.Decimal\r\n            || DataType == DataType.Double\r\n        )\r\n    )\r\n)\r\n",
     "CompatibilityLevel": 1200
   },
   {
@@ -724,4 +724,5 @@
     "Expression": "Name.ToUpper().Contains(\"MONTH\")\r\nand\r\n! Name.ToUpper().Contains(\"MONTHS\") \r\nand \r\n\n\nDataType == DataType.String \r\nand \r\nSortByColumn == null",
     "CompatibilityLevel": 1200
   }
+
 ]
