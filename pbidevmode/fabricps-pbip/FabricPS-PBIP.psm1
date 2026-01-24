@@ -1194,7 +1194,7 @@ Function Set-SemanticModelParameters {
         }
         else {
             Write-Log "Changing model expression '$parameterName'"
-            $modelExpression.Expression = $modelExpression.Expression -replace """?(.*)""? meta", """$parameterValue"" meta"
+            $modelExpression.Expression = $modelExpression.Expression -replace '(^"?)(.*?)("?)(\smeta)', "`$1$parameterValue`$3`$4"
             $changedFlag = $true
         }
     }
