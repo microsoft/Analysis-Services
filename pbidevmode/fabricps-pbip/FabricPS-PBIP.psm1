@@ -46,7 +46,7 @@ function Write-Log{
         $foregroundColor = [System.Console]::ForegroundColor
     )
 
-    Write-Host "[$([datetime]::Now.ToString("s"))] $message" -ForegroundColor $foregroundColor
+    Write-Host "[$([datetime]::Now.ToString("s"))] $message"
 }
 
 function Get-FabricAuthToken {
