@@ -679,7 +679,7 @@
     "Description": "Foreign keys should always be hidden.",
     "Severity": 2,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "UsedInRelationships.Any(FromColumn.Name == current.Name and FromCardinality == \"Many\")\n\r\nand\r\n\nIsHidden == false",
+    "Expression": "UsedInRelationships.Any(FromTable.Name == current.Table.Name and FromColumn.Name == current.Name and FromCardinality == \"Many\")\n\r\nand\r\n\nIsHidden == false",
     "FixExpression": "IsHidden = true",
     "CompatibilityLevel": 1200
   },
