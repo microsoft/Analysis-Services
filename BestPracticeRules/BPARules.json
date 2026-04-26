@@ -576,7 +576,8 @@
     "Description": "Flags must be properly formatted as Yes/No as this is easier to read than using 0/1 integer values.",
     "Severity": 1,
     "Scope": "DataColumn, CalculatedColumn, CalculatedTableColumn",
-    "Expression": "(\nName.StartsWith(\"Is\") and \nDataType = \"Int64\" and \nnot (IsHidden or Table.IsHidden)\n) \r\nor\r\n\n(\nName.EndsWith(\" Flag\") and \nDataType <> \"String\" and \nnot (IsHidden or Table.IsHidden)\n)",
+    "Expression": "(\r\n    (\r\n        Name.StartsWith(\"Is\") and \r\n        DataType = \"Int64\" and  \r\n        not (IsHidden or Table.IsHidden)\r\n    ) \r\n    or \r\n    (\r\n        Name.EndsWith(\" Flag\") and \r\n        DataType <> \"String\" and \r\n        not (IsHidden or Table.IsHidden)\r\n    )\r\n) \r\nand FormatString <> \"\"\"Yes\"\";;\"\"No\"\";\"",
+    "FixExpression": "FormatString = \"\\u0022Yes\\u0022\\u003b\\u003b\\u0022No\\u0022\\u003b\"",
     "CompatibilityLevel": 1200
   },
   {
