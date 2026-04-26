@@ -829,7 +829,8 @@ Function Import-FabricItems {
             Write-Output @{
                 "id"          = $itemId
                 "displayName" = $displayName
-                "type"        = $itemType 
+                "type"        = $itemType
+                "importType"  = "Created"
             }
         }
         else {
@@ -848,7 +849,8 @@ Function Import-FabricItems {
             Write-Output @{
                 "id"          = $itemId
                 "displayName" = $displayName
-                "type"        = $itemType 
+                "type"        = $itemType
+                "importType"  = "Updated"
             }
         }
 
@@ -1067,7 +1069,8 @@ Function Import-FabricItem {
         Write-Output @{
             "id"          = $itemId
             "displayName" = $displayName
-            "type"        = $itemType 
+            "type"        = $itemType
+            "importType"  = "Created"
         }
     }
     else {
@@ -1092,7 +1095,8 @@ Function Import-FabricItem {
         Write-Output @{
             "id"          = $itemId
             "displayName" = $displayName
-            "type"        = $itemType 
+            "type"        = $itemType
+            "importType"  = "Updated"
         }
     }
 }
