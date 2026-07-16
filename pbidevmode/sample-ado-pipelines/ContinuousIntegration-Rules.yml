@@ -85,13 +85,13 @@ stages:
               New-Item -ItemType Directory -Path $tempPath -ErrorAction SilentlyContinue | Out-Null
 
               Write-Host "##[debug]Downloading PBI Inspector"
-              $downloadUrl = "https://github.com/NatVanG/PBI-Inspector/releases/latest/download/win-x64-CLI.zip" 
+              $downloadUrl = "https://github.com/NatVanG/PBI-InspectorV2/releases/download/v2.2.0/win-x64-CLI.zip" 
               $zipFile = "$tempPath\PBIXInspector.zip"
               Invoke-WebRequest -Uri $downloadUrl -OutFile $zipFile
               Expand-Archive -Path $zipFile -DestinationPath $toolPath -Force                            
 
               Write-Host "##[debug]Downloading Report default rules"
-              $downloadUrl = "https://raw.githubusercontent.com/NatVanG/PBI-Inspector/main/Rules/Base-rules.json"
+              $downloadUrl = "https://raw.githubusercontent.com/NatVanG/PBI-InspectorV2/main/Rules/Base-rules.json"
               Invoke-WebRequest -Uri $downloadUrl -OutFile "$tempPath\Rules-Report.json"     
 
         - task: PowerShell@2
@@ -101,7 +101,7 @@ stages:
             script: |
                   $path = "$(Build.SourcesDirectory)"
                   $tempPath = "$path\_temp"
-                  $toolPath =  "$path\_Tools\PBIInspector\win-x64\CLI\PBIXInspectorCLI.exe"
+                  $toolPath =  "$path\_Tools\PBIInspector\win-x64\CLI\PBIRInspectorCLI.exe"
                   $rulesPath = "$path\Rules-Report.json"
 
                   if (!(Test-Path $rulesPath))
